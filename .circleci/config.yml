@@ -1,0 +1,23 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/clojure:lein-2.7.1
+
+    working_directory: ~/elo
+    steps:
+      - checkout
+      - setup_remote_docker:
+          reusable: true
+
+      - restore_cache:
+          key: elo-{{ checksum "project.clj" }}
+
+      - run: lein deps
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: elo-{{ checksum "project.clj" }}
+
+      - run: lein test
