@@ -1,12 +1,13 @@
 (ns elo.api
   (:gen-class)
-  (:require [ring.util.response :as resp]
-            [ring.middleware.defaults :as r-def]
-            [environ.core :refer [env]]
-            [compojure.core :refer [defroutes GET POST]]
+  (:require [compojure.core :refer [defroutes GET POST]]
             [elo.db :refer [store]]
+            [environ.core :refer [env]]
+            [hiccup.core :as hiccup]
+            [hiccup.form :as forms]
             [ring.adapter.jetty :as jetty]
-            [hiccup.core :as hiccup])
+            [ring.middleware.defaults :as r-def]
+            [ring.util.response :as resp])
   (:import (java.util UUID)))
 
 (def ^:private default-port 3000)
@@ -31,7 +32,15 @@
 
    [:body
     [:div {:id "root"}
-     [:p "Enter here the results of the game"]]]])
+     [:p "Enter here the results of the game"]
+     [:form
+      (forms/drop-down {} "Winning Player" ["one" "two"])
+      (forms/drop-down {} "Losing Player" ["one" "two"])
+      (forms/drop-down {} "Winning Goals" (map str (range 0 10)))
+      (forms/drop-down {} "Losing Goals" (map str (range 0 10)))
+      (forms/text-field {} "Winning Team")
+      (forms/text-field {} "Losing Team")
+      (forms/submit-button {} "Submit Result")]]]])
 
 (defn home
   []
