@@ -28,7 +28,7 @@
             [lein-cljfmt "0.5.7"]
             [lein-garden "0.2.8"]]
 
-  :main elo.api
+  :main ^{:skip-aot true} elo.api
 
   :uberjar-name "elo.jar"
   :min-lein-version "2.7.1"
@@ -40,6 +40,12 @@
              :migration-dir "migrations"
              ;; can use environ here??
              :db ~(get (System/getenv) "DATABASE_URL")}
+
+  :uberjar {:hooks []
+            :source-paths ["src/clj" "src/cljc"]
+            :omit-source true
+            :aot :all
+            :main elo.api}
 
   :garden {:builds [{:id "screen"
                      :source-paths ["src/clj" "src/cljc"]
