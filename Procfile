@@ -1,0 +1,1 @@
+web: java $JVM_OPTS -cp target/uberjar/elo.jar clojure.main -m elo.api
