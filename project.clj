@@ -28,7 +28,8 @@
             [lein-cljfmt "0.5.7"]
             [lein-garden "0.2.8"]]
 
-  :main ^{:skip-aot true} elo.api
+  :main elo.api
+  :aot [elo.api]
 
   :uberjar-name "elo.jar"
   :min-lein-version "2.7.1"
