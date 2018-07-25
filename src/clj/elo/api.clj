@@ -44,6 +44,10 @@
       (forms/text-field {} "Losing Team")
       (forms/submit-button {} "Submit Result")]]]])
 
+(defn get-rankings
+  []
+  )
+
 (defn store!
   [request]
   (let [params (-> request :json-params keywordize-keys)]

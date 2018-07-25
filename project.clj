@@ -25,6 +25,7 @@
                  [migratus "1.0.6"]]
 
   :plugins [[environ/environ.lein "0.3.1"]
+            [migratus-lein "0.5.0"]
             [lein-ring "0.9.7"]
             [lein-cljfmt "0.5.7"]
             [lein-garden "0.2.8"]]
@@ -53,5 +54,4 @@
                      :source-paths ["src/clj" "src/cljc"]
                      :stylesheet elo.css/screen
                      :compiler {:output-to "resources/public/css/screen.css"
-                                :pretty-print? true}}]}
-  )
+                                :pretty-print? true}}]})

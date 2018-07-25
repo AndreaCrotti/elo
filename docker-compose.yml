@@ -1,0 +1,11 @@
+version: '2'
+services:
+  pg:
+    image: postgres:10.4
+    ports:
+      - "5445:5432"
+
+    environment:
+      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=elo
+      - POSTGRES_USER=elo
