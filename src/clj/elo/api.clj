@@ -1,12 +1,15 @@
 (ns elo.api
   (:gen-class)
-  (:require [compojure.core :refer [defroutes GET POST]]
+  (:require [clojure.walk :refer [keywordize-keys]]
+            [compojure.core :refer [defroutes GET POST]]
             [elo.db :refer [store]]
             [environ.core :refer [env]]
             [hiccup.core :as hiccup]
             [hiccup.form :as forms]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :as r-def]
+            [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
+            [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.util.response :as resp])
   (:import (java.util UUID)))
 
@@ -42,6 +45,13 @@
       (forms/text-field {} "Losing Team")
       (forms/submit-button {} "Submit Result")]]]])
 
+(defn store!
+  [request]
+  (let [params (-> request :json-params keywordize-keys)]
+    (store params)
+    {:status 201
+     :body "The result was stored correctly"}))
+
 (defn home
   []
   (resp/content-type
@@ -55,13 +65,14 @@
   (Integer. (or (env :port) default-port)))
 
 (defroutes app-routes
-  (POST "/store" request ())
   (GET "/" [] (home))
-  #_(GET "/" request (enter-page request)))
+  (POST "/store" request (store! request)))
 
 (def app
   (-> app-routes
-      (r-def/wrap-defaults {})))
+      (r-def/wrap-defaults r-def/secure-site-defaults)
+      wrap-keyword-params
+      wrap-json-params))
 
 (defn -main [& args]
   (jetty/run-jetty app {:port (get-port)}))
