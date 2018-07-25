@@ -15,6 +15,7 @@
                  [hiccup "1.0.5"]
                  [ring/ring-json "0.4.0"]
                  [ring/ring-defaults "0.3.2"]
+                 [ring/ring-mock "0.3.2"]
                  [org.clojure/tools.cli "0.3.5"]
                  [honeysql "0.9.1"]
                  [environ "1.1.0"]

@@ -22,7 +22,6 @@
           path
           (:heroku-slug-commit env (str (UUID/randomUUID)))))
 
-
 (def body
   [:html
    [:head [:meta {:charset "utf-8"
