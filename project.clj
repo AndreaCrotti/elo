@@ -6,6 +6,7 @@
 
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/data.csv "0.1.4"]
+                 [org.clojure/spec.alpha "0.2.168"]
                  [clj-http "3.9.0"]
                  [ring "1.6.3"]
                  [compojure "1.6.1"]
@@ -22,7 +23,8 @@
                  [garden "1.3.5"]
                  [buddy "2.0.0"]
                  [buddy/buddy-auth "2.1.0"]
-                 [migratus "1.0.6"]]
+                 [migratus "1.0.6"]
+                 [org.clojure/test.check "0.9.0"]]
 
   :plugins [[environ/environ.lein "0.3.1"]
             [migratus-lein "0.5.0"]

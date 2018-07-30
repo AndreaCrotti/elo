@@ -69,7 +69,7 @@
 
 (defroutes app-routes
   (GET "/" [] (home))
-  (POST "/store" request (store! request)))
+  (POST "/store" [request] (store! request)))
 
 (def app
   (-> app-routes
