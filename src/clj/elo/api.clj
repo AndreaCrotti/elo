@@ -73,7 +73,7 @@
 
 (def app
   (-> app-routes
-      (r-def/wrap-defaults r-def/secure-site-defaults)
+      (r-def/wrap-defaults r-def/api-defaults)
       wrap-keyword-params
       wrap-json-params))
 

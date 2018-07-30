@@ -30,4 +30,8 @@
           request (mock/request :post "/store" sample)
           response (sut/app request)]
 
-      (is (= {:status 201 :body ""} response)))))
+      (is (= {:status 201,          
+              :headers {"Content-Type" "application/octet-stream"},
+              :body "The result was stored correctly"}
+
+             response)))))
