@@ -10,6 +10,7 @@
             [ring.middleware.defaults :as r-def]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
+            [ring.middleware.resource :as resources]
             [ring.util.response :as resp])
   (:import (java.util UUID)))
 
@@ -73,6 +74,7 @@
 
 (def app
   (-> app-routes
+      (resources/wrap-resource "public")
       (r-def/wrap-defaults r-def/api-defaults)
       wrap-keyword-params
       wrap-json-params))
