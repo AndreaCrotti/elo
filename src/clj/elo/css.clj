@@ -8,5 +8,7 @@
   [[:.players_form
     {:display "grid"
      :grid-gap "10px"
-     :grid-template-rows "auto auto"
-     :grid-template-columns "auto auto auto"}]])
+     :grid-template-rows "auto auto auto"
+     :grid-template-columns "auto auto"}]
+
+   [:label {:padding-right "10px"}]])

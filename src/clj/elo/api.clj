@@ -37,12 +37,25 @@
     [:div {:id "root"}
      [:p "Enter here the results of the game"]
      [:form.players_form
-      (forms/drop-down {} "Winning Player" ["one" "two"])
-      (forms/drop-down {} "Losing Player" ["one" "two"])
-      (forms/drop-down {} "Winning Goals" (map str (range 0 10)))
-      (forms/drop-down {} "Losing Goals" (map str (range 0 10)))
-      (forms/text-field {} "Winning Team")
-      (forms/text-field {} "Losing Team")
+      [:div
+       (forms/label {} "p1-name" "Player 1")
+       (forms/drop-down {} "p1-name" ["one" "two"])]
+
+      [:div
+       (forms/label {} "p2-name" "Player 2")
+       (forms/drop-down {} "p2-name" ["one" "two"])]
+
+      [:div
+       (forms/label {} "goals-p1" "# Goals")
+       (forms/drop-down {} "goals-p1" (map str (range 0 10)))]
+
+      [:div
+       (forms/label {} "goals-p2" "# Goals")
+       (forms/drop-down {} "goals-p2" (map str (range 0 10)))]
+
+      (forms/text-field {:placeholder "Team Name"} "team-p1")
+      (forms/text-field {:placeholder "Team Name"} "team-p2")
+
       (forms/submit-button {} "Submit Result")]]]])
 
 (defn get-rankings
