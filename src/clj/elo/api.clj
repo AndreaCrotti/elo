@@ -35,7 +35,7 @@
    [:body
     [:div {:id "root"}
      [:p "Enter here the results of the game"]
-     [:form
+     [:form.players_form
       (forms/drop-down {} "Winning Player" ["one" "two"])
       (forms/drop-down {} "Losing Player" ["one" "two"])
       (forms/drop-down {} "Winning Goals" (map str (range 0 10)))
