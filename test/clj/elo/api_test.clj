@@ -1,31 +1,34 @@
 (ns elo.api-test
   (:require [elo.api :as sut]
             [ring.mock.request :as mock]
+            [elo.helpers :refer [wrap-db-call]]
             [clojure.spec.alpha :as s]
-            [clojure.test :refer [deftest is testing]]))
+            [clojure.test :refer [deftest is testing use-fixtures]]))
 
-(s/def ::winner string?)
-(s/def ::loser string?)
-(s/def ::winning_team string?)
-(s/def ::losing_team string?)
-(s/def ::winning_goals int?)
-(s/def ::losing_goals int?)
+(use-fixtures :each wrap-db-call)
 
-(s/def ::game (s/keys :req-un [::winner
-                               ::loser
-                               ::winning_team
-                               ::losing_team
-                               ::winning_goals
-                               ::losing_goals]))
+(s/def ::p1-name string?)
+(s/def ::p2-name string?)
+(s/def ::p1-team string?)
+(s/def ::p2-team string?)
+(s/def ::p1-goals int?)
+(s/def ::p2-goals int?)
+
+(s/def ::game (s/keys :req-un [::p1-name
+                               ::p2-name
+                               ::p1-team
+                               ::p2-team
+                               ::p1-goals
+                               ::p2-goals]))
 
 (deftest store-results-test
   (testing "Should be able to store results"
-    (let [sample {:winner "bob"
-                  :loser "fred"
-                  :winning_team "RM"
-                  :losing_team "Juv"
-                  :winning_goals 3
-                  :losing_goals 0}
+    (let [sample {:p1-name "bob"
+                  :p2-name "fred"
+                  :p1-team "RM"
+                  :p2-team "Juv"
+                  :p1-goals 3
+                  :p2-goals 0}
 
           request (mock/request :post "/store" sample)
           response (sut/app request)]

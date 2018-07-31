@@ -2,14 +2,23 @@
   (:require [clojure.java.jdbc :as jdbc]
             [environ.core :refer [env]]
             [honeysql.core :as sql]
-            [honeysql.helpers :as h]))
+            [honeysql.helpers :as h]
+            [elo.helpers :refer [*test-db* test-db-uri]]))
 
-(def db-spec (env :database-url))
+(defn db-spec
+  []
+  (or (env :database-url)
+      *test-db*))
+
+(defn- store-sql
+  [params]
+  (-> (h/insert-into :game)
+      (h/values [params])))
 
 (defn store
   [params]
-  (-> (h/insert-into :games)
-      (h/values params)))
+  (jdbc/execute! (db-spec)
+                 (sql/format (store-sql params))))
 
 (defn load-games
   []

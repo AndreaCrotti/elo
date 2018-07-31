@@ -46,15 +46,15 @@
        (forms/drop-down {} "p2-name" ["one" "two"])]
 
       [:div
-       (forms/label {} "goals-p1" "# Goals")
-       (forms/drop-down {} "goals-p1" (map str (range 0 10)))]
+       (forms/label {} "p1-goals" "# Goals")
+       (forms/drop-down {} "p1-goals" (map str (range 0 10)))]
 
       [:div
-       (forms/label {} "goals-p2" "# Goals")
-       (forms/drop-down {} "goals-p2" (map str (range 0 10)))]
+       (forms/label {} "p2-goals" "# Goals")
+       (forms/drop-down {} "p2-goals" (map str (range 0 10)))]
 
-      (forms/text-field {:placeholder "Team Name"} "team-p1")
-      (forms/text-field {:placeholder "Team Name"} "team-p2")
+      (forms/text-field {:placeholder "Team Name"} "p1-team")
+      (forms/text-field {:placeholder "Team Name"} "p2-team")
 
       (forms/submit-button {} "Submit Result")]]]])
 
@@ -63,11 +63,10 @@
   )
 
 (defn store!
-  [request]
-  (let [params (-> request :json-params keywordize-keys)]
-    (store params)
-    {:status 201
-     :body "The result was stored correctly"}))
+  [{:keys [params]}]
+  (store params)
+  {:status 201
+   :body "The result was stored correctly"})
 
 (defn home
   []
@@ -83,7 +82,7 @@
 
 (defroutes app-routes
   (GET "/" [] (home))
-  (POST "/store" [request] (store! request)))
+  (POST "/store" request (store! request)))
 
 (def app
   (-> app-routes
