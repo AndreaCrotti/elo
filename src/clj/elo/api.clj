@@ -79,6 +79,34 @@
 
    "text/html"))
 
+(defn games-table
+  []
+  (into [:table
+         [:th
+          [:td "Player 1"]
+          [:td "Team"]
+          [:td "Goals"]
+          [:td "Player 2"]
+          [:td "Team"]
+          [:td "Goals"]]]
+
+        (for [{:keys [p1-name p2-name p1-team p2-team p1-goals p2-goals]}
+              (load-games)]
+
+          [:tr
+           [:td p1-name]
+           [:td p1-team]
+           [:td p1-goals]
+           [:td p2-name]
+           [:td p2-team]
+           [:td p2-goals]])))
+
+(defn games
+  []
+  (resp/content-type
+   (resp/response
+    (hiccup/html (load-games)))))
+
 (defn- get-port
   []
   (Integer. (or (env :port) default-port)))
