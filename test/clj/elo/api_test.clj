@@ -7,20 +7,6 @@
 
 (use-fixtures :each wrap-db-call)
 
-(s/def ::p1-name string?)
-(s/def ::p2-name string?)
-(s/def ::p1-team string?)
-(s/def ::p2-team string?)
-(s/def ::p1-goals int?)
-(s/def ::p2-goals int?)
-
-(s/def ::game (s/keys :req-un [::p1-name
-                               ::p2-name
-                               ::p1-team
-                               ::p2-team
-                               ::p1-goals
-                               ::p2-goals]))
-
 (deftest store-results-test
   (testing "Should be able to store results"
     (let [sample {:p1-name "bob"

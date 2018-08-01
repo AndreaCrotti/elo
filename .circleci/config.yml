@@ -4,6 +4,13 @@ jobs:
   build:
     docker:
       - image: circleci/clojure:lein-2.7.1
+        environment:
+          DATABASE_URL: postgres://elo@localhost/elo_test
+
+      - image: postgres:10.4
+        environment:
+          POSTGRES_USER: elo
+          POSTGRES_DB: elo_test
 
     working_directory: ~/elo
     steps:
