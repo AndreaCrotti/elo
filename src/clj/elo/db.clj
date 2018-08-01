@@ -17,10 +17,20 @@
 
 (defn store
   [params]
-  (jdbc/execute! (db-spec)
-                 (sql/format (store-sql params))))
+  (let [new-params
+        (-> params
+            (update :p1-goals #(Integer. %))
+            (update :p2-goals #(Integer. %)))]
 
-(defn load-games
+    (jdbc/execute! (db-spec)
+                   (sql/format (store-sql new-params)))))
+
+(defn- load-games-sql
   []
   (-> (h/select :*)
       (h/from :games)))
+
+(defn load-games
+  []
+  (jdbc/query (db-spec)
+              (sql/format (load-games-sql))))

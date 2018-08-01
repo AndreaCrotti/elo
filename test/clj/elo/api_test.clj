@@ -31,10 +31,14 @@
                   :p2-goals 0}
 
           request (mock/request :post "/store" sample)
-          response (sut/app request)]
+          response (sut/app request)
+          loaded-games (sut/app (mock/request :get "/games"))]
 
       (is (= {:status 201,          
               :headers {"Content-Type" "application/octet-stream"},
               :body "The result was stored correctly"}
 
-             response)))))
+             response))
+
+      ;;TODO: should actually return the list of games to load
+      #_(is (nil? loaded-games)))))

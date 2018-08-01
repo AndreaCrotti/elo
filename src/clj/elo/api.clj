@@ -2,7 +2,7 @@
   (:gen-class)
   (:require [clojure.walk :refer [keywordize-keys]]
             [compojure.core :refer [defroutes GET POST]]
-            [elo.db :refer [store]]
+            [elo.db :refer [store load-games]]
             [environ.core :refer [env]]
             [hiccup.core :as hiccup]
             [hiccup.form :as forms]
@@ -23,6 +23,29 @@
           path
           (:heroku-slug-commit env (str (UUID/randomUUID)))))
 
+(def players-form
+  [:form.players_form
+   [:div
+    (forms/label {} "p1-name" "Player 1")
+    (forms/drop-down {} "p1-name" ["one" "two"])]
+
+   [:div
+    (forms/label {} "p2-name" "Player 2")
+    (forms/drop-down {} "p2-name" ["one" "two"])]
+
+   [:div
+    (forms/label {} "p1-goals" "# Goals")
+    (forms/drop-down {} "p1-goals" (map str (range 0 10)))]
+
+   [:div
+    (forms/label {} "p2-goals" "# Goals")
+    (forms/drop-down {} "p2-goals" (map str (range 0 10)))]
+
+   (forms/text-field {:placeholder "Team Name"} "p1-team")
+   (forms/text-field {:placeholder "Team Name"} "p2-team")
+
+   (forms/submit-button {} "Submit Result")])
+
 (def body
   [:html
    [:head [:meta {:charset "utf-8"
@@ -36,27 +59,7 @@
    [:body
     [:div {:id "root"}
      [:p "Enter here the results of the game"]
-     [:form.players_form
-      [:div
-       (forms/label {} "p1-name" "Player 1")
-       (forms/drop-down {} "p1-name" ["one" "two"])]
-
-      [:div
-       (forms/label {} "p2-name" "Player 2")
-       (forms/drop-down {} "p2-name" ["one" "two"])]
-
-      [:div
-       (forms/label {} "p1-goals" "# Goals")
-       (forms/drop-down {} "p1-goals" (map str (range 0 10)))]
-
-      [:div
-       (forms/label {} "p2-goals" "# Goals")
-       (forms/drop-down {} "p2-goals" (map str (range 0 10)))]
-
-      (forms/text-field {:placeholder "Team Name"} "p1-team")
-      (forms/text-field {:placeholder "Team Name"} "p2-team")
-
-      (forms/submit-button {} "Submit Result")]]]])
+     players-form]]])
 
 (defn get-rankings
   []
@@ -82,6 +85,10 @@
 
 (defroutes app-routes
   (GET "/" [] (home))
+  (GET "/games" [] (let [games load-games]
+                     {:status 200
+                      :body games}))
+
   (POST "/store" request (store! request)))
 
 (def app
