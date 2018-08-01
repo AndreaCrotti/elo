@@ -50,6 +50,8 @@
   :uberjar {:hooks []
             :source-paths ["src/clj" "src/cljc"]
             :omit-source true
+            :prep-tasks [["compile"]
+                         ["garden" "once"]]
             :aot :all
             :main elo.api}
 
