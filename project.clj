@@ -1,8 +1,8 @@
 (defproject elo "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "Compute Fifa players Elo score"
+  :url "http://github.com/AndreaCrotti/elo"
   :license {:name "Eclipse Public License"
-            :url "https://github.com/andreacrotti/elo"}
+            :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/data.csv "0.1.4"]
@@ -24,7 +24,14 @@
                  [buddy "2.0.0"]
                  [buddy/buddy-auth "2.1.0"]
                  [migratus "1.0.6"]
-                 [org.clojure/test.check "0.9.0"]]
+                 [org.clojure/test.check "0.9.0"]
+
+                 [org.clojure/clojurescript "1.9.946"]
+                 [re-frame "0.10.5"]
+                 [com.andrewmcveigh/cljs-time "0.5.2"]
+                 [cljs-http "0.1.45"]
+                 [buddy/buddy-auth "2.1.0"]
+                 [buddy "2.0.0"]]
 
   :plugins [[environ/environ.lein "0.3.1"]
             [migratus-lein "0.5.0"]
@@ -47,16 +54,66 @@
              ;; can use environ here??
              :db ~(get (System/getenv) "DATABASE_URL")}
 
-  :uberjar {:hooks []
-            :source-paths ["src/clj" "src/cljc"]
-            :omit-source true
-            :prep-tasks [["compile"]
-                         ["garden" "once"]]
-            :aot :all
-            :main elo.api}
-
   :garden {:builds [{:id "screen"
                      :source-paths ["src/clj" "src/cljc"]
                      :stylesheet elo.css/screen
                      :compiler {:output-to "resources/public/css/screen.css"
-                                :pretty-print? true}}]})
+                                :pretty-print? true}}]}
+
+
+  :profiles
+  {:production {:env {:production true}}
+   :uberjar {:hooks []
+             :source-paths ["src/clj" "src/cljc"]
+             :prep-tasks [["compile"]
+                          ["garden" "once"]
+                          ["cljsbuild" "once" "min"]]
+
+             :omit-source true
+             :aot :all
+             :main elo.api}
+
+   :dev
+   {:aliases {"run-dev" ["trampoline" "run" "-m" "elo.server/run-dev"]}
+    :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
+    :figwheel {:server-port 3452}
+    :plugins [[lein-figwheel "0.5.16"]
+              [lein-doo "0.1.7"]
+              [migratus-lein "0.5.0"]]
+
+    :dependencies [[binaryage/devtools "0.9.10"]
+                   [com.cemerick/piggieback "0.2.2"]
+                   [figwheel "0.5.16"]
+                   [figwheel-sidecar "0.5.16"]
+                   ;; dependencies for the reloaded workflow
+                   [reloaded.repl "0.2.4"]
+                   [ring/ring-mock "0.3.2"]]}
+   }
+
+  :cljsbuild
+  {:builds
+   [{:id           "dev"
+     :source-paths ["src/cljs" "src/cljc"]
+     :figwheel     {:on-jsload "elo.core/mount-root"}
+     :compiler     {:main                 elo.core
+                    :output-to            "resources/public/js/compiled/app.js"
+                    :output-dir           "resources/public/js/compiled/out"
+                    :asset-path           "js/compiled/out"
+                    :optimizations :none
+                    :source-map true
+                    :source-map-timestamp true
+                    :closure-defines      {"re_frame.trace.trace_enabled_QMARK_" true}
+                    :preloads             [devtools.preload day8.re-frame.trace.preload]
+                    :external-config      {:devtools/config {:features-to-install [:formatters
+                                                                                   :async
+                                                                                   :hints]}}}}
+
+    {:id           "min"
+     :source-paths ["src/cljs" "src/cljc"]
+     :compiler     {:main            elo.core
+                    :output-to       "resources/public/js/compiled/app.js"
+                    :optimizations   :advanced
+                    :output-dir "resources/public/js/compiled"
+                    :source-map "resources/public/js/compiled/app.js.map"
+                    :closure-defines {goog.DEBUG false}
+                    :pretty-print    false}}]})
