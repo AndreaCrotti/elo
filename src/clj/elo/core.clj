@@ -1,6 +1,7 @@
 (ns elo.core)
 
 (def k 32)
+(def initial-ranking 1500)
 
 (defn expected
   [diff]
@@ -31,3 +32,25 @@
     ratings
     (recur (new-ratings ratings (first games))
            (rest games))))
+
+(defn initial-rankings
+  [players]
+  (zipmap players (repeat initial-ranking)))
+
+(defn- extract-players
+  [games]
+  (vec (set (apply concat
+                   (for [[f s] games]
+                     [f s])))))
+
+(defn normalize-game
+  [{:keys [p1-name p2-name p1-goals p2-goals]}]
+  (cond
+    (= p1-goals p2-goals) [p1-name p2-name 0.5]
+    (> p1-goals p2-goals) [p1-name p2-name 1]
+    (> p2-goals p1-goals) [p2-name p1-name 1]))
+
+(defn compute-rankings
+  [games]
+  (update-ratings (initial-rankings (extract-players games))
+                  games))

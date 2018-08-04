@@ -2,6 +2,7 @@
   (:gen-class)
   (:require [compojure.core :refer [defroutes GET POST]]
             [elo.db :refer [store load-games]]
+            [elo.core :as core]
             [environ.core :refer [env]]
             [hiccup.core :as hiccup]
             [ring.adapter.jetty :as jetty]
@@ -60,12 +61,19 @@
    (resp/response
     (hiccup/html (load-games)))))
 
+(defn get-rankings
+  []
+  (resp/response
+   (let [games (load-games)]
+     (core/compute-rankings games))))
+
 (defroutes app-routes
   (GET "/" [] (home))
-  (GET "/games" [] (let [games load-games]
+  (GET "/games" [] (let [games (load-games)]
                      {:status 200
                       :body games}))
 
+  (GET "/rankings" [] (get-rankings))
   (POST "/store" request (store! request)))
 
 (def app

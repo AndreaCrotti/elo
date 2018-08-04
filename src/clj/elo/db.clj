@@ -42,7 +42,7 @@
 (defn- load-games-sql
   []
   (-> (h/select :*)
-      (h/from :games)))
+      (h/from :game)))
 
 (defn load-games
   []
