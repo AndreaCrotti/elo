@@ -28,6 +28,7 @@
 
                  [org.clojure/clojurescript "1.9.946"]
                  [re-frame "0.10.5"]
+
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [cljs-http "0.1.45"]
                  [buddy/buddy-auth "2.1.0"]
@@ -74,9 +75,13 @@
              :main elo.api}
 
    :dev
-   {:aliases {"run-dev" ["trampoline" "run" "-m" "elo.server/run-dev"]}
-    :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
-    :figwheel {:server-port 3452}
+   {:repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
+    :figwheel {:css-dirs ["resources/public/css"]
+               :ring-handler elo.api/app
+               :server-logfile "log/figwheel.log"
+               :server-ip "127.0.0.1"
+               :server-port 3452}
+
     :plugins [[lein-figwheel "0.5.16"]
               [lein-doo "0.1.7"]
               [migratus-lein "0.5.0"]]
@@ -85,35 +90,33 @@
                    [com.cemerick/piggieback "0.2.2"]
                    [figwheel "0.5.16"]
                    [figwheel-sidecar "0.5.16"]
+                   [day8.re-frame/re-frame-10x "0.3.3-react16"]
                    ;; dependencies for the reloaded workflow
                    [reloaded.repl "0.2.4"]
-                   [ring/ring-mock "0.3.2"]]}
-   }
-
+                   [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
   {:builds
    [{:id           "dev"
      :source-paths ["src/cljs" "src/cljc"]
      :figwheel     {:on-jsload "elo.core/mount-root"}
-     :compiler     {:main                 elo.core
-                    :output-to            "resources/public/js/compiled/app.js"
-                    :output-dir           "resources/public/js/compiled/out"
-                    :asset-path           "js/compiled/out"
+     :compiler     {:main elo.core
+                    :output-to "resources/public/js/compiled/app.js"
+                    :output-dir "resources/public/js/compiled/out"
+                    :asset-path "js/compiled/out"
                     :optimizations :none
                     :source-map true
                     :source-map-timestamp true
-                    :closure-defines      {"re_frame.trace.trace_enabled_QMARK_" true}
-                    :preloads             [devtools.preload day8.re-frame.trace.preload]
-                    :external-config      {:devtools/config {:features-to-install [:formatters
-                                                                                   :async
-                                                                                   :hints]}}}}
-
+                    :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}
+                    :preloads [devtools.preload day8.re-frame.trace.preload]
+                    :external-config {:devtools/config {:features-to-install [:formatters
+                                                                              :async
+                                                                              :hints]}}}}
     {:id           "min"
      :source-paths ["src/cljs" "src/cljc"]
-     :compiler     {:main            elo.core
-                    :output-to       "resources/public/js/compiled/app.js"
-                    :optimizations   :advanced
+     :compiler     {:main elo.core
+                    :output-to "resources/public/js/compiled/app.js"
+                    :optimizations :advanced
                     :output-dir "resources/public/js/compiled"
                     :source-map "resources/public/js/compiled/app.js.map"
                     :closure-defines {goog.DEBUG false}
-                    :pretty-print    false}}]})
+                    :pretty-print false}}]})
