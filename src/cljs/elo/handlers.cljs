@@ -29,7 +29,7 @@
 (rf/reg-event-db :p2-name (setter [:game :p2-name]))
 (rf/reg-event-db :p2-team (setter [:game :p2-team]))
 
-(defn submita
+(defn submit
   [{:keys [db]} [_ value]]
 
   {:db db
