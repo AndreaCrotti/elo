@@ -34,7 +34,8 @@
                  [cljs-ajax "0.7.4"]
                  [cljs-http "0.1.45"]
                  [buddy/buddy-auth "2.1.0"]
-                 [buddy "2.0.0"]]
+                 [buddy "2.0.0"]
+                 [com.taoensso/timbre "4.10.0"]]
 
   :plugins [[environ/environ.lein "0.3.1"]
             [migratus-lein "0.5.0"]

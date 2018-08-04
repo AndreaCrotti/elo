@@ -1,6 +1,8 @@
 (ns elo.api
   (:gen-class)
   (:require [compojure.core :refer [defroutes GET POST]]
+            [clojure.pprint :refer [pprint]]
+            [clojure.edn :as edn]
             [elo.db :refer [store load-games]]
             [elo.core :as core]
             [environ.core :refer [env]]
@@ -26,6 +28,17 @@
           path
           (:heroku-slug-commit env (str (UUID/randomUUID)))))
 
+(defn wrap-edn-response
+  [handler]
+  (fn [request]
+    (let [response (handler request)]
+      (update response :body #(with-out-str (pprint %))))))
+
+(defn wrap-edn-request
+  [handler]
+  (fn [request]
+    (handler (update request :body edn/read-string))))
+
 (def body
   [:html
    [:head [:meta {:charset "utf-8"
@@ -43,9 +56,9 @@
 
 (defn store!
   [{:keys [params]}]
-  (store params)
-  {:status 201
-   :body "The result was stored correctly"})
+  (let [result (store params)]
+    {:status 201
+     :body result}))
 
 (defn home
   []
@@ -82,7 +95,7 @@
       (resources/wrap-resource "public")
       (r-def/wrap-defaults r-def/api-defaults)
       wrap-keyword-params
-      wrap-json-params))
+      wrap-edn-response))
 
 (defn -main [& args]
   (jetty/run-jetty app {:port (get-port)}))

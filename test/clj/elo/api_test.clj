@@ -1,7 +1,6 @@
 (ns elo.api-test
   (:require [clojure.test :refer [deftest is testing use-fixtures]]
             [elo.api :as sut]
-            [elo.db :as db]
             [elo.helpers :refer [wrap-db-call]]
             [ring.mock.request :as mock]))
 
@@ -17,12 +16,11 @@
                   :p2_goals 0}
 
           response (sut/app (mock/request :post "/store" sample))
-          games (sut/app (mock/request :get "/games"))
-          ]
+          games (sut/app (mock/request :get "/games"))]
 
       (is (= {:status 201,
               :headers {"Content-Type" "application/octet-stream"},
-              :body "The result was stored correctly"}
+              :body "(1)\n"}
 
              response))
 
