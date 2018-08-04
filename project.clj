@@ -37,6 +37,7 @@
 
   :plugins [[environ/environ.lein "0.3.1"]
             [migratus-lein "0.5.0"]
+            [lein-cljsbuild "1.1.4"]
             [lein-ring "0.9.7"]
             [lein-cljfmt "0.5.7"]
             [lein-garden "0.2.8"]]
