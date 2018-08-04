@@ -68,4 +68,7 @@
 
 (defn root
   []
-  [:div players-form])
+  (fn []
+    (rf/dispatch [:load-games])
+    (rf/dispatch [:load-rankings])
+    [:div players-form]))

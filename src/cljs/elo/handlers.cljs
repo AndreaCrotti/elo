@@ -1,5 +1,6 @@
 (ns elo.handlers
   (:require [re-frame.core :as rf]
+            [day8.re-frame.http-fx]
             [ajax.core :as ajax]))
 
 (def default-db
@@ -29,16 +30,54 @@
 (rf/reg-event-db :p2_name (setter [:game :p2_name]))
 (rf/reg-event-db :p2_team (setter [:game :p2_team]))
 
+(rf/reg-event-fx :submit-success
+                 (fn [{:keys [db]} [_ value]]
+                   {:db db
+                    :dispatch [:load-games]}))
+
+(rf/reg-event-db :failed
+                 (fn [db [_ response]]
+                   (js/console.log "Failed request " response)
+                   db))
+
+(rf/reg-event-db :load-games-success
+                 (fn [db [_ games]]
+                   (assoc db :games games)))
+
+(defn load-games
+  [{:keys [db]} _]
+  {:db db
+   :http-xhrio {:method :get
+                :uri "/games"
+                :format (ajax/json-request-format)
+                :response-format (ajax/json-response-format {:keywords? true})
+                :on-success [:load-games-success]
+                :on-failure [:failed]}})
+
+(rf/reg-event-fx :load-games load-games)
+
+(defn load-rankings
+  [{:keys [db]} _]
+  {:db db
+   :http-xhrio {:method :get
+                :uri "/rankings"
+                :format (ajax/json-request-format)
+                :response-format (ajax/json-response-format {:keywords? true})
+                :on-success [:load-rankings-success]
+                :on-failure [:failed]}})
+
+(rf/reg-event-fx :load-rankings load-rankings)
+
 (defn submit
   [{:keys [db]} [_ value]]
 
   {:db db
    :http-xhrio {:method :post
                 :uri "/store"
-                :params (assoc (:game db) :coming value)
+                :params (:game db)
                 :format (ajax/json-request-format)
                 :response-format (ajax/json-response-format {:keywords? true})
                 :on-success [:submit-success]
-                :on-failure [:submit-failed]}})
+                :on-failure [:failed]}})
 
 (rf/reg-event-fx :submit submit)

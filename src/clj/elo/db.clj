@@ -5,15 +5,19 @@
             [clojure.data.csv :as csv]
             [environ.core :refer [env]]
             [honeysql.core :as sql]
-            [honeysql.helpers :as h]
-            [elo.helpers :refer [*test-db* test-db-uri]]))
+            [honeysql.helpers :as h]))
 
 (def local-db "postgres://elo@localhost:5445/elo")
+(def test-db "postgres://elo@localhost:5445/elo_test")
 
 (defn db-spec
   []
-  (or (env :database-url)
-      *test-db*))
+  (or (env :database-url) local-db))
+
+(defn wrap-db-call
+  [test-fn]
+  (with-redefs [db-spec (fn [] test-db)]
+    (test-fn)))
 
 (defn- store-sql
   [params]
