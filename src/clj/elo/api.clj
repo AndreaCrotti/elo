@@ -1,12 +1,11 @@
 (ns elo.api
   (:gen-class)
   (:require [compojure.core :refer [defroutes GET POST]]
-            [clojure.pprint :refer [pprint]]
-            [clojure.edn :as edn]
             [elo.db :refer [store load-games]]
             [elo.core :as core]
             [environ.core :refer [env]]
             [hiccup.core :as hiccup]
+            [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :as r-def]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
@@ -27,24 +26,9 @@
           path
           (:heroku-slug-commit env (str (UUID/randomUUID)))))
 
-(defn wrap-edn-response
-  [handler]
-  (fn [request]
-    (let [response (handler request)]
-      (if (= (-> response :headers :content-type ) "application/edn")
-        (assoc response :body #(with-out-str (pprint %)))
-        response))))
-
-(defn- as-edn
+(defn- as-json
   [response]
-  (resp/content-type response "application/edn"))
-
-(defn wrap-edn-request
-  [handler]
-  (fn [request]
-    (if (= (-> request :headers :content-type) "application/edn")
-      (handler (update request :body edn/read-string))
-      (handler request))))
+  (resp/content-type response "application/json"))
 
 (def body
   [:html
@@ -63,9 +47,10 @@
 
 (defn store!
   [{:keys [params]}]
-  (let [result (store params)]
-    {:status 201
-     :body result}))
+  (as-json
+   (let [result (store params)]
+     {:status 201
+      :body result})))
 
 (defn home
   []
@@ -77,13 +62,12 @@
 
 (defn games
   []
-  (as-edn
-   (resp/response
-    (hiccup/html (load-games)))))
+  (as-json
+   (resp/response (load-games))))
 
 (defn get-rankings
   []
-  (as-edn
+  (as-json
    (resp/response
     (let [games (load-games)
           norm-games (map core/normalize-game games)]
@@ -103,8 +87,8 @@
       (resources/wrap-resource "public")
       (r-def/wrap-defaults r-def/api-defaults)
       wrap-keyword-params
-      wrap-edn-request
-      wrap-edn-response))
+      wrap-json-params
+      wrap-json-response))
 
 (defn -main [& args]
   (jetty/run-jetty app {:port (get-port)}))

@@ -19,13 +19,15 @@
           games (sut/app (mock/request :get "/games"))]
 
       (is (= {:status 201,
-              :headers {"Content-Type" "application/octet-stream"},
-              :body '(1)}
+              :headers {"Content-Type" "application/json"},
+              :body "[1]"}
 
              response))
 
       (is (= 200 (:status games)))
-      (is (= 1 (count (:body games)))))))
+      (is (= "application/json" (-> games :headers :content-type)))
+      #_(is (= [] (:body games)))
+      #_(is (= 1 (count (:body games)))))))
 
 (deftest get-rankings-test
   (testing "Simple computation"

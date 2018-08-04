@@ -1,9 +1,6 @@
 (ns elo.handlers
   (:require [re-frame.core :as rf]
-            [ajax.interceptors :as ajax-interceptors]
-            [ajax.protocols :as ajax-protocols]
-            [cljs.reader :as reader]
-            [cljs.pprint :as pprint]
+            [ajax.core :as ajax]
             [day8.re-frame.http-fx]))
 
 (def default-db
@@ -18,19 +15,6 @@
 
 (rf/reg-sub :rankings (getter :rankings))
 (rf/reg-sub :games (getter :games))
-
-(def ^:private edn-request-format
-  {:write #(with-out-str (pprint/pprint %))
-   :content-type "application/edn"})
-
-(defn- edn-read-fn [response]
-  (reader/read-string (ajax-protocols/-body response)))
-
-(def ^:private edn-response-format
-  (ajax-interceptors/map->ResponseFormat
-   {:read edn-read-fn
-    :description "EDN"
-    :content-type ["application/edn"]}))
 
 (defn- setter
   [key]
@@ -72,8 +56,8 @@
   {:db db
    :http-xhrio {:method :get
                 :uri "/games"
-                :format edn-request-format
-                :response-format edn-response-format
+                :format (ajax/json-request-format)
+                :response-format (ajax/json-response-format {:keywords? true})
                 :on-success [:load-games-success]
                 :on-failure [:failed]}})
 
@@ -84,8 +68,8 @@
   {:db db
    :http-xhrio {:method :get
                 :uri "/rankings"
-                :format edn-request-format
-                :response-format edn-response-format
+                :format (ajax/json-request-format)
+                :response-format (ajax/json-response-format {:keywords? true})
                 :on-success [:load-rankings-success]
                 :on-failure [:failed]}})
 
@@ -93,13 +77,12 @@
 
 (defn submit
   [{:keys [db]} [_ value]]
-
   {:db db
    :http-xhrio {:method :post
                 :uri "/store"
                 :params (:game db)
-                :format edn-request-format
-                :response-format edn-response-format
+                :format (ajax/json-request-format)
+                :response-format (ajax/json-response-format {:keywords? true})
                 :on-success [:submit-success]
                 :on-failure [:failed]}})
 

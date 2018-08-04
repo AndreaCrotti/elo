@@ -19,20 +19,20 @@
                 [:th "Goals"]
                 [:th "Player 2"]
                 [:th "Team"]
-                [:th "Goals"]]]
+                [:th "Goals"]
+                [:th "Played At"]]]
 
     [:table
      (into [:tbody header]
-           (for [{:keys [p1_name p2_name p1_team p2_team p1_goals p2_goals]}
-                 [games]]
-
+           (for [{:keys [p1_name p2_name p1_team p2_team p1_goals p2_goals played_at]} games]
              [:tr
               [:td p1_name]
               [:td p1_team]
               [:td p1_goals]
               [:td p2_name]
               [:td p2_team]
-              [:td p2_goals]]))]))
+              [:td p2_goals]
+              [:td played_at]]))]))
 
 (def players-form
   [:form.players_form
@@ -75,7 +75,6 @@
         games (rf/subscribe [:games])]
 
     (fn []
-      (js/console.log "Games = " @games)
       [:div players-form]
-      #_[:div.games__table (games-table @games)]
+      [:div.games__table (games-table @games)]
       #_[:div.rankings__table])))
