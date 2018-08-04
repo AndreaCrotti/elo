@@ -9,7 +9,6 @@
             [hiccup.core :as hiccup]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :as r-def]
-            [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.resource :as resources]
             [ring.util.response :as resp])
@@ -34,10 +33,16 @@
     (let [response (handler request)]
       (update response :body #(with-out-str (pprint %))))))
 
+(defn- as-edn
+  [response]
+  (resp/content-type response "application/edn"))
+
 (defn wrap-edn-request
   [handler]
   (fn [request]
-    (handler (update request :body edn/read-string))))
+    (if (= (-> request :headers :content-type ) "application/edn")
+      (handler (update request :body edn/read-string))
+      (handler request))))
 
 (def body
   [:html
@@ -70,16 +75,17 @@
 
 (defn games
   []
-  (resp/content-type
+  (as-edn
    (resp/response
     (hiccup/html (load-games)))))
 
 (defn get-rankings
   []
-  (resp/response
-   (let [games (load-games)
-         norm-games (map core/normalize-game games)]
-     (core/compute-rankings norm-games))))
+  (as-edn
+   (resp/response
+    (let [games (load-games)
+          norm-games (map core/normalize-game games)]
+      (core/compute-rankings norm-games)))))
 
 (defroutes app-routes
   (GET "/" [] (home))
