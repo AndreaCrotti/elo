@@ -29,7 +29,7 @@
            [:td p2-goals]])))
 
 (def players-form
-  [:form {:id "players_form"}
+  [:form.players_form
    [:div
     [:label {:for "p1-name"} "Player 1"]
     (drop-down ["one" "two"])]
@@ -46,10 +46,12 @@
     [:label {:for "p2-goals"} "# Goals"]
     (drop-down (map str (range 0 10)))]
 
-   [:div.team1__name
+   [:div
+    [:label "Team"]
     [:input {:type "text" :placeholder "Team Name"}]]
 
-   [:div.team2__name
+   [:div
+    [:label "Team"]
     [:input {:type "text" :placeholder "Team Name"}]]
 
    [:input.submit__game {:type "submit"}]])

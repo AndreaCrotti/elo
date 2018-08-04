@@ -1,7 +1,5 @@
 (ns elo.css
-  (:require [garden.def :refer [defstyles defcssfn]]
-            [garden.core :refer [css]]
-            [garden.stylesheet :refer [at-media]]))
+  (:require [garden.def :refer [defstyles defcssfn]]))
 
 (defstyles screen
   ;; could maybe even split creating multiple CSS files?
@@ -13,4 +11,4 @@
      :grid-template-rows "auto auto auto"
      :grid-template-columns "auto auto"}]
 
-   [:label {:padding-right "10px"}]])
+   [:label {:padding-right "30px"}]])
