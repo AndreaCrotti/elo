@@ -30,6 +30,7 @@
                  [re-frame "0.10.5"]
 
                  [com.andrewmcveigh/cljs-time "0.5.2"]
+                 [cljs-ajax "0.7.4"]
                  [cljs-http "0.1.45"]
                  [buddy/buddy-auth "2.1.0"]
                  [buddy "2.0.0"]]
