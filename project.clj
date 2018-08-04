@@ -29,6 +29,7 @@
                  [org.clojure/clojurescript "1.10.339"]
                  [re-frame "0.10.5"]
 
+                 [ns-tracker "0.3.1"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [cljs-ajax "0.7.4"]
                  [cljs-http "0.1.45"]
