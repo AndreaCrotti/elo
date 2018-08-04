@@ -1,5 +1,9 @@
 (ns elo.views
-  (:require [re-frame.core :as rf]))
+  (:require [re-frame.core :as rf]
+            [cljsjs.material-ui]
+            [cljs-react-material-ui.core :refer [get-mui-theme color]]
+            [cljs-react-material-ui.reagent :as ui]
+            [cljs-react-material-ui.icons :as ic]))
 
 (defn- set-val
   [handler-key]
@@ -10,29 +14,6 @@
   (into [:select {:on-change (set-val key)}]
         (for [o opts]
           [:option {:value o} o])))
-
-(defn games-table
-  [games]
-  (let [header [:tr
-                [:th "Player 1"]
-                [:th "Team"]
-                [:th "Goals"]
-                [:th "Player 2"]
-                [:th "Team"]
-                [:th "Goals"]
-                [:th "Played At"]]]
-
-    [:table
-     (into [:tbody header]
-           (for [{:keys [p1_name p2_name p1_team p2_team p1_goals p2_goals played_at]} games]
-             [:tr
-              [:td p1_name]
-              [:td p1_team]
-              [:td p1_goals]
-              [:td p2_name]
-              [:td p2_team]
-              [:td p2_goals]
-              [:td played_at]]))]))
 
 (def players-form
   [:form.players_form
@@ -67,6 +48,39 @@
    [:input.submit__game {:type "submit"
                          :on-click #(rf/dispatch [:submit])}]])
 
+(defn games-table
+  [games]
+  (let [header [:tr
+                [:th "Player 1"]
+                [:th "Team"]
+                [:th "Goals"]
+                [:th "Player 2"]
+                [:th "Team"]
+                [:th "Goals"]
+                [:th "Played At"]]]
+
+    [:table
+     (into [:tbody header]
+           (for [{:keys [p1_name p2_name p1_team p2_team p1_goals p2_goals played_at]} games]
+             [:tr
+              [:td p1_name]
+              [:td p1_team]
+              [:td p1_goals]
+              [:td p2_name]
+              [:td p2_team]
+              [:td p2_goals]
+              [:td played_at]]))]))
+
+(defn rankings-table
+  [rankings]
+  (let [header [:tr [:th "Position"] [:th "Player"] [:th "Ranking"]]
+        sorted (sort-by #(- (second %)) rankings)]
+    [:table
+     (into [:tbody header]
+           (for [n (range (count sorted))]
+             (let [[p ranking] (nth sorted n)]
+               [:tr [:td (inc n)] [:td p] [:td (int ranking)]])))]))
+
 (defn root
   []
   (rf/dispatch [:load-games])
@@ -75,6 +89,11 @@
         games (rf/subscribe [:games])]
 
     (fn []
-      [:div players-form]
-      [:div.games__table (games-table @games)]
-      #_[:div.rankings__table])))
+      [ui/mui-theme-provider
+       {:mui-theme (get-mui-theme
+                    {:palette {:text-color (color :green600)}})}
+
+       [:div.content
+        [:div players-form]
+        [:div.games__table (games-table @games)]
+        [:div.rankings__table (rankings-table @rankings)]]])))

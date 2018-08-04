@@ -27,6 +27,7 @@
                  [org.clojure/test.check "0.9.0"]
 
                  [org.clojure/clojurescript "1.10.339"]
+                 [cljs-react-material-ui "0.2.48"]
                  [re-frame "0.10.5"]
 
                  [ns-tracker "0.3.1"]
