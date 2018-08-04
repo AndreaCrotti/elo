@@ -31,7 +31,9 @@
   [handler]
   (fn [request]
     (let [response (handler request)]
-      (update response :body #(with-out-str (pprint %))))))
+      (if (= (-> response :headers :content-type ) "application/edn")
+        (assoc response :body #(with-out-str (pprint %)))
+        response))))
 
 (defn- as-edn
   [response]
@@ -40,7 +42,7 @@
 (defn wrap-edn-request
   [handler]
   (fn [request]
-    (if (= (-> request :headers :content-type ) "application/edn")
+    (if (= (-> request :headers :content-type) "application/edn")
       (handler (update request :body edn/read-string))
       (handler request))))
 

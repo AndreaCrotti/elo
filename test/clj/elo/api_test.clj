@@ -20,7 +20,7 @@
 
       (is (= {:status 201,
               :headers {"Content-Type" "application/octet-stream"},
-              :body "(1)\n"}
+              :body '(1)}
 
              response))
 
