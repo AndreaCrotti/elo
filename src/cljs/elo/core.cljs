@@ -1,6 +1,7 @@
 (ns elo.core
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
+            [elo.handlers :as handlers]
             [elo.views :refer [root]]))
 
 (def debug?
@@ -16,6 +17,6 @@
                   (.getElementById js/document "app")))
 
 (defn ^:export init []
-  ;; (re-frame/dispatch-sync [:initialize-db])
+  (re-frame/dispatch-sync [:initialize-db])
   (dev-setup)
   (mount-root root))
