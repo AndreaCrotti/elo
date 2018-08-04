@@ -1,7 +1,7 @@
 (ns elo.api-test
   (:require [clojure.test :refer [deftest is testing use-fixtures]]
             [elo.api :as sut]
-            [elo.helpers :refer [wrap-db-call]]
+            [elo.db :refer [wrap-db-call]]
             [ring.mock.request :as mock]))
 
 (use-fixtures :each wrap-db-call)
@@ -24,7 +24,8 @@
 
              response))
 
-      (is (= 200 (:status games))))))
+      (is (= 200 (:status games)))
+      (is (= 1 (count (:body games)))))))
 
 (deftest get-rankings-test
   (testing "Simple computation"

@@ -16,8 +16,10 @@
 
 (defn wrap-db-call
   [test-fn]
-  (with-redefs [db-spec (fn [] test-db)]
-    (test-fn)))
+  (jdbc/with-db-transaction [tx test-db {:isolation :repeatable-read}]
+    (jdbc/db-set-rollback-only! tx)
+    (with-redefs [db-spec (fn [] tx)]
+      (test-fn))))
 
 (defn- store-sql
   [params]

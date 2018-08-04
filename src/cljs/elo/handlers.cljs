@@ -11,10 +11,13 @@
    :rankings []
    :game {}})
 
-#_(defn- getter
+(defn- getter
   [key]
   (fn [db _]
     (key db)))
+
+(rf/reg-sub :rankings (getter :rankings))
+(rf/reg-sub :games (getter :games))
 
 (def ^:private edn-request-format
   {:write #(with-out-str (pprint/pprint %))

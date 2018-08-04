@@ -13,25 +13,26 @@
 
 (defn games-table
   [games]
-  (into [:table
-         [:th
-          [:td "Player 1"]
-          [:td "Team"]
-          [:td "Goals"]
-          [:td "Player 2"]
-          [:td "Team"]
-          [:td "Goals"]]]
+  (let [header [:tr
+                [:th "Player 1"]
+                [:th "Team"]
+                [:th "Goals"]
+                [:th "Player 2"]
+                [:th "Team"]
+                [:th "Goals"]]]
 
-        (for [{:keys [p1_name p2_name p1_team p2_team p1_goals p2_goals]}
-              (games)]
+    [:table
+     (into [:tbody header]
+           (for [{:keys [p1_name p2_name p1_team p2_team p1_goals p2_goals]}
+                 [games]]
 
-          [:tr
-           [:td p1_name]
-           [:td p1_team]
-           [:td p1_goals]
-           [:td p2_name]
-           [:td p2_team]
-           [:td p2_goals]])))
+             [:tr
+              [:td p1_name]
+              [:td p1_team]
+              [:td p1_goals]
+              [:td p2_name]
+              [:td p2_team]
+              [:td p2_goals]]))]))
 
 (def players-form
   [:form.players_form
@@ -68,7 +69,13 @@
 
 (defn root
   []
-  (fn []
-    (rf/dispatch [:load-games])
-    (rf/dispatch [:load-rankings])
-    [:div players-form]))
+  (rf/dispatch [:load-games])
+  (rf/dispatch [:load-rankings])
+  (let [rankings (rf/subscribe [:rankings])
+        games (rf/subscribe [:games])]
+
+    (fn []
+      (js/console.log "Games = " @games)
+      [:div players-form]
+      #_[:div.games__table (games-table @games)]
+      #_[:div.rankings__table])))
