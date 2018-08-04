@@ -64,8 +64,9 @@
 (defn get-rankings
   []
   (resp/response
-   (let [games (load-games)]
-     (core/compute-rankings games))))
+   (let [games (load-games)
+         norm-games (map core/normalize-game games)]
+     (core/compute-rankings norm-games))))
 
 (defroutes app-routes
   (GET "/" [] (home))

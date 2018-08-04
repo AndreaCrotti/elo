@@ -14,8 +14,8 @@
 (defn new-ratings
   [ratings [p1 p2 game]]
 
-  (let [ra (p1 ratings)
-        rb (p2 ratings)]
+  (let [ra (get ratings p1)
+        rb (get ratings p2)]
 
     (assoc ratings
            p1 (new-rating ra
@@ -44,11 +44,11 @@
                      [f s])))))
 
 (defn normalize-game
-  [{:keys [p1-name p2-name p1-goals p2-goals]}]
+  [{:keys [p1_name p2_name p1_goals p2_goals]}]
   (cond
-    (= p1-goals p2-goals) [p1-name p2-name 0.5]
-    (> p1-goals p2-goals) [p1-name p2-name 1]
-    (> p2-goals p1-goals) [p2-name p1-name 1]))
+    (= p1_goals p2_goals) [p1_name p2_name 0.5]
+    (> p1_goals p2_goals) [p1_name p2_name 1]
+    (> p2_goals p1_goals) [p2_name p1_name 1]))
 
 (defn compute-rankings
   [games]

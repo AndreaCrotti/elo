@@ -23,8 +23,8 @@
 (defn conform
   [data]
   (-> data
-      (update :p1-goals #(Integer. %))
-      (update :p2-goals #(Integer. %))))
+      (update :p1_goals #(Integer. %))
+      (update :p2_goals #(Integer. %))))
 
 (defn conform-with-date
   [data]
@@ -59,13 +59,13 @@
   (let [content (csv/read-csv (slurp filename))
         strip-header (rest content)
         parsed
-        (for [[played-at p1-name p2-name p1-goals p2-goals p1-team p2-team] strip-header]
-          {:p1-name p1-name
-           :p2-name p2-name
-           :p1-goals p1-goals
-           :p2-goals p2-goals
-           :p1-team p1-team
-           :p2-team p2-team
+        (for [[played-at p1_name p2_name p1_goals p2_goals p1_team p2_team] strip-header]
+          {:p1_name p1_name
+           :p2_name p2_name
+           :p1_goals p1_goals
+           :p2_goals p2_goals
+           :p1_team p1_team
+           :p2_team p2_team
            :played-at played-at})]
 
     (jdbc/execute! local-db ;;(db-spec)

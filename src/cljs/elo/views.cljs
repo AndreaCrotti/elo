@@ -22,46 +22,46 @@
           [:td "Team"]
           [:td "Goals"]]]
 
-        (for [{:keys [p1-name p2-name p1-team p2-team p1-goals p2-goals]}
+        (for [{:keys [p1_name p2_name p1_team p2_team p1_goals p2_goals]}
               (games)]
 
           [:tr
-           [:td p1-name]
-           [:td p1-team]
-           [:td p1-goals]
-           [:td p2-name]
-           [:td p2-team]
-           [:td p2-goals]])))
+           [:td p1_name]
+           [:td p1_team]
+           [:td p1_goals]
+           [:td p2_name]
+           [:td p2_team]
+           [:td p2_goals]])))
 
 (def players-form
   [:form.players_form
    [:div
-    [:label {:for "p1-name"} "Player 1"]
-    (drop-down ["one" "two"] :p1-name)]
+    [:label {:for "p1_name"} "Player 1"]
+    (drop-down ["one" "two"] :p1_name)]
 
    [:div
-    [:label {:for "p2-name"} "Player 2"]
-    (drop-down ["one" "two"] :p2-name)]
+    [:label {:for "p2_name"} "Player 2"]
+    (drop-down ["one" "two"] :p2_name)]
 
    [:div
-    [:label {:for "p1-goals"} "# Goals"]
-    (drop-down (map str (range 0 10)) :p1-goals)]
+    [:label {:for "p1_goals"} "# Goals"]
+    (drop-down (map str (range 0 10)) :p1_goals)]
 
    [:div
-    [:label {:for "p2-goals"} "# Goals"]
-    (drop-down (map str (range 0 10)) :p2-goals)]
-
-   [:div
-    [:label "Team"]
-    [:input {:type "text"
-             :placeholder "Team Name"
-             :on-change (set-val :p1-team)}]]
+    [:label {:for "p2_goals"} "# Goals"]
+    (drop-down (map str (range 0 10)) :p2_goals)]
 
    [:div
     [:label "Team"]
     [:input {:type "text"
              :placeholder "Team Name"
-             :on-change (set-val :p2-team)}]]
+             :on-change (set-val :p1_team)}]]
+
+   [:div
+    [:label "Team"]
+    [:input {:type "text"
+             :placeholder "Team Name"
+             :on-change (set-val :p2_team)}]]
 
    [:input.submit__game {:type "submit"
                          :on-click #(rf/dispatch [:submit])}]])

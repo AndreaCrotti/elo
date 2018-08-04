@@ -9,12 +9,12 @@
 
 (deftest store-results-test
   (testing "Should be able to store results"
-    (let [sample {:p1-name "bob"
-                  :p2-name "fred"
-                  :p1-team "RM"
-                  :p2-team "Juv"
-                  :p1-goals 3
-                  :p2-goals 0}
+    (let [sample {:p1_name "bob"
+                  :p2_name "fred"
+                  :p1_team "RM"
+                  :p2_team "Juv"
+                  :p1_goals 3
+                  :p2_goals 0}
 
           response (sut/app (mock/request :post "/store" sample))
           games (sut/app (mock/request :get "/games"))
@@ -30,16 +30,14 @@
 
 (deftest get-rankings-test
   (testing "Simple computation"
-    (let [sample {:p1-name "bob"
-                  :p2-name "fred"
-                  :p1-team "RM"
-                  :p2-team "Juv"
-                  :p1-goals 3
-                  :p2-goals 0}
+    (let [sample {:p1_name "bob"
+                  :p2_name "fred"
+                  :p1_team "RM"
+                  :p2_team "Juv"
+                  :p1_goals 3
+                  :p2_goals 0}]
 
-          response (sut/app (mock/request :post "/store" sample))]
+      (sut/app (mock/request :post "/store" sample))
 
-      #_(sut/app (mock/request :post "/store" sample))
-
-      #_(let [rankings (sut/app (mock/request :get "/rankings"))]
-        (is (= {} rankings))))))
+      (let [rankings (sut/app (mock/request :get "/rankings"))]
+        (is (= 200 (:status rankings)))))))

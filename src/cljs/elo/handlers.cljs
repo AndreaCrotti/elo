@@ -21,13 +21,13 @@
                  (fn [_ _]
                    default-db))
 
-(rf/reg-event-db :p1-goals (setter [:game :p1-goals]))
-(rf/reg-event-db :p1-name (setter [:game :p1-name]))
-(rf/reg-event-db :p1-team (setter [:game :p1-team]))
+(rf/reg-event-db :p1_goals (setter [:game :p1_goals]))
+(rf/reg-event-db :p1_name (setter [:game :p1_name]))
+(rf/reg-event-db :p1_team (setter [:game :p1_team]))
 
-(rf/reg-event-db :p2-goals (setter [:game :p2-goals]))
-(rf/reg-event-db :p2-name (setter [:game :p2-name]))
-(rf/reg-event-db :p2-team (setter [:game :p2-team]))
+(rf/reg-event-db :p2_goals (setter [:game :p2_goals]))
+(rf/reg-event-db :p2_name (setter [:game :p2_name]))
+(rf/reg-event-db :p2_team (setter [:game :p2_team]))
 
 (defn submit
   [{:keys [db]} [_ value]]
