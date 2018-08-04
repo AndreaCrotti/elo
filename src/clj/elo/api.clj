@@ -103,6 +103,7 @@
       (resources/wrap-resource "public")
       (r-def/wrap-defaults r-def/api-defaults)
       wrap-keyword-params
+      wrap-edn-request
       wrap-edn-response))
 
 (defn -main [& args]
