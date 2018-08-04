@@ -1,7 +1,10 @@
 (ns elo.handlers
   (:require [re-frame.core :as rf]
-            [day8.re-frame.http-fx]
-            [ajax.core :as ajax]))
+            [ajax.interceptors :as ajax-interceptors]
+            [ajax.protocols :as ajax-protocols]
+            [cljs.reader :as reader]
+            [cljs.pprint :as pprint]
+            [day8.re-frame.http-fx]))
 
 (def default-db
   {:games []
@@ -12,6 +15,19 @@
   [key]
   (fn [db _]
     (key db)))
+
+(def ^:private edn-request-format
+  {:write #(with-out-str (pprint/pprint %))
+   :content-type "application/edn"})
+
+(defn- edn-read-fn [response]
+  (reader/read-string (ajax-protocols/-body response)))
+
+(def ^:private edn-response-format
+  (ajax-interceptors/map->ResponseFormat
+   {:read edn-read-fn
+    :description "EDN"
+    :content-type ["application/edn"]}))
 
 (defn- setter
   [key]
@@ -44,13 +60,17 @@
                  (fn [db [_ games]]
                    (assoc db :games games)))
 
+(rf/reg-event-db :load-rankings-success
+                 (fn [db [_ rankings]]
+                   (assoc db :rankings rankings)))
+
 (defn load-games
   [{:keys [db]} _]
   {:db db
    :http-xhrio {:method :get
                 :uri "/games"
-                :format (ajax/json-request-format)
-                :response-format (ajax/json-response-format {:keywords? true})
+                :format edn-request-format
+                :response-format edn-response-format
                 :on-success [:load-games-success]
                 :on-failure [:failed]}})
 
@@ -61,8 +81,8 @@
   {:db db
    :http-xhrio {:method :get
                 :uri "/rankings"
-                :format (ajax/json-request-format)
-                :response-format (ajax/json-response-format {:keywords? true})
+                :format edn-request-format
+                :response-format edn-response-format
                 :on-success [:load-rankings-success]
                 :on-failure [:failed]}})
 
@@ -75,8 +95,8 @@
    :http-xhrio {:method :post
                 :uri "/store"
                 :params (:game db)
-                :format (ajax/json-request-format)
-                :response-format (ajax/json-response-format {:keywords? true})
+                :format edn-request-format
+                :response-format edn-response-format
                 :on-success [:submit-success]
                 :on-failure [:failed]}})
 
