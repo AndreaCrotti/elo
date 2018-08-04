@@ -67,7 +67,7 @@
   (let [content (csv/read-csv (slurp filename))
         strip-header (rest content)
         parsed
-        (for [[played-at p1_name p2_name p1_goals p2_goals p1_team p2_team] strip-header]
+        (for [[played-at p1_name p2_name p1_goals p2_goals _ p1_team p2_team] strip-header]
           {:p1_name p1_name
            :p2_name p2_name
            :p1_goals p1_goals
