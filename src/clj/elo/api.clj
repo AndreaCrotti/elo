@@ -63,8 +63,7 @@
 (defn games
   []
   (as-json
-   (resp/response
-    (reverse (sort-by :played_at (load-games))))))
+   (resp/response (reverse (load-games)))))
 
 (defn get-rankings
   []

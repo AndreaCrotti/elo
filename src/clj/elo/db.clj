@@ -50,7 +50,8 @@
 (defn- load-games-sql
   []
   (-> (h/select :*)
-      (h/from :game)))
+      (h/from :game)
+      (h/order-by :played_at)))
 
 (defn load-games
   []
