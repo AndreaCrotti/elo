@@ -15,15 +15,16 @@
         (for [o opts]
           [:option {:value o} o])))
 
-(def players-form
+(defn players-form
+  [players]
   [:form.players_form
    [:div
     [:label {:for "p1_name"} "Player 1"]
-    (drop-down ["one" "two"] :p1_name)]
+    (drop-down players :p1_name)]
 
    [:div
     [:label {:for "p2_name"} "Player 2"]
-    (drop-down ["one" "two"] :p2_name)]
+    (drop-down players :p2_name)]
 
    [:div
     [:label {:for "p1_goals"} "# Goals"]
@@ -91,8 +92,10 @@
   []
   (rf/dispatch [:load-games])
   (rf/dispatch [:load-rankings])
+  (rf/dispatch [:load-players])
   (let [rankings (rf/subscribe [:rankings])
-        games (rf/subscribe [:games])]
+        games (rf/subscribe [:games])
+        players (rf/subscribe [:players])]
 
     (fn []
       [ui/mui-theme-provider
@@ -100,6 +103,6 @@
                     {:palette {:text-color (color :green600)}})}
 
        [:div.content
-        [:div.players__form_container players-form]
+        [:div.players__form_container (players-form @players)]
         [:div.rankings__table (rankings-table @rankings)]
         [:div.games__table (games-table @games)]]])))

@@ -6,6 +6,7 @@
 (def default-db
   {:games []
    :rankings []
+   :players []
    :game {}})
 
 (defn- getter
@@ -15,6 +16,7 @@
 
 (rf/reg-sub :rankings (getter :rankings))
 (rf/reg-sub :games (getter :games))
+(rf/reg-sub :players (getter :players))
 
 (defn- setter
   [key]
@@ -43,37 +45,27 @@
                    (js/console.log "Failed request " response)
                    db))
 
-(rf/reg-event-db :load-games-success
-                 (fn [db [_ games]]
-                   (assoc db :games games)))
+(rf/reg-event-db :load-games-success (setter [:games]))
+(rf/reg-event-db :load-rankings-success (setter [:rankings]))
+(rf/reg-event-db :load-players-success (setter [:players]))
 
-(rf/reg-event-db :load-rankings-success
-                 (fn [db [_ rankings]]
-                   (assoc db :rankings rankings)))
+(defn- loader
+  [uri on-success]
+  (fn [{:keys [db]} _]
+    {:db db
+     :http-xhrio {:method :get
+                  :uri uri
+                  :format (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success [on-success]
+                  :on-failure [:failed]}}))
 
-(defn load-games
-  [{:keys [db]} _]
-  {:db db
-   :http-xhrio {:method :get
-                :uri "/games"
-                :format (ajax/json-request-format)
-                :response-format (ajax/json-response-format {:keywords? true})
-                :on-success [:load-games-success]
-                :on-failure [:failed]}})
+(rf/reg-event-fx :load-games (loader "/games" :load-games-success))
+(rf/reg-event-fx :load-rankings (loader "/rankings" :load-rankings-success))
+(rf/reg-event-fx :load-players (loader "/players" :load-players-success))
 
-(rf/reg-event-fx :load-games load-games)
-
-(defn load-rankings
-  [{:keys [db]} _]
-  {:db db
-   :http-xhrio {:method :get
-                :uri "/rankings"
-                :format (ajax/json-request-format)
-                :response-format (ajax/json-response-format {:keywords? true})
-                :on-success [:load-rankings-success]
-                :on-failure [:failed]}})
-
-(rf/reg-event-fx :load-rankings load-rankings)
+(defn load-players
+  [{:keys [db]} _])
 
 (defn submit
   [{:keys [db]} [_ value]]

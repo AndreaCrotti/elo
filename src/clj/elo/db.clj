@@ -73,8 +73,8 @@
            :p2_name p2_name
            :p1_goals p1_goals
            :p2_goals p2_goals
-           :p1_team p1_team
-           :p2_team p2_team
+           :p1_team p2_team
+           :p2_team p1_team
            :played-at played-at})]
 
     (jdbc/execute! local-db ;;(db-spec)

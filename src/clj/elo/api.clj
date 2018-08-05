@@ -78,6 +78,11 @@
           norm-games (map core/normalize-game games)]
       (core/compute-rankings norm-games)))))
 
+(defn get-players
+  []
+  (as-json
+   (resp/response ["Andrea" "Giorgio" "Marco" "Stuart"])))
+
 (defroutes app-routes
   (GET "/" [] (home))
   (GET "/games" [] (let [games (load-games)]
@@ -85,6 +90,7 @@
                       :body games}))
 
   (GET "/rankings" [] (get-rankings))
+  (GET "/players" [] (get-players))
   (POST "/store" request (store! request)))
 
 (def app
