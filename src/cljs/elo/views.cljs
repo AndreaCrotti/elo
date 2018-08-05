@@ -37,8 +37,12 @@
     [:label "Team"]
     [:input {:type "text"
              :placeholder "Team Name"
-             :on-change (set-val :p1_team)}]]
+             :on-change (set-val :p1_team)}]
 
+    #_[:input.form-control {:field :text
+                            :id "p1_team"
+                            :placeholder "Team Name"
+                            :on-change (set-val :p1_team)}]]
    [:div
     [:label "Team"]
     [:input {:type "text"
@@ -59,8 +63,9 @@
                 [:th "Goals"]
                 [:th "Played At"]]]
 
-    [:table
-     (into [:tbody header]
+    [:table.table
+     [:thead header]
+     (into [:tbody]
            (for [{:keys [p1_name p2_name p1_team p2_team p1_goals p2_goals played_at]} games]
              [:tr
               [:td p1_name]
@@ -75,8 +80,9 @@
   [rankings]
   (let [header [:tr [:th "Position"] [:th "Player"] [:th "Ranking"]]
         sorted (sort-by #(- (second %)) rankings)]
-    [:table
-     (into [:tbody header]
+    [:table.table
+     [:thead header]
+     (into [:tbody]
            (for [n (range (count sorted))]
              (let [[p ranking] (nth sorted n)]
                [:tr [:td (inc n)] [:td p] [:td (int ranking)]])))]))
@@ -94,6 +100,6 @@
                     {:palette {:text-color (color :green600)}})}
 
        [:div.content
-        [:div players-form]
-        [:div.games__table (games-table @games)]
-        [:div.rankings__table (rankings-table @rankings)]]])))
+        [:div.players__form_container players-form]
+        [:div.rankings__table (rankings-table @rankings)]
+        [:div.games__table (games-table @games)]]])))

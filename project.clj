@@ -29,6 +29,7 @@
                  [org.clojure/clojurescript "1.10.339"]
                  [cljs-react-material-ui "0.2.48"]
                  [re-frame "0.10.5"]
+                 [reagent-forms "0.5.42"]
 
                  [ns-tracker "0.3.1"]
                  [day8.re-frame/http-fx "0.1.6"]
