@@ -14,15 +14,15 @@
   (fn [db _]
     (key db)))
 
-(rf/reg-sub :rankings (getter :rankings))
-(rf/reg-sub :games (getter :games))
-(rf/reg-sub :players (getter :players))
-
 (defn- setter
   [key]
   (fn [db [_ val]]
     (assoc-in db key val)))
 
+
+(rf/reg-sub :rankings (getter :rankings))
+(rf/reg-sub :games (getter :games))
+(rf/reg-sub :players (getter :players))
 (rf/reg-event-db :initialize-db
                  (fn [_ _]
                    default-db))

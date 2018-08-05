@@ -24,10 +24,7 @@
 
              response))
 
-      (is (= 200 (:status games)))
-      (is (= "application/json" (-> games :headers :content-type)))
-      #_(is (= [] (:body games)))
-      #_(is (= 1 (count (:body games)))))))
+      (is (= 200 (:status games))))))
 
 (deftest get-rankings-test
   (testing "Simple computation"
