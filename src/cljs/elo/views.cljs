@@ -1,9 +1,13 @@
 (ns elo.views
   (:require [re-frame.core :as rf]
+            [cljsjs.moment]
             [cljsjs.material-ui]
             [cljs-react-material-ui.core :refer [get-mui-theme color]]
             [cljs-react-material-ui.reagent :as ui]
             [cljs-react-material-ui.icons :as ic]))
+
+
+(def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 
 (defn- set-val
   [handler-key]
@@ -11,13 +15,17 @@
 
 (defn- drop-down
   [opts key]
-  (into [:select {:on-change (set-val key)}]
+  (into [:select.form-control {:on-change (set-val key)}]
         (for [o opts]
           [:option {:value o} o])))
 
+(defn now-format
+  []
+  (.format (js/moment) timestamp-format))
+
 (defn players-form
   [players]
-  [:form.players_form
+  [:form.form-group.players_form
    [:div
     [:label {:for "p1_name"} "Player 1"]
     (drop-down players :p1_name)]
@@ -36,22 +44,24 @@
 
    [:div
     [:label "Team"]
-    [:input {:type "text"
-             :placeholder "Team Name"
-             :on-change (set-val :p1_team)}]
+    [:input.form-control {:type "text"
+                          :placeholder "Team Name"
+                          :on-change (set-val :p1_team)}]]
 
-    #_[:input.form-control {:field :text
-                            :id "p1_team"
-                            :placeholder "Team Name"
-                            :on-change (set-val :p1_team)}]]
    [:div
     [:label "Team"]
-    [:input {:type "text"
-             :placeholder "Team Name"
-             :on-change (set-val :p2_team)}]]
+    [:input.form-control {:type "text"
+                          :placeholder "Team Name"
+                          :on-change (set-val :p2_team)}]]
 
-   [:input.submit__game {:type "submit"
-                         :on-click #(rf/dispatch [:submit])}]])
+   ;; [:label "Played When?"]
+   ;; [:input.form-control {:type "datetime-local"
+   ;;                       :value (now-format)}]
+
+   [:button.submit__game.btn.btn-primary {:type "submit"
+                                          :on-click #(rf/dispatch [:submit])}
+
+    "Submit"]])
 
 (defn games-table
   [games]

@@ -32,6 +32,7 @@
                  [reagent-forms "0.5.42"]
 
                  [ns-tracker "0.3.1"]
+                 [cljsjs/moment "2.22.2-0"]
                  [day8.re-frame/http-fx "0.1.6"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [cljs-ajax "0.7.4"]
