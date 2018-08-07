@@ -63,10 +63,18 @@
       (h/from :game)
       (h/order-by :played_at)))
 
-(defn load-games
+(defn load-players-sql
   []
+  (-> (h/select :*)
+      (h/from :player)))
+
+(defn- query
+  [func]
   (jdbc/query (db-spec)
-              (sql/format (load-games-sql))))
+              (sql/format (func))))
+
+(defn load-games [] (query load-games-sql))
+(defn load-players [] (query load-players-sql))
 
 (defn insert-game-sql
   [values]

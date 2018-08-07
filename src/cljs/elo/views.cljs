@@ -19,6 +19,12 @@
         (for [o opts]
           [:option {:value o} o])))
 
+(defn- drop-down-players
+  [players key]
+  (into [:select.form-control {:on-change (set-val key)}]
+        (for [p players]
+          [:option {:value (:id p)} (:name p)])))
+
 (defn now-format
   []
   (.format (js/moment) timestamp-format))
@@ -28,19 +34,19 @@
   [:form.form-group.players_form
    [:div
     [:label {:for "p1_name"} "Player 1"]
-    (drop-down players :p1_name)]
+    [drop-down-players players :p1_name]]
 
    [:div
     [:label {:for "p2_name"} "Player 2"]
-    (drop-down players :p2_name)]
+    [drop-down-players players :p2_name]]
 
    [:div
     [:label {:for "p1_goals"} "# Goals"]
-    (drop-down (map str (range 0 10)) :p1_goals)]
+    [drop-down (map str (range 0 10)) :p1_goals]]
 
    [:div
     [:label {:for "p2_goals"} "# Goals"]
-    (drop-down (map str (range 0 10)) :p2_goals)]
+    [drop-down (map str (range 0 10)) :p2_goals]]
 
    [:div
     [:label "Team"]

@@ -101,7 +101,7 @@
 (defn get-players
   []
   (as-json
-   (resp/response ["Andrea" "Giorgio" "Marco" "Stuart"])))
+   (resp/response (db/load-players))))
 
 (defroutes app-routes
   (GET "/" [] (home))
