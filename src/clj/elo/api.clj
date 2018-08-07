@@ -1,7 +1,7 @@
 (ns elo.api
   (:gen-class)
   (:require [compojure.core :refer [defroutes GET POST]]
-            [elo.db :refer [store load-games]]
+            [elo.db :as db]
             [elo.core :as core]
             [environ.core :refer [env]]
             [hiccup.core :as hiccup]
@@ -68,9 +68,14 @@
 (defn store!
   [{:keys [params]}]
   (as-json
-   (let [result (store params)]
+   (let [result (db/store! params)]
      {:status 201
       :body result})))
+
+(defn register!
+  [{:keys [params]}]
+  (as-json
+   (resp/response (db/register! params))))
 
 (defn home
   []
@@ -83,13 +88,13 @@
 (defn games
   []
   (as-json
-   (resp/response (reverse (load-games)))))
+   (resp/response (reverse (db/load-games)))))
 
 (defn get-rankings
   []
   (as-json
    (resp/response
-    (let [games (load-games)
+    (let [games (db/load-games)
           norm-games (map core/normalize-game games)]
       (core/compute-rankings norm-games)))))
 
@@ -100,13 +105,14 @@
 
 (defroutes app-routes
   (GET "/" [] (home))
-  (GET "/games" [] (let [games (load-games)]
+  (GET "/games" [] (let [games (db/load-games)]
                      {:status 200
                       :body games}))
 
   (GET "/rankings" [] (get-rankings))
   (GET "/players" [] (get-players))
-  (POST "/store" request (store! request)))
+  (POST "/store" request (store! request))
+  (POST "/player" request (register! request)))
 
 (def app
   (-> app-routes

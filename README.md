@@ -16,13 +16,14 @@ This will populate the local database with data from the CSV file.
 
 ## TDOO
 
-- [ ] add some proper styliing
-- [ ] add a user table (use email as PK or UIUDS)?
+- [ ] add some proper styling
+- [ ] add a user table (use email as PK or UUIDS)?
 - [ ] eventually paginatate list of all the games
 - [ ] fetch all possible list of teams and auto complete on input
 - [ ] auto complete on player names
 - [ ] set some defualt values in the spreadsheet
 - [ ] add authentication using Google Apps to limit to a company
+- [ ] add a way to add a new player
 
 ## License
 

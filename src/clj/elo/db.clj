@@ -42,10 +42,20 @@
               #(tc/to-sql-time (f/parse
                                 (f/formatter "DD/MM/yyyy HH:mm:ss") %)))))
 
-(defn store
+(defn store!
   [params]
   (jdbc/execute! (db-spec)
                  (sql/format (store-sql (conform params)))))
+
+(defn register-sql
+  [params]
+  (-> (h/insert-into :player)
+      (h/values [params])))
+
+(defn register!
+  [params]
+  (jdbc/execute! (db-spec)
+                 (sql/format (register-sql params))))
 
 (defn- load-games-sql
   []
