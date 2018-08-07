@@ -17,6 +17,12 @@
    [:.rankings__table
     {:width "300px"}]
 
+   [:.fork-me
+    {:position "absolute"
+     :top 0
+     :right 0
+     :border 0}]
+
    [:.players_form
     {:display "grid"
      :width "80%"

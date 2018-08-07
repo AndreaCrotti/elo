@@ -113,6 +113,10 @@
                     {:palette {:text-color (color :green600)}})}
 
        [:div.content
+        [:a {:href "https://github.com/AndreaCrotti/elo"}
+         [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
+                        :alt "Fork me on Github"}]]
+
         [:div.players__form_container (players-form @players)]
         [:div.rankings__table (rankings-table @rankings)]
         [:div.games__table (games-table @games)]]])))
