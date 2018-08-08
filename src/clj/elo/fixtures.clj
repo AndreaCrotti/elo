@@ -9,5 +9,3 @@
 (s/def ::player-name string?)
 
 (s/def ::player-email string?)
-
-(s/def ::game )

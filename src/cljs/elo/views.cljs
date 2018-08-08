@@ -67,7 +67,7 @@
     "Submit"]])
 
 (defn games-table
-  [games]
+  [games name-mapping]
   (let [header [:tr
                 [:th "Player 1"]
                 [:th "Team"]
@@ -80,46 +80,52 @@
     [:table.table
      [:thead header]
      (into [:tbody]
-           (for [{:keys [p1_name p2_name p1_team p2_team p1_goals p2_goals played_at]} games]
+           (for [{:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]} games]
              [:tr
-              [:td p1_name]
+              [:td (:name (name-mapping p1))]
               [:td p1_team]
               [:td p1_goals]
-              [:td p2_name]
+              [:td (:name (name-mapping p2))]
               [:td p2_team]
               [:td p2_goals]
               [:td played_at]]))]))
 
 (defn rankings-table
-  [rankings]
+  [rankings name-mapping]
   (let [header [:tr [:th "Position"] [:th "Player"] [:th "Ranking"]]
         sorted (sort-by #(- (second %)) rankings)]
+
     [:table.table
      [:thead header]
      (into [:tbody]
            (for [n (range (count sorted))]
              (let [[p ranking] (nth sorted n)]
-               [:tr [:td (inc n)] [:td p] [:td (int ranking)]])))]))
+               [:tr
+                [:td (inc n)]
+                [:td (:name (name-mapping p))]
+                [:td (int ranking)]])))]))
 
 (defn root
   []
   (rf/dispatch [:load-games])
   (rf/dispatch [:load-rankings])
   (rf/dispatch [:load-players])
+
   (let [rankings (rf/subscribe [:rankings])
         games (rf/subscribe [:games])
         players (rf/subscribe [:players])]
 
     (fn []
-      [ui/mui-theme-provider
-       {:mui-theme (get-mui-theme
-                    {:palette {:text-color (color :green600)}})}
+      (let [name-mapping (into {} (for [p @players] p))]
+        [ui/mui-theme-provider
+         {:mui-theme (get-mui-theme
+                      {:palette {:text-color (color :green600)}})}
 
-       [:div.content
-        [:a {:href "https://github.com/AndreaCrotti/elo"}
-         [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
-                        :alt "Fork me on Github"}]]
+         [:div.content
+          [:a {:href "https://github.com/AndreaCrotti/elo"}
+           [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
+                          :alt "Fork me on Github"}]]
 
-        [:div.players__form_container (players-form @players)]
-        [:div.rankings__table (rankings-table @rankings)]
-        [:div.games__table (games-table @games)]]])))
+          [:div.players__form_container (players-form @players)]
+          [:div.rankings__table (rankings-table @rankings name-mapping)]
+          [:div.games__table (games-table @games name-mapping)]]]))))
