@@ -31,6 +31,8 @@
 (defn conform
   [data]
   (-> data
+      (update :p1 #(Integer. %))
+      (update :p2 #(Integer. %))
       (update :p1_goals #(Integer. %))
       (update :p2_goals #(Integer. %))))
 
@@ -46,6 +48,7 @@
   [params]
   (jdbc/execute! (db-spec)
                  (sql/format (store-sql (conform params)))))
+
 
 (defn register-sql
   [params]

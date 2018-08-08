@@ -2,8 +2,14 @@
 
 set -ex
 
-ARGS=" -h localhost -p 5445 -U elo elo"
+DEV=" -h localhost -p 5445 -U elo elo"
+TEST="-h localhost -p 5445 -U elo elo_test"
 
-dropdb $ARGS
-createdb $ARGS
+dropdb $DEV
+createdb $DEV
+
+dropdb $TEST
+createdb $TEST
+
 DATABASE_URL="postgres://elo@localhost:5445/elo" lein migratus migrate
+DATABASE_URL="postgres://elo@localhost:5445/elo_test" lein migratus migrate
