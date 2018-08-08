@@ -1,8 +1,6 @@
 (ns elo.views
   (:require [re-frame.core :as rf]
-            [cljsjs.moment]
-            [cljs-react-material-ui.core :refer [get-mui-theme color]]
-            [cljs-react-material-ui.reagent :as ui]))
+            [cljsjs.moment]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 
@@ -26,6 +24,21 @@
   []
   (.format (js/moment) timestamp-format))
 
+(defn register-form
+  []
+  [:form.form-group.register_form
+   [:input.form-control {:type "text"
+                         :placeholder "Name"
+                         :on-change (set-val :name)}]
+
+   [:input.form-control {:type "text"
+                         :placeholder "Email"
+                         :on-change (set-val :email)}]
+
+   [:button.submit__game.btn.btn-primary {:type "submit"
+                                          :on-click #(rf/dispatch [:add-player])}
+    "Register User"]])
+
 (defn players-form
   [players]
   [:form.form-group.players_form
@@ -35,7 +48,7 @@
 
    [:div
     [:label {:for "p2_name"} "Player 2"]
-    [drop-down-players players :p2_name]]
+    [drop-down-players players :p2]]
 
    [:div
     [:label {:for "p1_goals"} "# Goals"]
@@ -62,9 +75,9 @@
    ;;                       :value (now-format)}]
 
    [:button.submit__game.btn.btn-primary {:type "submit"
-                                          :on-click #(rf/dispatch [:submit])}
+                                          :on-click #(rf/dispatch [:add-game])}
 
-    "Submit"]])
+    "Add Game"]])
 
 (defn games-table
   [games name-mapping]
@@ -82,17 +95,20 @@
      (into [:tbody]
            (for [{:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]} games]
              [:tr
-              [:td (:name (name-mapping p1))]
+              [:td (:name (get name-mapping p1))]
               [:td p1_team]
               [:td p1_goals]
-              [:td (:name (name-mapping p2))]
+              [:td (:name (get name-mapping p2))]
               [:td p2_team]
               [:td p2_goals]
               [:td played_at]]))]))
 
 (defn rankings-table
   [rankings name-mapping]
-  (let [header [:tr [:th "Position"] [:th "Player"] [:th "Ranking"]]
+  (let [header [:tr
+                [:th "Position"]
+                [:th "Player"]
+                [:th "Ranking"]]
         sorted (sort-by #(- (second %)) rankings)]
 
     [:table.table
@@ -117,15 +133,12 @@
 
     (fn []
       (let [name-mapping (into {} (for [p @players] p))]
-        [ui/mui-theme-provider
-         {:mui-theme (get-mui-theme
-                      {:palette {:text-color (color :green600)}})}
+        [:div.content
+         [:a {:href "https://github.com/AndreaCrotti/elo"}
+          [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
+                         :alt "Fork me on Github"}]]
 
-         [:div.content
-          [:a {:href "https://github.com/AndreaCrotti/elo"}
-           [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
-                          :alt "Fork me on Github"}]]
-
-          [:div.players__form_container (players-form @players)]
-          [:div.rankings__table (rankings-table @rankings name-mapping)]
-          [:div.games__table (games-table @games name-mapping)]]]))))
+         [:div.register__form_container (register-form)]
+         [:div.players__form_container (players-form @players)]
+         [:div.rankings__table (rankings-table @rankings name-mapping)]
+         [:div.games__table (games-table @games name-mapping)]]))))

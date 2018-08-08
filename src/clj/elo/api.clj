@@ -112,7 +112,7 @@
   (GET "/rankings" [] (get-rankings))
   (GET "/players" [] (get-players))
   (POST "/store" request (store! request))
-  (POST "/player" request (register! request)))
+  (POST "/add-player" request (register! request)))
 
 (def app
   (-> app-routes

@@ -17,7 +17,8 @@
   {:games []
    :rankings []
    :players []
-   :game {}})
+   :game {}
+   :player {}})
 
 (defn- getter
   [key]
@@ -39,18 +40,22 @@
                           :game
                           (default-game db))))
 
+(rf/reg-event-db :p1 (setter [:game :p1]))
 (rf/reg-event-db :p1_goals (setter [:game :p1_goals]))
-(rf/reg-event-db :p1_name (setter [:game :p1_name]))
 (rf/reg-event-db :p1_team (setter [:game :p1_team]))
 
+(rf/reg-event-db :p2 (setter [:game :p2]))
 (rf/reg-event-db :p2_goals (setter [:game :p2_goals]))
-(rf/reg-event-db :p2_name (setter [:game :p2_name]))
 (rf/reg-event-db :p2_team (setter [:game :p2_team]))
 
-(rf/reg-event-fx :submit-success
+(rf/reg-event-db :name (setter [:player :name]))
+(rf/reg-event-db :email (setter [:player :email]))
+
+(rf/reg-event-fx :add-game-success
                  (fn [{:keys [db]} [_ value]]
                    {:db db
-                    :dispatch [:load-games]}))
+                    :dispatch-n [[:load-games]
+                                 [:load-rankings]]}))
 
 (rf/reg-event-db :failed
                  (fn [db [_ response]]
@@ -76,18 +81,17 @@
 (rf/reg-event-fx :load-rankings (loader "/rankings" :load-rankings-success))
 (rf/reg-event-fx :load-players (loader "/players" :load-players-success))
 
-(defn load-players
-  [{:keys [db]} _])
+(defn writer
+  [uri on-success params-fn]
+  (fn [{:keys [db]} [_ value]]
+    {:db db
+     :http-xhrio {:method :post
+                  :uri uri
+                  :params (params-fn db)
+                  :format (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success [on-success]
+                  :on-failure [:failed]}}))
 
-(defn submit
-  [{:keys [db]} [_ value]]
-  {:db db
-   :http-xhrio {:method :post
-                :uri "/store"
-                :params (:game db)
-                :format (ajax/json-request-format)
-                :response-format (ajax/json-response-format {:keywords? true})
-                :on-success [:submit-success]
-                :on-failure [:failed]}})
-
-(rf/reg-event-fx :submit submit)
+(rf/reg-event-fx :add-game (writer "/store" :add-game-success :game))
+(rf/reg-event-fx :add-player (writer "/add-player" :add-player-success :player))

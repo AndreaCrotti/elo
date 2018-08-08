@@ -67,3 +67,10 @@
 
       (let [rankings (sut/app (mock/request :get "/rankings"))]
         (is (= 200 (:status rankings)))))))
+
+(deftest register-user-test
+  (testing "Add a new user"
+    (let [user {:name "name" :email "email"}
+          response (sut/app (mock/request :post "/add-player" user))]
+
+      (is (= response {:status 200, :headers {"Content-Type" "application/json"}, :body "[1]"})))))
