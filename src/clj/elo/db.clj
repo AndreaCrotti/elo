@@ -5,7 +5,9 @@
             [clojure.data.csv :as csv]
             [environ.core :refer [env]]
             [honeysql.core :as sql]
-            [honeysql.helpers :as h]))
+            [honeysql.helpers :as h])
+
+  (:import (java.util UUID)))
 
 (def local-db "postgres://elo@localhost:5445/elo")
 (def test-db "postgres://elo@localhost:5445/elo_test")
@@ -31,8 +33,9 @@
 (defn conform
   [data]
   (-> data
-      (update :p1 #(Integer. %))
-      (update :p2 #(Integer. %))
+      (assoc :id (UUID/randomUUID))
+      (update :p1 #(UUID/fromString %))
+      (update :p2 #(UUID/fromString %))
       (update :p1_goals #(Integer. %))
       (update :p2_goals #(Integer. %))))
 
@@ -48,7 +51,6 @@
   [params]
   (jdbc/execute! (db-spec)
                  (sql/format (store-sql (conform params)))))
-
 
 (defn register-sql
   [params]

@@ -4,32 +4,39 @@
             [elo.api :as sut]
             [elo.db :refer [wrap-db-call register!]]
             [ring.mock.request :as mock])
-  (:import (java.util.UUID)))
+  (:import (java.util UUID)))
 
 (use-fixtures :each wrap-db-call)
 
+(defn- gen-uuid [] (UUID/randomUUID))
+
+(defn- store-users!
+  []
+  (let [p1 {:id (gen-uuid) :name "bob" :email "email"}
+        p2 {:id (gen-uuid) :name "fred" :email "email"}]
+    (register! p1)
+    (register! p2)
+    [p1 p2]))
+
 (deftest store-results-test
   (testing "Should be able to store results"
-    (let [p1 {:id 1 :name "bob" :email "email"}
-          p2 {:id 2 :name "fred" :email "email"}
-          sample {:p1 1
-                  :p2 2
+    (let [[p1 p2] (store-users!)
+          sample {:p1 (:id p1)
+                  :p2 (:id p2)
                   :p1_team "RM"
                   :p2_team "Juv"
                   :p1_goals 3
                   :p2_goals 0}
 
-          _ (register! p1)
-          _ (register! p2)
           response (sut/app (mock/request :post "/store" sample))
           games (sut/app (mock/request :get "/games"))
 
-          desired {"p2_goals" 0,
-                   "p2_team" "Juv",
+          desired {"p1" (str (:id p1))
                    "p1_goals" 3,
-                   "p2" 2,
                    "p1_team" "RM",
-                   "p1" 1}]
+                   "p2" (str (:id p2)),
+                   "p2_goals" 0,
+                   "p2_team" "Juv",}]
 
       (is (= {:status 201,
               :headers {"Content-Type" "application/json"},
@@ -38,7 +45,7 @@
              response))
 
       (is (= 200 (:status games)))
-      
+
       (is (= desired
              (select-keys
               (first (json/read-str (:body games)))
@@ -48,17 +55,13 @@
 
 (deftest get-rankings-test
   (testing "Simple computation"
-    (let [p1 {:id 1 :name "bob" :email "email"}
-          p2 {:id 2 :name "fred" :email "email"}
-          sample {:p1 1
-                  :p2 2
+    (let [[p1 p2] (store-users!)
+          sample {:p1 (:id p1)
+                  :p2 (:id p2)
                   :p1_team "RM"
                   :p2_team "Juv"
                   :p1_goals 3
-                  :p2_goals 0}
-
-          _ (register! p1)
-          _ (register! p2)]
+                  :p2_goals 0}]
 
       (sut/app (mock/request :post "/store" sample))
 
