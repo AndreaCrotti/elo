@@ -1,11 +1,8 @@
 (ns elo.views
   (:require [re-frame.core :as rf]
             [cljsjs.moment]
-            [cljsjs.material-ui]
             [cljs-react-material-ui.core :refer [get-mui-theme color]]
-            [cljs-react-material-ui.reagent :as ui]
-            [cljs-react-material-ui.icons :as ic]))
-
+            [cljs-react-material-ui.reagent :as ui]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 
@@ -33,8 +30,8 @@
   [players]
   [:form.form-group.players_form
    [:div
-    [:label {:for "p1_name"} "Player 1"]
-    [drop-down-players players :p1_name]]
+    [:label {:for "p1"} "Player 1"]
+    [drop-down-players players :p1]]
 
    [:div
     [:label {:for "p2_name"} "Player 2"]

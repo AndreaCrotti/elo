@@ -102,6 +102,11 @@
                    (sql/format (insert-game-sql
                                 (map conform-with-date parsed))))))
 
+(defn seed
+  "Set up a realistic database with some sample data"
+  []
+  ())
+
 (defn -main
   [& [filename]]
   (import-csv filename))

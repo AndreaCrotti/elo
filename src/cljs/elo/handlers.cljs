@@ -3,6 +3,16 @@
             [ajax.core :as ajax]
             [day8.re-frame.http-fx]))
 
+;;TODO: this might get defined too late anyway
+(defn default-game
+  [db]
+  {:p1 (-> db :players first :id)
+   :p2 (-> db :players first :id)
+   :p1_goals "0"
+   :p2_goals "0"
+   :p1_team ""
+   :p2_team ""})
+
 (def default-db
   {:games []
    :rankings []
@@ -24,8 +34,10 @@
 (rf/reg-sub :games (getter :games))
 (rf/reg-sub :players (getter :players))
 (rf/reg-event-db :initialize-db
-                 (fn [_ _]
-                   default-db))
+                 (fn [db _]
+                   (assoc default-db
+                          :game
+                          (default-game db))))
 
 (rf/reg-event-db :p1_goals (setter [:game :p1_goals]))
 (rf/reg-event-db :p1_name (setter [:game :p1_name]))
