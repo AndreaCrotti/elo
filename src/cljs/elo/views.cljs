@@ -11,14 +11,16 @@
 (defn- drop-down
   [opts key]
   (into [:select.form-control {:on-change (set-val key)}]
-        (for [o opts]
-          [:option {:value o} o])))
+        (cons [:option ""]
+              (for [o opts]
+                [:option {:value o} o]))))
 
 (defn- drop-down-players
   [players key]
   (into [:select.form-control {:on-change (set-val key)}]
-        (for [p players]
-          [:option {:value (:id p)} (:name p)])))
+        (cons [:option ""]
+              (for [p players]
+                [:option {:value (:id p)} (:name p)]))))
 
 (defn now-format
   []
@@ -37,7 +39,7 @@
 
    [:button.submit__game.btn.btn-primary {:type "submit"
                                           :on-click #(rf/dispatch [:add-player])}
-    "Register User"]])
+    "Register New Player"]])
 
 (defn players-form
   [players]
