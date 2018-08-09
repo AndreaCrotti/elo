@@ -32,5 +32,5 @@
 (deftest normalize-game-test
   (testing "Shoul compute correctly"
     (are [out game] (= out (sut/normalize-game game))
-      ["Me" "You" 1] {:p1_name "Me" :p2_name "You" :p1_goals 2 :p2_goals 1}
-      ["You" "Me" 0.5] {:p1_name "You" :p2_name "Me" :p1_goals 1 :p2_goals 1})))
+      ["Me" "You" 1] {:p1 "Me" :p2 "You" :p1_goals 2 :p2_goals 1}
+      ["You" "Me" 0.5] {:p1 "You" :p2 "Me" :p1_goals 1 :p2_goals 1})))
