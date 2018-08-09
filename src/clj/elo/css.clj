@@ -1,6 +1,9 @@
 (ns elo.css
   (:require [garden.def :refer [defstyles defcssfn]]))
 
+(def internal-grid-gap "10px")
+(def grid-gap "15px")
+
 (defstyles screen
   ;; could maybe even split creating multiple CSS files?
   [[:.content
@@ -8,11 +11,7 @@
      :width "90%"
      :padding-left "20px"
      :padding-top "30px"
-     ;; :grid-template-columns "auto"
-     ;; :grid-template-rows "auto auto auto"
-     :grid-gap "20px"
-
-     }]
+     :grid-gap grid-gap}]
 
    [:.rankings__table
     {:width "300px"}]
@@ -23,11 +22,17 @@
      :right 0
      :border 0}]
 
+   [:.register_form
+    {:display "grid"
+     :width "70%"
+     :padding-left "15px"
+     :grid-gap internal-grid-gap}]
+
    [:.players_form
     {:display "grid"
      :width "80%"
      :padding-left "15px"
-     :grid-gap "10px"
+     :grid-gap internal-grid-gap
      :grid-template-rows "auto auto auto"
      :grid-template-columns "auto auto"}]
 
