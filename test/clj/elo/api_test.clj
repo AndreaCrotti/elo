@@ -66,7 +66,9 @@
       (sut/app (mock/request :post "/store" sample))
 
       (let [rankings (sut/app (mock/request :get "/rankings"))]
-        (is (= 200 (:status rankings)))))))
+        (is (= 200 (:status rankings)))
+        (is (= {(str (:id p1)) 1516.0,          
+                (str (:id p2)) 1452.0} (json/read-str (:body rankings))))))))
 
 (deftest register-user-test
   (testing "Add a new user"

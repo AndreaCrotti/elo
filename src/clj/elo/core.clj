@@ -44,11 +44,11 @@
                      [f s])))))
 
 (defn normalize-game
-  [{:keys [p1_name p2_name p1_goals p2_goals]}]
+  [{:keys [p1 p2 p1_goals p2_goals]}]
   (cond
-    (= p1_goals p2_goals) [p1_name p2_name 0.5]
-    (> p1_goals p2_goals) [p1_name p2_name 1]
-    (> p2_goals p1_goals) [p2_name p1_name 1]))
+    (= p1_goals p2_goals) [p1 p2 0.5]
+    (> p1_goals p2_goals) [p1 p2 1]
+    (> p2_goals p1_goals) [p2 p1 1]))
 
 (defn compute-rankings
   [games]

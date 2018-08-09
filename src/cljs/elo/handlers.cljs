@@ -51,11 +51,15 @@
 (rf/reg-event-db :name (setter [:player :name]))
 (rf/reg-event-db :email (setter [:player :email]))
 
-(rf/reg-event-fx :add-game-success
-                 (fn [{:keys [db]} [_ value]]
-                   {:db db
-                    :dispatch-n [[:load-games]
-                                 [:load-rankings]]}))
+(defn reload-fn
+  [{:keys [db]} _]
+  (js/console.log "Thanks! Reloading everything")
+  {:db db
+   :dispatch-n [[:load-games]
+                [:load-rankings]]})
+
+(rf/reg-event-fx :add-game-success reload-fn)
+(rf/reg-event-fx :add-player-success reload-fn)
 
 (rf/reg-event-db :failed
                  (fn [db [_ response]]

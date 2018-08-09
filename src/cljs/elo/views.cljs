@@ -122,7 +122,7 @@
              (let [[p ranking] (nth sorted n)]
                [:tr
                 [:td (inc n)]
-                [:td (:name (name-mapping p))]
+                [:td (:name (get name-mapping p))]
                 [:td (int ranking)]])))]))
 
 (defn root
