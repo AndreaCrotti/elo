@@ -83,7 +83,7 @@
 
 (defn writer
   [uri on-success params-fn]
-  (fn [{:keys [db]} [_ value]]
+  (fn [{:keys [db]} _]
     {:db db
      :http-xhrio {:method :post
                   :uri uri

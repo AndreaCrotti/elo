@@ -29,17 +29,19 @@
 (defn register-form
   []
   [:form.form-group.register_form
-   [:input.form-control {:type "text"
-                         :placeholder "Name"
-                         :on-change (set-val :name)}]
+   [:div
+    [:input.form-control {:type "text"
+                          :placeholder "Name"
+                          :on-change (set-val :name)}]
 
-   [:input.form-control {:type "text"
-                         :placeholder "Email"
-                         :on-change (set-val :email)}]
+    [:input.form-control {:type "text"
+                          :placeholder "Email"
+                          :on-change (set-val :email)}]]
 
-   [:button.submit__game.btn.btn-primary {:type "submit"
-                                          :on-click #(rf/dispatch [:add-player])}
-    "Register New Player"]])
+   [:div
+    [:button.submit__game.btn.btn-primary {:type "submit"
+                                           :on-click #(rf/dispatch [:add-player])}
+     "Register New Player"]]])
 
 (defn players-form
   [players]
