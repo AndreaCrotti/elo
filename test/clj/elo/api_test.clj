@@ -56,6 +56,8 @@
 (deftest get-rankings-test
   (testing "Simple computation"
     (let [[p1 p2] (store-users!)
+          other {:id (gen-uuid) :name "other" :email "otheremail"}
+          _ (register! other)
           sample {:p1 (:id p1)
                   :p2 (:id p2)
                   :p1_team "RM"
@@ -67,7 +69,8 @@
 
       (let [rankings (sut/app (mock/request :get "/rankings"))]
         (is (= 200 (:status rankings)))
-        (is (= {(str (:id p1)) 1516.0,          
+        (is (= {(str (:id p1)) 1516.0,
+                (str (:id other)) 1500,
                 (str (:id p2)) 1452.0} (json/read-str (:body rankings))))))))
 
 (deftest register-user-test

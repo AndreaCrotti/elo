@@ -51,6 +51,8 @@
     (> p2_goals p1_goals) [p2 p1 1]))
 
 (defn compute-rankings
-  [games]
-  (update-ratings (initial-rankings (extract-players games))
-                  games))
+  ([games players]
+   (update-ratings (initial-rankings players)
+                   games))
+  ([games]
+   (compute-rankings games (extract-players games))))

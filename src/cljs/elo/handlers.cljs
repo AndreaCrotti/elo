@@ -53,7 +53,7 @@
 
 (defn reload-fn
   [{:keys [db]} _]
-  (js/console.log "Thanks! Reloading everything")
+  (js/alert "Thanks you, reloading the page")
   {:db db
    :dispatch-n [[:load-games]
                 [:load-rankings]]})

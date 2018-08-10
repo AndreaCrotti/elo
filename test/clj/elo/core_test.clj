@@ -27,7 +27,11 @@
 (deftest compute-rankings-test
   (testing "Passing in all the games computes in the right order returns the rankings"
     (is (= {:c 1484.0991599102267, :b 1454.1965245402773, :a 1465.704315549496}
-           (sut/compute-rankings games)))))
+           (sut/compute-rankings games))))
+
+  (testing "passing new players sets them up with an initial ranking"
+    (is (= {:c 1484.0991599102267, :b 1454.1965245402773, :a 1465.704315549496 :d 1500}
+           (sut/compute-rankings games [:a :b :c :d])))))
 
 (deftest normalize-game-test
   (testing "Shoul compute correctly"
