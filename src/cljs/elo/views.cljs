@@ -112,18 +112,20 @@
   (let [header [:tr
                 [:th "Position"]
                 [:th "Player"]
-                [:th "Ranking"]]
+                [:th "Ranking"]
+                [:th "# Of Games"]]
         sorted (sort-by #(- (second %)) rankings)]
 
     [:table.table
      [:thead header]
      (into [:tbody]
            (for [n (range (count sorted))]
-             (let [[p ranking] (nth sorted n)]
+             (let [{:keys [id ranking ngames]} (nth sorted n)]
                [:tr
                 [:td (inc n)]
-                [:td (:name (get name-mapping p))]
-                [:td (int ranking)]])))]))
+                [:td (:name (get name-mapping id))]
+                [:td (int ranking)]
+                [:td ngames]])))]))
 
 (defn root
   []

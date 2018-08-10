@@ -99,7 +99,9 @@
     (let [games (db/load-games)
           norm-games (map core/normalize-game games)]
 
-      (core/compute-rankings norm-games (map :id (db/load-players)))))))
+      ;;TODO: add the number of games as well?
+      (for [[k v] (core/compute-rankings norm-games (map :id (db/load-players)))]
+        {:id k :ranking v :ngames 0})))))
 
 (defn get-players
   []
