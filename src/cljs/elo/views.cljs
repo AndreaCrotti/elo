@@ -4,6 +4,12 @@
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 
+(defn smart-dispatch
+  [signal]
+  (fn [e]
+    (.preventDefault e)
+    (rf/dispatch [signal])))
+
 (defn- set-val
   [handler-key]
   #(rf/dispatch [handler-key (-> % .-target .-value)]))
@@ -40,7 +46,7 @@
 
    [:div
     [:button.submit__game.btn.btn-primary {:type "submit"
-                                           :on-click #(rf/dispatch [:add-player])}
+                                           :on-click (smart-dispatch :add-player)}
      "Register New Player"]]])
 
 (defn players-form
@@ -79,7 +85,7 @@
    ;;                       :value (now-format)}]
 
    [:button.submit__game.btn.btn-primary {:type "submit"
-                                          :on-click #(rf/dispatch [:add-game])}
+                                          :on-click  (smart-dispatch :add-game)}
 
     "Add Game"]])
 
