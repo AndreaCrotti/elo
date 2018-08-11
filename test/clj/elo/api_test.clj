@@ -10,6 +10,12 @@
 
 (defn- gen-uuid [] (UUID/randomUUID))
 
+(defn- write-api-call
+  [endpoint content]
+  (let [response (sut/app (mock/request :post endpoint content))]
+    (assert (= 201 (:status response)))
+    (json/read-str (:body response))))
+
 (defn- store-users!
   []
   (let [p1 {:id (gen-uuid) :name "bob" :email "email"}
@@ -28,7 +34,7 @@
                   :p1_goals 3
                   :p2_goals 0}
 
-          response (sut/app (mock/request :post "/store" sample))
+          response (write-api-call "/store" sample)
           games (sut/app (mock/request :get "/games"))
 
           desired {"p1" (str (:id p1))
@@ -38,11 +44,7 @@
                    "p2_goals" 0,
                    "p2_team" "Juv",}]
 
-      (is (= {:status 201,
-              :headers {"Content-Type" "application/json"},
-              :body "[1]"}
-
-             response))
+      (is (= [1] response))
 
       (is (= 200 (:status games)))
 
