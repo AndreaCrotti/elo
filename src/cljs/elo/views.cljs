@@ -44,7 +44,7 @@
                           :on-change (set-val :email)}]]
 
    [:div
-    [:button.submit__game.btn.btn-primary {:type "submit"
+    [:button.submit__game.btn.btn-primary {:type "button"
                                            :on-click (smart-dispatch :add-player)}
      "Register New Player"]]])
 
@@ -83,7 +83,7 @@
    ;; [:input.form-control {:type "datetime-local"
    ;;                       :value (now-format)}]
 
-   [:button.submit__game.btn.btn-primary {:type "submit"
+   [:button.submit__game.btn.btn-primary {:type "button"
                                           :on-click  (smart-dispatch :add-game)}
 
     "Add Game"]])
