@@ -53,7 +53,7 @@
 
 (defn reload-fn
   [{:keys [db]} _]
-  (js/alert "Thanks you, reloading the page")
+  #_(js/alert "Thanks you, reloading the page")
   ;;TODO: would be nice to trigger a transaction of the interested
   ;;area of the page to make it clear what was actually changed
   {:db db

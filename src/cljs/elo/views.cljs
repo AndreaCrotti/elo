@@ -7,7 +7,6 @@
 (defn smart-dispatch
   [signal]
   (fn [e]
-    (.preventDefault e)
     (rf/dispatch [signal])))
 
 (defn- set-val
@@ -34,7 +33,7 @@
 
 (defn register-form
   []
-  [:form.form-group.register_form
+  [:div.form-group.register_form
    [:div
     [:input.form-control {:type "text"
                           :placeholder "Name"
@@ -51,7 +50,7 @@
 
 (defn players-form
   [players]
-  [:form.form-group.players_form
+  [:div.form-group.players_form {:on-submit (fn [] false)}
    [:div
     [:label {:for "p1"} "Player 1"]
     [drop-down-players players :p1]]
