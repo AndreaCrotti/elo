@@ -36,11 +36,11 @@
   [:div.form-group.register_form
    [:div
     [:input.form-control {:type "text"
-                          :placeholder "Name"
+                          :placeholder "John Smith"
                           :on-change (set-val :name)}]
 
     [:input.form-control {:type "text"
-                          :placeholder "Email"
+                          :placeholder "john.smith@email.com"
                           :on-change (set-val :email)}]]
 
    [:div
