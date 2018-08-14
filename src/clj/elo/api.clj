@@ -2,7 +2,7 @@
   (:gen-class)
   (:require [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [compojure.core :refer [defroutes GET POST]]
-            [elo.auth :refer [basic-auth-backend]]
+            [elo.auth :refer [basic-auth-backend with-basic-auth]]
             [elo.core :as core]
             [elo.db :as db]
             [environ.core :refer [env]]
@@ -76,9 +76,11 @@
       :body result})))
 
 (defn register!
-  [{:keys [params]}]
-  (as-json
-   (resp/response (db/register! params))))
+  "Adds a new user to the platform, authenticated with basic Auth"
+  [{:keys [params] :as request}]
+  (with-basic-auth request
+    (as-json
+     (resp/response (db/register! params)))))
 
 (defn home
   []

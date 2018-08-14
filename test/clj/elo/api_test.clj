@@ -1,6 +1,9 @@
 (ns elo.api-test
   (:require [clojure.test :refer [deftest is testing use-fixtures]]
             [clojure.data.json :as json]
+            [buddy.auth :refer [authenticated?]]
+            [buddy.core.codecs.base64 :as b64]
+            [buddy.core.codecs :refer [bytes->str]]
             [elo.api :as sut]
             [elo.db :refer [wrap-db-call register!]]
             [ring.mock.request :as mock])
@@ -9,6 +12,11 @@
 (use-fixtures :each wrap-db-call)
 
 (defn- gen-uuid [] (UUID/randomUUID))
+
+(defn- make-admin-header
+  []
+  (format "Basic %s" (-> (b64/encode (format "%s:%s" "admin" "password"))
+                         (bytes->str))))
 
 (defn- write-api-call
   [endpoint content]
@@ -78,8 +86,20 @@
              (json/read-str (:body rankings))))))))
 
 (deftest register-user-test
-  (testing "Add a new user"
+  (testing "Add a new user without right user/password"
     (let [user {:name "name" :email "email"}
           response (sut/app (mock/request :post "/add-player" user))]
 
-      (is (= response {:status 200, :headers {"Content-Type" "application/json"}, :body "[1]"})))))
+      (is (= 401 (:status response)))))
+
+  (testing "Adds a new user with the right user/password"
+    (with-redefs [authenticated? (fn [r] true)]
+      (let [params {:name "name"
+                    :email "email"}
+
+            response (sut/app (mock/header
+                               (mock/request :post "/add-player" params)
+                               "Authorization" (make-admin-header)))]
+
+        (is (= {:status 200, :headers {"Content-Type" "application/json"}, :body "[1]"}
+               response))))))

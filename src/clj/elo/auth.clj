@@ -10,13 +10,14 @@
   {:admin (:admin-password env local-pwd)})
 
 (defn authenticate
-  [req {:keys [username password]}]
+  [_ {:keys [username password]}]
   (when-let [user-password (get authdata (keyword username))]
     (when (= password user-password)
       (keyword username))))
 
 (def basic-auth-backend
-  (http-basic-backend {:realm "andreaenrica.life"
+  ;; change the realm depending on the environment
+  (http-basic-backend {:realm "fifa-elo.herokuapp.com"
                        :authfn authenticate}))
 
 (defmacro with-basic-auth
