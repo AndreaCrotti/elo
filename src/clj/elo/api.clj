@@ -1,13 +1,15 @@
 (ns elo.api
   (:gen-class)
-  (:require [compojure.core :refer [defroutes GET POST]]
-            [elo.db :as db]
+  (:require [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
+            [compojure.core :refer [defroutes GET POST]]
+            [elo.auth :refer [basic-auth-backend with-basic-auth]]
             [elo.core :as core]
+            [elo.db :as db]
             [environ.core :refer [env]]
             [hiccup.core :as hiccup]
-            [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :as r-def]
+            [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.resource :as resources]
             [ring.util.response :as resp])
@@ -74,9 +76,11 @@
       :body result})))
 
 (defn register!
-  [{:keys [params]}]
-  (as-json
-   (resp/response (db/register! params))))
+  "Adds a new user to the platform, authenticated with basic Auth"
+  [{:keys [params] :as request}]
+  (with-basic-auth request
+    (as-json
+     (resp/response (db/register! params)))))
 
 (defn home
   []
@@ -123,6 +127,8 @@
   (-> app-routes
       (resources/wrap-resource "public")
       (r-def/wrap-defaults r-def/api-defaults)
+      (wrap-authorization basic-auth-backend)
+      (wrap-authentication basic-auth-backend)
       wrap-keyword-params
       wrap-json-params
       wrap-json-response))

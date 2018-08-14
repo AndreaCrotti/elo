@@ -30,6 +30,11 @@
   (fn [db [_ val]]
     (assoc-in db key val)))
 
+(rf/reg-event-db :reset-player (fn [db _]
+                                 (assoc db :player {})))
+
+(rf/reg-event-db :reset-game (fn [db _]
+                               (assoc db :game {})))
 
 (rf/reg-sub :rankings (getter :rankings))
 (rf/reg-sub :games (getter :games))
@@ -51,18 +56,20 @@
 (rf/reg-event-db :name (setter [:player :name]))
 (rf/reg-event-db :email (setter [:player :email]))
 
-(defn reload-fn
-  [{:keys [db]} _]
-  (js/alert "Thanks you, results and rankings are updated immediately")
-  ;;TODO: would be nice to trigger a transaction of the interested
-  ;;area of the page to make it clear what was actually changed
-  {:db db
-   :dispatch-n [[:load-players]
-                [:load-games]
-                [:load-rankings]]})
 
-(rf/reg-event-fx :add-game-success reload-fn)
-(rf/reg-event-fx :add-player-success reload-fn)
+(defn reload-fn-gen
+  [extra-signal]
+  (fn [{:keys [db]} _]
+    (js/alert "Thanks you, results and rankings are updated immediately")
+    ;;TODO: would be nice to trigger a transaction of the interested
+    ;;area of the page to make it clear what was actually changed
+    {:db db
+     :dispatch-n (cons extra-signal [[:load-players]
+                                     [:load-games]
+                                     [:load-rankings]])}))
+
+(rf/reg-event-fx :add-game-success (reload-fn-gen :reset-game))
+(rf/reg-event-fx :add-player-success (reload-fn-gen :reset-player))
 
 (rf/reg-event-db :failed
                  (fn [db [_ response]]
