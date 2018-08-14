@@ -1,4 +1,7 @@
-(ns elo.core)
+(ns elo.core
+  "Main namespace containing all the core logic.
+  See the mathematical details of the Elo formula used here:
+  https://en.wikipedia.org/wiki/Elo_rating_system")
 
 (def k 32)
 (def initial-ranking 1500)
@@ -44,6 +47,10 @@
                      [f s])))))
 
 (defn normalize-game
+  "Normalize the game identifying winner and loser (or draw) from the number of goals.
+  With this approach the goal difference doesn't matter, but with
+  changes to this normalizatione that could also be taken into account."
+
   [{:keys [p1 p2 p1_goals p2_goals]}]
   (cond
     (= p1_goals p2_goals) [p1 p2 0.5]
