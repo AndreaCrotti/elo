@@ -28,6 +28,19 @@
           path
           (:heroku-slug-commit env (str (UUID/randomUUID)))))
 
+(defn ga-js
+  []
+  (format "<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src='https://www.googletagmanager.com/gtag/js?id=UA-123977600-1'></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '%s');
+</script>
+" (env :google-analytics-key)))
+
 (defn- as-json
   [response]
   (resp/content-type response "application/json"))
@@ -46,6 +59,9 @@
     [:link {:href (cache-buster "css/screen.css")
             :rel "stylesheet"
             :type "text/css"}]
+
+    (when (env :google-analytics-key)
+      (ga-js))
 
     ;; [:script {:src "https://code.jquery.com/jquery-3.2.1.slim.min.js"
     ;;           :integrity "sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
