@@ -13,9 +13,6 @@
      :padding-top "30px"
      :grid-gap grid-gap}]
 
-   [:.rankings__table
-    {:width "300px"}]
-
    [:.fork-me
     {:position "absolute"
      :top 0
@@ -36,4 +33,7 @@
      :grid-template-rows "auto auto auto"
      :grid-template-columns "auto auto"}]
 
-   [:label {:padding-right "30px"}]])
+   [:label {:padding-right "30px"}]
+
+   [:.section {:padding-bottom "10px"
+               :box-shadow "-1px 1px 2px 2px rgba(0,0,0,0.2)"}]])

@@ -99,18 +99,20 @@
                 [:th "Goals"]
                 [:th "Played At"]]]
 
-    [:table.table
-     [:thead header]
-     (into [:tbody]
-           (for [{:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]} games]
-             [:tr
-              [:td (:name (get name-mapping p1))]
-              [:td p1_team]
-              [:td p1_goals]
-              [:td (:name (get name-mapping p2))]
-              [:td p2_team]
-              [:td p2_goals]
-              [:td played_at]]))]))
+    [:div
+     [:h3 "List of Games"]
+     [:table.table
+      [:thead header]
+      (into [:tbody]
+            (for [{:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]} games]
+              [:tr
+               [:td (:name (get name-mapping p1))]
+               [:td p1_team]
+               [:td p1_goals]
+               [:td (:name (get name-mapping p2))]
+               [:td p2_team]
+               [:td p2_goals]
+               [:td played_at]]))]]))
 
 (defn rankings-table
   [rankings name-mapping]
@@ -121,16 +123,18 @@
                 [:th "# Of Games"]]
         sorted (sort-by #(- (second %)) rankings)]
 
-    [:table.table
-     [:thead header]
-     (into [:tbody]
-           (for [n (range (count sorted))]
-             (let [{:keys [id ranking ngames]} (nth sorted n)]
-               [:tr
-                [:td (inc n)]
-                [:td (:name (get name-mapping id))]
-                [:td (int ranking)]
-                [:td ngames]])))]))
+    [:div
+     [:h3 "Players Rankings"]
+     [:table.table
+      [:thead header]
+      (into [:tbody]
+            (for [n (range (count sorted))]
+              (let [{:keys [id ranking ngames]} (nth sorted n)]
+                [:tr
+                 [:td (inc n)]
+                 [:td (:name (get name-mapping id))]
+                 [:td (int ranking)]
+                 [:td ngames]])))]]))
 
 (defn root
   []
@@ -149,7 +153,7 @@
           [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
                          :alt "Fork me on Github"}]]
 
-         [:div.register__form_container (register-form)]
-         [:div.players__form_container (players-form @players)]
-         [:div.rankings__table (rankings-table @rankings name-mapping)]
-         [:div.games__table (games-table @games name-mapping)]]))))
+         [:div.section.register__form_container (register-form)]
+         [:div.section.players__form_container (players-form @players)]
+         [:div.section.rankings__table (rankings-table @rankings name-mapping)]
+         [:div.section.games__table (games-table @games name-mapping)]]))))
