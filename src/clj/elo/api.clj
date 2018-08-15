@@ -30,16 +30,16 @@
 
 (defn ga-js
   []
-  (format "<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src='https://www.googletagmanager.com/gtag/js?id=UA-123977600-1'></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
+  (let [ga-key (env :google-analytics-key)]
+    [:div
+     [:script {:async true
+               :src (format "https://www.googletagmanager.com/gtag/js?id=%s" ga-key)}]
+     [:script (format "window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', '%s');
-</script>
-" (env :google-analytics-key)))
+" ga-key)]]))
 
 (defn- as-json
   [response]
