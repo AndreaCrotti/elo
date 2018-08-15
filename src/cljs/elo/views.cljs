@@ -79,7 +79,7 @@
 
 (defn players-form
   [players]
-  [:div.form-group.players_form {:on-submit (fn [] false)}
+  [:div.form-group.game_form {:on-submit (fn [] false)}
    [:div
     [:label {:for "p1"} "Player 1"]
     [drop-down-players players :p1]]
@@ -108,16 +108,15 @@
                           :placeholder "Team Name"
                           :on-change (set-val :p2_team)}]]
 
-   ;; [:label "Played When?"]
-   ;; [:input.form-control {:type "datetime-local"
-   ;;                       :value (now-format)}]
+   [:div
+    [:label "Played at"]
+    [date-range-picker]]
 
-   [date-range-picker]
+   [:div
+    [:button.submit__game.btn.btn-primary {:type "button"
+                                           :on-click  (smart-dispatch :add-game)}
 
-   [:button.submit__game.btn.btn-primary {:type "button"
-                                          :on-click  (smart-dispatch :add-game)}
-
-    "Add Game"]])
+     "Add Game"]]])
 
 (defn games-table
   [games name-mapping]
