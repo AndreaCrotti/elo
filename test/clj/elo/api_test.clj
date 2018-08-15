@@ -40,7 +40,8 @@
                   :p1_team "RM"
                   :p2_team "Juv"
                   :p1_goals 3
-                  :p2_goals 0}
+                  :p2_goals 0
+                  :played_at "2018-08-15T10:24:46.109Z"}
 
           response (write-api-call "/store" sample)
           games (sut/app (mock/request :get "/games"))
