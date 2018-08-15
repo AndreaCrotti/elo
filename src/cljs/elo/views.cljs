@@ -1,5 +1,7 @@
 (ns elo.views
   (:require [re-frame.core :as rf]
+            [cljs-time.core :refer [now]]
+            [elo.date-picker-utils :refer [date-time-picker]]
             [cljsjs.moment]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
@@ -48,6 +50,33 @@
                                            :on-click (smart-dispatch :add-player)}
      "Register New Player"]]])
 
+(defn date-range-picker
+  "Simple date-range picker component.
+
+  Required options:
+  - :from & :to - current state for the from and to sides of the picker, if
+  using a single date widget only the 'from' argument is used
+  - :react-key-prefix - a unique string prefix for internal react-keys
+  - :single? - only use a single date widget
+  - :placeholder-text - the placeholder text for the single date widget
+  - :min-date - Earliest day to select
+  - :max-date - Latest day to select
+
+  The :on-change callback is optional. When provided it should be a
+  function taking two arguments, side (one of :from, :to) and the new value for
+  that side. If using a single date widget, the callback should be one argument:
+  the new date value"
+  []
+  [:div.filter-panel--range__inputs.date-range__inputs
+   [date-time-picker {:name "datetime-widget"
+                      :react-key "date-picker"
+                      :date "2011-01-01"
+                      :min-date "2011-01-01"
+                      :max-date "2020-01-01"
+                      :placeholder "When was it played"
+                      :on-change (set-val :played-at)
+                      :class "date-picker-class"}]])
+
 (defn players-form
   [players]
   [:div.form-group.players_form {:on-submit (fn [] false)}
@@ -82,6 +111,8 @@
    ;; [:label "Played When?"]
    ;; [:input.form-control {:type "datetime-local"
    ;;                       :value (now-format)}]
+
+   [date-range-picker]
 
    [:button.submit__game.btn.btn-primary {:type "button"
                                           :on-click  (smart-dispatch :add-game)}
