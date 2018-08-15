@@ -12,6 +12,7 @@
 
 (def local-db "postgres://elo@localhost:5445/elo")
 (def test-db "postgres://elo@localhost:5445/elo_test")
+(def google-sheet-timestamp-format "DD/MM/yyyy HH:mm:ss")
 
 (defn db-spec
   []
@@ -46,7 +47,7 @@
       conform
       (update :played-at
               #(tc/to-sql-time (f/parse
-                                (f/formatter "DD/MM/yyyy HH:mm:ss") %)))))
+                                (f/formatter google-sheet-timestamp-format) %)))))
 
 (defn store!
   [params]
