@@ -47,6 +47,9 @@
       conform
       (update :played-at
               #(tc/to-sql-time (f/parse
+                                (f/formatter google-sheet-timestamp-format) %)))
+      (update :recorded-at
+              #(tc/to-sql-time (f/parse
                                 (f/formatter google-sheet-timestamp-format) %)))))
 
 (defn store!

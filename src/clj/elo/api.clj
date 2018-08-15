@@ -119,7 +119,8 @@
     (let [games (db/load-games)
           norm-games (map core/normalize-game games)]
 
-      ;;TODO: add the number of games as well?
+      ;;TODO: return things in the right order
+      ;;TODO: actually compute the number of games
       (for [[k v] (core/compute-rankings norm-games (map :id (db/load-players)))]
         {:id k :ranking v :ngames 0})))))
 
