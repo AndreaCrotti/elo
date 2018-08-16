@@ -1,2 +1,2 @@
 staging:
-	git push -v staging HEAD:master
+	git push -v --force heroku-staging HEAD:master

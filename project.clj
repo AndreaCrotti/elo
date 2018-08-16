@@ -32,6 +32,11 @@
                  [reagent-forms "0.5.42"]
 
                  [cljsjs/react-datepicker "1.5.0-0"]
+                 [cljsjs/classnames "2.2.5-1"]
+                 [cljsjs/prop-types "15.6.1-0"]
+                 [cljsjs/react-onclickoutside "6.7.1-1"]
+                 [cljsjs/react-popper "0.10.4-0"]
+
                  [ns-tracker "0.3.1"]
                  [cljsjs/moment "2.22.2-0"]
                  [day8.re-frame/http-fx "0.1.6"]
