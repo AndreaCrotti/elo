@@ -36,6 +36,7 @@
                  [cljsjs/prop-types "15.6.1-0"]
                  [cljsjs/react-onclickoutside "6.7.1-1"]
                  [cljsjs/react-popper "0.10.4-0"]
+                 [cljsjs/popperjs "1.14.3-1"]
 
                  [ns-tracker "0.3.1"]
                  [cljsjs/moment "2.22.2-0"]
