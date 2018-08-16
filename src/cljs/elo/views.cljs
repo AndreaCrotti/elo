@@ -74,7 +74,8 @@
                       :min-date "2011-01-01"
                       :max-date "2020-01-01"
                       :placeholder "When was it played"
-                      :on-change (set-val :played-at)
+                      :on-change  (fn [moment]
+                                    (rf/dispatch [:played_at (str moment)]))
                       :class "date-picker-class"}]])
 
 (defn players-form

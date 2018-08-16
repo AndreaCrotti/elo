@@ -53,6 +53,8 @@
 (rf/reg-event-db :p2_goals (setter [:game :p2_goals]))
 (rf/reg-event-db :p2_team (setter [:game :p2_team]))
 
+(rf/reg-event-db :played_at (setter [:game :played_at]))
+
 (rf/reg-event-db :name (setter [:player :name]))
 (rf/reg-event-db :email (setter [:player :email]))
 
