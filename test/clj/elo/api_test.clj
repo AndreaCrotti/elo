@@ -51,7 +51,7 @@
                    "p1_team" "RM",
                    "p2" (str (:id p2)),
                    "p2_goals" 0,
-                   "p2_team" "Juv",}]
+                   "p2_team" "Juv"}]
 
       (is (= [1] response))
 
