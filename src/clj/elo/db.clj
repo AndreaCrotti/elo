@@ -13,7 +13,7 @@
 
 (def local-db "postgres://elo@localhost:5445/elo")
 (def test-db "postgres://elo@localhost:5445/elo_test")
-(def google-sheet-timestamp-format "DD/MM/yyyy HH:mm:ss")
+(def google-sheet-timestamp-format "dd/MM/yyyy HH:mm:ss")
 
 (defn db-spec
   []
@@ -115,6 +115,9 @@
            :p2_team p1_team
            :played-at played-at
            :recorded-at played-at})]
+
+    (doseq [p (map conform-with-date parsed)]
+      (println p))
 
     (jdbc/execute! (db-spec)
                    (sql/format (insert-game-sql
