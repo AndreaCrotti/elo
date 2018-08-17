@@ -127,10 +127,11 @@
     (let [games (db/load-games)
           norm-games (map core/normalize-game games)]
 
-      ;;TODO: return things in the right order
       ;;TODO: actually compute the number of games
-      (for [[k v] (core/compute-rankings norm-games (map :id (db/load-players)))]
-        {:id k :ranking v :ngames 0})))))
+      (reverse
+       (sort-by :ranking
+                (for [[k v] (core/compute-rankings norm-games (map :id (db/load-players)))]
+                  {:id k :ranking v :ngames 0})))))))
 
 (defn get-players
   []
