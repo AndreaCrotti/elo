@@ -1,6 +1,7 @@
 (ns elo.db
   (:require [clj-time.coerce :as tc]
             [clj-time.format :as f]
+            [clj-time.core :as t]
             [clojure.data.csv :as csv]
             [clojure.edn :as edn]
             [clojure.java.jdbc :as jdbc]
@@ -54,8 +55,16 @@
 
 (defn store!
   [params]
-  (jdbc/execute! (db-spec)
-                 (sql/format (store-sql (conform params)))))
+  (let [new-params (-> params
+                       conform
+                       (update :played_at #(tc/to-sql-time (f/parse
+                                                            (f/formatter "YYYY-MM-DDZhh:mm:SS") %)))
+                       (assoc :recorded_at (tc/to-sql-time (t/now))))
+
+        query (store-sql new-params)]
+
+    (jdbc/execute! (db-spec)
+                   (sql/format query))))
 
 (defn register-sql
   [params]

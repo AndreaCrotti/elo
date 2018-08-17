@@ -41,7 +41,7 @@
                   :p2_team "Juv"
                   :p1_goals 3
                   :p2_goals 0
-                  :played_at "2018-08-15T10:24:46.109Z"}
+                  :played_at "2018-08-16+01:0001:48:00"}
 
           response (write-api-call "/store" sample)
           games (sut/app (mock/request :get "/games"))
@@ -74,16 +74,17 @@
                   :p1_team "RM"
                   :p2_team "Juv"
                   :p1_goals 3
-                  :p2_goals 0}]
+                  :p2_goals 0
+                  :played_at "2018-08-16+01:0001:48:00"}]
 
       (sut/app (mock/request :post "/store" sample))
 
       (let [rankings (sut/app (mock/request :get "/rankings"))]
         (is (= 200 (:status rankings)))
         (is (=
-             [{"id" (str (:id p1)) "ranking" 1516.0 "ngames" 0},
-              {"id" (str (:id p2)) "ranking" 1452.0 "ngames" 0}
-              {"id" (str (:id other)) "ranking" 1500 "ngames" 0}]
+             [{"id" (str (:id p1)) "ranking" 1516.0 "ngames" 0}
+              {"id" (str (:id other)) "ranking" 1500 "ngames" 0}
+              {"id" (str (:id p2)) "ranking" 1452.0 "ngames" 0}]
              (json/read-str (:body rankings))))))))
 
 (deftest register-user-test

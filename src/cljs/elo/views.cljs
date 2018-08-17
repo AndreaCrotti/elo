@@ -75,7 +75,7 @@
                       :max-date (js/moment)
                       :placeholder "When was it played"
                       :on-change  (fn [moment]
-                                    (rf/dispatch [:played_at (str moment)]))
+                                    (rf/dispatch [:played_at (.format moment timestamp-format)]))
                       :class "date-picker-class"}]])
 
 (defn players-form
@@ -115,7 +115,7 @@
 
    [:div
     [:button.submit__game.btn.btn-primary {:type "button"
-                                           :on-click  (smart-dispatch :add-game)}
+                                           :on-click (smart-dispatch :add-game)}
 
      "Add Game"]]])
 
