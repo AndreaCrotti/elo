@@ -125,12 +125,13 @@
   (as-json
    (resp/response
     (let [games (db/load-games)
-          norm-games (map core/normalize-game games)]
+          norm-games (map core/normalize-game games)
+          rankings (core/compute-rankings norm-games (map :id (db/load-players)))]
 
       ;;TODO: actually compute the number of games
       (reverse
        (sort-by :ranking
-                (for [[k v] (core/compute-rankings norm-games (map :id (db/load-players)))]
+                (for [[k v] rankings]
                   {:id k :ranking v :ngames 0})))))))
 
 (defn get-players
