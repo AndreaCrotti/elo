@@ -30,8 +30,8 @@
        (js/React.createElement
         (.-default js/DatePicker)
         (cond-> {:selected @selected-date
-                 :isClearable true
-                 :showTimeSelect true
+                 :isClearable false
+                 ;; :showTimeSelect true
                  :timeFormat "HH:mm"
                  :timeIntervals 15
                  :dateFormat "LLL"

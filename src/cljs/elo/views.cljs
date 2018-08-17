@@ -70,9 +70,9 @@
   [:div.filter-panel--range__inputs.date-range__inputs
    [date-time-picker {:name "datetime-widget"
                       :react-key "date-picker"
-                      :date "2011-01-01"
-                      :min-date "2011-01-01"
-                      :max-date "2020-01-01"
+                      :date (js/moment)
+                      :min-date "2018-08-01"
+                      :max-date (js/moment)
                       :placeholder "When was it played"
                       :on-change  (fn [moment]
                                     (rf/dispatch [:played_at (str moment)]))
