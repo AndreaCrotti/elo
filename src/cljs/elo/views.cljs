@@ -177,8 +177,7 @@
 
   (let [rankings (rf/subscribe [:rankings])
         games (rf/subscribe [:games])
-        players (rf/subscribe [:players])
-        ]
+        players (rf/subscribe [:players])]
 
     (fn []
       (let [name-mapping (into {} (for [p @players] {(:id p) p}))]

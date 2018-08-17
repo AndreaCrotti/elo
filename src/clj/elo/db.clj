@@ -116,7 +116,7 @@
            :played-at played-at
            :recorded-at played-at})]
 
-    (jdbc/execute! local-db ;;(db-spec)
+    (jdbc/execute! (db-spec)
                    (sql/format (insert-game-sql
                                 (map conform-with-date parsed))))))
 
@@ -124,4 +124,4 @@
   [& [filename names-mapping-file]]
   (import-csv filename names-mapping-file))
 
-;; lein run -m elo.db sample.csv
+;; lein run -m elo.db sample.csv prods_ids.edn
