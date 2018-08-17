@@ -8,10 +8,14 @@
   [db]
   {:p1 (-> db :players first :id)
    :p2 (-> db :players first :id)
-   :p1_goals "0"
-   :p2_goals "0"
+   :p1_goals ""
+   :p2_goals ""
    :p1_team ""
    :p2_team ""})
+
+(def default-player
+  {:name ""
+   :email ""})
 
 (def default-db
   {:games []
@@ -21,29 +25,46 @@
    :player {}})
 
 (defn- getter
-  [key]
+  [ks]
   (fn [db _]
-    (key db)))
+    (get-in db ks)))
 
 (defn- setter
   [key]
   (fn [db [_ val]]
     (assoc-in db key val)))
 
+(rf/reg-sub :valid-game?
+            (fn [db _]
+              (not-any? #(= % "")
+                        (vals (:game db)))))
+
+(rf/reg-sub :valid-player?
+            (fn [db _]
+              (not-any? #(= % "")
+                        (vals (:player db)))))
+
+
 (rf/reg-event-db :reset-player (fn [db _]
-                                 (assoc db :player {})))
+                                 (assoc db :player default-player)))
 
 (rf/reg-event-db :reset-game (fn [db _]
-                               (assoc db :game {})))
+                               (assoc db :game (default-game db))))
 
-(rf/reg-sub :rankings (getter :rankings))
-(rf/reg-sub :games (getter :games))
-(rf/reg-sub :players (getter :players))
+(rf/reg-sub :name (getter [:player :name]))
+(rf/reg-sub :email (getter [:player :email]))
+
+(rf/reg-sub :rankings (getter [:rankings]))
+(rf/reg-sub :games (getter [:games]))
+(rf/reg-sub :players (getter [:players]))
+
 (rf/reg-event-db :initialize-db
                  (fn [db _]
                    (assoc default-db
                           :game
-                          (default-game db))))
+                          (default-game db)
+                          :player
+                          default-player)))
 
 (rf/reg-event-db :p1 (setter [:game :p1]))
 (rf/reg-event-db :p1_goals (setter [:game :p1_goals]))
@@ -52,6 +73,10 @@
 (rf/reg-event-db :p2 (setter [:game :p2]))
 (rf/reg-event-db :p2_goals (setter [:game :p2_goals]))
 (rf/reg-event-db :p2_team (setter [:game :p2_team]))
+
+(rf/reg-event-db :played_at (setter [:game :played_at]))
+
+(rf/reg-sub :p2_team (getter [:game :p2_team]))
 
 (rf/reg-event-db :name (setter [:player :name]))
 (rf/reg-event-db :email (setter [:player :email]))
@@ -68,8 +93,8 @@
                                      [:load-games]
                                      [:load-rankings]])}))
 
-(rf/reg-event-fx :add-game-success (reload-fn-gen :reset-game))
-(rf/reg-event-fx :add-player-success (reload-fn-gen :reset-player))
+(rf/reg-event-fx :add-game-success (reload-fn-gen [:reset-game]))
+(rf/reg-event-fx :add-player-success (reload-fn-gen [:reset-player]))
 
 (rf/reg-event-db :failed
                  (fn [db [_ response]]

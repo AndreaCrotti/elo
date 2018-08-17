@@ -51,6 +51,14 @@
                   :description "FIFA championship little helper"}]
     [:title "FIFA championship"]
 
+    [:link {:href (cache-buster "css/react-datepicker.css")
+            :rel "stylesheet"
+            :type "text/css"}]
+
+    [:link {:href (cache-buster "css/react-datepicker-cssmodules.css")
+            :rel "stylesheet"
+            :type "text/css"}]
+
     [:link {:rel "stylesheet"
             :href "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
             :integrity "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
@@ -77,7 +85,7 @@
     ;;           :integrity "sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     ;;           :crossorigin "anonymous"
     ;;           :async true}]
-    ]
+]
 
    [:body
     [:div {:id "app"}]
@@ -117,11 +125,14 @@
   (as-json
    (resp/response
     (let [games (db/load-games)
-          norm-games (map core/normalize-game games)]
+          norm-games (map core/normalize-game games)
+          rankings (core/compute-rankings norm-games (map :id (db/load-players)))]
 
-      ;;TODO: add the number of games as well?
-      (for [[k v] (core/compute-rankings norm-games (map :id (db/load-players)))]
-        {:id k :ranking v :ngames 0})))))
+      ;;TODO: actually compute the number of games
+      (reverse
+       (sort-by :ranking
+                (for [[k v] rankings]
+                  {:id k :ranking v :ngames 0})))))))
 
 (defn get-players
   []

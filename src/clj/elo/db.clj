@@ -1,8 +1,10 @@
 (ns elo.db
-  (:require [clojure.java.jdbc :as jdbc]
+  (:require [clj-time.coerce :as tc]
             [clj-time.format :as f]
-            [clj-time.coerce :as tc]
+            [clj-time.core :as t]
             [clojure.data.csv :as csv]
+            [clojure.edn :as edn]
+            [clojure.java.jdbc :as jdbc]
             [environ.core :refer [env]]
             [honeysql.core :as sql]
             [honeysql.helpers :as h])
@@ -11,6 +13,7 @@
 
 (def local-db "postgres://elo@localhost:5445/elo")
 (def test-db "postgres://elo@localhost:5445/elo_test")
+(def google-sheet-timestamp-format "DD/MM/yyyy HH:mm:ss")
 
 (defn db-spec
   []
@@ -45,12 +48,23 @@
       conform
       (update :played-at
               #(tc/to-sql-time (f/parse
-                                (f/formatter "DD/MM/yyyy HH:mm:ss") %)))))
+                                (f/formatter google-sheet-timestamp-format) %)))
+      (update :recorded-at
+              #(tc/to-sql-time (f/parse
+                                (f/formatter google-sheet-timestamp-format) %)))))
 
 (defn store!
   [params]
-  (jdbc/execute! (db-spec)
-                 (sql/format (store-sql (conform params)))))
+  (let [new-params (-> params
+                       conform
+                       (update :played_at #(tc/to-sql-time (f/parse
+                                                            (f/formatter "YYYY-MM-DDZhh:mm:SS") %)))
+                       (assoc :recorded_at (tc/to-sql-time (t/now))))
+
+        query (store-sql new-params)]
+
+    (jdbc/execute! (db-spec)
+                   (sql/format query))))
 
 (defn register-sql
   [params]
@@ -87,30 +101,27 @@
       (h/values values)))
 
 (defn- import-csv
-  [filename]
-  (let [content (csv/read-csv (slurp filename))
+  [filename names-mapping-file]
+  (let [mapped-names (-> names-mapping-file slurp edn/read-string)
+        content (-> filename slurp csv/read-csv)
         strip-header (rest content)
         parsed
         (for [[played-at p1_name p2_name p1_goals p2_goals _ p1_team p2_team] strip-header]
-          {:p1_name p1_name
-           :p2_name p2_name
+          {:p1 (get mapped-names p1_name)
+           :p2 (get mapped-names p2_name)
            :p1_goals p1_goals
            :p2_goals p2_goals
            :p1_team p2_team
            :p2_team p1_team
-           :played-at played-at})]
+           :played-at played-at
+           :recorded-at played-at})]
 
     (jdbc/execute! local-db ;;(db-spec)
                    (sql/format (insert-game-sql
                                 (map conform-with-date parsed))))))
 
-(defn seed
-  "Set up a realistic database with some sample data"
-  []
-  ())
-
 (defn -main
-  [& [filename]]
-  (import-csv filename))
+  [& [filename names-mapping-file]]
+  (import-csv filename names-mapping-file))
 
 ;; lein run -m elo.db sample.csv
