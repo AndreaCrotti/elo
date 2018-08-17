@@ -25,9 +25,9 @@
    :player {}})
 
 (defn- getter
-  [key]
+  [ks]
   (fn [db _]
-    (key db)))
+    (get-in db ks)))
 
 (defn- setter
   [key]
@@ -46,14 +46,18 @@
 
 
 (rf/reg-event-db :reset-player (fn [db _]
-                                 (assoc db :player {})))
+                                 (assoc db :player default-player)))
 
 (rf/reg-event-db :reset-game (fn [db _]
-                               (assoc db :game {})))
+                               (assoc db :game (default-game db))))
 
-(rf/reg-sub :rankings (getter :rankings))
-(rf/reg-sub :games (getter :games))
-(rf/reg-sub :players (getter :players))
+(rf/reg-sub :name (getter [:player :name]))
+(rf/reg-sub :email (getter [:player :email]))
+
+(rf/reg-sub :rankings (getter [:rankings]))
+(rf/reg-sub :games (getter [:games]))
+(rf/reg-sub :players (getter [:players]))
+
 (rf/reg-event-db :initialize-db
                  (fn [db _]
                    (assoc default-db
@@ -72,6 +76,8 @@
 
 (rf/reg-event-db :played_at (setter [:game :played_at]))
 
+(rf/reg-sub :p2_team (getter [:game :p2_team]))
+
 (rf/reg-event-db :name (setter [:player :name]))
 (rf/reg-event-db :email (setter [:player :email]))
 
@@ -87,8 +93,8 @@
                                      [:load-games]
                                      [:load-rankings]])}))
 
-(rf/reg-event-fx :add-game-success (reload-fn-gen :reset-game))
-(rf/reg-event-fx :add-player-success (reload-fn-gen :reset-player))
+(rf/reg-event-fx :add-game-success (reload-fn-gen [:reset-game]))
+(rf/reg-event-fx :add-player-success (reload-fn-gen [:reset-player]))
 
 (rf/reg-event-db :failed
                  (fn [db [_ response]]

@@ -1,11 +1,11 @@
 (ns elo.views
   (:require [re-frame.core :as rf]
             [clojure.string :refer [join]]
-            [cljs-time.core :refer [now]]
             [elo.date-picker-utils :refer [date-time-picker]]
             [cljsjs.moment]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
+(def goals-range (map str (range 0 10)))
 
 (defn smart-dispatch
   [signal]
@@ -40,14 +40,18 @@
 
 (defn register-form
   []
-  (let [valid-player? (rf/subscribe [:valid-player?])]
+  (let [valid-player? (rf/subscribe [:valid-player?])
+        email (rf/subscribe [:email])
+        name (rf/subscribe [:name])]
     [:div.form-group.register_form
      [:div
       [:input.form-control {:type "text"
+                            :value @name
                             :placeholder "John Smith"
                             :on-change (set-val :name)}]
 
       [:input.form-control {:type "text"
+                            :value @email
                             :placeholder "john.smith@email.com"
                             :on-change (set-val :email)}]]
 
@@ -60,21 +64,6 @@
        "Register New Player"]]]))
 
 (defn date-range-picker
-  "Simple date-range picker component.
-
-  Required options:
-  - :from & :to - current state for the from and to sides of the picker, if
-  using a single date widget only the 'from' argument is used
-  - :react-key-prefix - a unique string prefix for internal react-keys
-  - :single? - only use a single date widget
-  - :placeholder-text - the placeholder text for the single date widget
-  - :min-date - Earliest day to select
-  - :max-date - Latest day to select
-
-  The :on-change callback is optional. When provided it should be a
-  function taking two arguments, side (one of :from, :to) and the new value for
-  that side. If using a single date widget, the callback should be one argument:
-  the new date value"
   []
   [:div.filter-panel--range__inputs.date-range__inputs
    [date-time-picker {:name "datetime-widget"
@@ -101,11 +90,11 @@
 
      [:div
       [:label {:for "p1_goals"} "# Goals"]
-      [drop-down (map str (range 0 10)) :p1_goals]]
+      [drop-down goals-range :p1_goals]]
 
      [:div
       [:label {:for "p2_goals"} "# Goals"]
-      [drop-down (map str (range 0 10)) :p2_goals]]
+      [drop-down goals-range :p2_goals]]
 
      [:div
       [:label "Team"]
