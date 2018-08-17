@@ -8,10 +8,14 @@
   [db]
   {:p1 (-> db :players first :id)
    :p2 (-> db :players first :id)
-   :p1_goals "0"
-   :p2_goals "0"
+   :p1_goals ""
+   :p2_goals ""
    :p1_team ""
    :p2_team ""})
+
+(def default-player
+  {:name ""
+   :email ""})
 
 (def default-db
   {:games []
@@ -30,6 +34,17 @@
   (fn [db [_ val]]
     (assoc-in db key val)))
 
+(rf/reg-sub :valid-game?
+            (fn [db _]
+              (not-any? #(= % "")
+                        (vals (:game db)))))
+
+(rf/reg-sub :valid-player?
+            (fn [db _]
+              (not-any? #(= % "")
+                        (vals (:player db)))))
+
+
 (rf/reg-event-db :reset-player (fn [db _]
                                  (assoc db :player {})))
 
@@ -43,7 +58,9 @@
                  (fn [db _]
                    (assoc default-db
                           :game
-                          (default-game db))))
+                          (default-game db)
+                          :player
+                          default-player)))
 
 (rf/reg-event-db :p1 (setter [:game :p1]))
 (rf/reg-event-db :p1_goals (setter [:game :p1_goals]))

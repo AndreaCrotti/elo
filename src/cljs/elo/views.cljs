@@ -1,5 +1,6 @@
 (ns elo.views
   (:require [re-frame.core :as rf]
+            [clojure.string :refer [join]]
             [cljs-time.core :refer [now]]
             [elo.date-picker-utils :refer [date-time-picker]]
             [cljsjs.moment]))
@@ -10,6 +11,10 @@
   [signal]
   (fn [e]
     (rf/dispatch [signal])))
+
+(defn- classes
+  [cls]
+  (join " " (filter some? cls)))
 
 (defn- set-val
   [handler-key]
@@ -35,20 +40,24 @@
 
 (defn register-form
   []
-  [:div.form-group.register_form
-   [:div
-    [:input.form-control {:type "text"
-                          :placeholder "John Smith"
-                          :on-change (set-val :name)}]
+  (let [valid-player? (rf/subscribe [:valid-player?])]
+    [:div.form-group.register_form
+     [:div
+      [:input.form-control {:type "text"
+                            :placeholder "John Smith"
+                            :on-change (set-val :name)}]
 
-    [:input.form-control {:type "text"
-                          :placeholder "john.smith@email.com"
-                          :on-change (set-val :email)}]]
+      [:input.form-control {:type "text"
+                            :placeholder "john.smith@email.com"
+                            :on-change (set-val :email)}]]
 
-   [:div
-    [:button.submit__game.btn.btn-primary {:type "button"
-                                           :on-click (smart-dispatch :add-player)}
-     "Register New Player"]]])
+     [:div
+      [:button {:type "button"
+                :class (classes ["submit__game" "btn" "btn-primary" (when-not @valid-player? "disabled")])
+                :on-click (if @valid-player?
+                            (smart-dispatch :add-player)
+                            #(js/alert "Fill up the form first"))}
+       "Register New Player"]]]))
 
 (defn date-range-picker
   "Simple date-range picker component.
@@ -78,46 +87,50 @@
                                     (rf/dispatch [:played_at (.format moment timestamp-format)]))
                       :class "date-picker-class"}]])
 
-(defn players-form
+(defn game-form
   [players]
-  [:div.form-group.game_form {:on-submit (fn [] false)}
-   [:div
-    [:label {:for "p1"} "Player 1"]
-    [drop-down-players players :p1]]
+  (let [valid-game? (rf/subscribe [:valid-game?])]
+    [:div.form-group.game_form {:on-submit (fn [] false)}
+     [:div
+      [:label {:for "p1"} "Player 1"]
+      [drop-down-players players :p1]]
 
-   [:div
-    [:label {:for "p2_name"} "Player 2"]
-    [drop-down-players players :p2]]
+     [:div
+      [:label {:for "p2_name"} "Player 2"]
+      [drop-down-players players :p2]]
 
-   [:div
-    [:label {:for "p1_goals"} "# Goals"]
-    [drop-down (map str (range 0 10)) :p1_goals]]
+     [:div
+      [:label {:for "p1_goals"} "# Goals"]
+      [drop-down (map str (range 0 10)) :p1_goals]]
 
-   [:div
-    [:label {:for "p2_goals"} "# Goals"]
-    [drop-down (map str (range 0 10)) :p2_goals]]
+     [:div
+      [:label {:for "p2_goals"} "# Goals"]
+      [drop-down (map str (range 0 10)) :p2_goals]]
 
-   [:div
-    [:label "Team"]
-    [:input.form-control {:type "text"
-                          :placeholder "Team Name"
-                          :on-change (set-val :p1_team)}]]
+     [:div
+      [:label "Team"]
+      [:input.form-control {:type "text"
+                            :placeholder "Team Name"
+                            :on-change (set-val :p1_team)}]]
 
-   [:div
-    [:label "Team"]
-    [:input.form-control {:type "text"
-                          :placeholder "Team Name"
-                          :on-change (set-val :p2_team)}]]
+     [:div
+      [:label "Team"]
+      [:input.form-control {:type "text"
+                            :placeholder "Team Name"
+                            :on-change (set-val :p2_team)}]]
 
-   [:div
-    [:label "Played at"]
-    [date-range-picker]]
+     [:div {:class "hello world"}
+      [:label "Played at"]
+      [date-range-picker]]
 
-   [:div
-    [:button.submit__game.btn.btn-primary {:type "button"
-                                           :on-click (smart-dispatch :add-game)}
+     [:div
+      [:button {:type "button"
+                :class (classes ["submit__game" "btn" "btn-primary" (when-not @valid-game? "disabled")])
+                :on-click (if @valid-game?
+                            (smart-dispatch :add-game)
+                            #(js/alert "Fill up the form first"))}
 
-     "Add Game"]]])
+       "Add Game"]]]))
 
 (defn games-table
   [games name-mapping]
@@ -175,7 +188,8 @@
 
   (let [rankings (rf/subscribe [:rankings])
         games (rf/subscribe [:games])
-        players (rf/subscribe [:players])]
+        players (rf/subscribe [:players])
+        ]
 
     (fn []
       (let [name-mapping (into {} (for [p @players] {(:id p) p}))]
@@ -185,6 +199,6 @@
                          :alt "Fork me on Github"}]]
 
          [:div.section.register__form_container (register-form)]
-         [:div.section.players__form_container (players-form @players)]
+         [:div.section.players__form_container (game-form @players)]
          [:div.section.rankings__table (rankings-table @rankings name-mapping)]
          [:div.section.games__table (games-table @games name-mapping)]]))))
