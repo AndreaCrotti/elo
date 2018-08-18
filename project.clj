@@ -38,6 +38,8 @@
                  [cljsjs/react-onclickoutside "6.7.1-1"]
                  [cljsjs/react-popper "0.10.4-0"]
                  [cljsjs/popperjs "1.14.3-1"]
+                 [cljsjs/selectize "0.12.1-2"]
+                 [cljsjs/jquery "1.9.1-0"]
 
                  [ns-tracker "0.3.1"]
                  [cljsjs/moment "2.22.2-0"]
