@@ -4,7 +4,19 @@ Compute the Elo ranking from Fifa games.
 
 ## Usage
 
-Deploy this to Heroku.
+### Local development
+
+Run locally with `lein figwheel`
+
+### Deployment
+
+You can deploy this to Heroku directly or build an uberjar and deploy it on any other platform.
+
+### Migrations
+
+You can run database migrations with:
+
+    lein migratus migrate
 
 ## Import data from a Google Spreadsheet
 
@@ -25,6 +37,7 @@ So all the players have to be created before.
 ## TODO
 
 - [ ] eventually paginatate list of all the games
+- [ ] add player trend (last won/lost points)
 - [ ] fetch all possible list of teams and auto complete on input
 - [ ] auto complete on player names
 - [ ] set some default values in the spreadsheet
