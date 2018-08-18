@@ -124,9 +124,16 @@
 
        "Add Game"]]]))
 
+(defn- enumerate
+  [xs]
+  (zipmap (range (count xs)) xs))
+
+;; (enumerate ["a" "b" "c"])
+
 (defn games-table
   [games name-mapping]
   (let [header [:tr
+                [:th "Game #"]
                 [:th "Player 1"]
                 [:th "Team"]
                 [:th "Goals"]
@@ -140,8 +147,9 @@
      [:table.table
       [:thead header]
       (into [:tbody]
-            (for [{:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]} games]
+            (for [[idx {:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]}] (enumerate games)]
               [:tr
+               [:td idx]
                [:td (:name (get name-mapping p1))]
                [:td p1_team]
                [:td p1_goals]
@@ -164,13 +172,12 @@
      [:table.table
       [:thead header]
       (into [:tbody]
-            (for [n (range (count sorted))]
-              (let [{:keys [id ranking ngames]} (nth sorted n)]
-                [:tr
-                 [:td (inc n)]
-                 [:td (:name (get name-mapping id))]
-                 [:td (int ranking)]
-                 [:td ngames]])))]]))
+            (for [[idx {:keys [id ranking ngames]}] (enumerate sorted)]
+              [:tr
+               [:td (inc idx)]
+               [:td (:name (get name-mapping id))]
+               [:td (int ranking)]
+               [:td ngames]]))]]))
 
 (defn root
   []
