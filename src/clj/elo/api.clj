@@ -119,6 +119,13 @@
   (as-json
    (resp/response (reverse (db/load-games)))))
 
+(defn player->ngames
+  [games]
+  (frequencies
+   (flatten
+    (for [g games]
+      ((juxt :p1 :p2) g)))))
+
 (defn get-rankings
   "Return all the rankings"
   []
@@ -126,13 +133,13 @@
    (resp/response
     (let [games (db/load-games)
           norm-games (map core/normalize-game games)
-          rankings (core/compute-rankings norm-games (map :id (db/load-players)))]
+          rankings (core/compute-rankings norm-games (map :id (db/load-players)))
+          ngames (player->ngames games)]
 
-      ;;TODO: actually compute the number of games
       (reverse
        (sort-by :ranking
                 (for [[k v] rankings]
-                  {:id k :ranking v :ngames 0})))))))
+                  {:id k :ranking v :ngames (get ngames k 0)})))))))
 
 (defn get-players
   []
