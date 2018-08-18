@@ -47,16 +47,19 @@
      [:div
       [:input.form-control {:type "text"
                             :value @name
+                            :name "name"
                             :placeholder "John Smith"
                             :on-change (set-val :name)}]
 
       [:input.form-control {:type "text"
                             :value @email
+                            :name "email"
                             :placeholder "john.smith@email.com"
                             :on-change (set-val :email)}]]
 
      [:div
       [:button {:type "button"
+                :name "submit-game"
                 :class (classes ["submit__game" "btn" "btn-primary" (when-not @valid-player? "disabled")])
                 :on-click (if @valid-player?
                             (smart-dispatch :add-player)
