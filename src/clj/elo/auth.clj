@@ -5,15 +5,22 @@
 
 (def ^:private local-pwd "secret")
 
-(def authdata
+(defn admin-password
+  []
+  (:admin-password env))
+
+(defn authdata
+  []
   "All possible authenticated users"
-  {:admin (:admin-password env local-pwd)})
+  {:admin (admin-password)})
 
 (defn authenticate
   [_ {:keys [username password]}]
-  (when-let [user-password (get authdata (keyword username))]
-    (when (= password user-password)
-      (keyword username))))
+  (or
+   (nil? (admin-password))
+   (when-let [user-password (get (authdata) (keyword username))]
+     (when (= password user-password)
+       (keyword username)))))
 
 (def basic-auth-backend
   ;; change the realm depending on the environment
