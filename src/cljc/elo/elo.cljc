@@ -1,4 +1,4 @@
-(ns elo.core
+(ns elo.elo
   "Main namespace containing all the core logic.
   See the mathematical details of the Elo formula used here:
   https://en.wikipedia.org/wiki/Elo_rating_system")

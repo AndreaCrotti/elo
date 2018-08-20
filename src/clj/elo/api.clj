@@ -3,7 +3,7 @@
   (:require [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [compojure.core :refer [defroutes GET POST]]
             [elo.auth :refer [basic-auth-backend with-basic-auth]]
-            [elo.core :as core]
+            [elo.elo :as core]
             [elo.db :as db]
             [environ.core :refer [env]]
             [hiccup.core :as hiccup]
