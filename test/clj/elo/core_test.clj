@@ -10,19 +10,32 @@
 (def initial-ratings
   (sut/initial-rankings [:a :b :c]))
 
+(deftest new-rating-test
+  (testing "Should compute the new rating correctly"
+    (are [d exp] (= exp (sut/expected d))
+      10 0.48561281583400134
+      (- 10) 0.5143871841659987))
+  )
+
 (deftest elo-rating-test
-  (testing "Should compute new ratings correctly"
-    (are [inp initial out] (= (sut/update-ratings initial inp) out)
-      games initial-ratings {:a 1465.704315549496, :b 1454.1965245402773, :c 1484.0991599102267}
-      [["A" "B" 1]] {"A" 100 "B" 100} {"A" 116.0, "B" 52.0}))
+  #_(testing "Should compute new ratings correctly"
+      (are [inp initial out] (= (sut/update-ratings initial inp) out)
+        games initial-ratings {:a 1465.704315549496, :b 1454.1965245402773, :c 1484.0991599102267}
+        [["A" "B" 1]] {"A" 100 "B" 100} {"A" 116.0, "B" 52.0}))
 
-  (testing "Order does not matter"
+  (testing "Should be a zero sum game"
     (let [game [:a :b 1]
-          game-inv [:b :a (- 1)]]
+          rs (sut/new-ratings {:a 1500 :b 1500} game)]
+      (is (= 3000
+             (apply + (vals rs))))))
 
-      (is (= {:a 1516.0, :b 1452.0, :c 1500}
-             (sut/new-ratings initial-ratings game)
-             (sut/new-ratings initial-ratings game-inv))))))
+  #_(testing "Order does not matter"
+      (let [game [:a :b 1]
+            game-inv [:b :a (- 1)]]
+
+        (is (= {:a 1516.0, :b 1452.0, :c 1500}
+               (sut/new-ratings initial-ratings game)
+               (sut/new-ratings initial-ratings game-inv))))))
 
 (deftest compute-rankings-test
   (testing "Passing in all the games computes in the right order returns the rankings"

@@ -12,7 +12,7 @@
 
 (defn expected
   [diff]
-  (/ 1 (inc (Math/pow 10 (/ diff 400)))))
+  (/ 1.0 (inc (Math/pow 10 (/ diff 400)))))
 
 (defn new-rating
   [old expected game]
