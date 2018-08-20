@@ -6,6 +6,10 @@
 (def k 32)
 (def initial-ranking 1500)
 
+(defn valid-rankings?
+  [rankings]
+  (= 0 (mod (apply + rankings) initial-ranking)))
+
 (defn expected
   [diff]
   (/ 1 (inc (Math/pow 10 (/ diff 400)))))
@@ -59,6 +63,7 @@
 
 (defn compute-rankings
   ([games players]
+   {:post [(valid-rankings? (vals %))]}
    (update-ratings (initial-rankings players)
                    games))
   ([games]
