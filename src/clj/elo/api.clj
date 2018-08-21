@@ -90,7 +90,7 @@
    [:body
     [:div {:id "app"}]
     [:script {:src (cache-buster "js/compiled/app.js")}]
-    [:script "elo.core.init();"]]])
+    [:script "elo.elo.init();"]]])
 
 (defn store!
   [{:keys [params]}]
