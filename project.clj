@@ -115,7 +115,7 @@
    [{:id           "dev"
      :source-paths ["src/cljs" "src/cljc"]
      :figwheel     {:on-jsload "elo.core/mount-root"}
-     :compiler     {:main elo.elo
+     :compiler     {:main elo.core
                     :output-to "resources/public/js/compiled/app.js"
                     :output-dir "resources/public/js/compiled/out"
                     :asset-path "js/compiled/out"
@@ -129,7 +129,7 @@
                                                                               :hints]}}}}
     {:id           "min"
      :source-paths ["src/cljs" "src/cljc"]
-     :compiler     {:main elo.elo
+     :compiler     {:main elo.core
                     :output-to "resources/public/js/compiled/app.js"
                     :optimizations :advanced
                     :output-dir "resources/public/js/compiled"
