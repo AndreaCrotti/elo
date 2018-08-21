@@ -71,7 +71,7 @@
 
 (defn compute-rankings
   ([games players]
-   {:post [(valid-rankings? (vals %))]}
+   #_{:post [(valid-rankings? (vals %))]}
    (update-ratings (initial-rankings players)
                    games))
   ([games]
