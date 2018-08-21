@@ -22,7 +22,7 @@
   [score]
   (cond (zero? score) 1
         (= 1 score) 0
-        :else 1/2))
+        :else score))
 
 (defn new-ratings
   [ratings [p1 p2 score]]
