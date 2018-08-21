@@ -86,7 +86,7 @@
              ;; different returned map instead?
              [{"id" (str (:id p1)) "ranking" 1516.0 "ngames" 1}
               {"id" (str (:id other)) "ranking" 1500 "ngames" 0}
-              {"id" (str (:id p2)) "ranking" 1452.0 "ngames" 1}]
+              {"id" (str (:id p2)) "ranking" 1484.0 "ngames" 1}]
              
              (json/read-str (:body rankings))))))))
 
