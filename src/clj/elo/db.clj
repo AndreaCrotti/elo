@@ -80,7 +80,7 @@
   []
   (-> (h/select :*)
       (h/from :game)
-      (h/order-by :played_at)))
+      (h/order-by [:played_at :desc])))
 
 (defn load-players-sql
   []
