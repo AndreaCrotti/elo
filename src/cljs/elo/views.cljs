@@ -21,15 +21,17 @@
   #(rf/dispatch [handler-key (-> % .-target .-value)]))
 
 (defn- drop-down
-  [opts key]
-  (into [:select.form-control {:on-change (set-val key)}]
+  [opts key value]
+  (into [:select.form-control {:on-change (set-val key)
+                               :value (or value "")}]
         (cons [:option ""]
               (for [o opts]
                 [:option {:value o} o]))))
 
 (defn- drop-down-players
-  [players key]
-  (into [:select.form-control {:on-change (set-val key)}]
+  [players key value]
+  (into [:select.form-control {:on-change (set-val key)
+                               :value (or value "")}]
         (cons [:option ""]
               (for [p players]
                 [:option {:value (:id p)} (:name p)]))))
@@ -66,6 +68,14 @@
 
        "Register New Player"]]]))
 
+;; selected={this.state.startDate}
+;; onChange={this.handleChange}
+;; showTimeSelect
+;; timeFormat="HH:mm"
+;; timeIntervals={15}
+;; dateFormat="LLL"
+;; timeCaption="time"
+
 (defn date-range-picker
   []
   (let [game (rf/subscribe [:game])]
@@ -87,19 +97,19 @@
     [:div.form-group.game_form {:on-submit (fn [] false)}
      [:div
       [:label {:for "p1"} "Player 1"]
-      [drop-down-players players :p1]]
+      [drop-down-players players :p1 (:p1 @game)]]
 
      [:div
       [:label {:for "p2_name"} "Player 2"]
-      [drop-down-players players :p2]]
+      [drop-down-players players :p2 (:p2 @game)]]
 
      [:div
       [:label {:for "p1_goals"} "# Goals"]
-      [drop-down goals-range :p1_goals]]
+      [drop-down goals-range :p1_goals (:p1_goals @game)]]
 
      [:div
       [:label {:for "p2_goals"} "# Goals"]
-      [drop-down goals-range :p2_goals]]
+      [drop-down goals-range :p2_goals (:p2_goals @game)]]
 
      [:div
       [:label "Team"]

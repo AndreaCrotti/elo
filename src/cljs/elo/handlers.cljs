@@ -9,8 +9,8 @@
 ;;TODO: this might get defined too late anyway
 (defn default-game
   [db]
-  {:p1 (-> db :players first :id)
-   :p2 (-> db :players first :id)
+  {:p1 ""
+   :p2 ""
    :p1_goals ""
    :p2_goals ""
    :p1_team ""
