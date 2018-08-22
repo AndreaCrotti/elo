@@ -21,15 +21,17 @@
   #(rf/dispatch [handler-key (-> % .-target .-value)]))
 
 (defn- drop-down
-  [opts key]
-  (into [:select.form-control {:on-change (set-val key)}]
+  [opts key value]
+  (into [:select.form-control {:on-change (set-val key)
+                               :value (or value "")}]
         (cons [:option ""]
               (for [o opts]
                 [:option {:value o} o]))))
 
 (defn- drop-down-players
-  [players key]
-  (into [:select.form-control {:on-change (set-val key)}]
+  [players key value]
+  (into [:select.form-control {:on-change (set-val key)
+                               :value (or value "")}]
         (cons [:option ""]
               (for [p players]
                 [:option {:value (:id p)} (:name p)]))))
@@ -41,18 +43,17 @@
 (defn register-form
   []
   (let [valid-player? (rf/subscribe [:valid-player?])
-        email (rf/subscribe [:email])
-        name (rf/subscribe [:name])]
+        player (rf/subscribe [:player])]
     [:div.form-group.register_form
      [:div
       [:input.form-control {:type "text"
-                            :value @name
+                            :value (:name @player)
                             :name "name"
                             :placeholder "John Smith"
                             :on-change (set-val :name)}]
 
       [:input.form-control {:type "text"
-                            :value @email
+                            :value (:email @player)
                             :name "email"
                             :placeholder "john.smith@email.com"
                             :on-change (set-val :email)}]]
@@ -64,54 +65,67 @@
                 :on-click (if @valid-player?
                             (smart-dispatch :add-player)
                             #(js/alert "Fill up the form first"))}
+
        "Register New Player"]]]))
+
+;; selected={this.state.startDate}
+;; onChange={this.handleChange}
+;; showTimeSelect
+;; timeFormat="HH:mm"
+;; timeIntervals={15}
+;; dateFormat="LLL"
+;; timeCaption="time"
 
 (defn date-range-picker
   []
-  [:div.filter-panel--range__inputs.date-range__inputs
-   [date-time-picker {:name "datetime-widget"
-                      :react-key "date-picker"
-                      :date (js/moment)
-                      :min-date "2018-08-01"
-                      :max-date (js/moment)
-                      :placeholder "When was it played"
-                      :on-change  (fn [moment]
-                                    (rf/dispatch [:played_at (.format moment timestamp-format)]))
-                      :class "date-picker-class"}]])
+  (let [game (rf/subscribe [:game])]
+    [:div.filter-panel--range__inputs.date-range__inputs
+     [date-time-picker {:name "datetime-widget"
+                        :selected (:played_at @game)
+                        :react-key "date-picker"
+                        :date (js/moment)
+                        :min-date "2018-08-01"
+                        :max-date (js/moment)
+                        :placeholder "When was it played"
+                        :on-change #(rf/dispatch [:played_at %])
+                        :class "date-picker-class"}]]))
 
 (defn game-form
   [players]
-  (let [valid-game? (rf/subscribe [:valid-game?])]
+  (let [valid-game? (rf/subscribe [:valid-game?])
+        game (rf/subscribe [:game])]
     [:div.form-group.game_form {:on-submit (fn [] false)}
      [:div
       [:label {:for "p1"} "Player 1"]
-      [drop-down-players players :p1]]
+      [drop-down-players players :p1 (:p1 @game)]]
 
      [:div
       [:label {:for "p2_name"} "Player 2"]
-      [drop-down-players players :p2]]
+      [drop-down-players players :p2 (:p2 @game)]]
 
      [:div
       [:label {:for "p1_goals"} "# Goals"]
-      [drop-down goals-range :p1_goals]]
+      [drop-down goals-range :p1_goals (:p1_goals @game)]]
 
      [:div
       [:label {:for "p2_goals"} "# Goals"]
-      [drop-down goals-range :p2_goals]]
+      [drop-down goals-range :p2_goals (:p2_goals @game)]]
 
      [:div
       [:label "Team"]
       [:input.form-control {:type "text"
                             :placeholder "Team Name"
+                            :value (:p1_team @game)
                             :on-change (set-val :p1_team)}]]
 
      [:div
       [:label "Team"]
       [:input.form-control {:type "text"
                             :placeholder "Team Name"
+                            :value (:p2_team @game)
                             :on-change (set-val :p2_team)}]]
 
-     [:div {:class "hello world"}
+     [:div
       [:label "Played at"]
       [date-range-picker]]
 
@@ -127,8 +141,6 @@
 (defn- enumerate
   [xs]
   (zipmap (range (count xs)) xs))
-
-;; (enumerate ["a" "b" "c"])
 
 (defn games-table
   [games name-mapping]

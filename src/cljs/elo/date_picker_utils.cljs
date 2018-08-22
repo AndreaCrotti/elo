@@ -31,7 +31,7 @@
         (.-default js/DatePicker)
         (cond-> {:selected @selected-date
                  :isClearable false
-                 ;; :showTimeSelect true
+                 :showTimeSelect true
                  :timeFormat "HH:mm"
                  :timeIntervals 15
                  :dateFormat "LLL"
