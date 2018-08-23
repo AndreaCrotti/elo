@@ -27,7 +27,7 @@
    :players []
    :game {}
    :player {}
-   :error {}})
+   :error nil})
 
 (defn- getter
   [ks]
@@ -108,7 +108,8 @@
                    (assoc db
                           :error
                           {:status status
-                           :error (:status-text parse-error)})))
+                           :status-text (:status-text parse-error)
+                           :original-text (:original-text parse-error)})))
 
 (rf/reg-event-db :load-games-success (setter [:games]))
 (rf/reg-event-db :load-rankings-success (setter [:rankings]))

@@ -68,14 +68,6 @@
 
        "Register New Player"]]]))
 
-;; selected={this.state.startDate}
-;; onChange={this.handleChange}
-;; showTimeSelect
-;; timeFormat="HH:mm"
-;; timeIntervals={15}
-;; dateFormat="LLL"
-;; timeCaption="time"
-
 (defn date-range-picker
   []
   (let [game (rf/subscribe [:game])]
@@ -212,7 +204,8 @@
 
          (when @error
            [:div.section.alert.alert-danger
-            [:span (:status @error) (:error @error)]])
+            [:pre (:status-text @error)]
+            [:pre (:original-text @error)]])
 
          [:div.section.register__form_container (register-form)]
          [:div.section.players__form_container (game-form @players)]
