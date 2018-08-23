@@ -3,6 +3,7 @@
   (:require [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [compojure.core :refer [defroutes GET POST]]
             [elo.auth :refer [basic-auth-backend with-basic-auth]]
+            [elo.config :as config]
             [elo.core :as core]
             [elo.db :as db]
             [environ.core :refer [env]]
@@ -28,10 +29,22 @@
           path
           (:heroku-slug-commit env (str (UUID/randomUUID)))))
 
+
+(defn adsense-js
+  []
+  [:script {:async true
+            :src "https://www.googletagmanager.com/gtag/js?id=UA-123977600-1"}
+   ]
+
+  [:script (format "(adsbygoogle = window.adsbygoogle || []).push({
+     google_ad_client: '%s',
+     enable_page_level_ads: true
+   });" config/adsense-tag)])
+
 (defn ga-js
   []
   (format "<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src='https://www.googletagmanager.com/gtag/js?id=UA-123977600-1'></script>
+<script async src='https://www.googletagmanager.com/gtag/js?id=%s'></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -39,7 +52,7 @@
 
   gtag('config', '%s');
 </script>
-" (env :google-analytics-key)))
+" config/google-analytics-tag))
 
 (defn- as-json
   [response]
