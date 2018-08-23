@@ -199,7 +199,8 @@
 
   (let [rankings (rf/subscribe [:rankings])
         games (rf/subscribe [:games])
-        players (rf/subscribe [:players])]
+        players (rf/subscribe [:players])
+        error (rf/subscribe [:error])]
 
     (fn []
       (let [name-mapping (into {} (for [p @players] {(:id p) p}))]
@@ -207,6 +208,11 @@
          [:a {:href "https://github.com/AndreaCrotti/elo"}
           [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
                          :alt "Fork me on Github"}]]
+
+
+         (when @error
+           [:div.section.alert.alert-danger
+            [:span (:status @error) (:error @error)]])
 
          [:div.section.register__form_container (register-form)]
          [:div.section.players__form_container (game-form @players)]

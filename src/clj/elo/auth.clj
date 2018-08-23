@@ -3,8 +3,6 @@
             [buddy.auth :refer [authenticated? throw-unauthorized]]
             [buddy.auth.backends.httpbasic :refer [http-basic-backend]]))
 
-(def ^:private local-pwd "secret")
-
 (defn admin-password
   []
   (:admin-password env))
@@ -16,6 +14,7 @@
 
 (defn authenticate
   [_ {:keys [username password]}]
+  (println "Inside authenticate")
   (or
    (nil? (admin-password))
    (when-let [user-password (get (authdata) (keyword username))]

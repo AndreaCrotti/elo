@@ -26,7 +26,8 @@
    :rankings []
    :players []
    :game {}
-   :player {}})
+   :player {}
+   :error {}})
 
 (defn- getter
   [ks]
@@ -36,7 +37,10 @@
 (defn- setter
   [key]
   (fn [db [_ val]]
+    (js/console.log "Setting " key " to " val)
     (assoc-in db key val)))
+
+(rf/reg-sub :error (getter [:error]))
 
 (rf/reg-sub :valid-game?
             (fn [db _]
@@ -99,9 +103,12 @@
 (rf/reg-event-fx :add-player-success (reload-fn-gen [:reset-player]))
 
 (rf/reg-event-db :failed
-                 (fn [db [_ response]]
-                   (js/console.log "Failed request " response)
-                   db))
+                 (fn [db [_ {:keys [status parse-error]}]]
+                   (js/console.log "Failed request " parse-error)
+                   (assoc db
+                          :error
+                          {:status status
+                           :error (:status-text parse-error)})))
 
 (rf/reg-event-db :load-games-success (setter [:games]))
 (rf/reg-event-db :load-rankings-success (setter [:rankings]))
