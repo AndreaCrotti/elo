@@ -3,6 +3,7 @@
   (:require [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [compojure.core :refer [defroutes GET POST]]
             [elo.auth :refer [basic-auth-backend with-basic-auth]]
+            [elo.config :as config]
             [elo.core :as core]
             [elo.db :as db]
             [environ.core :refer [env]]
@@ -28,18 +29,25 @@
           path
           (:heroku-slug-commit env (str (UUID/randomUUID)))))
 
+
 (defn ga-js
   []
-  (format "<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src='https://www.googletagmanager.com/gtag/js?id=UA-123977600-1'></script>
-<script>
+  [:script (format "
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', '%s');
-</script>
-" (env :google-analytics-key)))
+  gtag('config', '%s');" config/google-analytics-tag)])
+
+(defn adsense-js
+  []
+  [:script (format
+            "(adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: '%s',
+              enable_page_level_ads: true
+  });
+"
+            config/adsense-tag)])
 
 (defn- as-json
   [response]
@@ -64,8 +72,20 @@
             :rel "stylesheet"
             :type "text/css"}]
 
-    (when (env :google-analytics-key)
+    (when config/google-analytics-tag
+      [:script {:async true
+                :src (format "https://www.googletagmanager.com/gtag/js?id=%s"
+                             config/google-analytics-tag)}])
+
+    (when config/google-analytics-tag
       (ga-js))
+
+    (when config/adsense-tag
+      [:script {:async true
+                :src "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"}])
+
+    (when config/adsense-tag
+      (adsense-js))
 
     ;; [:script {:src "https://code.jquery.com/jquery-3.2.1.slim.min.js"
     ;;           :integrity "sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
