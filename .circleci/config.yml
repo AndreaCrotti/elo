@@ -29,4 +29,4 @@ jobs:
 
       - run: lein migratus migrate
       - run: lein test
-      - run: lein uberjar # to avoid discovering in deployment phase possible issues
+      # - run: lein uberjar # to avoid discovering in deployment phase possible issues
