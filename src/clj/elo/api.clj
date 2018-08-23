@@ -1,6 +1,7 @@
 (ns elo.api
   (:gen-class)
   (:require [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
+            [bidi.ring :refer [make-handler]]
             [compojure.core :refer [defroutes GET POST]]
             [elo.auth :refer [basic-auth-backend with-basic-auth]]
             [elo.config :as config]
@@ -17,6 +18,13 @@
   (:import (java.util UUID)))
 
 (def ^:private default-port 3000)
+
+(def sample-routes ["/" {"company/"
+                         {"" :companies
+                          [:company-id "/league/" :league-id] :company-detail}}])
+
+(def bidi-handler
+  (make-handler sample-routes))
 
 (defn- get-port
   []
