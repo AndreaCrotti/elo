@@ -14,7 +14,6 @@
 
 (defn authenticate
   [_ {:keys [username password]}]
-  (println "Inside authenticate")
   (or
    (nil? (admin-password))
    (when-let [user-password (get (authdata) (keyword username))]
