@@ -15,10 +15,16 @@
 (defn- gen-uuid [] (UUID/randomUUID))
 
 ;; this league is always present, which makes it easier to write tests using it 
+(def sample-company-id (gen-uuid))
+
 (def sample-league-id (gen-uuid))
-(def sample-league {:id sample-league-id :name "Sample League"})
+(def sample-league {:id sample-league-id
+                    :company_id sample-company-id
+                    :name "Sample League"})
 
 (use-fixtures :each (join-fixtures [db/wrap-db-call (fn [test-fn]
+                                                      (db/add-company! {:id sample-company-id
+                                                                        :name "Sample Company"})
                                                       (db/add-league! sample-league)
                                                       (test-fn))]))
 

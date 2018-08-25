@@ -95,6 +95,11 @@
   (-> (h/insert-into :league)
       (h/values [params])))
 
+(defn add-company-sql
+  [params]
+  (-> (h/insert-into :company)
+      (h/values [params])))
+
 (defn add-player-to-league-sql
   [params]
   (-> (h/insert-into :league_players)
@@ -105,6 +110,8 @@
 (def add-league! (add-row! add-league-sql))
 
 (def add-player-to-league! (add-row! add-player-to-league-sql))
+
+(def add-company! (add-row! add-company-sql))
 
 (defn- load-games-sql
   [league-id]
