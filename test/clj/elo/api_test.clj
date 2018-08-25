@@ -4,6 +4,7 @@
             [buddy.auth :refer [authenticated?]]
             [buddy.core.codecs.base64 :as b64]
             [buddy.core.codecs :refer [bytes->str]]
+            [elo.generators :as gen]
             [elo.api :as sut]
             [elo.db :refer [wrap-db-call add-player!]]
             [ring.mock.request :as mock])

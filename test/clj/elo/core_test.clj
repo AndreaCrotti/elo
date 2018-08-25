@@ -1,5 +1,6 @@
 (ns elo.core-test
   (:require [clojure.test :refer [deftest is are testing]]
+            [elo.generators :as gen]
             [elo.core :as sut]))
 
 (def games

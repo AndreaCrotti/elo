@@ -2,7 +2,6 @@
   (:gen-class)
   (:require [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [bidi.ring :refer [make-handler]]
-            [compojure.core :refer [defroutes GET POST]]
             [elo.auth :refer [basic-auth-backend with-basic-auth]]
             [elo.config :as config]
             [elo.core :as core]
@@ -160,9 +159,8 @@
 
 (defn get-games
   [req]
-  (let [games (db/load-games)]
-    {:status 200
-     :body games}))
+  (as-json
+   (resp/response (db/load-games))))
 
 ;;TODO: add a not found page for everything else?
 (def routes
@@ -174,10 +172,11 @@
         ;;           [:league-id] ::league}
 
         ;;TODO: try to make this more restful
+        "" home
+
         "add-player" add-player!
         "add-game" add-game!
 
-        "" home
         "players" get-players
         "rankings" get-rankings
         "games" get-games}])
