@@ -99,8 +99,11 @@
 (defn- add-row!
   [sql-func]
   (fn [params]
-    (jdbc/execute! (db-spec)
-                   (sql/format (sql-func params)))))
+    (->
+     (jdbc/execute! (db-spec)
+                    (sql/format (sql-func params))
+                    {:return-keys [:id]})
+     :id)))
 
 (def add-league! (add-row! add-league-sql))
 
@@ -124,11 +127,8 @@
 (defn add-player!
   [params]
   (let [without-league-id (dissoc params :league_id)
-        player-id (gen-uuid)]
+        player-id ((add-row! add-player-sql) without-league-id)]
 
-    ((add-row! add-player-sql) (assoc without-league-id
-                                      :id
-                                      player-id))
     (add-player-to-league! {:player_id player-id
                             :league_id (to-uuid (:league_id params))})
     player-id))

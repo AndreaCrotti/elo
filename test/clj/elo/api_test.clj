@@ -60,7 +60,7 @@
                   :p2_goals 0
                   :played_at "2018-08-16+01:0001:48:00"}
 
-          response (write-api-call "/add-game" sample)
+          _ (write-api-call "/add-game" sample)
           games (sut/app (mock/request :get "/games" {:league_id sample-league-id}))
 
           desired {"p1" (str p1-id)
@@ -69,8 +69,6 @@
                    "p2" (str p2-id),
                    "p2_goals" 0,
                    "p2_team" "Juv"}]
-
-      (is (= [1] response))
 
       (is (= 200 (:status games)))
 

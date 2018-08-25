@@ -110,18 +110,19 @@
 
 (defn add-game!
   [{:keys [params]}]
-  (as-json
-   (resp/created "/games"
-                 (db/add-game! params))))
+  (let [game-id (db/add-game! params)]
+    (as-json
+     (resp/created "/games"
+                   {:id game-id}))))
 
 (defn add-player!
   "Adds a new user to the platform, authenticated with basic Auth"
   [{:keys [params] :as request}]
-  (db/add-player! params)
-  (with-basic-auth request
-    (as-json
-     (resp/created "/players"
-                   "hello"))))
+  (let [player-id (db/add-player! params)]
+    (with-basic-auth request
+      (as-json
+       (resp/created "/players"
+                     {:id player-id})))))
 
 (defn home
   [_]

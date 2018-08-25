@@ -103,8 +103,8 @@
 (rf/reg-event-fx :add-player-success (reload-fn-gen [:reset-player]))
 
 (rf/reg-event-db :failed
-                 (fn [db [_ {:keys [status parse-error]}]]
-                   (js/console.log "Failed request " parse-error)
+                 (fn [db [_ {:keys [status parse-error] :as req}]]
+                   (js/console.log "Failed request " parse-error "req" req)
                    (assoc db
                           :error
                           {:status status
@@ -150,5 +150,5 @@
           :played_at
           #(.format % timestamp-format)))
 
-(rf/reg-event-fx :add-game (writer "/store" :add-game-success game-transform))
+(rf/reg-event-fx :add-game (writer "/add-game" :add-game-success game-transform))
 (rf/reg-event-fx :add-player (writer "/add-player" :add-player-success :player))
