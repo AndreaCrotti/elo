@@ -121,6 +121,7 @@
     {:db db
      :http-xhrio {:method :get
                   :uri uri
+                  :params {:league_id "3564ef95-b84d-420f-8c85-31c6650458ad"}
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [on-success]
@@ -136,7 +137,8 @@
     {:db db
      :http-xhrio {:method :post
                   :uri uri
-                  :params (params-fn db)
+                  :params (merge (params-fn db)
+                                 {:league_id "3564ef95-b84d-420f-8c85-31c6650458ad"})
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [on-success]

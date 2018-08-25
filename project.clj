@@ -12,6 +12,7 @@
                  [compojure "1.6.1"]
                  [org.clojure/java.jdbc "0.7.8"]
                  [org.postgresql/postgresql "42.2.4"]
+                 [nilenso/honeysql-postgres "0.2.4"]
                  [environ/environ.core "0.3.1"]
                  [hiccup "1.0.5"]
                  [ring/ring-json "0.4.0"]

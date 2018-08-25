@@ -41,23 +41,18 @@
 
 (defn- store-users!
   []
-  (let [p1 {:id (gen-uuid) :name "bob" :email "email"}
-        p2 {:id (gen-uuid) :name "fred" :email "email"}]
-    (db/add-player! p1)
-    (db/add-player! p2)
+  (let [p1 {:name "bob" :email "email" :league_id (str sample-league-id)}
+        p2 {:name "fred" :email "email" :league_id (str sample-league-id)}
+        p1-id (db/add-player! p1)
+        p2-id (db/add-player! p2)]
 
-    (db/add-player-to-league! {:player_id (:id p1)
-                               :league_id sample-league-id})
-
-    (db/add-player-to-league! {:player_id (:id p2)
-                               :league_id sample-league-id})
-    [p1 p2]))
+    [p1-id p2-id]))
 
 (deftest store-results-test
   (testing "Should be able to store results"
-    (let [[p1 p2] (store-users!)
-          sample {:p1 (:id p1)
-                  :p2 (:id p2)
+    (let [[p1-id p2-id] (store-users!)
+          sample {:p1 p1-id
+                  :p2 p2-id
                   :league_id sample-league-id
                   :p1_team "RM"
                   :p2_team "Juv"
@@ -68,10 +63,10 @@
           response (write-api-call "/add-game" sample)
           games (sut/app (mock/request :get "/games" {:league_id sample-league-id}))
 
-          desired {"p1" (str (:id p1))
+          desired {"p1" (str p1-id)
                    "p1_goals" 3,
                    "p1_team" "RM",
-                   "p2" (str (:id p2)),
+                   "p2" (str p2-id),
                    "p2_goals" 0,
                    "p2_team" "Juv"}]
 
@@ -88,13 +83,11 @@
 
 (deftest get-rankings-test
   (testing "Simple computation"
-    (let [[p1 p2] (store-users!)
-          other (first (gen/player-gen {:name "other"} 1))
-          _ (db/add-player! other)
-          _ (db/add-player-to-league! {:player_id (:id other)
-                                       :league_id sample-league-id})
-          sample {:p1 (:id p1)
-                  :p2 (:id p2)
+    (let [[p1-id p2-id] (store-users!)
+          other (first (gen/player-gen {:name "other" :league_id (str sample-league-id)} 1))
+          other-id (db/add-player! other)
+          sample {:p1 p1-id
+                  :p2 p2-id
                   :p1_team "RM"
                   :p2_team "Juv"
                   :p1_goals 3
@@ -109,16 +102,16 @@
         (is (=
              ;; should move out ngames & other information to a
              ;; different returned map instead?
-             [{"id" (str (:id p1)) "ranking" 1516.0 "ngames" 1}
-              {"id" (str (:id other)) "ranking" 1500 "ngames" 0}
-              {"id" (str (:id p2)) "ranking" 1484.0 "ngames" 1}]
+             [{"id" (str p1-id) "ranking" 1516.0 "ngames" 1}
+              {"id" (str other-id) "ranking" 1500 "ngames" 0}
+              {"id" (str p2-id) "ranking" 1484.0 "ngames" 1}]
              
              (json/read-str (:body rankings))))))))
 
-(deftest register-user-test
+(deftest add-player-user-test
   (with-redefs [env (assoc env :admin-password "admin-password")]
     (testing "Add a new user without right user/password"
-      (let [user {:name "name" :email "email"}
+      (let [user {:name "name" :email "email" :league_id sample-league-id}
             response (sut/app (mock/request :post "/add-player" user))]
 
         (is (= 401 (:status response)))))
@@ -126,14 +119,11 @@
     (testing "Adds a new user with the right user/password"
       (with-redefs [authenticated? (fn [r] true)]
         (let [params {:name "name"
-                      :email "email"}
+                      :email "email"
+                      :league_id sample-league-id}
 
               response (sut/app (mock/header
                                  (mock/request :post "/add-player" params)
                                  "Authorization" (make-admin-header)))]
 
-          (is (= {:status 201
-                  :headers {"Content-Type" "application/json"
-                            "Location" "http://localhost/players"}
-                  :body "[1]"}
-                 response)))))))
+          (is (= 201 (:status response))))))))

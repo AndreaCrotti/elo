@@ -117,10 +117,11 @@
 (defn add-player!
   "Adds a new user to the platform, authenticated with basic Auth"
   [{:keys [params] :as request}]
+  (db/add-player! params)
   (with-basic-auth request
     (as-json
      (resp/created "/players"
-                   (db/add-player! params)))))
+                   "hello"))))
 
 (defn home
   [_]

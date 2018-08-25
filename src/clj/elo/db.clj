@@ -6,10 +6,21 @@
             [clojure.edn :as edn]
             [clojure.java.jdbc :as jdbc]
             [environ.core :refer [env]]
+
+            [honeysql-postgres.format :as pf]
+            [honeysql-postgres.helpers :as ph]
             [honeysql.core :as sql]
             [honeysql.helpers :as h])
 
   (:import (java.util UUID)))
+
+#_(-> (h/insert-into :distributors)
+    (h/values [{:did 5 :dname "Gizmo Transglobal"}
+               {:did 6 :dname "Associated Computing, Inc"}])
+    (ph/upsert (-> (ph/on-conflict :did)
+                   (ph/do-update-set :dname)))
+    (ph/returning :*)
+    sql/format)
 
 (def local-db "postgres://elo@localhost:5445/elo")
 (def test-db "postgres://elo@localhost:5445/elo_test")
@@ -36,6 +47,8 @@
 (defn to-uuid
   [uuid-str]
   (UUID/fromString uuid-str))
+
+(defn gen-uuid [] (UUID/randomUUID))
 
 (def transformations
   {:p1 to-uuid
@@ -65,6 +78,35 @@
               #(tc/to-sql-time (f/parse
                                 (f/formatter google-sheet-timestamp-format) %)))))
 
+(defn add-row-sql
+  [table]
+  (fn [params]
+    (-> (h/insert-into table)
+        (h/values [params])
+        (ph/returning :id))))
+
+(def add-player-sql (add-row-sql :player))
+
+(def add-league-sql (add-row-sql :league))
+
+(defn add-player-to-league-sql
+  [params]
+  (-> (h/insert-into :league_players)
+      (h/values [params])))
+
+(def add-company-sql (add-row-sql :company))
+
+(defn- add-row!
+  [sql-func]
+  (fn [params]
+    (jdbc/execute! (db-spec)
+                   (sql/format (sql-func params)))))
+
+(def add-league! (add-row! add-league-sql))
+
+(def add-player-to-league! (add-row! add-player-to-league-sql))
+
+(def add-company! (add-row! add-company-sql))
 
 (defn add-game!
   [params]
@@ -79,39 +121,17 @@
     (jdbc/execute! (db-spec)
                    (sql/format query))))
 
-(defn register-sql
+(defn add-player!
   [params]
-  (-> (h/insert-into :player)
-      (h/values [params])))
+  (let [without-league-id (dissoc params :league_id)
+        player-id (gen-uuid)]
 
-(defn- add-row!
-  [sql-func]
-  (fn [params]
-    (jdbc/execute! (db-spec)
-                   (sql/format (sql-func params)))))
-
-(defn add-league-sql
-  [params]
-  (-> (h/insert-into :league)
-      (h/values [params])))
-
-(defn add-company-sql
-  [params]
-  (-> (h/insert-into :company)
-      (h/values [params])))
-
-(defn add-player-to-league-sql
-  [params]
-  (-> (h/insert-into :league_players)
-      (h/values [params])))
-
-(def add-player! (add-row! register-sql))
-
-(def add-league! (add-row! add-league-sql))
-
-(def add-player-to-league! (add-row! add-player-to-league-sql))
-
-(def add-company! (add-row! add-company-sql))
+    ((add-row! add-player-sql) (assoc without-league-id
+                                      :id
+                                      player-id))
+    (add-player-to-league! {:player_id player-id
+                            :league_id (to-uuid (:league_id params))})
+    player-id))
 
 (defn- load-games-sql
   [league-id]

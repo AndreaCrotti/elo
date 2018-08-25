@@ -19,7 +19,7 @@
      :right 0
      :border 0}]
 
-   [:.register_form
+   [:.add-player_form
     {:display "grid"
      :width "70%"
      :padding-left "15px"

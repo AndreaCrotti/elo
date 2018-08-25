@@ -40,11 +40,11 @@
   []
   (.format (js/moment) timestamp-format))
 
-(defn register-form
+(defn add-player-form
   []
   (let [valid-player? (rf/subscribe [:valid-player?])
         player (rf/subscribe [:player])]
-    [:div.form-group.register_form
+    [:div.form-group.add-player_form
      [:div
       [:input.form-control {:type "text"
                             :value (:name @player)
@@ -207,7 +207,7 @@
             [:pre (:status-text @error)]
             [:pre (:original-text @error)]])
 
-         [:div.section.register__form_container (register-form)]
+         [:div.section.add-player__form_container (add-player-form)]
          [:div.section.players__form_container (game-form @players)]
          [:div.section.rankings__table (rankings-table @rankings name-mapping)]
          [:div.section.games__table (games-table @games name-mapping)]]))))
