@@ -5,7 +5,7 @@
             [buddy.core.codecs.base64 :as b64]
             [buddy.core.codecs :refer [bytes->str]]
             [elo.api :as sut]
-            [elo.db :refer [wrap-db-call register!]]
+            [elo.db :refer [wrap-db-call add-player!]]
             [ring.mock.request :as mock])
   (:import (java.util UUID)))
 
@@ -28,8 +28,8 @@
   []
   (let [p1 {:id (gen-uuid) :name "bob" :email "email"}
         p2 {:id (gen-uuid) :name "fred" :email "email"}]
-    (register! p1)
-    (register! p2)
+    (add-player! p1)
+    (add-player! p2)
     [p1 p2]))
 
 (deftest store-results-test
@@ -43,7 +43,7 @@
                   :p2_goals 0
                   :played_at "2018-08-16+01:0001:48:00"}
 
-          response (write-api-call "/store" sample)
+          response (write-api-call "/add-game" sample)
           games (sut/app (mock/request :get "/games"))
 
           desired {"p1" (str (:id p1))
@@ -68,7 +68,7 @@
   (testing "Simple computation"
     (let [[p1 p2] (store-users!)
           other {:id (gen-uuid) :name "other" :email "otheremail"}
-          _ (register! other)
+          _ (add-player! other)
           sample {:p1 (:id p1)
                   :p2 (:id p2)
                   :p1_team "RM"
@@ -77,7 +77,7 @@
                   :p2_goals 0
                   :played_at "2018-08-16+01:0001:48:00"}]
 
-      (sut/app (mock/request :post "/store" sample))
+      (sut/app (mock/request :post "/add-game" sample))
 
       (let [rankings (sut/app (mock/request :get "/rankings"))]
         (is (= 200 (:status rankings)))

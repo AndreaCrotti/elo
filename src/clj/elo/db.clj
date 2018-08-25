@@ -53,7 +53,7 @@
               #(tc/to-sql-time (f/parse
                                 (f/formatter google-sheet-timestamp-format) %)))))
 
-(defn store!
+(defn add-game!
   [params]
   (let [new-params (-> params
                        conform
@@ -71,7 +71,7 @@
   (-> (h/insert-into :player)
       (h/values [params])))
 
-(defn register!
+(defn add-player!
   [params]
   (jdbc/execute! (db-spec)
                  (sql/format (register-sql params))))

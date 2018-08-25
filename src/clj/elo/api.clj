@@ -19,13 +19,6 @@
 
 (def ^:private default-port 3000)
 
-(def sample-routes ["/" {"company/"
-                         {"" :companies
-                          [:company-id "/league/" :league-id] :company-detail}}])
-
-(def bidi-handler
-  (make-handler sample-routes))
-
 (defn- get-port
   []
   (Integer. (or (env :port) default-port)))
@@ -116,32 +109,27 @@
     [:script {:src (cache-buster "js/compiled/app.js")}]
     [:script "elo.core.init();"]]])
 
-(defn store!
+(defn add-game!
   [{:keys [params]}]
   (as-json
-   (let [result (db/store! params)]
+   (let [result (db/add-game! params)]
      {:status 201
       :body result})))
 
-(defn register!
+(defn add-player!
   "Adds a new user to the platform, authenticated with basic Auth"
   [{:keys [params] :as request}]
   (with-basic-auth request
     (as-json
-     (resp/response (db/register! params)))))
+     (resp/response (db/add-player! params)))))
 
 (defn home
-  []
+  [_]
   (resp/content-type
    (resp/response
     (hiccup/html body))
 
    "text/html"))
-
-(defn games
-  []
-  (as-json
-   (resp/response (reverse (db/load-games)))))
 
 (defn player->ngames
   [games]
@@ -152,7 +140,7 @@
 
 (defn get-rankings
   "Return all the rankings"
-  []
+  [req]
   (as-json
    (resp/response
     (let [games (db/load-games)
@@ -166,23 +154,39 @@
                   {:id k :ranking v :ngames (get ngames k 0)})))))))
 
 (defn get-players
-  []
+  [req]
   (as-json
    (resp/response (db/load-players))))
 
-(defroutes app-routes
-  (GET "/" [] (home))
-  (GET "/games" [] (let [games (db/load-games)]
-                     {:status 200
-                      :body games}))
+(defn get-games
+  [req]
+  (let [games (db/load-games)]
+    {:status 200
+     :body games}))
 
-  (GET "/rankings" [] (get-rankings))
-  (GET "/players" [] (get-players))
-  (POST "/store" request (store! request))
-  (POST "/add-player" request (register! request)))
+;;TODO: add a not found page for everything else?
+(def routes
+  ["/" {
+        ;; "company/" {"" :companies
+        ;;             [:company-id] ::company}
+
+        ;; "league" {"" :leagues
+        ;;           [:league-id] ::league}
+
+        ;;TODO: try to make this more restful
+        "add-player" add-player!
+        "add-game" add-game!
+
+        "" home
+        "players" get-players
+        "rankings" get-rankings
+        "games" get-games}])
+
+(def handler
+  (make-handler routes))
 
 (def app
-  (-> app-routes
+  (-> handler
       (resources/wrap-resource "public")
       (r-def/wrap-defaults r-def/api-defaults)
       (wrap-authorization basic-auth-backend)
