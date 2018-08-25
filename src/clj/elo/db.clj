@@ -33,12 +33,24 @@
   (-> (h/insert-into :game)
       (h/values [params])))
 
+(defn to-uuid
+  [uuid-str]
+  (UUID/fromString uuid-str))
+
+(def transformations
+  {:p1 to-uuid
+   :p2 to-uuid
+   :league_id to-uuid
+   :p1_goals #(Integer. %)
+   :p2_goals #(Integer. %)})
+
 (defn conform
   [data]
   (-> data
       (assoc :id (UUID/randomUUID))
       (update :p1 #(UUID/fromString %))
       (update :p2 #(UUID/fromString %))
+      (update :league_id #(UUID/fromString %))
       (update :p1_goals #(Integer. %))
       (update :p2_goals #(Integer. %))))
 
@@ -52,6 +64,7 @@
       (update :recorded-at
               #(tc/to-sql-time (f/parse
                                 (f/formatter google-sheet-timestamp-format) %)))))
+
 
 (defn add-game!
   [params]
@@ -71,29 +84,51 @@
   (-> (h/insert-into :player)
       (h/values [params])))
 
-(defn add-player!
+(defn- add-row!
+  [sql-func]
+  (fn [params]
+    (jdbc/execute! (db-spec)
+                   (sql/format (sql-func params)))))
+
+(defn add-league-sql
   [params]
-  (jdbc/execute! (db-spec)
-                 (sql/format (register-sql params))))
+  (-> (h/insert-into :league)
+      (h/values [params])))
+
+(defn add-player-to-league-sql
+  [params]
+  (-> (h/insert-into :league_players)
+      (h/values [params])))
+
+(def add-player! (add-row! register-sql))
+
+(def add-league! (add-row! add-league-sql))
+
+(def add-player-to-league! (add-row! add-player-to-league-sql))
 
 (defn- load-games-sql
-  []
+  [league-id]
   (-> (h/select :*)
       (h/from :game)
+      (h/where [:= :league_id league-id])
       (h/order-by [:played_at :desc])))
 
 (defn load-players-sql
-  []
+  [league-id]
   (-> (h/select :*)
-      (h/from :player)))
+      (h/from [:player :pl])
+      (h/join [:league_players :lg]
+              [:= :pl.id :lg.player_id])
+
+      (h/where [:= :lg.league_id league-id])))
 
 (defn- query
-  [func]
+  [func & args]
   (jdbc/query (db-spec)
-              (sql/format (func))))
+              (sql/format (apply func args))))
 
-(defn load-games [] (query load-games-sql))
-(defn load-players [] (query load-players-sql))
+(defn load-games [league-id] (query load-games-sql league-id))
+(defn load-players [league-id] (query load-players-sql league-id))
 
 (defn insert-game-sql
   [values]

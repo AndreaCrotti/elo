@@ -111,16 +111,16 @@
 (defn add-game!
   [{:keys [params]}]
   (as-json
-   (let [result (db/add-game! params)]
-     {:status 201
-      :body result})))
+   (resp/created "/games"
+                 (db/add-game! params))))
 
 (defn add-player!
   "Adds a new user to the platform, authenticated with basic Auth"
   [{:keys [params] :as request}]
   (with-basic-auth request
     (as-json
-     (resp/response (db/add-player! params)))))
+     (resp/created "/players"
+                   (db/add-player! params)))))
 
 (defn home
   [_]
@@ -137,14 +137,30 @@
     (for [g games]
       ((juxt :p1 :p2) g)))))
 
+;;TODO: the league_id has to be extracted on all these different handlers
+
+(defn to-uuid
+  [v]
+  (UUID/fromString v))
+
+(defn- get-league-id
+  [request]
+  (-> request
+      :params
+      :league_id
+      to-uuid))
+
 (defn get-rankings
   "Return all the rankings"
   [req]
+  ;; (assert false)
   (as-json
    (resp/response
-    (let [games (db/load-games)
+    (let [league-id (get-league-id req)
+          games (db/load-games league-id)
           norm-games (map core/normalize-game games)
-          rankings (core/compute-rankings norm-games (map :id (db/load-players)))
+          players (db/load-players league-id)
+          rankings (core/compute-rankings norm-games (map :id players))
           ngames (player->ngames games)]
 
       (reverse
@@ -155,12 +171,12 @@
 (defn get-players
   [req]
   (as-json
-   (resp/response (db/load-players))))
+   (resp/response (db/load-players (get-league-id req)))))
 
 (defn get-games
   [req]
   (as-json
-   (resp/response (db/load-games))))
+   (resp/response (db/load-games (get-league-id req)))))
 
 ;;TODO: add a not found page for everything else?
 (def routes
