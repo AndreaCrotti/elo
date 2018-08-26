@@ -4,8 +4,14 @@
 (def internal-grid-gap "10px")
 (def grid-gap "15px")
 
-(defstyles screen
-  ;; could maybe even split creating multiple CSS files?
+(def leagues-page
+  [[:.league__content {:width "80%"
+                       :padding-top "10px"
+                       :padding-left "10px"}]
+   [:.language_pick {:font-size "24px"
+                     :text-align "center"}]])
+
+(def home-page
   [[:.content
     {:display "grid"
      :width "90%"
@@ -37,3 +43,10 @@
 
    [:.section {:padding "10px"
                :box-shadow "-1px 1px 2px 2px rgba(0,0,0,0.2)"}]])
+
+(defstyles screen
+  ;; could maybe even split creating multiple CSS files?
+  (concat leagues-page home-page)
+  )
+
+#_(concat [[1] [2]] [[3] [4]])
