@@ -1,5 +1,6 @@
 (ns elo.core-test
   (:require [clojure.test :refer [deftest is are testing]]
+            [elo.generators :as gen]
             [elo.core :as sut]))
 
 (def games
@@ -14,8 +15,7 @@
   (testing "Should compute the new rating correctly"
     (are [d exp] (= exp (sut/expected d))
       10 0.48561281583400134
-      (- 10) 0.5143871841659987))
-  )
+      (- 10) 0.5143871841659987)))
 
 (deftest elo-rating-test
   (testing "Should be a zero sum game"
@@ -28,7 +28,7 @@
     (let [game [:a :b 1]
           game-inv [:b :a 0]]
 
-      (is (= {:a 1516.0, :b 1484.0, :c 1500} 
+      (is (= {:a 1516.0, :b 1484.0, :c 1500}
              (sut/new-ratings initial-ratings game)
              (sut/new-ratings initial-ratings game-inv))))))
 
@@ -38,7 +38,7 @@
            (sut/compute-rankings games))))
 
   (testing "passing new players sets them up with an initial ranking"
-    (is (= {:a 1499.2298601853572,          
+    (is (= {:a 1499.2298601853572,
             :b 1484.736306793522,
             :c 1516.0338330211207,
             :d 1500}

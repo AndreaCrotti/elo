@@ -1,17 +1,31 @@
 (ns elo.api-test
-  (:require [clojure.test :refer [deftest is testing use-fixtures]]
-            [clojure.data.json :as json]
-            [buddy.auth :refer [authenticated?]]
-            [buddy.core.codecs.base64 :as b64]
+  (:require [buddy.auth :refer [authenticated?]]
             [buddy.core.codecs :refer [bytes->str]]
+            [buddy.core.codecs.base64 :as b64]
+            [clojure.data.json :as json]
+            [clojure.test :refer [deftest is testing use-fixtures join-fixtures]]
             [elo.api :as sut]
-            [elo.db :refer [wrap-db-call register!]]
+            [elo.db :as db]
+            [elo.generators :as gen]
+            [environ.core :refer [env]]
             [ring.mock.request :as mock])
   (:import (java.util UUID)))
 
-(use-fixtures :each wrap-db-call)
-
 (defn- gen-uuid [] (UUID/randomUUID))
+
+;; this league is always present, which makes it easier to write tests using it 
+(def sample-company-id (gen-uuid))
+
+(def sample-league-id (gen-uuid))
+(def sample-league {:id sample-league-id
+                    :company_id sample-company-id
+                    :name "Sample League"})
+
+(use-fixtures :each (join-fixtures [db/wrap-db-call (fn [test-fn]
+                                                      (db/add-company! {:id sample-company-id
+                                                                        :name "Sample Company"})
+                                                      (db/add-league! sample-league)
+                                                      (test-fn))]))
 
 (defn- make-admin-header
   []
@@ -26,34 +40,34 @@
 
 (defn- store-users!
   []
-  (let [p1 {:id (gen-uuid) :name "bob" :email "email"}
-        p2 {:id (gen-uuid) :name "fred" :email "email"}]
-    (register! p1)
-    (register! p2)
-    [p1 p2]))
+  (let [p1 {:name "bob" :email "email" :league_id (str sample-league-id)}
+        p2 {:name "fred" :email "email" :league_id (str sample-league-id)}
+        p1-id (db/add-player! p1)
+        p2-id (db/add-player! p2)]
+
+    [p1-id p2-id]))
 
 (deftest store-results-test
   (testing "Should be able to store results"
-    (let [[p1 p2] (store-users!)
-          sample {:p1 (:id p1)
-                  :p2 (:id p2)
+    (let [[p1-id p2-id] (store-users!)
+          sample {:p1 p1-id
+                  :p2 p2-id
+                  :league_id sample-league-id
                   :p1_team "RM"
                   :p2_team "Juv"
                   :p1_goals 3
                   :p2_goals 0
                   :played_at "2018-08-16+01:0001:48:00"}
 
-          response (write-api-call "/store" sample)
-          games (sut/app (mock/request :get "/games"))
+          _ (write-api-call "/add-game" sample)
+          games (sut/app (mock/request :get "/games" {:league_id sample-league-id}))
 
-          desired {"p1" (str (:id p1))
+          desired {"p1" (str p1-id)
                    "p1_goals" 3,
                    "p1_team" "RM",
-                   "p2" (str (:id p2)),
+                   "p2" (str p2-id),
                    "p2_goals" 0,
                    "p2_team" "Juv"}]
-
-      (is (= [1] response))
 
       (is (= 200 (:status games)))
 
@@ -66,45 +80,63 @@
 
 (deftest get-rankings-test
   (testing "Simple computation"
-    (let [[p1 p2] (store-users!)
-          other {:id (gen-uuid) :name "other" :email "otheremail"}
-          _ (register! other)
-          sample {:p1 (:id p1)
-                  :p2 (:id p2)
+    (let [[p1-id p2-id] (store-users!)
+          other (first (gen/player-gen {:name "other" :league_id (str sample-league-id)} 1))
+          other-id (db/add-player! other)
+          sample {:p1 p1-id
+                  :p2 p2-id
                   :p1_team "RM"
                   :p2_team "Juv"
                   :p1_goals 3
                   :p2_goals 0
+                  :league_id sample-league-id
                   :played_at "2018-08-16+01:0001:48:00"}]
 
-      (sut/app (mock/request :post "/store" sample))
+      (sut/app (mock/request :post "/add-game" sample))
 
-      (let [rankings (sut/app (mock/request :get "/rankings"))]
+      (let [rankings (sut/app (mock/request :get "/rankings"  {:league_id sample-league-id}))]
         (is (= 200 (:status rankings)))
         (is (=
              ;; should move out ngames & other information to a
              ;; different returned map instead?
-             [{"id" (str (:id p1)) "ranking" 1516.0 "ngames" 1}
-              {"id" (str (:id other)) "ranking" 1500 "ngames" 0}
-              {"id" (str (:id p2)) "ranking" 1484.0 "ngames" 1}]
-             
+             [{"id" (str p1-id) "ranking" 1516.0 "ngames" 1}
+              {"id" (str other-id) "ranking" 1500 "ngames" 0}
+              {"id" (str p2-id) "ranking" 1484.0 "ngames" 1}]
+
              (json/read-str (:body rankings))))))))
 
-(deftest register-user-test
-  (testing "Add a new user without right user/password"
-    (let [user {:name "name" :email "email"}
-          response (sut/app (mock/request :post "/add-player" user))]
+(deftest add-player-user-test
+  (with-redefs [env (assoc env :admin-password "admin-password")]
+    (testing "Add a new user without right user/password"
+      (let [user {:name "name" :email "email" :league_id sample-league-id}
+            response (sut/app (mock/request :post "/add-player" user))]
 
-      (is (= 401 (:status response)))))
+        (is (= 401 (:status response)))))
 
-  (testing "Adds a new user with the right user/password"
-    (with-redefs [authenticated? (fn [r] true)]
-      (let [params {:name "name"
-                    :email "email"}
+    (testing "Adds a new user with the right user/password"
+      (with-redefs [authenticated? (fn [r] true)]
+        (let [params {:name "name"
+                      :email "email"
+                      :league_id sample-league-id}
 
-            response (sut/app (mock/header
-                               (mock/request :post "/add-player" params)
-                               "Authorization" (make-admin-header)))]
+              response (sut/app (mock/header
+                                 (mock/request :post "/add-player" params)
+                                 "Authorization" (make-admin-header)))]
 
-        (is (= {:status 200, :headers {"Content-Type" "application/json"}, :body "[1]"}
-               response))))))
+          (is (= 201 (:status response))))))))
+
+(deftest leagues-list-test
+  (testing "Fetching the list of leagues"
+    (let [req (mock/request :get "/")
+          resp-home (sut/app req)]
+
+      (is (= 200 (:status resp-home)))
+      (is (true? (clojure.string/includes? (:body resp-home)
+                                           "list-group-item"))))))
+
+(deftest homepage-test
+  (testing "Get the homepage per league"
+    (let [req (mock/request :get (format "/?league_id=%s" sample-league-id))
+          resp-home (sut/app req)]
+
+      (is (= 200 (:status resp-home))))))

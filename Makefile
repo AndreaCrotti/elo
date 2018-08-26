@@ -7,3 +7,6 @@ prod:
 pg:
 	pgcli postgres://elo@localhost:5445/elo
 
+pg-test:
+	pgcli postgres://elo@localhost:5445/elo_test
+
