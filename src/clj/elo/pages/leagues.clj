@@ -2,7 +2,8 @@
   (:require [elo.db :as db]
             [elo.pages.header :refer [gen-header]]))
 
-(def body
+(defn body
+  []
   [:html
    (gen-header "Leagues List")
    [:body

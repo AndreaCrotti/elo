@@ -51,9 +51,9 @@
 
    "text/html"))
 
-(defn home [_] (render-page home/body))
+(defn home [_] (render-page (home/body)))
 
-(defn leagues [_] (render-page leagues/body))
+(defn leagues [_] (render-page (leagues/body)))
 
 (defn player->ngames
   [games]

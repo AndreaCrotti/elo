@@ -2,7 +2,8 @@
   (:require [elo.pages.utils :refer [cache-buster]]
             [elo.pages.header :refer [gen-header]]))
 
-(def body
+(defn body
+  []
   [:html
    (gen-header "League page")
    [:body
