@@ -66,7 +66,7 @@
 
 (defn to-uuid
   [v]
-  (uuid/fromString v))
+  (UUID/fromString v))
 
 (defn- get-league-id
   [request]
