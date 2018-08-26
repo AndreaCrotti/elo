@@ -119,11 +119,11 @@
 
         ;;TODO: try to make this more restful
 
-        "" dispatch-home
+        ;; "" dispatch-home                ;
         ;;TODO: should actually use this instead of query arguments
-        ;; "" leagues
+        "" leagues
 
-        ;; ["league/" :league-id] home
+        ["league/" :league-id] home
 
         "add-player" add-player!
         "add-game" add-game!
