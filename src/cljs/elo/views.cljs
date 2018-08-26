@@ -160,7 +160,7 @@
                [:td (:name (get name-mapping p2))]
                [:td p2_team]
                [:td p2_goals]
-               [:td played_at]]))]]))
+               [:td (.format (js/moment played_at) "LLLL")]]))]]))
 
 (defn rankings-table
   [rankings name-mapping]
