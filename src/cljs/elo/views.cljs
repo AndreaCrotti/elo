@@ -3,7 +3,6 @@
             [elo.dropdown :as dropdown]
             [clojure.string :refer [join]]
             [elo.date-picker-utils :refer [date-time-picker]]
-            [cljsjs.selectize]
             [cljsjs.moment]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
@@ -202,7 +201,6 @@
          [:a {:href "https://github.com/AndreaCrotti/elo"}
           [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
                          :alt "Fork me on Github"}]]
-
 
          (when @error
            [:div.section.alert.alert-danger

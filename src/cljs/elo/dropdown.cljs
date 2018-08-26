@@ -1,66 +1,28 @@
 (ns elo.dropdown
-  (:require [cljsjs.selectize]
+  (:require [cljsjs.react-select]
             [reagent.core :as reagent]
             [re-frame.core :as rf]))
 
-;; $('#select-beast').selectize({
-;;     create: true,
-;;     sortField: 'text'
-;; });
-
 (def sample-options (atom ["one"  "two" "three"]))
 
-(defn drop-inner
-  []
-  (let [update (fn [comp]
-                 (.selectize ))]
+(defn select
+  "Select based on a atom/cursor. Pass as state"
+  [{:keys [state] :as props}]
+  [:> js/Select.Async
+   (-> props
+       (dissoc state)
+       (assoc :value @state
+              :on-change (fn [x]
+                           (reset! state (some-> x .-value)))))])
 
-    (reagent/create-class
-     {:reagent-render (fn []
-                        [:div])
+(defonce !state (atom nil))
 
-      :component-did-mount (fn [comp]
-                             (update comp))
-
-      :component-did-update update
-      :display-name "dropdown-inner"})))
-
-(defn drop-outer
-  []
-  (let [pos (rf/subscribe [:possibilities])]
-    [drop-inner @pos]))
-
-
-;;TODO: google maps implementation
-(defn gmap-inner []
-  (let [gmap    (atom nil)
-        options (clj->js {"zoom" 9})
-        update  (fn [comp]
-                  (let [{:keys [latitude longitude]} (reagent/props comp)
-                        latlng (js/google.maps.LatLng. latitude longitude)]
-                    (.setPosition (:marker @gmap) latlng)
-                    (.panTo (:map @gmap) latlng)))]
-
-    (reagent/create-class
-     {:reagent-render (fn []
-                        [:div
-                         [:h4 "Map"]
-                         [:div#map-canvas {:style {:height "400px"}}]])
-
-      :component-did-mount (fn [comp]
-                             (let [canvas  (.getElementById js/document "map-canvas")
-                                   gm      (js/google.maps.Map. canvas options)
-                                   marker  (js/google.maps.Marker. (clj->js {:map gm :title "Drone"}))]
-                               (reset! gmap {:map gm :marker marker}))
-                             (update comp))
-
-      :component-did-update update
-      :display-name "gmap-inner"})))
-
-(def sample-position {:latitude 42 :longitude 0})
-
-(defn gmap-outer []
-  (let [pos (atom sample-position)]   ;; obtain the data
-
-    (fn []
-      [gmap-inner @pos])))
+(defn load-options
+  [input cb]
+  (let [players @(rf/subscribe [:players])]
+    (cb nil #js{:options (->> players
+                              (map (fn [item]
+                                     {:value (:id item)
+                                      :label (:name item)}))
+                              clj->js)
+                :complete true})))

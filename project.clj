@@ -31,6 +31,7 @@
                  [cljs-react-material-ui "0.2.48"]
                  [re-frame "0.10.5"]
                  [reagent-forms "0.5.42"]
+                 [cljsjs/react-select "1.2.1-1"]
 
                  [cljsjs/react-datepicker "1.5.0-0"]
                  [cljsjs/classnames "2.2.5-1"]
@@ -38,7 +39,6 @@
                  [cljsjs/react-onclickoutside "6.7.1-1"]
                  [cljsjs/react-popper "0.10.4-0"]
                  [cljsjs/popperjs "1.14.3-1"]
-                 [cljsjs/selectize "0.12.1-2"]
                  [cljsjs/jquery "1.9.1-0"]
 
                  [ns-tracker "0.3.1"]
