@@ -2,6 +2,7 @@
   (:require [re-frame.core :as rf]
             [clojure.string :refer [join]]
             [elo.date-picker-utils :refer [date-time-picker]]
+            [elo.algorithms.elo :as elo]
             [cljsjs.moment]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
