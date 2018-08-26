@@ -33,7 +33,7 @@
   (into [:select.form-control {:on-change (set-val key)
                                :value (or value "")}]
         (cons [:option ""]
-              (for [p players]
+              (for [p (sort-by :name players)]
                 [:option {:value (:id p)} (:name p)]))))
 
 (defn now-format
