@@ -3,7 +3,7 @@
   (:require [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [bidi.ring :refer [make-handler]]
             [elo.auth :refer [basic-auth-backend with-basic-auth]]
-            [elo.core :as core]
+            [elo.algorithms.elo :as elo]
             [elo.db :as db]
             [elo.pages.home :as home]
             [elo.pages.leagues :as leagues]
@@ -83,9 +83,9 @@
    (resp/response
     (let [league-id (get-league-id req)
           games (db/load-games league-id)
-          norm-games (map core/normalize-game games)
+          norm-games (map elo/normalize-game games)
           players (db/load-players league-id)
-          rankings (core/compute-rankings norm-games (map :id players))
+          rankings (elo/compute-rankings norm-games (map :id players))
           ngames (player->ngames games)]
 
       (reverse

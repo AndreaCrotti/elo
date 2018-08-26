@@ -64,8 +64,8 @@
 
   :uberjar-name "elo.jar"
   :min-lein-version "2.7.1"
-  :source-paths ["src/clj" "src/cljc"]
-  :test-paths ["test/clj" "test/cljc"]
+  :source-paths ["src/cljc" "src/clj"]
+  :test-paths ["test/clj"]
   :ring {:handler elo.api/app}
   :resource-paths ["config" "resources"]
 

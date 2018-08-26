@@ -1,7 +1,4 @@
-(ns elo.core
-  "Main namespace containing all the core logic.
-  See the mathematical details of the Elo formula used here:
-  https://en.wikipedia.org/wiki/Elo_rating_system")
+(ns elo.algorithms.elo)
 
 (def k 32)
 (def initial-ranking 1500)
@@ -71,8 +68,10 @@
 
 (defn compute-rankings
   ([games players]
+   ;; this could simply have a bit more leeway to work (2/3% max)
    #_{:post [(valid-rankings? (vals %))]}
    (update-ratings (initial-rankings players)
                    games))
   ([games]
    (compute-rankings games (extract-players games))))
+
