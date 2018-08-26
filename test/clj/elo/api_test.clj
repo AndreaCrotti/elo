@@ -11,7 +11,6 @@
             [ring.mock.request :as mock])
   (:import (java.util UUID)))
 
-
 (defn- gen-uuid [] (UUID/randomUUID))
 
 ;; this league is always present, which makes it easier to write tests using it 
@@ -103,7 +102,7 @@
              [{"id" (str p1-id) "ranking" 1516.0 "ngames" 1}
               {"id" (str other-id) "ranking" 1500 "ngames" 0}
               {"id" (str p2-id) "ranking" 1484.0 "ngames" 1}]
-             
+
              (json/read-str (:body rankings))))))))
 
 (deftest add-player-user-test

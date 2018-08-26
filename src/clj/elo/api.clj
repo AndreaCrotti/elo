@@ -66,7 +66,7 @@
 
 (defn to-uuid
   [v]
-  (UUID/fromString v))
+  (uuid/fromString v))
 
 (defn- get-league-id
   [request]
@@ -111,8 +111,7 @@
 
 ;;TODO: add a not found page for everything else?
 (def routes
-  ["/" {
-        ;; "company/" {"" :companies
+  ["/" {;; "company/" {"" :companies
         ;;             [:company-id] ::company}
 
         ;; "league" {"" :leagues

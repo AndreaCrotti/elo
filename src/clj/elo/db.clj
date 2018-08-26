@@ -7,20 +7,11 @@
             [clojure.java.jdbc :as jdbc]
             [environ.core :refer [env]]
 
-            [honeysql-postgres.format :as pf]
             [honeysql-postgres.helpers :as ph]
             [honeysql.core :as sql]
             [honeysql.helpers :as h])
 
   (:import (java.util UUID)))
-
-#_(-> (h/insert-into :distributors)
-    (h/values [{:did 5 :dname "Gizmo Transglobal"}
-               {:did 6 :dname "Associated Computing, Inc"}])
-    (ph/upsert (-> (ph/on-conflict :did)
-                   (ph/do-update-set :dname)))
-    (ph/returning :*)
-    sql/format)
 
 (def local-db "postgres://elo@localhost:5445/elo")
 (def test-db "postgres://elo@localhost:5445/elo_test")
