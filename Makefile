@@ -10,3 +10,5 @@ pg:
 pg-test:
 	pgcli postgres://elo@localhost:5445/elo_test
 
+backup:
+	heroku pg:backups:capture -a fifa-elo
