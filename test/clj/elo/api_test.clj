@@ -125,3 +125,19 @@
                                  "Authorization" (make-admin-header)))]
 
           (is (= 201 (:status response))))))))
+
+(deftest leagues-list-test
+  (testing "Fetching the list of leagues"
+    (let [req (mock/request :get "/")
+          resp-home (sut/app req)]
+
+      (is (= 200 (:status resp-home)))
+      ;;TODO: this should also work in theory
+      #_(is (true? (clojure.string/includes? (:body resp-home) (str sample-company-id)))))))
+
+(deftest homepage-test
+  (testing "Get the homepage per league"
+    (let [req (mock/request :get (format "/league/%s" sample-league-id))
+          resp-home (sut/app req)]
+
+      (is (= 200 (:status resp-home))))))

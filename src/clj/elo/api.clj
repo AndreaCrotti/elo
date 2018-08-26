@@ -6,6 +6,7 @@
             [elo.core :as core]
             [elo.db :as db]
             [elo.pages.home :as home]
+            [elo.pages.leagues :as leagues]
             [environ.core :refer [env]]
             [hiccup.core :as hiccup]
             [ring.adapter.jetty :as jetty]
@@ -42,13 +43,17 @@
        (resp/created "/players"
                      {:id player-id})))))
 
-(defn home
-  [_]
+(defn- render-page
+  [page]
   (resp/content-type
    (resp/response
-    (hiccup/html home/body))
+    (hiccup/html page))
 
    "text/html"))
+
+(defn home [_] (render-page home/body))
+
+(defn leagues [_] (render-page leagues/body))
 
 (defn player->ngames
   [games]
@@ -108,7 +113,10 @@
         ;;           [:league-id] ::league}
 
         ;;TODO: try to make this more restful
-        "" home
+
+        "" leagues
+
+        ["league/" :league-id] home
 
         "add-player" add-player!
         "add-game" add-game!

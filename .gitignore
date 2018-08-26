@@ -11,3 +11,4 @@ pom.xml.asc
 .hg/
 /resources/public
 /figwheel_server.log
+/log
