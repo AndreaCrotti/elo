@@ -137,7 +137,7 @@
 
 (deftest homepage-test
   (testing "Get the homepage per league"
-    (let [req (mock/request :get (format "/league/%s" sample-league-id))
+    (let [req (mock/request :get (format "/?league_id=%s" sample-league-id))
           resp-home (sut/app req)]
 
       (is (= 200 (:status resp-home))))))

@@ -103,6 +103,12 @@
   (as-json
    (resp/response (db/load-games (get-league-id req)))))
 
+(defn dispatch-home
+  [request]
+  (if (some? (:query-string request))
+    (home request)
+    (leagues request)))
+
 ;;TODO: add a not found page for everything else?
 (def routes
   ["/" {
@@ -114,9 +120,11 @@
 
         ;;TODO: try to make this more restful
 
-        "" leagues
+        "" dispatch-home
+        ;;TODO: should actually use this instead of query arguments
+        ;; "" leagues
 
-        ["league/" :league-id] home
+        ;; ["league/" :league-id] home
 
         "add-player" add-player!
         "add-game" add-game!
@@ -128,15 +136,35 @@
 (def handler
   (make-handler routes))
 
+(defn update-req
+  [request]
+  (update request
+          :uri
+          #(if (or
+                (clojure.string/includes? % "js/")
+                (clojure.string/includes? % "css/"))
+
+             (subs % 6)
+             (identity %))))
+
+(defn rewrite-resources-url
+  [handler]
+  (fn
+    ([request]
+     (let [new-req (update-req request)]
+       (handler new-req)))))
+
 (def app
   (-> handler
+      
       (resources/wrap-resource "public")
       (r-def/wrap-defaults r-def/api-defaults)
       (wrap-authorization basic-auth-backend)
       (wrap-authentication basic-auth-backend)
       wrap-keyword-params
       wrap-json-params
-      wrap-json-response))
+      wrap-json-response
+      #_rewrite-resources-url))
 
 (defn -main [& args]
   (jetty/run-jetty app {:port (get-port)}))

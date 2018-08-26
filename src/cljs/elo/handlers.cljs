@@ -1,14 +1,20 @@
 (ns elo.handlers
   (:require [re-frame.core :as rf]
+            [cemerick.url :refer [url]]
             [cljsjs.moment]
             [ajax.core :as ajax]
             [day8.re-frame.http-fx]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 
+(defn- get-league-id
+  []
+  (-> (url js/window.location.href)
+      :query
+      (get "league_id")))
+
 ;;TODO: this might get defined too late anyway
-(defn default-game
-  [db]
+(def default-game
   {:p1 ""
    :p2 ""
    :p1_goals ""
@@ -27,7 +33,8 @@
    :players []
    :game {}
    :player {}
-   :error nil})
+   :error nil
+   :league_id (get-league-id)})
 
 (defn- getter
   [ks]
@@ -37,7 +44,6 @@
 (defn- setter
   [key]
   (fn [db [_ val]]
-    (js/console.log "Setting " key " to " val)
     (assoc-in db key val)))
 
 (rf/reg-sub :error (getter [:error]))
@@ -57,7 +63,7 @@
                                  (assoc db :player default-player)))
 
 (rf/reg-event-db :reset-game (fn [db _]
-                               (assoc db :game (default-game db))))
+                               (assoc db :game default-game)))
 
 (rf/reg-sub :player (getter [:player]))
 (rf/reg-sub :game (getter [:game]))
@@ -70,7 +76,7 @@
                  (fn [db _]
                    (assoc default-db
                           :game
-                          (default-game db)
+                          default-game
                           :player
                           default-player)))
 
@@ -121,7 +127,7 @@
     {:db db
      :http-xhrio {:method :get
                   :uri uri
-                  :params {:league_id "3564ef95-b84d-420f-8c85-31c6650458ad"}
+                  :params {:league_id (:league_id db)}
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [on-success]
@@ -138,7 +144,7 @@
      :http-xhrio {:method :post
                   :uri uri
                   :params (merge (params-fn db)
-                                 {:league_id "3564ef95-b84d-420f-8c85-31c6650458ad"})
+                                 {:league_id (:league_id db)})
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [on-success]

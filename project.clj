@@ -49,7 +49,8 @@
                  [buddy "2.0.0"]
                  [com.taoensso/timbre "4.10.0"]
                  [re-com "2.1.0"]
-                 [bidi "2.1.3"]]
+                 [bidi "2.1.3"]
+                 [com.cemerick/url "0.1.1"]]
 
   :plugins [[environ/environ.lein "0.3.1"]
             [migratus-lein "0.5.0"]
