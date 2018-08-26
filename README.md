@@ -34,19 +34,6 @@ And the `ids_mapping.edn` file contains mapping between player names and their U
     
 So all the players have to be created before.
 
-## TODO
-
-- [ ] eventually paginatate list of all the games
-- [ ] add player trend (last won/lost points)
-- [ ] fetch all possible list of teams and auto complete on input
-- [ ] auto complete on player names
-- [ ] set some default values in the spreadsheet
-- [ ] add authentication using Okta/Google Apps to limit to a company
-- [ ] add a way to play around with the various factors that affect how the scores are computed dynamically from the UI
-- [x] add some proper styling
-- [x] add a user table (use email as PK or UUIDS)?
-- [x] add a way to add a new player
-
 ## License
 
 Copyright © 2018 Andrea Crotti
