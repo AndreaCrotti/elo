@@ -50,13 +50,11 @@
 
 (defn conform
   [data]
-  (-> data
-      (assoc :id (UUID/randomUUID))
-      (update :p1 #(UUID/fromString %))
-      (update :p2 #(UUID/fromString %))
-      (update :league_id #(UUID/fromString %))
-      (update :p1_goals #(Integer. %))
-      (update :p2_goals #(Integer. %))))
+  (assoc (reduce-kv update
+                    data
+                    transformations)
+         :id
+         (UUID/randomUUID)))
 
 (defn conform-with-date
   [data]
