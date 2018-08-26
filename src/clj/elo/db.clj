@@ -107,7 +107,7 @@
   (let [new-params (-> params
                        conform
                        (update :played_at #(tc/to-sql-time (f/parse
-                                                            (f/formatter "YYYY-MM-DDZhh:mm:SS") %)))
+                                                            (f/formatter "YYYY-MM-ddZhh:mm:SS") %)))
                        (assoc :recorded_at (tc/to-sql-time (t/now))))
 
         query (store-sql new-params)]

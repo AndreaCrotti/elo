@@ -94,7 +94,11 @@
 
       (sut/app (mock/request :post "/add-game" sample))
 
-      (let [rankings (sut/app (mock/request :get "/rankings"  {:league_id sample-league-id}))]
+      (let [rankings (sut/app (mock/request :get "/rankings"  {:league_id sample-league-id}))
+            games (db/load-games sample-league-id)]
+
+        (is (= #inst "2018-08-16T00:48:00.000000000-00:00"
+               (-> games first :played_at)))
         (is (= 200 (:status rankings)))
         (is (=
              ;; should move out ngames & other information to a
