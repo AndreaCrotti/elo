@@ -156,7 +156,6 @@
 
 (def app
   (-> handler
-      
       (resources/wrap-resource "public")
       (r-def/wrap-defaults r-def/api-defaults)
       (wrap-authorization basic-auth-backend)

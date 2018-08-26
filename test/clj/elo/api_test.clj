@@ -132,8 +132,8 @@
           resp-home (sut/app req)]
 
       (is (= 200 (:status resp-home)))
-      ;;TODO: this should also work in theory
-      #_(is (true? (clojure.string/includes? (:body resp-home) (str sample-company-id)))))))
+      (is (true? (clojure.string/includes? (:body resp-home)
+                                           "list-group-item"))))))
 
 (deftest homepage-test
   (testing "Get the homepage per league"
