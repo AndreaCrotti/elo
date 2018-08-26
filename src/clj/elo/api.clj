@@ -3,9 +3,9 @@
   (:require [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [bidi.ring :refer [make-handler]]
             [elo.auth :refer [basic-auth-backend with-basic-auth]]
-            [elo.config :as config]
             [elo.core :as core]
             [elo.db :as db]
+            [elo.pages.home :as home]
             [environ.core :refer [env]]
             [hiccup.core :as hiccup]
             [ring.adapter.jetty :as jetty]
@@ -22,91 +22,9 @@
   []
   (Integer. (or (env :port) default-port)))
 
-(defn- cache-buster
-  [path]
-  ;; fallback to a random git sha when nothing is found
-  (format "%s?git_sha=%s"
-          path
-          (:heroku-slug-commit env (str (UUID/randomUUID)))))
-
-
-(defn ga-js
-  []
-  [:script (format "
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', '%s');" config/google-analytics-tag)])
-
-(defn adsense-js
-  []
-  [:script (format
-            "(adsbygoogle = window.adsbygoogle || []).push({
-              google_ad_client: '%s',
-              enable_page_level_ads: true
-  });
-"
-            config/adsense-tag)])
-
 (defn- as-json
   [response]
   (resp/content-type response "application/json"))
-
-(def body
-  [:html
-   [:head [:meta {:charset "utf-8"
-                  :description "FIFA championship little helper"}]
-    [:title "FIFA championship"]
-
-    [:link {:href (cache-buster "css/react-datepicker.css")
-            :rel "stylesheet"
-            :type "text/css"}]
-
-    [:link {:rel "stylesheet"
-            :href "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-            :integrity "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-            :crossorigin "anonymous"}]
-
-    [:link {:href (cache-buster "css/screen.css")
-            :rel "stylesheet"
-            :type "text/css"}]
-
-    (when config/google-analytics-tag
-      [:script {:async true
-                :src (format "https://www.googletagmanager.com/gtag/js?id=%s"
-                             config/google-analytics-tag)}])
-
-    (when config/google-analytics-tag
-      (ga-js))
-
-    (when config/adsense-tag
-      [:script {:async true
-                :src "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"}])
-
-    (when config/adsense-tag
-      (adsense-js))
-
-    ;; [:script {:src "https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    ;;           :integrity "sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    ;;           :crossorigin "anonymous"
-    ;;           :async true}]
-
-    ;; [:script {:src "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-    ;;           :integrity "sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    ;;           :crossorigin "anonymous"
-    ;;           :async true}]
-
-    ;; [:script {:src "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-    ;;           :integrity "sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    ;;           :crossorigin "anonymous"
-    ;;           :async true}]
-]
-
-   [:body
-    [:div {:id "app"}]
-    [:script {:src (cache-buster "js/compiled/app.js")}]
-    [:script "elo.core.init();"]]])
 
 (defn add-game!
   [{:keys [params]}]
@@ -128,7 +46,7 @@
   [_]
   (resp/content-type
    (resp/response
-    (hiccup/html body))
+    (hiccup/html home/body))
 
    "text/html"))
 
