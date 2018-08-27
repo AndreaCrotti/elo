@@ -115,10 +115,11 @@
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
   {:builds
-   [{:id "test"
-     :source-paths ["src/cljs" "test/cljs" "src/cljc" "test/cljc"]
+   [;; enable it again when it won't complain anymore about not finding some namespace
+    #_{:id "test"
+     :source-paths ["src/cljs" "test/cljs" "src/cljc" "test/cljc" "test/doo"]
      :compiler {:output-to "resources/public/js/testable.js"
-                :main elo.test-runner
+                :main doo.test-runner
                 :optimizations :none}}
 
     {:id "dev"

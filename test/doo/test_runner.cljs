@@ -1,4 +1,4 @@
-(ns elo.test-runner
+(ns doo.test-runner
   (:require [doo.runner :refer-macros [doo-tests]]
             [elo.algorithms.elo]
             [elo.algorithms.elo-test]))

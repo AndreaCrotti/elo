@@ -150,7 +150,7 @@
 
     [:div
      [:h3 "List of Games"]
-     [:table.table
+     [:table.table.table-striped
       [:thead header]
       (into [:tbody]
             (for [[idx {:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]}] (enumerate games)]
@@ -175,7 +175,7 @@
 
     [:div
      [:h3 "Players Rankings"]
-     [:table.table
+     [:table.table.table-striped
       [:thead header]
       (into [:tbody]
             (for [[idx {:keys [id ranking ngames]}] (enumerate sorted)]
