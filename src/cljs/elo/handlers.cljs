@@ -102,8 +102,7 @@
     ;;area of the page to make it clear what was actually changed
     {:db db
      :dispatch-n (cons extra-signal [[:load-players]
-                                     [:load-games]
-                                     [:load-rankings]])}))
+                                     [:load-games]])}))
 
 (rf/reg-event-fx :add-game-success (reload-fn-gen [:reset-game]))
 (rf/reg-event-fx :add-player-success (reload-fn-gen [:reset-player]))
@@ -118,7 +117,6 @@
                            :original-text (:original-text parse-error)})))
 
 (rf/reg-event-db :load-games-success (setter [:games]))
-(rf/reg-event-db :load-rankings-success (setter [:rankings]))
 (rf/reg-event-db :load-players-success (setter [:players]))
 
 (defn- loader
@@ -134,7 +132,6 @@
                   :on-failure [:failed]}}))
 
 (rf/reg-event-fx :load-games (loader "/games" :load-games-success))
-(rf/reg-event-fx :load-rankings (loader "/rankings" :load-rankings-success))
 (rf/reg-event-fx :load-players (loader "/players" :load-players-success))
 
 (defn writer

@@ -3,7 +3,6 @@
   (:require [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [bidi.ring :refer [make-handler]]
             [elo.auth :refer [basic-auth-backend with-basic-auth]]
-            [elo.algorithms.elo :as elo]
             [elo.db :as db]
             [elo.pages.home :as home]
             [elo.pages.leagues :as leagues]
@@ -55,13 +54,6 @@
 
 (defn leagues [_] (render-page (leagues/body)))
 
-(defn player->ngames
-  [games]
-  (frequencies
-   (flatten
-    (for [g games]
-      ((juxt :p1 :p2) g)))))
-
 ;;TODO: the league_id has to be extracted on all these different handlers
 
 (defn to-uuid
@@ -74,24 +66,6 @@
       :params
       :league_id
       to-uuid))
-
-(defn get-rankings
-  "Return all the rankings"
-  [req]
-  ;; (assert false)
-  (as-json
-   (resp/response
-    (let [league-id (get-league-id req)
-          games (db/load-games league-id)
-          norm-games (map elo/normalize-game games)
-          players (db/load-players league-id)
-          rankings (elo/compute-rankings norm-games (map :id players))
-          ngames (player->ngames games)]
-
-      (reverse
-       (sort-by :ranking
-                (for [[k v] rankings]
-                  {:id k :ranking v :ngames (get ngames k 0)})))))))
 
 (defn get-players
   [req]
@@ -129,7 +103,6 @@
         "add-game" add-game!
 
         "players" get-players
-        "rankings" get-rankings
         "games" get-games}])
 
 (def handler

@@ -6,7 +6,6 @@
             [clojure.test :refer [deftest is testing use-fixtures join-fixtures]]
             [elo.api :as sut]
             [elo.db :as db]
-            [elo.generators :as gen]
             [environ.core :refer [env]]
             [ring.mock.request :as mock])
   (:import (java.util UUID)))
@@ -77,37 +76,6 @@
               ["p1_goals" "p2_goals"
                "p1" "p2"
                "p1_team" "p2_team"]))))))
-
-(deftest get-rankings-test
-  (testing "Simple computation"
-    (let [[p1-id p2-id] (store-users!)
-          other (first (gen/player-gen {:name "other" :league_id (str sample-league-id)} 1))
-          other-id (db/add-player! other)
-          sample {:p1 p1-id
-                  :p2 p2-id
-                  :p1_team "RM"
-                  :p2_team "Juv"
-                  :p1_goals 3
-                  :p2_goals 0
-                  :league_id sample-league-id
-                  :played_at "2018-08-16+01:0001:48:00"}]
-
-      (sut/app (mock/request :post "/add-game" sample))
-
-      (let [rankings (sut/app (mock/request :get "/rankings"  {:league_id sample-league-id}))
-            games (db/load-games sample-league-id)]
-
-        (is (= #inst "2018-08-16T00:48:00.000000000-00:00"
-               (-> games first :played_at)))
-        (is (= 200 (:status rankings)))
-        (is (=
-             ;; should move out ngames & other information to a
-             ;; different returned map instead?
-             [{"id" (str p1-id) "ranking" 1516.0 "ngames" 1}
-              {"id" (str other-id) "ranking" 1500 "ngames" 0}
-              {"id" (str p2-id) "ranking" 1484.0 "ngames" 1}]
-
-             (json/read-str (:body rankings))))))))
 
 (deftest add-player-user-test
   (with-redefs [env (assoc env :admin-password "admin-password")]
