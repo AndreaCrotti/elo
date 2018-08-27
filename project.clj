@@ -102,7 +102,7 @@
                :server-port 3452}
 
     :plugins [[lein-figwheel "0.5.16"]
-              [lein-doo "0.1.7"]
+              [lein-doo "0.1.10"]
               [migratus-lein "0.5.0"]]
 
     :dependencies [[binaryage/devtools "0.9.10"]
@@ -115,7 +115,13 @@
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
   {:builds
-   [{:id           "dev"
+   [{:id "test"
+     :source-paths ["src/cljs" "test/cljs" "src/cljc" "test/cljc"]
+     :compiler {:output-to "resources/public/js/testable.js"
+                :main elo.test-runner
+                :optimizations :none}}
+
+    {:id "dev"
      :source-paths ["src/cljs" "src/cljc"]
      :figwheel     {:on-jsload "elo.core/mount-root"}
      :compiler     {:main elo.core
@@ -130,7 +136,7 @@
                     :external-config {:devtools/config {:features-to-install [:formatters
                                                                               :async
                                                                               :hints]}}}}
-    {:id           "min"
+    {:id "min"
      :source-paths ["src/cljs" "src/cljc"]
      :compiler     {:main elo.core
                     :output-to "resources/public/js/compiled/app.js"
