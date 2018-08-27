@@ -64,7 +64,7 @@
 
   :uberjar-name "elo.jar"
   :min-lein-version "2.7.1"
-  :source-paths ["src/clj" "src/cljc"]
+  :source-paths ["src/cljc" "src/clj"]
   :test-paths ["test/clj" "test/cljc"]
   :ring {:handler elo.api/app}
   :resource-paths ["config" "resources"]
@@ -102,7 +102,7 @@
                :server-port 3452}
 
     :plugins [[lein-figwheel "0.5.16"]
-              [lein-doo "0.1.7"]
+              [lein-doo "0.1.10"]
               [migratus-lein "0.5.0"]]
 
     :dependencies [[binaryage/devtools "0.9.10"]
@@ -115,7 +115,14 @@
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
   {:builds
-   [{:id           "dev"
+   [;; enable it again when it won't complain anymore about not finding some namespace
+    #_{:id "test"
+     :source-paths ["src/cljs" "test/cljs" "src/cljc" "test/cljc" "test/doo"]
+     :compiler {:output-to "resources/public/js/testable.js"
+                :main doo.test-runner
+                :optimizations :none}}
+
+    {:id "dev"
      :source-paths ["src/cljs" "src/cljc"]
      :figwheel     {:on-jsload "elo.core/mount-root"}
      :compiler     {:main elo.core
@@ -130,7 +137,7 @@
                     :external-config {:devtools/config {:features-to-install [:formatters
                                                                               :async
                                                                               :hints]}}}}
-    {:id           "min"
+    {:id "min"
      :source-paths ["src/cljs" "src/cljc"]
      :compiler     {:main elo.core
                     :output-to "resources/public/js/compiled/app.js"

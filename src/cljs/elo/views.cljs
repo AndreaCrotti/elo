@@ -2,6 +2,8 @@
   (:require [re-frame.core :as rf]
             [clojure.string :refer [join]]
             [elo.date-picker-utils :refer [date-time-picker]]
+            [elo.algorithms.elo :as elo]
+            [elo.games :as games]
             [cljsjs.moment]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
@@ -148,7 +150,7 @@
 
     [:div
      [:h3 "List of Games"]
-     [:table.table
+     [:table.table.table-striped
       [:thead header]
       (into [:tbody]
             (for [[idx {:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]}] (enumerate games)]
@@ -173,7 +175,7 @@
 
     [:div
      [:h3 "Players Rankings"]
-     [:table.table
+     [:table.table.table-striped
       [:thead header]
       (into [:tbody]
             (for [[idx {:keys [id ranking ngames]}] (enumerate sorted)]
@@ -186,16 +188,15 @@
 (defn root
   []
   (rf/dispatch [:load-games])
-  (rf/dispatch [:load-rankings])
   (rf/dispatch [:load-players])
 
-  (let [rankings (rf/subscribe [:rankings])
-        games (rf/subscribe [:games])
+  (let [games (rf/subscribe [:games])
         players (rf/subscribe [:players])
         error (rf/subscribe [:error])]
 
     (fn []
-      (let [name-mapping (into {} (for [p @players] {(:id p) p}))]
+      (let [name-mapping (into {} (for [p @players] {(:id p) p}))
+            rankings (games/get-rankings @games @players)]
         [:div.content
          [:a {:href "https://github.com/AndreaCrotti/elo"}
           [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
@@ -209,5 +210,5 @@
 
          [:div.section.add-player__form_container (add-player-form)]
          [:div.section.players__form_container (game-form @players)]
-         [:div.section.rankings__table (rankings-table @rankings name-mapping)]
+         [:div.section.rankings__table (rankings-table rankings name-mapping)]
          [:div.section.games__table (games-table @games name-mapping)]]))))
