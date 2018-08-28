@@ -1,7 +1,18 @@
 version: 2
 
 jobs:
-  build:
+  cljfmt:
+    docker:
+      - image: circleci/clojure:lein-2.8.1
+    steps:
+      - checkout
+      - restore_cache:
+          key: elo-{{ checksum "project.clj" }}
+      - run:
+          name: Check code formatting
+          command: lein cljfmt check
+
+  test:
     docker:
       - image: circleci/clojure:lein-2.7.1
         environment:
@@ -30,3 +41,11 @@ jobs:
       - run: lein migratus migrate
       - run: lein test
       # - run: lein uberjar # to avoid discovering in deployment phase possible issues
+
+workflows:
+  version: 2
+  jobs:
+    - cljfmt
+    - test:
+        requires:
+          - cljfmt
