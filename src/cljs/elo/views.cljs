@@ -2,6 +2,7 @@
   (:require [re-frame.core :as rf]
             [clojure.string :refer [join]]
             [elo.date-picker-utils :refer [date-time-picker]]
+            [elo.games :as games]
             [elo.algorithms.elo :as elo]
             [elo.games :as games]
             [cljsjs.moment]))
@@ -136,6 +137,11 @@
   [xs]
   (zipmap (range (count xs)) xs))
 
+(def score-mapping
+  {0   "game__lost"
+   1   "game__won"
+   0.5 "game__tie"})
+
 (defn games-table
   [games name-mapping]
   (let [header [:tr
@@ -153,16 +159,19 @@
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
-            (for [[idx {:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]}] (enumerate games)]
-              [:tr
-               [:td idx]
-               [:td (:name (get name-mapping p1))]
-               [:td p1_team]
-               [:td p1_goals]
-               [:td (:name (get name-mapping p2))]
-               [:td p2_team]
-               [:td p2_goals]
-               [:td (.format (js/moment played_at) "LLLL")]]))]]))
+            (for [[idx {:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at] :as game}]
+                  (enumerate games)]
+
+              (let [[_ _ p1-score p2-score] (games/normalize-game (assoc game :game :fifa))]
+                [:tr
+                 [:td idx]
+                 [:td {:class (score-mapping p1-score)} (:name (get name-mapping p1))]
+                 [:td p1_team]
+                 [:td p1_goals]
+                 [:td {:class (score-mapping p2-score)} (:name (get name-mapping p2))]
+                 [:td p2_team]
+                 [:td p2_goals]
+                 [:td (.format (js/moment played_at) "LLLL")]])))]]))
 
 (defn rankings-table
   [rankings name-mapping]

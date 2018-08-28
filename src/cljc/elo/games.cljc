@@ -20,7 +20,9 @@
 (defn get-rankings
   "Return all the rankings"
   [games players]
-  (let [norm-games (map elo/normalize-game games)
+  (let [norm-games (->> games
+                        (map #(assoc % :game :fifa))
+                        (map normalize-game))
         rankings (elo/compute-rankings norm-games (map :id players))
         ngames (player->ngames games)]
 

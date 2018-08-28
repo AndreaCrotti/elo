@@ -1,5 +1,7 @@
 (ns elo.css
-  (:require [garden.def :refer [defstyles defcssfn]]))
+  (:require [garden.def :refer [defstyles defcssfn]]
+            [garden.core :refer [css]]
+            [garden.selectors :refer [before after]]))
 
 (def internal-grid-gap "10px")
 (def grid-gap "15px")
@@ -41,6 +43,11 @@
 
    [:label {:padding-right "30px"}]
 
+   ;;TODO: use ::before instead to convey the same information
+   [:.game__lost {:color "red"}]
+   [:.game__won {:color "blue"}]
+   [:.game__tie {:color "green"}]
+
    [:.section {:padding "10px"
                :box-shadow "-1px 1px 2px 2px rgba(0,0,0,0.2)"}]])
 
@@ -49,4 +56,6 @@
   (concat leagues-page home-page)
   )
 
-#_(concat [[1] [2]] [[3] [4]])
+
+(comment
+  (css home-page))

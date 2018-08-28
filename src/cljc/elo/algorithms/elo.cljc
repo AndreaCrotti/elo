@@ -53,19 +53,6 @@
                    (for [[f s] games]
                      [f s])))))
 
-(defn normalize-game
-  "Normalize the game identifying winner and loser (or draw) from the number of goals.
-  With this approach the goal difference doesn't matter, but with
-  changes to this normalizatione that could also be taken into account."
-
-  ;;TODO: if we return both scores in one go we don't need the extra
-  ;;normalizationq done above
-  [{:keys [p1 p2 p1_goals p2_goals]}]
-  (cond
-    (= p1_goals p2_goals) [p1 p2 0.5]
-    (> p1_goals p2_goals) [p1 p2 1]
-    (> p2_goals p1_goals) [p1 p2 0]))
-
 (defn compute-rankings
   ([games players]
    ;; this could simply have a bit more leeway to work (2/3% max)
