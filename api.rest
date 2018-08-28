@@ -1,0 +1,27 @@
+:local = http://localhost:3452
+:staging = http://fifa-elo-staging.herokuapp.com
+:prod = http://fifa-elo.herokuapp.com
+
+# check if the resources work
+GET :local/css/screen.css
+
+# fetch players
+GET :local/players
+
+# fetch rankings
+GET :local/rankings
+
+# fetch the league id page
+GET :local/league/3564ef95-b84d-420f-8c85-31c6650458ad
+
+# try again
+GET :local/favicon.ico
+
+# Fetch the css
+GET :local/js/compiled/app.js?git_sha=1fda0a61-e581-407c-9f2e-9e51b7ce6491
+
+# check why leagues list not coming up
+GET :staging
+
+# Check prod now
+GET :prod
