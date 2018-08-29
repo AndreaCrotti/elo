@@ -85,7 +85,8 @@
       (let [user {:name "name" :email "email" :league_id sample-league-id}
             response (sut/app (mock/request :post "/add-player" user))]
 
-        (is (= 401 (:status response)))))
+        (is (= 401 (:status response)))
+        (is (empty? (db/load-players sample-league-id)))))
 
     (testing "Adds a new user with the right user/password"
       (with-redefs [authenticated? (fn [r] true)]
