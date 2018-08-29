@@ -6,7 +6,6 @@
             [clojure.edn :as edn]
             [clojure.java.jdbc :as jdbc]
             [environ.core :refer [env]]
-
             [honeysql-postgres.helpers :as ph]
             [honeysql.core :as sql]
             [honeysql.helpers :as h])
@@ -16,6 +15,8 @@
 (def local-db "postgres://elo@localhost:5445/elo")
 (def test-db "postgres://elo@localhost:5445/elo_test")
 (def google-sheet-timestamp-format "dd/MM/yyyy HH:mm:ss")
+
+(def timestamp-format "YYYY-MM-ddZHH:mm:SS")
 
 (defn db-spec
   []
@@ -105,7 +106,7 @@
   (let [new-params (-> params
                        conform
                        (update :played_at #(tc/to-sql-time (f/parse
-                                                            (f/formatter "YYYY-MM-ddZhh:mm:SS") %)))
+                                                            (f/formatter timestamp-format) %)))
                        (assoc :recorded_at (tc/to-sql-time (t/now))))
 
         query (store-sql new-params)]
