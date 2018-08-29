@@ -14,12 +14,11 @@
 (deftest get-rankings-test
   (testing "Compute Fifa rankings"
     
-    (let [[p1 p2] (gen/player-gen {:name "p1"} 2)
-          g1 (first (gen/game-gen {:p1 (:id p1)
-                                   :p2 (:id p2)
-                                   :p1_goals 2
-                                   :p2_goals 0}
-                                  1))
+    (let [[p1 p2] [(gen/player-gen {:name "p1"}) (gen/player-gen {:name "p2"})]
+          g1 (gen/game-gen {:p1 (:id p1)
+                            :p2 (:id p2)
+                            :p1_goals 2
+                            :p2_goals 0})
 
           rankings (sut/get-rankings [g1] [p1 p2])]
 
