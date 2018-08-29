@@ -36,8 +36,9 @@
 (defn add-player!
   "Adds a new user to the platform, authenticated with basic Auth"
   [{:keys [params] :as request}]
-  (let [player-id (db/add-player! params)]
-    (with-basic-auth request
+  (with-basic-auth
+    request
+    (let [player-id (db/add-player! params)]
       (as-json
        (resp/created "/players"
                      {:id player-id})))))
