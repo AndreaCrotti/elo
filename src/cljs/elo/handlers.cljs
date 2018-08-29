@@ -2,10 +2,9 @@
   (:require [re-frame.core :as rf]
             [cemerick.url :refer [url]]
             [cljsjs.moment]
+            [elo.shared-config :as shared]
             [ajax.core :as ajax]
             [day8.re-frame.http-fx]))
-
-(def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 
 (defn- get-league-id
   []
@@ -151,7 +150,7 @@
   [db]
   (update (:game db)
           :played_at
-          #(.format % timestamp-format)))
+          #(.format % shared/timestamp-format)))
 
 (rf/reg-event-fx :add-game (writer "/add-game" :add-game-success game-transform))
 (rf/reg-event-fx :add-player (writer "/add-player" :add-player-success :player))

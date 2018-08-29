@@ -12,7 +12,7 @@
 
 (defn- gen-uuid [] (UUID/randomUUID))
 
-;; this league is always present, which makes it easier to write tests using it 
+;; this league is always present, which makes it easier to write tests using it
 (def sample-company-id (gen-uuid))
 
 (def sample-league-id (gen-uuid))
@@ -56,7 +56,7 @@
                   :p2_team "Juv"
                   :p1_goals 3
                   :p2_goals 0
-                  :played_at "2018-08-16+01:0001:48:00"}
+                  :played_at "2018-08-29+01:0021:50:32"}
 
           _ (write-api-call "/add-game" sample)
           games (sut/app (mock/request :get "/games" {:league_id sample-league-id}))
@@ -66,7 +66,8 @@
                    "p1_team" "RM",
                    "p2" (str p2-id),
                    "p2_goals" 0,
-                   "p2_team" "Juv"}]
+                   "p2_team" "Juv"
+                   "played_at" "2018-08-29T20:50:00Z"}]
 
       (is (= 200 (:status games)))
 
@@ -75,7 +76,8 @@
               (first (json/read-str (:body games)))
               ["p1_goals" "p2_goals"
                "p1" "p2"
-               "p1_team" "p2_team"]))))))
+               "p1_team" "p2_team"
+               "played_at"]))))))
 
 (deftest add-player-user-test
   (with-redefs [env (assoc env :admin-password "admin-password")]
