@@ -37,9 +37,8 @@
 
 (defn gen
   [spec]
-  (fn ([ks n]
-      (map #(merge % ks)
-           (take n (g/sample (s/gen spec)))))))
+  (fn ([ks]
+      (merge ks (g/generate (s/gen spec))))))
 
 (def game-gen (gen ::game))
 
