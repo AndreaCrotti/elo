@@ -140,7 +140,7 @@
 (defn games-table
   [games name-mapping]
   (let [up-to (rf/subscribe [:up-to-games])
-        first-games (take up-to games)
+        first-games (take @up-to games)
         header [:tr
                 [:th "Game #"]
                 [:th "Player 1"]
@@ -168,28 +168,33 @@
                [:td (.format (js/moment played_at) "LLLL")]]))]]))
 
 (defn rankings-table
-  [rankings name-mapping]
+  [name-mapping]
   (let [header [:tr
                 [:th "Position"]
                 [:th "Player"]
                 [:th "Ranking"]
                 [:th "# Of Games"]]
-        sorted (sort-by #(- (second %)) rankings)]
+        up-to-games (rf/subscribe [:up-to-games])
+        players (rf/subscribe [:players])
+        games (rf/subscribe [:games])
+        rankings (games/get-rankings (take @up-to-games @games)
+                                     @players)
+        sorted-rankings (sort-by #(- (second %)) rankings)]
 
     [:div
      [:h3 "Players Rankings"]
      [:div
       [:label {:for "up-to-games"} "Compute Rankings up to game #"]
       (into [:select.form-control {:id "up-to-games"
-                                   :on-change (set-val :up-to-game)
-                                   :value 100}]
+                                   :on-change (set-val :up-to-games)
+                                   :value @up-to-games}]
             (for [n (range 100)]
               [:option {:value (str n)} n]))]
 
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
-            (for [[idx {:keys [id ranking ngames]}] (enumerate sorted)]
+            (for [[idx {:keys [id ranking ngames]}] (enumerate sorted-rankings)]
               [:tr
                [:td (inc idx)]
                [:td (:name (get name-mapping id))]
@@ -207,7 +212,7 @@
 
     (fn []
       (let [name-mapping (into {} (for [p @players] {(:id p) p}))
-            rankings (games/get-rankings @games @players)]
+            ]
         [:div.content
          [:a {:href "https://github.com/AndreaCrotti/elo"}
           [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
@@ -221,5 +226,5 @@
 
          [:div.section.add-player__form_container (add-player-form)]
          [:div.section.players__form_container (game-form @players)]
-         [:div.section.rankings__table (rankings-table rankings name-mapping)]
+         [:div.section.rankings__table (rankings-table name-mapping)]
          [:div.section.games__table (games-table (reverse @games) name-mapping)]]))))

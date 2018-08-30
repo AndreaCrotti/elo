@@ -33,7 +33,7 @@
    :game {}
    :player {}
    :error nil
-   :up-to-game 100
+   :up-to-games nil
    :league_id (get-league-id)})
 
 (defn- getter
@@ -86,6 +86,11 @@
 (rf/reg-event-db :p1 (setter [:game :p1]))
 (rf/reg-event-db :p1_goals (setter [:game :p1_goals]))
 (rf/reg-event-db :p1_team (setter [:game :p1_team]))
+(rf/reg-event-fx :up-to-games
+                 (fn [{:keys [db]} [_ value]]
+                   (js/console.log "Got value =" value)
+                   ;; should now refresh the rankings somehow
+                   {:db (assoc db :up-to-games value)}))
 
 (rf/reg-event-db :p2 (setter [:game :p2]))
 (rf/reg-event-db :p2_goals (setter [:game :p2_goals]))
