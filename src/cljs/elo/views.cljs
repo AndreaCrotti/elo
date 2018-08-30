@@ -139,10 +139,11 @@
 
 (defn games-table
   [games name-mapping]
-  (let [up-to (rf/subscribe [:up-to-games])
-        first-games (if (some? @up-to)
-                      (take @up-to games)
-                      games)
+  (let [;;up-to (rf/subscribe [:up-to-games])
+        ;; should actually use drop instead here, and it's unclear if we want to do this or not
+        ;; first-games (if (some? @up-to)
+        ;;               (take @up-to games)
+        ;;               games)
         header [:tr
                 [:th "Game #"]
                 [:th "Player 1"]
@@ -158,7 +159,7 @@
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
-            (for [[idx {:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]}] (enumerate first-games)]
+            (for [[idx {:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]}] (enumerate games)]
               [:tr
                [:td idx]
                [:td (:name (get name-mapping p1))]
