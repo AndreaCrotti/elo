@@ -212,4 +212,4 @@
          [:div.section.add-player__form_container (add-player-form)]
          [:div.section.players__form_container (game-form @players)]
          [:div.section.rankings__table (rankings-table rankings name-mapping)]
-         [:div.section.games__table (games-table @games name-mapping)]]))))
+         [:div.section.games__table (games-table (reverse @games) name-mapping)]]))))
