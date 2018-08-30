@@ -134,7 +134,8 @@
 
 (defn- enumerate
   [xs]
-  (zipmap (range (count xs)) xs))
+  ;; without sorting it only works up to 30 !!
+  (sort (zipmap (range (count xs)) xs)))
 
 (defn games-table
   [games name-mapping]
