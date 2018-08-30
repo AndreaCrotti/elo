@@ -139,7 +139,9 @@
 
 (defn games-table
   [games name-mapping]
-  (let [header [:tr
+  (let [up-to (rf/subscribe [:up-to-games])
+        first-games (take up-to games)
+        header [:tr
                 [:th "Game #"]
                 [:th "Player 1"]
                 [:th "Team"]
@@ -154,7 +156,7 @@
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
-            (for [[idx {:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]}] (enumerate games)]
+            (for [[idx {:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]}] (enumerate first-games)]
               [:tr
                [:td idx]
                [:td (:name (get name-mapping p1))]
@@ -176,6 +178,14 @@
 
     [:div
      [:h3 "Players Rankings"]
+     [:div
+      [:label {:for "up-to-games"} "Compute Rankings up to game #"]
+      (into [:select.form-control {:id "up-to-games"
+                                   :on-change (set-val :up-to-game)
+                                   :value 100}]
+            (for [n (range 100)]
+              [:option {:value (str n)} n]))]
+
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]

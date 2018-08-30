@@ -33,6 +33,7 @@
    :game {}
    :player {}
    :error nil
+   :up-to-game 100
    :league_id (get-league-id)})
 
 (defn- getter
@@ -66,6 +67,9 @@
 
 (rf/reg-sub :player (getter [:player]))
 (rf/reg-sub :game (getter [:game]))
+(rf/reg-sub :up-to-games
+            (fn [db _]
+              (js/parseInt (:up-to-games db))))
 
 (rf/reg-sub :rankings (getter [:rankings]))
 (rf/reg-sub :games (getter [:games]))
