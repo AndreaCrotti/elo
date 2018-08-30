@@ -69,7 +69,8 @@
 (rf/reg-sub :game (getter [:game]))
 (rf/reg-sub :up-to-games
             (fn [db _]
-              (js/parseInt (:up-to-games db))))
+              (some-> (:up-to-games db)
+                      js/parseInt)))
 
 (rf/reg-sub :rankings (getter [:rankings]))
 (rf/reg-sub :games (getter [:games]))
@@ -86,11 +87,7 @@
 (rf/reg-event-db :p1 (setter [:game :p1]))
 (rf/reg-event-db :p1_goals (setter [:game :p1_goals]))
 (rf/reg-event-db :p1_team (setter [:game :p1_team]))
-(rf/reg-event-fx :up-to-games
-                 (fn [{:keys [db]} [_ value]]
-                   (js/console.log "Got value =" value)
-                   ;; should now refresh the rankings somehow
-                   {:db (assoc db :up-to-games value)}))
+(rf/reg-event-db :up-to-games (setter [:up-to-games]))
 
 (rf/reg-event-db :p2 (setter [:game :p2]))
 (rf/reg-event-db :p2_goals (setter [:game :p2_goals]))

@@ -140,7 +140,9 @@
 (defn games-table
   [games name-mapping]
   (let [up-to (rf/subscribe [:up-to-games])
-        first-games (take @up-to games)
+        first-games (if (some? @up-to)
+                      (take @up-to games)
+                      games)
         header [:tr
                 [:th "Game #"]
                 [:th "Player 1"]
@@ -177,19 +179,23 @@
         up-to-games (rf/subscribe [:up-to-games])
         players (rf/subscribe [:players])
         games (rf/subscribe [:games])
-        rankings (games/get-rankings (take @up-to-games @games)
+        rankings (games/get-rankings (if (some? @up-to-games)
+                                       (take @up-to-games @games)
+                                       @games)
+
                                      @players)
         sorted-rankings (sort-by #(- (second %)) rankings)]
 
     [:div
      [:h3 "Players Rankings"]
      [:div
-      [:label {:for "up-to-games"} "Compute Rankings up to game #"]
-      (into [:select.form-control {:id "up-to-games"
-                                   :on-change (set-val :up-to-games)
-                                   :value @up-to-games}]
-            (for [n (range 100)]
-              [:option {:value (str n)} n]))]
+      [:label {:for "up-to-games"} (str "Compute Rankings up to game #" @up-to-games)]
+      [:input {:type "range"
+               :min 0
+               :max (count @games)
+               :value (if (some? @up-to-games) @up-to-games (count @games))
+               :class "slider"
+               :on-change (set-val :up-to-games)}]]
 
      [:table.table.table-striped
       [:thead header]
@@ -211,8 +217,7 @@
         error (rf/subscribe [:error])]
 
     (fn []
-      (let [name-mapping (into {} (for [p @players] {(:id p) p}))
-            ]
+      (let [name-mapping (into {} (for [p @players] {(:id p) p}))]
         [:div.content
          [:a {:href "https://github.com/AndreaCrotti/elo"}
           [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
