@@ -49,6 +49,8 @@
    :p1_goals #(Integer. %)
    :p2_goals #(Integer. %)})
 
+;;TODO: this transformation should not be done here really
+
 (defn conform
   [data]
   (assoc (reduce-kv update

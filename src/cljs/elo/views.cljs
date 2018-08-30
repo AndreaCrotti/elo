@@ -139,7 +139,12 @@
 
 (defn games-table
   [games name-mapping]
-  (let [header [:tr
+  (let [;;up-to (rf/subscribe [:up-to-games])
+        ;; should actually use drop instead here, and it's unclear if we want to do this or not
+        ;; first-games (if (some? @up-to)
+        ;;               (take @up-to games)
+        ;;               games)
+        header [:tr
                 [:th "Game #"]
                 [:th "Player 1"]
                 [:th "Team"]
@@ -166,20 +171,38 @@
                [:td (.format (js/moment played_at) "LLLL")]]))]]))
 
 (defn rankings-table
-  [rankings name-mapping]
+  [name-mapping]
   (let [header [:tr
                 [:th "Position"]
                 [:th "Player"]
                 [:th "Ranking"]
                 [:th "# Of Games"]]
-        sorted (sort-by #(- (second %)) rankings)]
+        up-to-games (rf/subscribe [:up-to-games])
+        players (rf/subscribe [:players])
+        games (rf/subscribe [:games])
+        rankings (games/get-rankings (if (some? @up-to-games)
+                                       (take @up-to-games @games)
+                                       @games)
+
+                                     @players)
+        sorted-rankings (sort-by #(- (second %)) rankings)
+        up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
 
     [:div
      [:h3 "Players Rankings"]
+     [:div
+      [:label {:for "up-to-games"} (str "Compute Rankings up to game #" up-to-current)]
+      [:input {:type "range"
+               :min 0
+               :max (count @games)
+               :value up-to-current
+               :class "slider"
+               :on-change (set-val :up-to-games)}]]
+
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
-            (for [[idx {:keys [id ranking ngames]}] (enumerate sorted)]
+            (for [[idx {:keys [id ranking ngames]}] (enumerate sorted-rankings)]
               [:tr
                [:td (inc idx)]
                [:td (:name (get name-mapping id))]
@@ -196,8 +219,7 @@
         error (rf/subscribe [:error])]
 
     (fn []
-      (let [name-mapping (into {} (for [p @players] {(:id p) p}))
-            rankings (games/get-rankings @games @players)]
+      (let [name-mapping (into {} (for [p @players] {(:id p) p}))]
         [:div.content
          [:a {:href "https://github.com/AndreaCrotti/elo"}
           [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
@@ -211,5 +233,5 @@
 
          [:div.section.add-player__form_container (add-player-form)]
          [:div.section.players__form_container (game-form @players)]
-         [:div.section.rankings__table (rankings-table rankings name-mapping)]
+         [:div.section.rankings__table (rankings-table name-mapping)]
          [:div.section.games__table (games-table (reverse @games) name-mapping)]]))))
