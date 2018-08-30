@@ -184,16 +184,17 @@
                                        @games)
 
                                      @players)
-        sorted-rankings (sort-by #(- (second %)) rankings)]
+        sorted-rankings (sort-by #(- (second %)) rankings)
+        up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
 
     [:div
      [:h3 "Players Rankings"]
      [:div
-      [:label {:for "up-to-games"} (str "Compute Rankings up to game #" @up-to-games)]
+      [:label {:for "up-to-games"} (str "Compute Rankings up to game #" up-to-current)]
       [:input {:type "range"
                :min 0
                :max (count @games)
-               :value (if (some? @up-to-games) @up-to-games (count @games))
+               :value up-to-current
                :class "slider"
                :on-change (set-val :up-to-games)}]]
 
