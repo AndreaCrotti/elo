@@ -14,8 +14,8 @@
    :street-fighter
    {:terminology {:using "character"
                   :points "rounds"}
-    :form (:points (range 3))
-    :logo "streetfighter.gif"}})
+    :form {:points (range 3)}
+    :logo "street_fighter.gif"}})
 
 (defn term
   [game k]

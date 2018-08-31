@@ -87,7 +87,11 @@
 (defn game-form
   [players]
   (let [valid-game? (rf/subscribe [:valid-game?])
-        game (rf/subscribe [:game])]
+        game (rf/subscribe [:game])
+        league (rf/subscribe [:league])
+        game-type (keyword (or (:game_type @league) "fifa"))
+        points-range (map str (config/opts game-type :points))]
+
     [:div.form-group.game_form {:on-submit (fn [] false)}
      [:div
       [:label {:for "p1"} "Player 1"]
@@ -98,22 +102,22 @@
       [drop-down-players players :p2 (:p2 @game)]]
 
      [:div
-      [:label {:for "p1_points"} "# Goals"]
-      [drop-down goals-range :p1_points (:p1_points @game)]]
+      [:label {:for "p1_points"} (str "# " (config/term game-type :points))]
+      [drop-down points-range :p1_points (:p1_points @game)]]
 
      [:div
-      [:label {:for "p2_points"} "# Goals"]
-      [drop-down goals-range :p2_points (:p2_points @game)]]
+      [:label {:for "p2_points"} (str "# " (config/term game-type :points))]
+      [drop-down points-range :p2_points (:p2_points @game)]]
 
      [:div
-      [:label "Team"]
+      [:label (config/term game-type :using)]
       [:input.form-control {:type "text"
                             :placeholder "Team Name"
                             :value (:p1_using @game)
                             :on-change (set-val :p1_using)}]]
 
      [:div
-      [:label "Team"]
+      [:label (config/term game-type :using)]
       [:input.form-control {:type "text"
                             :placeholder "Team Name"
                             :value (:p2_using @game)
@@ -228,7 +232,6 @@
          [:a {:href "https://github.com/AndreaCrotti/elo"}
           [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
                          :alt "Fork me on Github"}]]
-
 
          (when @error
            [:div.section.alert.alert-danger
