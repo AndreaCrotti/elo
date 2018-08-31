@@ -135,15 +135,14 @@
 (defn- enumerate
   [xs]
   ;; without sorting it only works up to 30 !!
-  (sort (zipmap (range (count xs)) xs)))
+  (sort (zipmap (map inc (range (count xs))) xs)))
 
 (defn games-table
   [games name-mapping]
-  (let [;;up-to (rf/subscribe [:up-to-games])
-        ;; should actually use drop instead here, and it's unclear if we want to do this or not
-        ;; first-games (if (some? @up-to)
-        ;;               (take @up-to games)
-        ;;               games)
+  (let [up-to (rf/subscribe [:up-to-games])
+        first-games (if (some? @up-to)
+                      (take @up-to games)
+                      games)
         header [:tr
                 [:th "Game #"]
                 [:th "Player 1"]
@@ -159,7 +158,9 @@
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
-            (for [[idx {:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]}] (enumerate games)]
+            (for [[idx {:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]}]
+                  (reverse (enumerate first-games))]
+
               [:tr
                [:td idx]
                [:td (:name (get name-mapping p1))]
@@ -204,7 +205,7 @@
       (into [:tbody]
             (for [[idx {:keys [id ranking ngames]}] (enumerate sorted-rankings)]
               [:tr
-               [:td (inc idx)]
+               [:td idx]
                [:td (:name (get name-mapping id))]
                [:td (int ranking)]
                [:td ngames]]))]]))
@@ -234,4 +235,4 @@
          [:div.section.add-player__form_container (add-player-form)]
          [:div.section.players__form_container (game-form @players)]
          [:div.section.rankings__table (rankings-table name-mapping)]
-         [:div.section.games__table (games-table (reverse @games) name-mapping)]]))))
+         [:div.section.games__table (games-table @games name-mapping)]]))))
