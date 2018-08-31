@@ -187,6 +187,7 @@
 
                                      @players)
         sorted-rankings (sort-by #(- (second %)) rankings)
+        non-zero-games (filter #(pos? (:ngames %)) sorted-rankings)
         up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
 
     [:div
@@ -203,7 +204,7 @@
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
-            (for [[idx {:keys [id ranking ngames]}] (enumerate sorted-rankings)]
+            (for [[idx {:keys [id ranking ngames]}] (enumerate non-zero-games)]
               [:tr
                [:td idx]
                [:td (:name (get name-mapping id))]
