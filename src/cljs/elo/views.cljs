@@ -2,8 +2,8 @@
   (:require [re-frame.core :as rf]
             [clojure.string :refer [join]]
             [elo.date-picker-utils :refer [date-time-picker]]
-            [elo.algorithms.elo :as elo]
             [elo.games :as games]
+            [elo.shared-config :as config]
             [cljsjs.moment]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
@@ -215,10 +215,12 @@
   []
   (rf/dispatch [:load-games])
   (rf/dispatch [:load-players])
+  (rf/dispatch-sync [:load-league])
 
   (let [games (rf/subscribe [:games])
         players (rf/subscribe [:players])
-        error (rf/subscribe [:error])]
+        error (rf/subscribe [:error])
+        league (rf/subscribe [:league])]
 
     (fn []
       (let [name-mapping (into {} (for [p @players] {(:id p) p}))]
@@ -232,6 +234,14 @@
            [:div.section.alert.alert-danger
             [:pre (:status-text @error)]
             [:pre (:original-text @error)]])
+
+         [:div.preamble
+          (when (some? @league)
+            [:span.league__logo
+             [:img {:width "100px"
+                    :src (str "logos/" (config/logo (-> @league :game_type keyword)))}]])
+
+          #_[:span.league__title (:name @league)]]
 
          [:div.section.add-player__form_container (add-player-form)]
          [:div.section.players__form_container (game-form @players)]

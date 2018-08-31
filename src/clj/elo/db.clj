@@ -146,6 +146,12 @@
   (-> (h/select :*)
       (h/from :league)))
 
+(defn load-league-sql
+  [league-id]
+  (-> (h/select :*)
+      (h/from :league)
+      (h/where [:= :id league-id])))
+
 (defn- query
   [func & args]
   (jdbc/query (db-spec)
@@ -156,6 +162,8 @@
 (defn load-players [league-id] (query load-players-sql league-id))
 
 (defn load-leagues [] (query load-leagues-sql))
+
+(defn load-league [league-id] (query load-league-sql league-id))
 
 (defn insert-game-sql
   [values]

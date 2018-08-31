@@ -78,6 +78,11 @@
   (as-json
    (resp/response (db/load-games (get-league-id req)))))
 
+(defn get-league
+  [req]
+  (as-json
+   (resp/response (first (db/load-league (get-league-id req))))))
+
 (defn dispatch-home
   [request]
   (if (some? (:query-string request))
@@ -103,6 +108,7 @@
         "add-player" add-player!
         "add-game" add-game!
 
+        "league" get-league
         "players" get-players
         "games" get-games}])
 
