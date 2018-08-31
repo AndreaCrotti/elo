@@ -7,18 +7,18 @@
   (testing "Shoul compute correctly"
     (are [out game] (= out (sut/normalize-game game))
       [:p1 :p2 1 0] {:game :fifa :p1 :p1 :p2 :p2
-                     :p1_goals 3 :p2_goals 0}
+                     :p1_points 3 :p2_points 0}
       [:p1 :p2 0.5 0.5] {:game :fifa :p1 :p1 :p2 :p2
-                         :p1_goals 2 :p2_goals 2})))
+                         :p1_points 2 :p2_points 2})))
 
 (deftest get-rankings-test
   (testing "Compute Fifa rankings"
-    
+
     (let [[p1 p2] (gen/player-gen {:name "p1"} 2)
           g1 (first (gen/game-gen {:p1 (:id p1)
                                    :p2 (:id p2)
-                                   :p1_goals 2
-                                   :p2_goals 0}
+                                   :p1_points 2
+                                   :p2_points 0}
                                   1))
 
           rankings (sut/get-rankings [g1] [p1 p2])]

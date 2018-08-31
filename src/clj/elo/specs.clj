@@ -3,14 +3,14 @@
 
 (s/def ::p1_name string?)
 (s/def ::p2_name string?)
-(s/def ::p1_team string?)
-(s/def ::p2_team string?)
-(s/def ::p1_goals int?)
-(s/def ::p2_goals int?)
+(s/def ::p1_using string?)
+(s/def ::p2_using string?)
+(s/def ::p1_points int?)
+(s/def ::p2_points int?)
 
 (s/def ::game (s/keys :req-un [::p1_name
                                ::p2_name
-                               ::p1_team
-                               ::p2_team
-                               ::p1_goals
-                               ::p2_goals]))
+                               ::p1_using
+                               ::p2_using
+                               ::p1_points
+                               ::p2_points]))

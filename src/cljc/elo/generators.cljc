@@ -15,19 +15,19 @@
 (s/def ::p2 is-uuid?)
 (s/def ::league_id is-uuid?)
 
-(s/def ::p1_team string?)
-(s/def ::p2_team string?)
+(s/def ::p1_using string?)
+(s/def ::p2_using string?)
 
-(s/def ::p1_goals (s/int-in 0 10))
-(s/def ::p2_goals (s/int-in 0 10))
+(s/def ::p1_points (s/int-in 0 10))
+(s/def ::p2_points (s/int-in 0 10))
 
 (s/def ::game (s/keys :req-un [::id
                                ::p1
                                ::p2
-                               ::p1_team
-                               ::p2_team
-                               ::p1_goals
-                               ::p2_goals
+                               ::p1_using
+                               ::p2_using
+                               ::p1_points
+                               ::p2_points
                                ::league_id]))
 
 (s/def ::name string?)

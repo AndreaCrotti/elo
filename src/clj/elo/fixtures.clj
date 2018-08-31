@@ -11,20 +11,20 @@
 
 (s/def ::p1 uuid?)
 (s/def ::p2 uuid?)
-(s/def ::p1_team string?)
-(s/def ::p2_team string?)
-(s/def ::p1_goals (s/int-in 0 10))
-(s/def ::p2_goals (s/int-in 0 10))
+(s/def ::p1_using string?)
+(s/def ::p2_using string?)
+(s/def ::p1_points (s/int-in 0 10))
+(s/def ::p2_points (s/int-in 0 10))
 
 ;;TODO: add recorded and played_at
 
 (s/def ::game (s/keys :req-un [::id
                                ::p1
                                ::p2
-                               ::p1_team
-                               ::p2_team
-                               ::p1_goals
-                               ::p2_goals]))
+                               ::p1_using
+                               ::p2_using
+                               ::p1_points
+                               ::p2_points]))
 
 (defn game-gen
   []
