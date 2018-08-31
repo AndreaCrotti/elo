@@ -46,8 +46,8 @@
   {:p1 to-uuid
    :p2 to-uuid
    :league_id to-uuid
-   :p1_goals #(Integer. %)
-   :p2_goals #(Integer. %)})
+   :p1_points #(Integer. %)
+   :p2_points #(Integer. %)})
 
 ;;TODO: this transformation should not be done here really
 
@@ -168,13 +168,13 @@
         content (-> filename slurp csv/read-csv)
         strip-header (rest content)
         parsed
-        (for [[played-at p1_name p2_name p1_goals p2_goals _ p1_team p2_team] strip-header]
+        (for [[played-at p1_name p2_name p1_points p2_points _ p1_using p2_using] strip-header]
           {:p1 (get mapped-names p1_name)
            :p2 (get mapped-names p2_name)
-           :p1_goals p1_goals
-           :p2_goals p2_goals
-           :p1_team p2_team
-           :p2_team p1_team
+           :p1_points p1_points
+           :p2_points p2_points
+           :p1_using p2_using
+           :p2_using p1_using
            :played-at played-at
            :recorded-at played-at})]
 

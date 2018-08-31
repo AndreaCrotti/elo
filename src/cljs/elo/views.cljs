@@ -98,26 +98,26 @@
       [drop-down-players players :p2 (:p2 @game)]]
 
      [:div
-      [:label {:for "p1_goals"} "# Goals"]
-      [drop-down goals-range :p1_goals (:p1_goals @game)]]
+      [:label {:for "p1_points"} "# Goals"]
+      [drop-down goals-range :p1_points (:p1_points @game)]]
 
      [:div
-      [:label {:for "p2_goals"} "# Goals"]
-      [drop-down goals-range :p2_goals (:p2_goals @game)]]
-
-     [:div
-      [:label "Team"]
-      [:input.form-control {:type "text"
-                            :placeholder "Team Name"
-                            :value (:p1_team @game)
-                            :on-change (set-val :p1_team)}]]
+      [:label {:for "p2_points"} "# Goals"]
+      [drop-down goals-range :p2_points (:p2_points @game)]]
 
      [:div
       [:label "Team"]
       [:input.form-control {:type "text"
                             :placeholder "Team Name"
-                            :value (:p2_team @game)
-                            :on-change (set-val :p2_team)}]]
+                            :value (:p1_using @game)
+                            :on-change (set-val :p1_using)}]]
+
+     [:div
+      [:label "Team"]
+      [:input.form-control {:type "text"
+                            :placeholder "Team Name"
+                            :value (:p2_using @game)
+                            :on-change (set-val :p2_using)}]]
 
      [:div
       [:label "Played at"]
@@ -158,17 +158,17 @@
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
-            (for [[idx {:keys [p1 p2 p1_team p2_team p1_goals p2_goals played_at]}]
+            (for [[idx {:keys [p1 p2 p1_using p2_using p1_points p2_points played_at]}]
                   (reverse (enumerate first-games))]
 
               [:tr
                [:td idx]
                [:td (:name (get name-mapping p1))]
-               [:td p1_team]
-               [:td p1_goals]
+               [:td p1_using]
+               [:td p1_points]
                [:td (:name (get name-mapping p2))]
-               [:td p2_team]
-               [:td p2_goals]
+               [:td p2_using]
+               [:td p2_points]
                [:td (.format (js/moment played_at) "LLLL")]]))]]))
 
 (defn rankings-table

@@ -16,10 +16,10 @@
 (def default-game
   {:p1 ""
    :p2 ""
-   :p1_goals ""
-   :p2_goals ""
-   :p1_team ""
-   :p2_team ""
+   :p1_points ""
+   :p2_points ""
+   :p1_using ""
+   :p2_using ""
    :played_at (js/moment)})
 
 (def default-player
@@ -85,13 +85,13 @@
                           default-player)))
 
 (rf/reg-event-db :p1 (setter [:game :p1]))
-(rf/reg-event-db :p1_goals (setter [:game :p1_goals]))
-(rf/reg-event-db :p1_team (setter [:game :p1_team]))
+(rf/reg-event-db :p1_points (setter [:game :p1_points]))
+(rf/reg-event-db :p1_using (setter [:game :p1_using]))
 (rf/reg-event-db :up-to-games (setter [:up-to-games]))
 
 (rf/reg-event-db :p2 (setter [:game :p2]))
-(rf/reg-event-db :p2_goals (setter [:game :p2_goals]))
-(rf/reg-event-db :p2_team (setter [:game :p2_team]))
+(rf/reg-event-db :p2_points (setter [:game :p2_points]))
+(rf/reg-event-db :p2_using (setter [:game :p2_using]))
 
 (rf/reg-event-db :played_at (setter [:game :played_at]))
 

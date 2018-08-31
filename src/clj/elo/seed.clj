@@ -29,8 +29,8 @@
 
       (let [games (repeat n-games (first (gen/game-gen {:p1 (-> players first :id str)
                                                         :p2 (-> players second :id str)
-                                                        :p1_goals "1"
-                                                        :p2_goals "2"
+                                                        :p1_points "1"
+                                                        :p2_points "2"
                                                         :league_id (str league-id)
                                                         :played_at "2018-08-16+01:0001:48:00"}
                                                        1)))]

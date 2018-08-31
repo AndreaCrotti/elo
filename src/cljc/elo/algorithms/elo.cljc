@@ -60,11 +60,11 @@
 
   ;;TODO: if we return both scores in one go we don't need the extra
   ;;normalizationq done above
-  [{:keys [p1 p2 p1_goals p2_goals]}]
+  [{:keys [p1 p2 p1_points p2_points]}]
   (cond
-    (= p1_goals p2_goals) [p1 p2 0.5]
-    (> p1_goals p2_goals) [p1 p2 1]
-    (> p2_goals p1_goals) [p1 p2 0]))
+    (= p1_points p2_points) [p1 p2 0.5]
+    (> p1_points p2_points) [p1 p2 1]
+    (> p2_points p1_points) [p1 p2 0]))
 
 (defn compute-rankings
   ([games players]
@@ -74,4 +74,3 @@
                    games))
   ([games]
    (compute-rankings games (extract-players games))))
-
