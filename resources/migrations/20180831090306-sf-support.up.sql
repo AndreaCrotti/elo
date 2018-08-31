@@ -17,7 +17,7 @@ ALTER TABLE game
 RENAME p2_goals to p2_points;
 
 
-CREATE TYPE game_type AS ENUM ('fifa', 'street-fighter');
+CREATE TYPE game_type AS ENUM ('fifa', 'street-fighter', 'table-tennis');
 
 ALTER TABLE league
 ADD COLUMN game_type game_type NOT NULL default 'fifa';
