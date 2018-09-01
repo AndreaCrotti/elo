@@ -6,6 +6,7 @@
             [elo.db :as db]
             [elo.pages.home :as home]
             [elo.pages.leagues :as leagues]
+            [elo.pages.admin :as admin]
             [environ.core :refer [env]]
             [hiccup.core :as hiccup]
             [ring.adapter.jetty :as jetty]
@@ -55,6 +56,8 @@
 
 (defn leagues [_] (render-page (leagues/body)))
 
+(defn admin [_] (render-page (admin/body)))
+
 ;;TODO: the league_id has to be extracted on all these different handlers
 
 (defn to-uuid
@@ -89,6 +92,10 @@
     (home request)
     (leagues request)))
 
+(defn dispatch-admin
+  [request]
+  (admin request))
+
 ;;TODO: add a not found page for everything else?
 (def routes
   ["/" {;; "company/" {"" :companies
@@ -100,6 +107,7 @@
         ;;TODO: try to make this more restful
 
         "" dispatch-home
+        "admin" dispatch-admin
         ;;TODO: should actually use this instead of query arguments
         ;; "" leagues
 
