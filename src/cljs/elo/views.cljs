@@ -118,14 +118,14 @@
      [:div
       [:label (translate :using)]
       [:input.form-control {:type "text"
-                            :placeholder "Team Name"
+                            :placeholder (str (translate :using) " Name")
                             :value (:p1_using @game)
                             :on-change (set-val :p1_using)}]]
 
      [:div
       [:label (translate :using)]
       [:input.form-control {:type "text"
-                            :placeholder "Team Name"
+                            :placeholder (str (translate :using) " Name")
                             :value (:p2_using @game)
                             :on-change (set-val :p2_using)}]]
 
