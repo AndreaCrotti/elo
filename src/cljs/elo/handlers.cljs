@@ -72,7 +72,9 @@
               (some-> (:up-to-games db)
                       js/parseInt)))
 
-(rf/reg-sub :league (getter [:league]))
+(rf/reg-sub :league
+            (fn [db _]
+              (update (:league db) :game_type keyword)))
 
 (rf/reg-sub :rankings (getter [:rankings]))
 (rf/reg-sub :games (getter [:games]))

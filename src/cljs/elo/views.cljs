@@ -38,6 +38,12 @@
               (for [p (sort-by :name players)]
                 [:option {:value (:id p)} (:name p)]))))
 
+(defn- translate
+  [term]
+  (let [league (rf/subscribe [:league])]
+    ;;XXX: is there a way to avoid all this extra safety?
+    (config/term (or (:game_type @league) :fifa) term)))
+
 (defn now-format
   []
   (.format (js/moment) timestamp-format))
@@ -89,7 +95,7 @@
   (let [valid-game? (rf/subscribe [:valid-game?])
         game (rf/subscribe [:game])
         league (rf/subscribe [:league])
-        game-type (keyword (or (:game_type @league) "fifa"))
+        game-type (or (:game_type @league) :fifa)
         points-range (map str (config/opts game-type :points))]
 
     [:div.form-group.game_form {:on-submit (fn [] false)}
@@ -102,22 +108,22 @@
       [drop-down-players players :p2 (:p2 @game)]]
 
      [:div
-      [:label {:for "p1_points"} (str "# " (config/term game-type :points))]
+      [:label {:for "p1_points"} (str "# " (translate :points))]
       [drop-down points-range :p1_points (:p1_points @game)]]
 
      [:div
-      [:label {:for "p2_points"} (str "# " (config/term game-type :points))]
+      [:label {:for "p2_points"} (str "# " (translate :points))]
       [drop-down points-range :p2_points (:p2_points @game)]]
 
      [:div
-      [:label (config/term game-type :using)]
+      [:label (translate :using)]
       [:input.form-control {:type "text"
                             :placeholder "Team Name"
                             :value (:p1_using @game)
                             :on-change (set-val :p1_using)}]]
 
      [:div
-      [:label (config/term game-type :using)]
+      [:label (translate :using)]
       [:input.form-control {:type "text"
                             :placeholder "Team Name"
                             :value (:p2_using @game)
@@ -148,14 +154,14 @@
                       (take @up-to games)
                       games)
         header [:tr
-                [:th "Game #"]
-                [:th "Player 1"]
-                [:th "Team"]
-                [:th "Goals"]
-                [:th "Player 2"]
-                [:th "Team"]
-                [:th "Goals"]
-                [:th "Played At"]]]
+                [:th "game #"]
+                [:th "player 1"]
+                [:th (translate :using)]
+                [:th (translate :points)]
+                [:th "player 2"]
+                [:th (translate :using)]
+                [:th (translate :points)]
+                [:th "played At"]]]
 
     [:div
      [:h3 "List of Games"]
@@ -178,10 +184,10 @@
 (defn rankings-table
   [name-mapping]
   (let [header [:tr
-                [:th "Position"]
-                [:th "Player"]
-                [:th "Ranking"]
-                [:th "# Of Games"]]
+                [:th "position"]
+                [:th "player"]
+                [:th "ranking"]
+                [:th "# of games"]]
         up-to-games (rf/subscribe [:up-to-games])
         players (rf/subscribe [:players])
         games (rf/subscribe [:games])
@@ -239,10 +245,10 @@
             [:pre (:original-text @error)]])
 
          [:div.preamble
-          (when (some? @league)
+          (when (some? (:game_type @league))
             [:span.league__logo
              [:img {:width "100px"
-                    :src (config/logo (-> @league :game_type keyword))}]])
+                    :src (config/logo (-> @league :game_type))}]])
 
           #_[:span.league__title (:name @league)]]
 
