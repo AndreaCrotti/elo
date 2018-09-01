@@ -242,7 +242,7 @@
           (when (some? @league)
             [:span.league__logo
              [:img {:width "100px"
-                    :src (str "logos/" (config/logo (-> @league :game_type keyword)))}]])
+                    :src (config/logo (-> @league :game_type keyword))}]])
 
           #_[:span.league__title (:name @league)]]
 

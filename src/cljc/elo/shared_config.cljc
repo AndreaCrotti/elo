@@ -27,4 +27,4 @@
 
 (defn logo
   [game]
-  (-> games-config game :logo))
+  (str "logos/" (-> games-config game :logo)))
