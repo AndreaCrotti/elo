@@ -25,6 +25,10 @@
      :right 0
      :border 0}]
 
+   [:th {:text-transform "uppercase"}]
+
+   [:label {:text-transform "capitalize"}]
+
    [:.add-player_form
     {:display "grid"
      :width "70%"

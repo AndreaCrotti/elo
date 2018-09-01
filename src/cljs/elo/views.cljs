@@ -2,8 +2,8 @@
   (:require [re-frame.core :as rf]
             [clojure.string :refer [join]]
             [elo.date-picker-utils :refer [date-time-picker]]
-            [elo.algorithms.elo :as elo]
             [elo.games :as games]
+            [elo.shared-config :as config]
             [cljsjs.moment]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
@@ -37,6 +37,12 @@
         (cons [:option ""]
               (for [p (sort-by :name players)]
                 [:option {:value (:id p)} (:name p)]))))
+
+(defn- translate
+  [term]
+  (let [league (rf/subscribe [:league])]
+    ;;XXX: is there a way to avoid all this extra safety?
+    (config/term (or (:game_type @league) :fifa) term)))
 
 (defn now-format
   []
@@ -87,7 +93,11 @@
 (defn game-form
   [players]
   (let [valid-game? (rf/subscribe [:valid-game?])
-        game (rf/subscribe [:game])]
+        game (rf/subscribe [:game])
+        league (rf/subscribe [:league])
+        game-type (or (:game_type @league) :fifa)
+        points-range (map str (config/opts game-type :points))]
+
     [:div.form-group.game_form {:on-submit (fn [] false)}
      [:div
       [:label {:for "p1"} "Player 1"]
@@ -98,24 +108,24 @@
       [drop-down-players players :p2 (:p2 @game)]]
 
      [:div
-      [:label {:for "p1_points"} "# Goals"]
-      [drop-down goals-range :p1_points (:p1_points @game)]]
+      [:label {:for "p1_points"} (str "# " (translate :points))]
+      [drop-down points-range :p1_points (:p1_points @game)]]
 
      [:div
-      [:label {:for "p2_points"} "# Goals"]
-      [drop-down goals-range :p2_points (:p2_points @game)]]
+      [:label {:for "p2_points"} (str "# " (translate :points))]
+      [drop-down points-range :p2_points (:p2_points @game)]]
 
      [:div
-      [:label "Team"]
+      [:label (translate :using)]
       [:input.form-control {:type "text"
-                            :placeholder "Team Name"
+                            :placeholder (str (translate :using) " Name")
                             :value (:p1_using @game)
                             :on-change (set-val :p1_using)}]]
 
      [:div
-      [:label "Team"]
+      [:label (translate :using)]
       [:input.form-control {:type "text"
-                            :placeholder "Team Name"
+                            :placeholder (str (translate :using) " Name")
                             :value (:p2_using @game)
                             :on-change (set-val :p2_using)}]]
 
@@ -144,14 +154,14 @@
                       (take @up-to games)
                       games)
         header [:tr
-                [:th "Game #"]
-                [:th "Player 1"]
-                [:th "Team"]
-                [:th "Goals"]
-                [:th "Player 2"]
-                [:th "Team"]
-                [:th "Goals"]
-                [:th "Played At"]]]
+                [:th "game #"]
+                [:th "player 1"]
+                [:th (translate :using)]
+                [:th (translate :points)]
+                [:th "player 2"]
+                [:th (translate :using)]
+                [:th (translate :points)]
+                [:th "played At"]]]
 
     [:div
      [:h3 "List of Games"]
@@ -174,10 +184,10 @@
 (defn rankings-table
   [name-mapping]
   (let [header [:tr
-                [:th "Position"]
-                [:th "Player"]
-                [:th "Ranking"]
-                [:th "# Of Games"]]
+                [:th "position"]
+                [:th "player"]
+                [:th "ranking"]
+                [:th "# of games"]]
         up-to-games (rf/subscribe [:up-to-games])
         players (rf/subscribe [:players])
         games (rf/subscribe [:games])
@@ -215,10 +225,12 @@
   []
   (rf/dispatch [:load-games])
   (rf/dispatch [:load-players])
+  (rf/dispatch-sync [:load-league])
 
   (let [games (rf/subscribe [:games])
         players (rf/subscribe [:players])
-        error (rf/subscribe [:error])]
+        error (rf/subscribe [:error])
+        league (rf/subscribe [:league])]
 
     (fn []
       (let [name-mapping (into {} (for [p @players] {(:id p) p}))]
@@ -227,11 +239,18 @@
           [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
                          :alt "Fork me on Github"}]]
 
-
          (when @error
            [:div.section.alert.alert-danger
             [:pre (:status-text @error)]
             [:pre (:original-text @error)]])
+
+         [:div.preamble
+          (when (some? (:game_type @league))
+            [:span.league__logo
+             [:img {:width "100px"
+                    :src (config/logo (-> @league :game_type))}]])
+
+          #_[:span.league__title (:name @league)]]
 
          [:div.section.add-player__form_container (add-player-form)]
          [:div.section.players__form_container (game-form @players)]

@@ -72,6 +72,10 @@
               (some-> (:up-to-games db)
                       js/parseInt)))
 
+(rf/reg-sub :league
+            (fn [db _]
+              (update (:league db) :game_type keyword)))
+
 (rf/reg-sub :rankings (getter [:rankings]))
 (rf/reg-sub :games (getter [:games]))
 (rf/reg-sub :players (getter [:players]))
@@ -123,6 +127,7 @@
 
 (rf/reg-event-db :load-games-success (setter [:games]))
 (rf/reg-event-db :load-players-success (setter [:players]))
+(rf/reg-event-db :load-league-success (setter [:league]))
 
 (defn- loader
   [uri on-success]
@@ -138,6 +143,7 @@
 
 (rf/reg-event-fx :load-games (loader "/games" :load-games-success))
 (rf/reg-event-fx :load-players (loader "/players" :load-players-success))
+(rf/reg-event-fx :load-league (loader "/league" :load-league-success))
 
 (defn writer
   [uri on-success params-fn]
