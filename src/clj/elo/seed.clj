@@ -20,20 +20,19 @@
 
     (db/add-company! company)
     (db/add-league! league)
-    (let [players (gen/player-gen {} 5)]
+    (let [players (repeatedly 5 gen/player-gen)]
       (doseq [n (range 5)]
         (println "Creating player number" n)
         (db/add-player! (assoc (nth players n)
                                :league_id (str league-id)
                                :name (str "Player-" n))))
 
-      (let [games (repeat n-games (first (gen/game-gen {:p1 (-> players first :id str)
-                                                        :p2 (-> players second :id str)
-                                                        :p1_points "1"
-                                                        :p2_points "2"
-                                                        :league_id (str league-id)
-                                                        :played_at "2018-08-16+01:0001:48:00"}
-                                                       1)))]
+      (let [games (repeat n-games (gen/game-gen {:p1 (-> players first :id str)
+                                                 :p2 (-> players second :id str)
+                                                 :p1_points "1"
+                                                 :p2_points "2"
+                                                 :league_id (str league-id)
+                                                 :played_at "2018-08-16+01:0001:48:00"}))]
 
         (doseq [game games]
           (println game)
