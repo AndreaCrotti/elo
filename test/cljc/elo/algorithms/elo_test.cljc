@@ -1,6 +1,5 @@
 (ns elo.algorithms.elo-test
   (:require [clojure.test :refer [deftest is are testing]]
-            [elo.generators :as gen]
             [elo.algorithms.elo :as sut]))
 
 ;; define a more generic game representation, that doesn't require

@@ -38,11 +38,16 @@
 (s/def ::league (s/keys :req-un [::id
                                  ::name]))
 
+(defn- gen-single
+  ([spec]
+   (gen-single spec {}))
+
+  ([spec ks]
+   (merge (g/generate (s/gen spec)) ks)))
+
 (defn gen
   [spec]
-  (fn ([ks n]
-      (map #(merge % ks)
-           (take n (g/sample (s/gen spec)))))))
+  (partial gen-single spec))
 
 (def game-gen (gen ::game))
 
