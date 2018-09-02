@@ -129,3 +129,12 @@
              (-> (:body response)
                  json/read-str
                  (get "id")))))))
+
+(deftest auth-test
+  (testing "Creating a new user with github"
+    )
+
+  (testing "Logging in with an existing user"
+    ))
+
+#_(clojure.pprint/pprint (sut/app (mock/request :get "/oauth2/github")))
