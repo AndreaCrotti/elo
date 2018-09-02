@@ -42,5 +42,4 @@
     :launch-uri "/oauth2/github"
     :redirect-uri "/oauth2/github/callback"
     :landing-uri "/"
-    ;; :basic-auth? true
-    }})
+    :basic-auth? true}})

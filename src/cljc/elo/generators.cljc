@@ -55,9 +55,6 @@
 
 (def league-gen (gen ::league))
 
-;; TODO: use this to test that the whole sum of many games is a multiple of 1500
-(s/def ::normalized-game (s/coll-of keyword? keyword? (s/int-in 0 1)))
-
 ;; can make it more specialized?
 (s/def ::oauth2_token string?)
 
