@@ -20,6 +20,12 @@ You can run database migrations with:
 
     lein migratus migrate
 
+## Technical decisions
+
+### Routing
+
+Routing is done using Bidi and Accountant together.
+
 ## License
 
 Copyright © 2018 Andrea Crotti
