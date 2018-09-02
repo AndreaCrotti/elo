@@ -20,7 +20,16 @@
   []
   (or (env :database-url) local-db))
 
-(defn wrap-db-call
+(defmacro wrap-db-call
+  [callback]
+  `(try
+     ~callback
+     (catch java.sql.BatchUpdateException e#
+       (throw (ex-info (str "BatchUpdateException: " (.getMessage (.getNextException e#)))
+                       {:cause e#
+                        :get-next-exception (.getNextException e#)})))))
+
+(defn wrap-test-db-call
   [test-fn]
   (jdbc/with-db-transaction [tx
                              (or (env :database-url) test-db)
@@ -64,6 +73,8 @@
         (h/values [params])
         (ph/returning :id))))
 
+(def add-user-sql (add-row-sql :users))
+
 (def add-player-sql (add-row-sql :player))
 
 (def add-league-sql (add-row-sql :league))
@@ -92,6 +103,7 @@
 
 (defn add-game!
   [params]
+  {:pre [(not= (:p1 params) (:p2 params))]}
   (let [new-params (-> params
                        conform
                        (update :played_at #(tc/to-sql-time (f/parse
@@ -102,6 +114,8 @@
 
     (jdbc/execute! (db-spec)
                    (sql/format query))))
+
+(def add-user! (add-row! add-user-sql))
 
 (defn add-player!
   [params]
@@ -155,6 +169,10 @@
 (defn load-leagues [] (query load-leagues-sql))
 
 (defn load-league [league-id] (get-single load-league-sql league-id))
+
+(defn count-sql [table]
+  (-> (h/select :%count.*)
+      (h/from table)))
 
 (defn insert-game-sql
   [values]
