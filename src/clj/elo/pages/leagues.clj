@@ -8,6 +8,10 @@
   [:html
    (gen-header "Leagues List")
    [:body
+    [:div.github__auth
+     [:a {:href "/oauth2/github"}
+      "Authenticate with Github"]]
+
     [:div.league__content
      [:div.language_pick "Pick your League"]
      (into [:ul.list-group]

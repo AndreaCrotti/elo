@@ -25,3 +25,6 @@ GET :staging
 
 # Check prod now
 GET :prod
+
+# Check that the github authentation works
+GET :local/oauth2/github

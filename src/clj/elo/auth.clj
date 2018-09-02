@@ -1,5 +1,6 @@
 (ns elo.auth
   (:require [environ.core :refer [env]]
+            [elo.config :as config]
             [buddy.auth :refer [authenticated? throw-unauthorized]]
             [buddy.auth.backends.httpbasic :refer [http-basic-backend]]))
 
@@ -30,3 +31,16 @@
   `(if (authenticated? ~request)
      ~body
      (throw-unauthorized)))
+
+(def oauth2-config
+  {:github
+   {:authorize-uri "https://github.com/login/oauth/authorize"
+    :access-token-uri "https://github.com/login/oauth/access_token"
+    :client-id config/github-client-id
+    :client-secret config/github-secret-id
+    :scopes ["user:email"]
+    :launch-uri "/oauth2/github"
+    :redirect-uri "/oauth2/github/callback"
+    :landing-uri "/"
+    ;; :basic-auth? true
+    }})
