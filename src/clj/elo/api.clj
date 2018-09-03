@@ -81,7 +81,7 @@
 (defn get-league
   [req]
   (as-json
-   (resp/response (first (db/load-league (get-league-id req))))))
+   (resp/response (db/load-league (get-league-id req)))))
 
 (defn dispatch-home
   [request]

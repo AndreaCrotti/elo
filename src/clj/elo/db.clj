@@ -144,13 +144,17 @@
   (jdbc/query (db-spec)
               (sql/format (apply func args))))
 
+(defn- get-single
+  [func & args]
+  (first (apply query func args)))
+
 (defn load-games [league-id] (query load-games-sql league-id))
 
 (defn load-players [league-id] (query load-players-sql league-id))
 
 (defn load-leagues [] (query load-leagues-sql))
 
-(defn load-league [league-id] (query load-league-sql league-id))
+(defn load-league [league-id] (get-single load-league-sql league-id))
 
 (defn insert-game-sql
   [values]
