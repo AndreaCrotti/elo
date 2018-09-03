@@ -1,10 +1,11 @@
 (ns elo.handlers
-  (:require [re-frame.core :as rf]
+  (:require [ajax.core :as ajax]
             [cemerick.url :refer [url]]
             [cljsjs.moment]
+            [day8.re-frame.http-fx]
+            [elo.games :as games]
             [elo.shared-config :as shared]
-            [ajax.core :as ajax]
-            [day8.re-frame.http-fx]))
+            [re-frame.core :as rf]))
 
 (defn- get-league-id
   []
@@ -28,7 +29,6 @@
 
 (def default-db
   {:games []
-   :rankings []
    :players []
    :game {}
    :player {}
@@ -45,6 +45,21 @@
   [key]
   (fn [db [_ val]]
     (assoc-in db key val)))
+
+(rf/reg-sub :rankings
+            (fn [query-v _]
+              [(rf/subscribe [:games])
+               (rf/subscribe [:players])
+               (rf/subscribe [:up-to-games])])
+
+            (fn [[games players up-to-games] _]
+              (let [rankings
+                    (games/get-rankings (if (some? up-to-games)
+                                          (take up-to-games games)
+                                          games)
+                                        players)]
+
+                (sort-by #(- (second %)) rankings))))
 
 (rf/reg-sub :error (getter [:error]))
 
@@ -76,7 +91,6 @@
             (fn [db _]
               (update (:league db) :game_type keyword)))
 
-(rf/reg-sub :rankings (getter [:rankings]))
 (rf/reg-sub :games (getter [:games]))
 (rf/reg-sub :players (getter [:players]))
 

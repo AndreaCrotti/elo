@@ -189,14 +189,8 @@
                 [:th "ranking"]
                 [:th "# of games"]]
         up-to-games (rf/subscribe [:up-to-games])
-        players (rf/subscribe [:players])
         games (rf/subscribe [:games])
-        rankings (games/get-rankings (if (some? @up-to-games)
-                                       (take @up-to-games @games)
-                                       @games)
-
-                                     @players)
-        sorted-rankings (sort-by #(- (second %)) rankings)
+        sorted-rankings @(rf/subscribe [:rankings])
         non-zero-games (filter #(pos? (:ngames %)) sorted-rankings)
         up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
 
