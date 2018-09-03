@@ -115,3 +115,14 @@
           resp-home (sut/app req)]
 
       (is (= 200 (:status resp-home))))))
+
+(deftest get-league-test
+  (testing "Get a league by the id"
+    (let [req (mock/request :get "/league" {:league_id sample-league-id})
+          response (sut/app req)]
+
+      (is (= 200 (:status response)))
+      (is (= (str sample-league-id)
+             (-> (:body response)
+                 json/read-str
+                 (get "id")))))))

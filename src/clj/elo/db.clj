@@ -2,7 +2,6 @@
   (:require [clj-time.coerce :as tc]
             [clj-time.format :as f]
             [clj-time.core :as t]
-            [clojure.data.csv :as csv]
             [clojure.edn :as edn]
             [clojure.java.jdbc :as jdbc]
             [environ.core :refer [env]]
@@ -14,7 +13,6 @@
 
 (def local-db "postgres://elo@localhost:5445/elo")
 (def test-db "postgres://elo@localhost:5445/elo_test")
-(def google-sheet-timestamp-format "dd/MM/yyyy HH:mm:ss")
 
 (def timestamp-format "YYYY-MM-ddZHH:mm:SS")
 
@@ -58,17 +56,6 @@
                     transformations)
          :id
          (UUID/randomUUID)))
-
-(defn conform-with-date
-  [data]
-  (-> data
-      conform
-      (update :played-at
-              #(tc/to-sql-time (f/parse
-                                (f/formatter google-sheet-timestamp-format) %)))
-      (update :recorded-at
-              #(tc/to-sql-time (f/parse
-                                (f/formatter google-sheet-timestamp-format) %)))))
 
 (defn add-row-sql
   [table]
@@ -157,44 +144,19 @@
   (jdbc/query (db-spec)
               (sql/format (apply func args))))
 
+(defn- get-single
+  [func & args]
+  (first (apply query func args)))
+
 (defn load-games [league-id] (query load-games-sql league-id))
 
 (defn load-players [league-id] (query load-players-sql league-id))
 
 (defn load-leagues [] (query load-leagues-sql))
 
-(defn load-league [league-id] (query load-league-sql league-id))
+(defn load-league [league-id] (get-single load-league-sql league-id))
 
 (defn insert-game-sql
   [values]
   (-> (h/insert-into :game)
       (h/values values)))
-
-(defn- import-csv
-  [filename names-mapping-file]
-  (let [mapped-names (-> names-mapping-file slurp edn/read-string)
-        content (-> filename slurp csv/read-csv)
-        strip-header (rest content)
-        parsed
-        (for [[played-at p1_name p2_name p1_points p2_points _ p1_using p2_using] strip-header]
-          {:p1 (get mapped-names p1_name)
-           :p2 (get mapped-names p2_name)
-           :p1_points p1_points
-           :p2_points p2_points
-           :p1_using p2_using
-           :p2_using p1_using
-           :played-at played-at
-           :recorded-at played-at})]
-
-    (doseq [p (map conform-with-date parsed)]
-      (println p))
-
-    (jdbc/execute! (db-spec)
-                   (sql/format (insert-game-sql
-                                (map conform-with-date parsed))))))
-
-(defn -main
-  [& [filename names-mapping-file]]
-  (import-csv filename names-mapping-file))
-
-;; lein run -m elo.db sample.csv prods_ids.edn
