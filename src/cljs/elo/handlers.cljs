@@ -1,6 +1,7 @@
 (ns elo.handlers
   (:require [ajax.core :as ajax]
             [cemerick.url :refer [url]]
+            ;; these two imports are actually needed
             [cljsjs.moment]
             [day8.re-frame.http-fx]
             [elo.games :as games]
