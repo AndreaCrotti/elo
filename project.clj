@@ -26,6 +26,7 @@
                  [buddy/buddy-auth "2.1.0"]
                  [migratus "1.0.8"]
                  [org.clojure/test.check "0.9.0"]
+                 [cljsjs/plotly "1.36.1-0"]
 
                  [org.clojure/clojurescript "1.10.339"]
                  [cljs-react-material-ui "0.2.48"]
