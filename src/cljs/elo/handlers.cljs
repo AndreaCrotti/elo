@@ -47,11 +47,14 @@
   (fn [db [_ val]]
     (assoc-in db key val)))
 
+(defn- compute-rankings-data
+  [query-v _]
+  [(rf/subscribe [:games])
+   (rf/subscribe [:players])
+   (rf/subscribe [:up-to-games])])
+
 (rf/reg-sub :rankings
-            (fn [query-v _]
-              [(rf/subscribe [:games])
-               (rf/subscribe [:players])
-               (rf/subscribe [:up-to-games])])
+            compute-rankings-data
 
             (fn [[games players up-to-games] _]
               (let [rankings
@@ -61,6 +64,24 @@
                                         players)]
 
                 (sort-by #(- (second %)) rankings))))
+
+
+(rf/reg-sub :rankings-data
+            compute-rankings-data
+
+            ;;TODO: might be nice also to have a from-games to slice even more nicely
+            (fn [[games players up-to-games] _]
+              (let [x-axis (range up-to-games)
+                    compute-games (fn [up-to] (games/get-rankings (if (some? up-to)
+                                                                   (take up-to games)
+                                                                   games)
+                                                                 players))
+                    all-rankings (map compute-games x-axis)
+                    grouped (group-by :id (flatten all-rankings))]
+
+                (into {}
+                      (for [[k v] grouped]
+                        {k (map :ranking v)})))))
 
 (rf/reg-sub :error (getter [:error]))
 

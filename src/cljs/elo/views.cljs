@@ -223,7 +223,8 @@
   (let [games (rf/subscribe [:games])
         players (rf/subscribe [:players])
         error (rf/subscribe [:error])
-        league (rf/subscribe [:league])]
+        league (rf/subscribe [:league])
+        graph-data @(rf/subscribe [:rankings-data])]
 
     (fn []
       (let [name-mapping (into {} (for [p @players] {(:id p) p}))]
