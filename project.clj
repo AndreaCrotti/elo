@@ -82,6 +82,8 @@
                                 :pretty-print? true}}]}
 
 
+  :aliases {"test-cljs" ["doo" "phantom" "test" "once"]}
+
   :profiles
   {:production {:env {:production true}}
    :uberjar {:hooks []
@@ -117,7 +119,7 @@
   :cljsbuild
   {:builds
    [;; enable it again when it won't complain anymore about not finding some namespace
-    #_{:id "test"
+    {:id "test"
      :source-paths ["src/cljs" "test/cljs" "src/cljc" "test/cljc" "test/doo"]
      :compiler {:output-to "resources/public/js/testable.js"
                 :main doo.test-runner
