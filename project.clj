@@ -6,12 +6,12 @@
 
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/data.csv "0.1.4"]
-                 [org.clojure/spec.alpha "0.2.168"]
+                 [org.clojure/spec.alpha "0.2.176"]
                  [clj-http "3.9.1"]
                  [ring "1.6.3"]
                  [compojure "1.6.1"]
                  [org.clojure/java.jdbc "0.7.8"]
-                 [org.postgresql/postgresql "42.2.4"]
+                 [org.postgresql/postgresql "42.2.5"]
                  [nilenso/honeysql-postgres "0.2.4"]
                  [environ/environ.core "0.3.1"]
                  [hiccup "1.0.5"]
@@ -21,15 +21,16 @@
                  [org.clojure/tools.cli "0.3.7"]
                  [honeysql "0.9.3"]
                  [environ "1.1.0"]
-                 [garden "1.3.5"]
+                 [garden "1.3.6"]
                  [buddy "2.0.0"]
                  [buddy/buddy-auth "2.1.0"]
-                 [migratus "1.0.8"]
+                 [migratus "1.0.9"]
                  [org.clojure/test.check "0.9.0"]
+                 [cljsjs/plotly "1.36.1-0"]
 
                  [org.clojure/clojurescript "1.10.339"]
                  [cljs-react-material-ui "0.2.48"]
-                 [re-frame "0.10.5"]
+                 [re-frame "0.10.6"]
                  [reagent-forms "0.5.42"]
 
                  [cljsjs/react-datepicker "1.5.0-0"]
@@ -49,7 +50,7 @@
                  [buddy "2.0.0"]
                  [com.taoensso/timbre "4.10.0"]
                  [re-com "2.1.0"]
-                 [bidi "2.1.3"]
+                 [bidi "2.1.4"]
                  [com.cemerick/url "0.1.1"]]
 
   :plugins [[environ/environ.lein "0.3.1"]
@@ -80,6 +81,8 @@
                      :compiler {:output-to "resources/public/css/screen.css"
                                 :pretty-print? true}}]}
 
+
+  :aliases {"test-cljs" ["doo" "phantom" "test" "once"]}
 
   :profiles
   {:production {:env {:production true}}
@@ -115,8 +118,7 @@
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
   {:builds
-   [;; enable it again when it won't complain anymore about not finding some namespace
-    #_{:id "test"
+   [{:id "test"
      :source-paths ["src/cljs" "test/cljs" "src/cljc" "test/cljc" "test/doo"]
      :compiler {:output-to "resources/public/js/testable.js"
                 :main doo.test-runner

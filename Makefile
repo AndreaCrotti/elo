@@ -12,3 +12,9 @@ pg-test:
 
 backup:
 	heroku pg:backups:capture -a fifa-elo
+
+migrate-local:
+	DATABASE_URL=postgres://elo@localhost:5445/elo lein migratus migrate
+
+migrate-test:
+	DATABASE_URL=postgres://elo@localhost:5445/elo_test lein migratus migrate
