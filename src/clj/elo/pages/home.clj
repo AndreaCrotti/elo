@@ -7,7 +7,12 @@
   [:html
    (gen-header "League page")
    [:body
-    [:div {:id "plot"} "Space for the plot is here"]
-    [:div {:id "app"}]
+    [:div.plots
+     [:div {:id "plot-cljs"} "Space for the plot is here"]
+     [:div {:id "plot-js"} "Space for the pure JS plot is here"]]
+
+    #_[:div {:id "app"}]
     [:script {:src (cache-buster "js/compiled/app.js")}]
-    [:script "elo.core.init();"]]])
+    [:script {:src {cache-buster "js/playground.js"}}]
+
+    #_[:script "elo.core.init();"]]])
