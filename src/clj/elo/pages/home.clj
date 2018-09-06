@@ -12,7 +12,7 @@
      [:div {:id "plot-js"} "Space for the pure JS plot is here"]]
 
     #_[:div {:id "app"}]
-    [:script {:src (cache-buster "js/compiled/app.js")}]
-    [:script {:src {cache-buster "js/playground.js"}}]
+    #_[:script {:src (cache-buster "js/compiled/app.js")}]
+    [:script {:src (cache-buster "js/playground.js")}]
 
     #_[:script "elo.core.init();"]]])
