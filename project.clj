@@ -29,13 +29,13 @@
                  [cljsjs/plotly "1.36.1-0"]
 
                  [org.clojure/clojurescript "1.10.339"]
-                 [cljs-react-material-ui "0.2.50"]
+                 [cljs-react-material-ui "0.2.48"]
                  [re-frame "0.10.6"]
                  [reagent-forms "0.5.42"]
 
                  [cljsjs/react-datepicker "1.5.0-0"]
                  [cljsjs/classnames "2.2.5-1"]
-                 [cljsjs/prop-types "15.6.2-0"]
+                 [cljsjs/prop-types "15.6.1-0"]
                  [cljsjs/react-onclickoutside "6.7.1-1"]
                  [cljsjs/react-popper "0.10.4-0"]
                  [cljsjs/popperjs "1.14.3-1"]
