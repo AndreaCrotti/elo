@@ -1,26 +1,37 @@
 (ns data-migrations.migrate-users
   (:require [elo.db :as db]
-            [elo.generators :as gen]))
+            [honeysql.core :as sql]
+            [honeysql.helpers :as h]
+            [clojure.java.jdbc :as jdbc]
+            [elo.generators :as gen])
 
-;; should this depend on the `elo` namespace at all??  if it does then
-;; it's hard to make these migrations in sync, even if it might not be
-;; so important
-
-;; Steps required for this migration:
-;; - create lots of empty users (as many as the players)
-;; - add these users to a certain company
-;; - link together these users with existing users copying over the email
+  (:import (java.util UUID)))
 
 (defn all-players-by-league
   []
   (let [league-ids (map :id (db/load-leagues))]
     (zipmap league-ids (map #(db/load-players %) league-ids))))
 
+(defn update-player-user-sql
+  [user-id email]
+  (-> (h/update :player)
+      (h/sset {:user_id user-id})
+      (h/where [:= :email email])))
+
 (defn migrate
   [company-id]
-  (doseq [[league-id players] (all-players-by-league)]
-    (doseq [pl players]
-      (let [user (gen/user-gen {:email (:email pl)})]
-        (db/add-user! user)
-        (db/add-user-to-company! (:id user) company-id)
-        ))))
+  (jdbc/with-db-transaction [tx (db/db-spec)]
+    (doseq [[league-id players] (all-players-by-league)]
+      (doseq [pl players]
+        (let [user (gen/user-gen {:email (:email pl)
+                                  :oauth2_token nil})]
+          (db/add-user! user)
+          (db/add-user-to-company! {:user_id (:id user)
+                                    :company_id company-id})
+
+          (jdbc/execute! tx
+                         (sql/format (update-player-user-sql (:id user) (:email pl)))))))))
+
+
+(defn -main [& [company-id]]
+  (migrate (UUID/fromString company-id)))

@@ -1,7 +1,7 @@
 CREATE TABLE users (
        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
        -- email should be migrated out from the other table first
-       email VARCHAR NOT NULL UNIQUE,
+       email VARCHAR NOT NULL,
        oauth2_token VARCHAR,
        -- do we need default values for this at all?
        created_at TIMESTAMP DEFAULT now(),
