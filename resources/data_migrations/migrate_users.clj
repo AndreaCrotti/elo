@@ -1,8 +1,6 @@
 (ns data-migrations.migrate-users
-  (:require [honeysql.core :as sql]
-            [elo.db :as db]
-            [elo.generators :as gen]
-            [clojure.java.jdbc :as jdbc]))
+  (:require [elo.db :as db]
+            [elo.generators :as gen]))
 
 ;; should this depend on the `elo` namespace at all??  if it does then
 ;; it's hard to make these migrations in sync, even if it might not be
