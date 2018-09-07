@@ -79,15 +79,9 @@
 
 (def add-league-sql (add-row-sql :league))
 
-(defn add-player-to-league-sql
-  [params]
-  (-> (h/insert-into :league_players)
-      (h/values [params])))
+(def add-player-to-league-sql (add-row-sql :league_players))
 
-(defn add-user-to-company-sql
-  [params]
-  (-> (h/insert-into :company_users)
-      (h/values [params])))
+(def add-user-to-company-sql (add-row-sql :company_users))
 
 (def add-company-sql (add-row-sql :company))
 
