@@ -1,5 +1,7 @@
 # elo
 
+[![CircleCI](https://circleci.com/gh/AndreaCrotti/elo/tree/master.svg?style=svg)](https://circleci.com/gh/AndreaCrotti/elo/tree/master)
+
 Compute the Elo ranking from Fifa games.
 
 ## Usage
