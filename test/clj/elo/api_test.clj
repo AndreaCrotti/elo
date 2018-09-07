@@ -20,11 +20,14 @@
                     :company_id sample-company-id
                     :name "Sample League"})
 
-(use-fixtures :each (join-fixtures [db/wrap-db-call (fn [test-fn]
-                                                      (db/add-company! {:id sample-company-id
-                                                                        :name "Sample Company"})
-                                                      (db/add-league! sample-league)
-                                                      (test-fn))]))
+(defn- setup-league-fixture
+  [test-fn]
+  (db/add-company! {:id sample-company-id
+                    :name "Sample Company"})
+  (db/add-league! sample-league)
+  (test-fn))
+
+(use-fixtures :each (join-fixtures [db/wrap-test-db-call setup-league-fixture]))
 
 (defn- make-admin-header
   []
@@ -126,3 +129,12 @@
              (-> (:body response)
                  json/read-str
                  (get "id")))))))
+
+(deftest auth-test
+  (testing "Creating a new user with github"
+    )
+
+  (testing "Logging in with an existing user"
+    ))
+
+#_(clojure.pprint/pprint (sut/app (mock/request :get "/oauth2/github")))

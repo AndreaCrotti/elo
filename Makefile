@@ -18,3 +18,6 @@ migrate-local:
 
 migrate-test:
 	DATABASE_URL=postgres://elo@localhost:5445/elo_test lein migratus migrate
+
+db-graph:
+	eralchemy -i postgres://elo@localhost:5445/elo -o elo_db.png
