@@ -13,6 +13,6 @@
 
     [:div {:id "app"}]
     [:script {:src (cache-buster "js/compiled/app.js")}]
-    [:script {:src (cache-buster "js/playground.js")}]
+    #_[:script {:src (cache-buster "js/playground.js")}]
 
     [:script "elo.core.init();"]]])

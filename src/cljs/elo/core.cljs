@@ -2,7 +2,7 @@
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [elo.handlers :as handlers]
-            [elo.views :refer [root]]))
+            [elo.league-detail.views :as league-detail-views]))
 
 (def debug?
   ^boolean js/goog.DEBUG)
@@ -19,4 +19,4 @@
 (defn ^:export init []
   (re-frame/dispatch-sync [:initialize-db])
   (dev-setup)
-  (mount-root root))
+  (mount-root league-detail-views/root))

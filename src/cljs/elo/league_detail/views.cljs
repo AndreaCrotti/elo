@@ -1,4 +1,4 @@
-(ns elo.views
+(ns elo.league-detail.views
   (:require [re-frame.core :as rf]
             [clojure.string :refer [join]]
             [elo.date-picker-utils :refer [date-time-picker]]
