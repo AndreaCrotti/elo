@@ -101,12 +101,15 @@
 (rf/reg-sub :game (getter [:game]))
 (rf/reg-sub :up-to-games
             (fn [db _]
-              (some-> (common/get-in* page [:up-to-games] db)
+              (some-> (common/get-in* db page [:up-to-games])
                       js/parseInt)))
 
 (rf/reg-sub :league
             (fn [db _]
-              (common/update-in* db page [:league :game_type] keyword)))
+              (update
+               (common/get-in* db page [:league])
+               :game_type
+               keyword)))
 
 (rf/reg-sub :games (getter [:games]))
 (rf/reg-sub :players (getter [:players]))
@@ -193,12 +196,10 @@
 
 (defn game-transform
   [db]
-  (common/get-in*
-   (common/update-in* db
-                      page
-                      [:game :played_at]
-                      #(.format % shared/timestamp-format))
-   page [:game]))
+  (update
+   (common/get-in* db page [:game])
+   :played_at
+   #(.format % shared/timestamp-format)))
 
 (defn player-transform
   [db]
