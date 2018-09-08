@@ -52,7 +52,8 @@
                  [com.taoensso/timbre "4.10.0"]
                  [re-com "2.1.0"]
                  [bidi "2.1.4"]
-                 [com.cemerick/url "0.1.1"]]
+                 [com.cemerick/url "0.1.1"]
+                 [venantius/accountant "0.2.4"]]
 
   :plugins [[environ/environ.lein "0.3.1"]
             [migratus-lein "0.5.0"]

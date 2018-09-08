@@ -87,7 +87,6 @@
 
 (defn dispatch-home
   [request]
-  #_(info (str "request now " request))
   (if (some? (:query-string request))
     (home request)
     (leagues request)))
@@ -99,19 +98,8 @@
 
 ;;TODO: add a not found page for everything else?
 (def routes
-  ["/" {;; "company/" {"" :companies
-        ;;             [:company-id] ::company}
-
-        ;; "league" {"" :leagues
-        ;;           [:league-id] ::league}
-
-        ;;TODO: try to make this more restful
-
-        "" dispatch-home
-        ;;TODO: should actually use this instead of query arguments
-        ;; "" leagues
-
-        ;; ["league/" :league-id] home
+  ["/" {"" dispatch-home
+        ;;TODO: might want to add an "api/" prefix for all the backend only routing
 
         "add-player" add-player!
         "add-game" add-game!
