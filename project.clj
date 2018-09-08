@@ -119,7 +119,7 @@
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
   {:builds
-   [{:id "test"
+   [#_{:id "test"
      :source-paths ["src/cljs" "test/cljs" "src/cljc" "test/cljc" "test/doo"]
      :compiler {:output-to "resources/public/js/testable.js"
                 :main doo.test-runner
