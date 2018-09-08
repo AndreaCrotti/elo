@@ -1,5 +1,5 @@
 ;;TODO: migrate to always use namespaced keywords
-(ns elo.handlers
+(ns elo.league-detail.handlers
   (:require [ajax.core :as ajax]
             [cemerick.url :refer [url]]
             ;; these two imports are actually needed

@@ -1,7 +1,7 @@
 (ns elo.core
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
-            [elo.handlers :as handlers]
+            [elo.league-detail.handlers :as handlers]
             [elo.league-detail.views :as league-detail-views]))
 
 (def debug?
