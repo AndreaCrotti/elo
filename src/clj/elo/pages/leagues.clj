@@ -8,7 +8,7 @@
   [:html
    (gen-header "Leagues List")
    [:body
-    [:div.github__auth
+    #_[:div.github__auth
      [:a {:href "/oauth2/github"}
       "Authenticate with Github"]]
 
