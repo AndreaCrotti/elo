@@ -54,7 +54,6 @@
   (re-frame/dispatch-sync [::league-list-handlers/initialize-db])
   (re-frame/dispatch-sync [::league-detail-handlers/initialize-db])
 
-  (js/console.log "In core/init")
   (dev-setup)
   (accountant/configure-navigation!
    {:nav-handler nav-handler
