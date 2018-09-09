@@ -17,6 +17,7 @@
                 [:img.league_logo_small {:width "30px"
                                          :src (config/logo (keyword game_type))}]
 
-                [:button {:on-click #(accountant/navigate!
-                                      (routes/path-for :league-detail :league-id id))}
+                [:a {:href "#"
+                     :on-click #(accountant/navigate!
+                                 (routes/path-for :league-detail :league-id id))}
                  name]]))])))

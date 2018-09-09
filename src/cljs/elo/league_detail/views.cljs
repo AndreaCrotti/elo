@@ -202,8 +202,9 @@
             [:pre (:original-text @error)]])
 
          [:div.preamble
-          [:button {:on-click #(accountant/navigate! (routes/path-for :league-list))}
-           "Back to All leagues"]
+          [:img {:src "/logos/home.png"
+                 :width "50px"
+                 :on-click #(accountant/navigate! (routes/path-for :league-list))}]
 
           (when (some? (:game_type @league))
             [:span.league__logo
