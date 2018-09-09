@@ -95,8 +95,7 @@
 
 ;;TODO: add a not found page for everything else?
 (def routes
-  ["/" {"api/" {
-                "add-player" add-player!
+  ["/" {"api/" {"add-player" add-player!
                 "add-game" add-game!
 
                 "league" get-league

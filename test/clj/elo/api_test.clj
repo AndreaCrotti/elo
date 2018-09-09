@@ -117,8 +117,6 @@
                  (get "id")))))))
 
 (deftest auth-test
-  (testing "Creating a new user with github"
-    )
+  (testing "Creating a new user with github")
 
-  (testing "Logging in with an existing user"
-    ))
+  (testing "Logging in with an existing user"))
