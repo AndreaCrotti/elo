@@ -1,18 +1,22 @@
-(ns elo.handlers
-  (:require [ajax.core :as ajax]
-            [cemerick.url :refer [url]]
-            ;; these two imports are actually needed
+;;TODO: migrate to always use namespaced keywords
+(ns elo.league-detail.handlers
+  (:require ;; these two imports are actually needed
             [cljsjs.moment]
             [day8.re-frame.http-fx]
+            [elo.common.handlers :as common]
             [elo.games :as games]
             [elo.shared-config :as shared]
             [re-frame.core :as rf]))
 
-(defn- get-league-id
-  []
-  (-> (url js/window.location.href)
-      :query
-      (get "league_id")))
+(def page ::page-id)
+
+(def setter (partial common/setter* page))
+
+(def getter (partial common/getter* page))
+
+(rf/reg-sub :league-id
+            (fn [db _]
+              (get-in db [:route-params :league-id])))
 
 ;;TODO: this might get defined too late anyway
 (def default-game
@@ -24,28 +28,13 @@
    :p2_using ""
    :played_at (js/moment)})
 
-(def default-player
-  {:name ""
-   :email ""})
-
 (def default-db
   {:games []
    :players []
    :game {}
-   :player {}
    :error nil
    :up-to-games nil
-   :league_id (get-league-id)})
-
-(defn- getter
-  [ks]
-  (fn [db _]
-    (get-in db ks)))
-
-(defn- setter
-  [key]
-  (fn [db [_ val]]
-    (assoc-in db key val)))
+   :league_id nil})
 
 (defn- compute-rankings-data
   [query-v _]
@@ -55,7 +44,6 @@
 
 (rf/reg-sub :rankings
             compute-rankings-data
-
             (fn [[games players up-to-games] _]
               (let [rankings
                     (games/get-rankings (if (some? up-to-games)
@@ -68,7 +56,6 @@
 
 (rf/reg-sub :rankings-data
             compute-rankings-data
-
             ;;TODO: might be nice also to have a from-games to slice even more nicely
             (fn [[games players up-to-games] _]
               (let [x-axis (range up-to-games)
@@ -88,41 +75,32 @@
 (rf/reg-sub :valid-game?
             (fn [db _]
               (not-any? #(= % "")
-                        (vals (:game db)))))
-
-(rf/reg-sub :valid-player?
-            (fn [db _]
-              (not-any? #(= % "")
-                        (vals (:player db)))))
-
-
-(rf/reg-event-db :reset-player (fn [db _]
-                                 (assoc db :player default-player)))
+                        (vals (common/get-in* db page [:game])))))
 
 (rf/reg-event-db :reset-game (fn [db _]
-                               (assoc db :game default-game)))
+                               (common/assoc-in* db page [:game] default-game)))
 
-(rf/reg-sub :player (getter [:player]))
 (rf/reg-sub :game (getter [:game]))
 (rf/reg-sub :up-to-games
             (fn [db _]
-              (some-> (:up-to-games db)
+              (some-> (common/get-in* db page [:up-to-games])
                       js/parseInt)))
 
 (rf/reg-sub :league
             (fn [db _]
-              (update (:league db) :game_type keyword)))
+              (update
+               (common/get-in* db page [:league])
+               :game_type
+               keyword)))
 
 (rf/reg-sub :games (getter [:games]))
 (rf/reg-sub :players (getter [:players]))
 
-(rf/reg-event-db :initialize-db
+(rf/reg-event-db ::initialize-db
                  (fn [db _]
-                   (assoc default-db
-                          :game
-                          default-game
-                          :player
-                          default-player)))
+                   (assoc db
+                          page
+                          (assoc default-db :game default-game))))
 
 (rf/reg-event-db :p1 (setter [:game :p1]))
 (rf/reg-event-db :p1_points (setter [:game :p1_points]))
@@ -135,11 +113,7 @@
 
 (rf/reg-event-db :played_at (setter [:game :played_at]))
 
-(rf/reg-event-db :name (setter [:player :name]))
-(rf/reg-event-db :email (setter [:player :email]))
-
-
-(defn reload-fn-gen
+(defn- reload-fn-gen
   [extra-signal]
   (fn [{:keys [db]} _]
     (js/alert "Thanks you, results and rankings are updated immediately")
@@ -150,55 +124,23 @@
                                      [:load-games]])}))
 
 (rf/reg-event-fx :add-game-success (reload-fn-gen [:reset-game]))
-(rf/reg-event-fx :add-player-success (reload-fn-gen [:reset-player]))
 
-(rf/reg-event-db :failed
-                 (fn [db [_ {:keys [status parse-error] :as req}]]
-                   (js/console.log "Failed request " parse-error "req" req)
-                   (assoc db
-                          :error
-                          {:status status
-                           :status-text (:status-text parse-error)
-                           :original-text (:original-text parse-error)})))
+(rf/reg-event-db :failed (common/failed page))
 
 (rf/reg-event-db :load-games-success (setter [:games]))
 (rf/reg-event-db :load-players-success (setter [:players]))
 (rf/reg-event-db :load-league-success (setter [:league]))
 
-(defn- loader
-  [uri on-success]
-  (fn [{:keys [db]} _]
-    {:db db
-     :http-xhrio {:method :get
-                  :uri uri
-                  :params {:league_id (:league_id db)}
-                  :format (ajax/json-request-format)
-                  :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success [on-success]
-                  :on-failure [:failed]}}))
-
-(rf/reg-event-fx :load-games (loader "/games" :load-games-success))
-(rf/reg-event-fx :load-players (loader "/players" :load-players-success))
-(rf/reg-event-fx :load-league (loader "/league" :load-league-success))
-
-(defn writer
-  [uri on-success params-fn]
-  (fn [{:keys [db]} _]
-    {:db db
-     :http-xhrio {:method :post
-                  :uri uri
-                  :params (merge (params-fn db)
-                                 {:league_id (:league_id db)})
-                  :format (ajax/json-request-format)
-                  :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success [on-success]
-                  :on-failure [:failed]}}))
+(rf/reg-event-fx :load-games (common/loader page "/api/games" :load-games-success))
+(rf/reg-event-fx :load-players (common/loader page "/api/players" :load-players-success))
+(rf/reg-event-fx :load-league (common/loader page "/api/league" :load-league-success))
 
 (defn game-transform
   [db]
-  (update (:game db)
-          :played_at
-          #(.format % shared/timestamp-format)))
+  (update
+   (common/get-in* db page [:game])
+   :played_at
+   #(.format % shared/timestamp-format)))
 
-(rf/reg-event-fx :add-game (writer "/add-game" :add-game-success game-transform))
-(rf/reg-event-fx :add-player (writer "/add-player" :add-player-success :player))
+(rf/reg-event-fx :add-game (common/writer page "/api/add-game"
+                                          :add-game-success game-transform))

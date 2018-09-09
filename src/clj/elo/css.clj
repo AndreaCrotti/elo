@@ -50,7 +50,6 @@
 
 (defstyles screen
   ;; could maybe even split creating multiple CSS files?
-  (concat leagues-page home-page)
-  )
+  (concat leagues-page home-page))
 
 #_(concat [[1] [2]] [[3] [4]])

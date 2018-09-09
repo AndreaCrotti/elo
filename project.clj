@@ -52,7 +52,8 @@
                  [com.taoensso/timbre "4.10.0"]
                  [re-com "2.1.0"]
                  [bidi "2.1.4"]
-                 [com.cemerick/url "0.1.1"]]
+                 [com.cemerick/url "0.1.1"]
+                 [venantius/accountant "0.2.4"]]
 
   :plugins [[environ/environ.lein "0.3.1"]
             [migratus-lein "0.5.0"]
@@ -119,7 +120,7 @@
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
   {:builds
-   [{:id "test"
+   [#_{:id "test"
      :source-paths ["src/cljs" "test/cljs" "src/cljc" "test/cljc" "test/doo"]
      :compiler {:output-to "resources/public/js/testable.js"
                 :main doo.test-runner
@@ -131,7 +132,7 @@
      :compiler     {:main elo.core
                     :output-to "resources/public/js/compiled/app.js"
                     :output-dir "resources/public/js/compiled/out"
-                    :asset-path "js/compiled/out"
+                    :asset-path "/js/compiled/out"
                     :optimizations :none
                     :source-map true
                     :source-map-timestamp true

@@ -36,9 +36,11 @@
 
 (defn- write-api-call
   [endpoint content]
-  (let [response (sut/app (mock/request :post endpoint content))]
-    (assert (= 201 (:status response)))
-    (json/read-str (:body response))))
+  (let [full-api-path (str "/api" endpoint)
+        {:keys [status] :as response} (sut/app (mock/request :post full-api-path content))]
+
+    (assert (contains? #{201 401} status), "Invalid status code")
+    response))
 
 (defn- store-users!
   []
@@ -62,7 +64,7 @@
                   :played_at "2018-08-29+01:0021:50:32"}
 
           _ (write-api-call "/add-game" sample)
-          games (sut/app (mock/request :get "/games" {:league_id sample-league-id}))
+          games (sut/app (mock/request :get "/api/games" {:league_id sample-league-id}))
 
           desired {"p1" (str p1-id)
                    "p1_points" 3,
@@ -86,7 +88,7 @@
   (with-redefs [env (assoc env :admin-password "admin-password")]
     (testing "Add a new user without right user/password"
       (let [user {:name "name" :email "email" :league_id sample-league-id}
-            response (sut/app (mock/request :post "/add-player" user))]
+            response (write-api-call "/add-player" user)]
 
         (is (= 401 (:status response)))
         (is (empty? (db/load-players sample-league-id)))))
@@ -98,30 +100,14 @@
                       :league_id sample-league-id}
 
               response (sut/app (mock/header
-                                 (mock/request :post "/add-player" params)
+                                 (mock/request :post "/api/add-player" params)
                                  "Authorization" (make-admin-header)))]
 
           (is (= 201 (:status response))))))))
 
-(deftest leagues-list-test
-  (testing "Fetching the list of leagues"
-    (let [req (mock/request :get "/")
-          resp-home (sut/app req)]
-
-      (is (= 200 (:status resp-home)))
-      (is (true? (clojure.string/includes? (:body resp-home)
-                                           "list-group-item"))))))
-
-(deftest homepage-test
-  (testing "Get the homepage per league"
-    (let [req (mock/request :get (format "/?league_id=%s" sample-league-id))
-          resp-home (sut/app req)]
-
-      (is (= 200 (:status resp-home))))))
-
 (deftest get-league-test
   (testing "Get a league by the id"
-    (let [req (mock/request :get "/league" {:league_id sample-league-id})
+    (let [req (mock/request :get "/api/league" {:league_id sample-league-id})
           response (sut/app req)]
 
       (is (= 200 (:status response)))
@@ -131,10 +117,6 @@
                  (get "id")))))))
 
 (deftest auth-test
-  (testing "Creating a new user with github"
-    )
+  (testing "Creating a new user with github")
 
-  (testing "Logging in with an existing user"
-    ))
-
-#_(clojure.pprint/pprint (sut/app (mock/request :get "/oauth2/github")))
+  (testing "Logging in with an existing user"))

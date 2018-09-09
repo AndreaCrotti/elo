@@ -5,7 +5,6 @@
             [elo.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
             [elo.db :as db]
             [elo.pages.home :as home]
-            [elo.pages.leagues :as leagues]
             [environ.core :refer [env]]
             [hiccup.core :as hiccup]
             [ring.adapter.jetty :as jetty]
@@ -53,9 +52,7 @@
 
    "text/html"))
 
-(defn home [_] (render-page (home/body)))
-
-(defn leagues [_] (render-page (leagues/body)))
+(defn spa [_] (render-page (home/body)))
 
 ;;TODO: the league_id has to be extracted on all these different handlers
 
@@ -85,12 +82,11 @@
   (as-json
    (resp/response (db/load-league (get-league-id req)))))
 
-(defn dispatch-home
-  [request]
-  #_(info (str "request now " request))
-  (if (some? (:query-string request))
-    (home request)
-    (leagues request)))
+(defn get-leagues
+  [req]
+  ;;TODO: should get the company-id as argument ideally
+  (as-json
+   (resp/response (db/load-leagues))))
 
 (defn github-callback
   [request]
@@ -99,28 +95,20 @@
 
 ;;TODO: add a not found page for everything else?
 (def routes
-  ["/" {;; "company/" {"" :companies
-        ;;             [:company-id] ::company}
+  ["/" {"api/" {"add-player" add-player!
+                "add-game" add-game!
 
-        ;; "league" {"" :leagues
-        ;;           [:league-id] ::league}
+                "league" get-league
+                "leagues" get-leagues
+                "players" get-players
+                "games" get-games
 
-        ;;TODO: try to make this more restful
+                "oauth2/github/callback" github-callback}
 
-        "" dispatch-home
-        ;;TODO: should actually use this instead of query arguments
-        ;; "" leagues
-
-        ;; ["league/" :league-id] home
-
-        "add-player" add-player!
-        "add-game" add-game!
-
-        "league" get-league
-        "players" get-players
-        "games" get-games
-
-        "oauth2/github/callback" github-callback}])
+        ;; quite a crude way to make sure all the other urls actually
+        ;; render to the SPA, letting the routing be handled by
+        ;; accountant
+        true spa}])
 
 (def handler
   (make-handler routes))

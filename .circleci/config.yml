@@ -40,6 +40,6 @@ jobs:
             sudo chmod +x /usr/local/bin/phantomjs
             phantomjs -v
 
-      - run:
-          name: run Clojurescript tests
-          command: lein test-cljs
+      # - run:
+      #     name: run Clojurescript tests
+      #     command: lein test-cljs
