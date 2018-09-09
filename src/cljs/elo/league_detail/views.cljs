@@ -8,7 +8,6 @@
             [re-frame.core :as rf]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
-(def goals-range (map str (range 0 10)))
 
 ;; have a more generic way to define dropdowns possibly
 (defn- drop-down
