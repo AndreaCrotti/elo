@@ -1,5 +1,6 @@
 (ns elo.core
   (:require [accountant.core :as accountant]
+            [cemerick.url :refer [url]]
             [elo.league-detail.views :as league-detail-views]
             [elo.league-detail.handlers :as league-detail-handlers]
             [elo.league-list.views :as league-list-views]
@@ -39,6 +40,13 @@
     (js/console.log "Switching to page" new-handler)
     (mount-root new-page)))
 
+(defn curr-path
+  []
+  (->
+   js/window.location.href
+   url
+   :path))
+
 (defn ^:export init []
   (re-frame/dispatch-sync [::league-list-handlers/initialize-db])
   (re-frame/dispatch-sync [::league-detail-handlers/initialize-db])
@@ -49,4 +57,5 @@
    {:nav-handler nav-handler
     :path-exists? path-exists?})
 
-  (mount-root league-list-views/root))
+  ;;TODO: is it necessary to do this at all?
+  (nav-handler (curr-path)))
