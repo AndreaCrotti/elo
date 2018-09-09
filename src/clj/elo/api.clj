@@ -5,7 +5,6 @@
             [elo.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
             [elo.db :as db]
             [elo.pages.home :as home]
-            [elo.pages.leagues :as leagues]
             [environ.core :refer [env]]
             [hiccup.core :as hiccup]
             [ring.adapter.jetty :as jetty]
@@ -55,8 +54,6 @@
 
 (defn home [_] (render-page (home/body)))
 
-(defn leagues [_] (render-page (leagues/body)))
-
 ;;TODO: the league_id has to be extracted on all these different handlers
 
 (defn to-uuid
@@ -85,11 +82,11 @@
   (as-json
    (resp/response (db/load-league (get-league-id req)))))
 
-(defn dispatch-home
-  [request]
-  (if (some? (:query-string request))
-    (home request)
-    (leagues request)))
+(defn get-leagues
+  [req]
+  ;;TODO: should get the company-id as argument ideally
+  (as-json
+   (resp/response (db/load-leagues))))
 
 (defn github-callback
   [request]
@@ -98,13 +95,14 @@
 
 ;;TODO: add a not found page for everything else?
 (def routes
-  ["/" {"" dispatch-home
+  ["/" {"" home
         ;;TODO: might want to add an "api/" prefix for all the backend only routing
 
         "add-player" add-player!
         "add-game" add-game!
 
         "league" get-league
+        "leagues" get-leagues
         "players" get-players
         "games" get-games
 
