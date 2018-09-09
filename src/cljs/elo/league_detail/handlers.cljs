@@ -1,8 +1,6 @@
 ;;TODO: migrate to always use namespaced keywords
 (ns elo.league-detail.handlers
-  (:require [ajax.core :as ajax]
-            [cemerick.url :refer [url]]
-            ;; these two imports are actually needed
+  (:require ;; these two imports are actually needed
             [cljsjs.moment]
             [day8.re-frame.http-fx]
             [elo.common.handlers :as common]
@@ -16,11 +14,9 @@
 
 (def getter (partial common/getter* page))
 
-(defn- get-league-id
-  []
-  (-> (url js/window.location.href)
-      :query
-      (get "league_id")))
+(rf/reg-sub :league-id
+            (fn [db _]
+              (get-in db [:route-params :league-id])))
 
 ;;TODO: this might get defined too late anyway
 (def default-game
@@ -43,7 +39,7 @@
    :player {}
    :error nil
    :up-to-games nil
-   :league_id (get-league-id)})
+   :league_id nil})
 
 (defn- compute-rankings-data
   [query-v _]
@@ -114,14 +110,14 @@
 (rf/reg-sub :games (getter [:games]))
 (rf/reg-sub :players (getter [:players]))
 
-(rf/reg-event-db :initialize-db
+(rf/reg-event-db ::initialize-db
                  (fn [db _]
                    (let [local-db
                          (assoc default-db
                                 :game default-game
                                 :player default-player)]
                      
-                     (common/assoc-in* db page [] local-db))))
+                     (assoc db page local-db))))
 
 (rf/reg-event-db :p1 (setter [:game :p1]))
 (rf/reg-event-db :p1_points (setter [:game :p1_points]))
@@ -151,48 +147,15 @@
 (rf/reg-event-fx :add-game-success (reload-fn-gen [:reset-game]))
 (rf/reg-event-fx :add-player-success (reload-fn-gen [:reset-player]))
 
-(rf/reg-event-db :failed
-                 (fn [db [_ {:keys [status parse-error] :as req}]]
-                   (js/console.log "Failed request " parse-error "req" req)
-                   (common/assoc-in* db page
-                                     [:error]
-                                     {:status status
-                                      :status-text (:status-text parse-error)
-                                      :original-text (:original-text parse-error)})))
+(rf/reg-event-db :failed (common/failed page))
 
 (rf/reg-event-db :load-games-success (setter [:games]))
 (rf/reg-event-db :load-players-success (setter [:players]))
 (rf/reg-event-db :load-league-success (setter [:league]))
 
-(defn- loader
-  [uri on-success]
-  (fn [{:keys [db]} _]
-    {:db db
-     :http-xhrio {:method :get
-                  :uri uri
-                  :params {:league_id (common/get-in* db page [:league_id])}
-                  :format (ajax/json-request-format)
-                  :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success [on-success]
-                  :on-failure [:failed]}}))
-
-(rf/reg-event-fx :load-games (loader "/games" :load-games-success))
-(rf/reg-event-fx :load-players (loader "/players" :load-players-success))
-(rf/reg-event-fx :load-league (loader "/league" :load-league-success))
-
-(defn writer
-  [uri on-success transform-params-fn]
-  (fn [{:keys [db]} _]
-    {:db db
-     :http-xhrio {:method :post
-                  :uri uri
-                  :params (merge (transform-params-fn db)
-                                 {:league_id (common/get-in* db page [:league_id])})
-
-                  :format (ajax/json-request-format)
-                  :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success [on-success]
-                  :on-failure [:failed]}}))
+(rf/reg-event-fx :load-games (common/loader page "/api/games" :load-games-success))
+(rf/reg-event-fx :load-players (common/loader page "/api/players" :load-players-success))
+(rf/reg-event-fx :load-league (common/loader page "/api/league" :load-league-success))
 
 (defn game-transform
   [db]
@@ -205,5 +168,8 @@
   [db]
   (common/get-in* db page [:player]))
 
-(rf/reg-event-fx :add-game (writer "/add-game" :add-game-success game-transform))
-(rf/reg-event-fx :add-player (writer "/add-player" :add-player-success player-transform))
+(rf/reg-event-fx :add-game (common/writer page "/api/add-game"
+                                          :add-game-success game-transform))
+
+(rf/reg-event-fx :add-player (common/writer page "/api/add-player"
+                                            :add-player-success player-transform))

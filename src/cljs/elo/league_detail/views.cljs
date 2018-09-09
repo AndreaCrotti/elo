@@ -1,6 +1,7 @@
 (ns elo.league-detail.views
   (:require [re-frame.core :as rf]
             [clojure.string :refer [join]]
+            [elo.league-detail.handlers]
             [elo.date-picker-utils :refer [date-time-picker]]
             [elo.shared-config :as config]
             [cljsjs.moment]))
@@ -218,13 +219,14 @@
   []
   (rf/dispatch [:load-games])
   (rf/dispatch [:load-players])
-  (rf/dispatch-sync [:load-league])
+  (rf/dispatch [:load-league])
 
   (let [games (rf/subscribe [:games])
         players (rf/subscribe [:players])
         error (rf/subscribe [:error])
         league (rf/subscribe [:league])
-        graph-data @(rf/subscribe [:rankings-data])]
+        ;; graph-data @(rf/subscribe [:rankings-data])
+        ]
 
     (fn []
       (let [name-mapping (into {} (for [p @players] {(:id p) p}))]
@@ -242,9 +244,7 @@
           (when (some? (:game_type @league))
             [:span.league__logo
              [:img {:width "100px"
-                    :src (config/logo (-> @league :game_type))}]])
-
-          #_[:span.league__title (:name @league)]]
+                    :src (config/logo (-> @league :game_type))}]])]
 
          [:div.section.add-player__form_container (add-player-form)]
          [:div.section.players__form_container (game-form @players)]

@@ -6,10 +6,10 @@
 GET :local/css/screen.css
 
 # fetch players
-GET :local/players
+GET :local/api/players
 
-# fetch rankings
-GET :local/rankings
+# fetch all the leagues
+GET :local/api/leagues
 
 # fetch the league id page
 GET :local/league/3564ef95-b84d-420f-8c85-31c6650458ad

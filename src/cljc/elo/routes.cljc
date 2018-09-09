@@ -1,6 +1,12 @@
-(ns elo.routes)
+(ns elo.routes
+  (:require [bidi.bidi :as bidi]))
 
 (def routes
   ["/" {["league/" :league-id] :league-detail
-        "leagues/" :league-list
+        ;;TODO: could redirect to "/leagues" instead ideally here
+        "" :league-list
         "admin/" :admin}])
+
+(def path-for (partial bidi/path-for routes))
+
+(def match-route (partial bidi/match-route routes))

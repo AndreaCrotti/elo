@@ -52,7 +52,7 @@
 
    "text/html"))
 
-(defn home [_] (render-page (home/body)))
+(defn spa [_] (render-page (home/body)))
 
 ;;TODO: the league_id has to be extracted on all these different handlers
 
@@ -95,18 +95,21 @@
 
 ;;TODO: add a not found page for everything else?
 (def routes
-  ["/" {"" home
-        ;;TODO: might want to add an "api/" prefix for all the backend only routing
+  ["/" {"api/" {
+                "add-player" add-player!
+                "add-game" add-game!
 
-        "add-player" add-player!
-        "add-game" add-game!
+                "league" get-league
+                "leagues" get-leagues
+                "players" get-players
+                "games" get-games
 
-        "league" get-league
-        "leagues" get-leagues
-        "players" get-players
-        "games" get-games
+                "oauth2/github/callback" github-callback}
 
-        "oauth2/github/callback" github-callback}])
+        ;; quite a crude way to make sure all the other urls actually
+        ;; render to the SPA, letting the routing be handled by
+        ;; accountant
+        true spa}])
 
 (def handler
   (make-handler routes))
