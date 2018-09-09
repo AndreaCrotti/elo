@@ -5,6 +5,9 @@
 # check if the resources work
 GET :local/css/screen.css
 
+# check if the resources work
+GET :local/js/compiled/app.js
+
 # fetch players
 GET :local/api/players
 
@@ -28,3 +31,6 @@ GET :prod
 
 # Check that the github authentation works
 GET :local/oauth2/github
+
+# Fetch directly
+GET http://localhost:3452/

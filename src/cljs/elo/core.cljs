@@ -5,13 +5,20 @@
             [elo.league-detail.views :as league-detail-views]
             [elo.league-list.handlers :as league-list-handlers]
             [elo.league-list.views :as league-list-views]
+            [elo.admin.views :as admin-views]
             [elo.routes :as routes]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
 
+;;TODO: use this to set dynamically the title of the page you are in
+(defn- set-title!
+  [new-title]
+  (set! js/document.title new-title))
+
 (def pages
   {:league-detail league-detail-views/root
-   :league-list league-list-views/root})
+   :league-list league-list-views/root
+   :admin admin-views/root})
 
 (defn- path-exists? [path]
   (boolean (routes/match-route path)))
@@ -47,6 +54,7 @@
   (re-frame/dispatch-sync [::league-list-handlers/initialize-db])
   (re-frame/dispatch-sync [::league-detail-handlers/initialize-db])
 
+  (js/console.log "In core/init")
   (dev-setup)
   (accountant/configure-navigation!
    {:nav-handler nav-handler

@@ -1,7 +1,7 @@
 (ns elo.league-detail.views
   (:require [cljsjs.moment]
-            [clojure.string :refer [join]]
             [elo.routes :as routes]
+            [elo.utils :as utils]
             [accountant.core :as accountant]
             [elo.date-picker-utils :refer [date-time-picker]]
             [elo.shared-config :as config]
@@ -10,22 +10,10 @@
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 (def goals-range (map str (range 0 10)))
 
-(defn smart-dispatch
-  [signal]
-  (fn [e]
-    (rf/dispatch [signal])))
-
-(defn- classes
-  [cls]
-  (join " " (filter some? cls)))
-
-(defn- set-val
-  [handler-key]
-  #(rf/dispatch [handler-key (-> % .-target .-value)]))
-
+;; have a more generic way to define dropdowns possibly
 (defn- drop-down
   [opts key value]
-  (into [:select.form-control {:on-change (set-val key)
+  (into [:select.form-control {:on-change (utils/set-val key)
                                :value (or value "")}]
         (cons [:option ""]
               (for [o opts]
@@ -33,7 +21,7 @@
 
 (defn- drop-down-players
   [players key value]
-  (into [:select.form-control {:on-change (set-val key)
+  (into [:select.form-control {:on-change (utils/set-val key)
                                :value (or value "")}]
         (cons [:option ""]
               (for [p (sort-by :name players)]
@@ -48,34 +36,6 @@
 (defn now-format
   []
   (.format (js/moment) timestamp-format))
-
-(defn add-player-form
-  []
-  (let [valid-player? (rf/subscribe [:valid-player?])
-        player (rf/subscribe [:player])]
-    [:div.form-group.add-player_form
-     [:div
-      [:input.form-control {:type "text"
-                            :value (:name @player)
-                            :name "name"
-                            :placeholder "John Smith"
-                            :on-change (set-val :name)}]
-
-      [:input.form-control {:type "text"
-                            :value (:email @player)
-                            :name "email"
-                            :placeholder "john.smith@email.com"
-                            :on-change (set-val :email)}]]
-
-     [:div
-      [:button {:type "button"
-                :name "submit-game"
-                :class (classes ["submit__game" "btn" "btn-primary" (when-not @valid-player? "disabled")])
-                :on-click (if @valid-player?
-                            (smart-dispatch :add-player)
-                            #(js/alert "Fill up the form first"))}
-
-       "Register New Player"]]]))
 
 (defn date-range-picker
   []
@@ -121,14 +81,14 @@
       [:input.form-control {:type "text"
                             :placeholder (str (translate :using) " Name")
                             :value (:p1_using @game)
-                            :on-change (set-val :p1_using)}]]
+                            :on-change (utils/set-val :p1_using)}]]
 
      [:div
       [:label (translate :using)]
       [:input.form-control {:type "text"
                             :placeholder (str (translate :using) " Name")
                             :value (:p2_using @game)
-                            :on-change (set-val :p2_using)}]]
+                            :on-change (utils/set-val :p2_using)}]]
 
      [:div
       [:label "Played at"]
@@ -136,9 +96,9 @@
 
      [:div
       [:button {:type "button"
-                :class (classes ["submit__game" "btn" "btn-primary" (when-not @valid-game? "disabled")])
+                :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-game? "disabled")])
                 :on-click (if @valid-game?
-                            (smart-dispatch :add-game)
+                            (rf/dispatch [:add-game])
                             #(js/alert "Fill up the form first"))}
 
        "Add Game"]]]))
@@ -204,7 +164,7 @@
                :max (count @games)
                :value up-to-current
                :class "slider"
-               :on-change (set-val :up-to-games)}]]
+               :on-change (utils/set-val :up-to-games)}]]
 
      [:table.table.table-striped
       [:thead header]
@@ -250,7 +210,6 @@
              [:img {:width "100px"
                     :src (config/logo (-> @league :game_type))}]])]
 
-         [:div.section.add-player__form_container (add-player-form)]
          [:div.section.players__form_container (game-form @players)]
          [:div.section.rankings__table (rankings-table name-mapping)]
          [:div.section.games__table (games-table @games name-mapping)]]))))

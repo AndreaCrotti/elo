@@ -132,7 +132,7 @@
      :compiler     {:main elo.core
                     :output-to "resources/public/js/compiled/app.js"
                     :output-dir "resources/public/js/compiled/out"
-                    :asset-path "js/compiled/out"
+                    :asset-path "/js/compiled/out"
                     :optimizations :none
                     :source-map true
                     :source-map-timestamp true
