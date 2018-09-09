@@ -1,10 +1,11 @@
 (ns elo.league-detail.views
-  (:require [re-frame.core :as rf]
+  (:require [cljsjs.moment]
             [clojure.string :refer [join]]
-            [elo.league-detail.handlers]
+            [elo.routes :as routes]
+            [accountant.core :as accountant]
             [elo.date-picker-utils :refer [date-time-picker]]
             [elo.shared-config :as config]
-            [cljsjs.moment]))
+            [re-frame.core :as rf]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 (def goals-range (map str (range 0 10)))
@@ -241,6 +242,9 @@
             [:pre (:original-text @error)]])
 
          [:div.preamble
+          [:button {:on-click #(accountant/navigate! (routes/path-for :league-list))}
+           "Back to All leagues"]
+
           (when (some? (:game_type @league))
             [:span.league__logo
              [:img {:width "100px"
