@@ -6,6 +6,7 @@
             [elo.league-list.handlers :as league-list-handlers]
             [elo.league-list.views :as league-list-views]
             [elo.admin.views :as admin-views]
+            [elo.admin.handlers :as admin-handlers]
             [elo.routes :as routes]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))

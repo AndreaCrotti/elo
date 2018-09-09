@@ -97,7 +97,7 @@
       [:button {:type "button"
                 :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-game? "disabled")])
                 :on-click (if @valid-game?
-                            (rf/dispatch [:add-game])
+                            #(rf/dispatch [:add-game])
                             #(js/alert "Fill up the form first"))}
 
        "Add Game"]]]))

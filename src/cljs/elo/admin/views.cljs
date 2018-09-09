@@ -25,7 +25,7 @@
                 :name "submit-game"
                 :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-player? "disabled")])
                 :on-click (if @valid-player?
-                            (rf/dispatch [:add-player])
+                            #(rf/dispatch [:add-player])
                             #(js/alert "Fill up the form first"))}
 
        "Register New Player"]]]))
