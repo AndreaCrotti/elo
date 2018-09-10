@@ -2,7 +2,6 @@
   (:require [clj-time.coerce :as tc]
             [clj-time.format :as f]
             [clj-time.core :as t]
-            [clojure.edn :as edn]
             [clojure.java.jdbc :as jdbc]
             [environ.core :refer [env]]
             [honeysql-postgres.helpers :as ph]
@@ -118,14 +117,18 @@
 
 (def add-user! (add-row! add-user-sql))
 
-(defn add-player!
-  [params]
-  (let [without-league-id (dissoc params :league_id)
-        player-id ((add-row! add-player-sql) without-league-id)]
+(def add-player! (add-row! add-player-sql))
 
-    (add-player-to-league! {:player_id player-id
-                            :league_id (to-uuid (:league_id params))})
-    player-id))
+(defn add-player-full!
+  [{:keys [email name] :as player} league-id company-id]
+  (let [user-id (add-user! {:email email})
+        player-id (add-player! {:name name})]
+
+    (add-user-to-company! {:user-id user-id
+                           :company-id company-id})
+
+    (add-player-to-league! {:user-id user-id
+                            :player-id player-id})))
 
 (defn- load-games-sql
   [league-id]
