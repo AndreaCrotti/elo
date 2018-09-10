@@ -31,7 +31,7 @@
   [{:keys [params]}]
   (let [game-id (db/add-game! params)]
     (as-json
-     (resp/created "/games"
+     (resp/created "/api/games"
                    {:id game-id}))))
 
 (defn add-player!
@@ -39,10 +39,9 @@
   [{:keys [params] :as request}]
   (with-basic-auth
     request
-    (let [player-id (db/add-player! params)]
+    (let [ids (db/add-player-full! (:user params) (:league-id params))]
       (as-json
-       (resp/created "/players"
-                     {:id player-id})))))
+       (resp/created "/api/players" ids)))))
 
 (defn- render-page
   [page]
@@ -114,6 +113,7 @@
   (make-handler routes))
 
 (defn log-request
+  "Simple middleware to log all the requests"
   [handler]
   (fn [request]
     (info request)

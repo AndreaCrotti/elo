@@ -44,10 +44,10 @@
 
 (defn- store-users!
   []
-  (let [p1 {:name "bob" :email "email" :league_id (str sample-league-id)}
-        p2 {:name "fred" :email "email" :league_id (str sample-league-id)}
-        p1-id (db/add-player! p1)
-        p2-id (db/add-player! p2)]
+  (let [p1 {:name "bob" :email "email"}
+        p2 {:name "fred" :email "email"}
+        p1-id (db/add-player-full! p1 sample-league-id)
+        p2-id (db/add-player-full! p2 sample-league-id)]
 
     [p1-id p2-id]))
 
@@ -87,7 +87,9 @@
 (deftest add-player-user-test
   (with-redefs [env (assoc env :admin-password "admin-password")]
     (testing "Add a new user without right user/password"
-      (let [user {:name "name" :email "email" :league_id sample-league-id}
+      (let [user {:user {:name "name" :email "email"}
+                  :league_id sample-league-id}
+
             response (write-api-call "/add-player" user)]
 
         (is (= 401 (:status response)))
@@ -95,8 +97,9 @@
 
     (testing "Adds a new user with the right user/password"
       (with-redefs [authenticated? (fn [r] true)]
-        (let [params {:name "name"
-                      :email "email"
+        (let [params {:user {:name "name"
+                             :email "email"}
+
                       :league_id sample-league-id}
 
               response (sut/app (mock/header

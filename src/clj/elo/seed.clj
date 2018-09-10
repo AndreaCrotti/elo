@@ -6,14 +6,6 @@
 (def n-players 5)
 (def n-games 40)
 
-(defn users-players
-  [n]
-  (let [users (repeatedly n gen/user-gen)
-        players (repeatedly n gen/player-gen)
-        merged-players (map #(assoc (first %) :user_id (-> % second :id))
-                            (zipmap players users))]
-    [users merged-players]))
-
 (defn random-game
   [player-ids]
   (let [p1-id (rand-nth player-ids)
@@ -40,18 +32,16 @@
     (db/add-company! company)
     (db/add-league! league)
 
-    (let [[users players] (users-players n-players)
+    (let [players (repeatedly n-players gen/player-gen)
           player-ids (map :id players)
           games (repeatedly n-games #(random-game player-ids))
           games-full (map #(merge % {:league_id (str league-id) :played_at "2018-08-16+01:0001:48:00"})
                           games)]
 
       (doseq [n (range n-players)]
-        (println "Creating player number" n)
-        (db/add-user! (nth users n))
-        (db/add-player! (assoc (nth players n)
-                               :league_id (str league-id)
-                               :name (str "Player-" n))))
+        (println "Creating player number" n (nth players n))
+        (db/add-player-full! (assoc (nth players n) :email "sample-email")
+                             league-id))
 
       (doseq [game games-full]
         (println game)

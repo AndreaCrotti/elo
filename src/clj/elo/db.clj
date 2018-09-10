@@ -37,6 +37,50 @@
     (with-redefs [db-spec (fn [] tx)]
       (test-fn))))
 
+(defn- load-games-sql
+  [league-id]
+  (-> (h/select :*)
+      (h/from :game)
+      (h/where [:= :league_id league-id])
+      (h/order-by [:played_at :asc])))
+
+(defn load-players-sql
+  [league-id]
+  (-> (h/select :*)
+      (h/from [:player :pl])
+      (h/join [:league_players :lg]
+              [:= :pl.id :lg.player_id])
+
+      (h/where [:= :lg.league_id league-id])))
+
+(defn load-leagues-sql
+  []
+  (-> (h/select :*)
+      (h/from :league)))
+
+(defn load-league-sql
+  [league-id]
+  (-> (h/select :*)
+      (h/from :league)
+      (h/where [:= :id league-id])))
+
+(defn- query
+  [func & args]
+  (jdbc/query (db-spec)
+              (sql/format (apply func args))))
+
+(defn- get-single
+  [func & args]
+  (first (apply query func args)))
+
+(defn load-games [league-id] (query load-games-sql league-id))
+
+(defn load-players [league-id] (query load-players-sql league-id))
+
+(defn load-leagues [] (query load-leagues-sql))
+
+(defn load-league [league-id] (get-single load-league-sql league-id))
+
 (defn- store-sql
   [params]
   (-> (h/insert-into :game)
@@ -120,65 +164,19 @@
 (def add-player! (add-row! add-player-sql))
 
 (defn add-player-full!
-  [{:keys [email name] :as player} league-id company-id]
-  (let [user-id (add-user! {:email email})
-        player-id (add-player! {:name name})]
+  [player league-id]
+  (let [company-id (:company_id (load-league league-id))
+        user-id (add-user! (select-keys player [:email]))
+        player-id (add-player! (assoc (select-keys player [:id :name])
+                                      :user_id user-id))]
 
-    (add-user-to-company! {:user-id user-id
-                           :company-id company-id})
+    (add-user-to-company! {:user_id user-id :company_id company-id})
 
-    (add-player-to-league! {:user-id user-id
-                            :player-id player-id})))
+    (add-player-to-league! {:league_id league-id :player_id player-id})
 
-(defn- load-games-sql
-  [league-id]
-  (-> (h/select :*)
-      (h/from :game)
-      (h/where [:= :league_id league-id])
-      (h/order-by [:played_at :asc])))
-
-(defn load-players-sql
-  [league-id]
-  (-> (h/select :*)
-      (h/from [:player :pl])
-      (h/join [:league_players :lg]
-              [:= :pl.id :lg.player_id])
-
-      (h/where [:= :lg.league_id league-id])))
-
-(defn load-leagues-sql
-  []
-  (-> (h/select :*)
-      (h/from :league)))
-
-(defn load-league-sql
-  [league-id]
-  (-> (h/select :*)
-      (h/from :league)
-      (h/where [:= :id league-id])))
-
-(defn- query
-  [func & args]
-  (jdbc/query (db-spec)
-              (sql/format (apply func args))))
-
-(defn- get-single
-  [func & args]
-  (first (apply query func args)))
-
-(defn load-games [league-id] (query load-games-sql league-id))
-
-(defn load-players [league-id] (query load-players-sql league-id))
-
-(defn load-leagues [] (query load-leagues-sql))
-
-(defn load-league [league-id] (get-single load-league-sql league-id))
+    {:user-id user-id
+     :player-id player-id}))
 
 (defn count-sql [table]
   (-> (h/select :%count.*)
       (h/from table)))
-
-(defn insert-game-sql
-  [values]
-  (-> (h/insert-into :game)
-      (h/values values)))

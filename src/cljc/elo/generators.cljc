@@ -11,7 +11,6 @@
 
 (s/def ::player (s/keys :req-un [::id
                                  ::name
-                                 ::email
                                  ::user_id]))
 
 (s/def ::p1 is-uuid?)
