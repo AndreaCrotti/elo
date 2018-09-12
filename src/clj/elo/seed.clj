@@ -27,7 +27,11 @@
 (defn random-ts
   []
   (tc/to-sql-time
-   (t/now)))
+   (let [zero (tc/to-epoch (t/date-time 2018 1 1))
+         end (tc/to-epoch (t/date-time 2020 1 1))
+         length (- end zero)]
+
+     (tc/from-epoch (+ zero (rand-int length))))))
 
 ;;TODO: now generate some random players and some random games
 (defn seed
