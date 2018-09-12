@@ -54,6 +54,7 @@
 (defn ^:export init []
   (re-frame/dispatch-sync [::league-list-handlers/initialize-db])
   (re-frame/dispatch-sync [::league-detail-handlers/initialize-db])
+  (re-frame/dispatch-sync [::admin-handlers/initialize-db])
 
   (dev-setup)
   (accountant/configure-navigation!

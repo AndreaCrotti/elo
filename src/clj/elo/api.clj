@@ -88,6 +88,12 @@
   (as-json
    (resp/response (db/load-leagues))))
 
+(defn get-companies
+  [req]
+  ;;TODO: should get the company-id as argument ideally
+  (as-json
+   (resp/response (db/load-companies))))
+
 (defn github-callback
   [request]
   {:status 200
@@ -100,6 +106,7 @@
 
                 "league" get-league
                 "leagues" get-leagues
+                "companies" get-companies
                 "players" get-players
                 "games" get-games
 

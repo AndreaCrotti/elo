@@ -12,9 +12,14 @@
   {:name ""
    :email ""})
 
+(def default-db
+  {:player default-player
+   :company {}})
+
 (rf/reg-event-db :name (setter [:player :name]))
 (rf/reg-event-db :email (setter [:player :email]))
 
+(rf/reg-sub :companies (getter [:companies]))
 
 (rf/reg-sub :player (getter [:player]))
 
@@ -35,3 +40,11 @@
 
 (rf/reg-event-fx :add-player (common/writer page "/api/add-player"
                                             :add-player-success player-transform))
+
+(rf/reg-event-db :load-companies-success (setter [:companies]))
+
+(rf/reg-event-db :load-companies (common/loader page "/api/companies" :load-companies-success))
+
+(rf/reg-event-db ::initialize-db
+                 (fn [db _]
+                   (assoc db page default-db)))

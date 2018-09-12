@@ -1,5 +1,6 @@
 (ns elo.admin.views
   (:require [re-frame.core :as rf]
+            [elo.common.views :refer [drop-down]]
             [elo.utils :as utils]))
 
 ;; we need a couple more dropdowns
@@ -9,9 +10,13 @@
 (defn add-player-form
   []
   (let [valid-player? (rf/subscribe [:valid-player?])
+        companies (rf/subscribe [:companies])
         player (rf/subscribe [:player])]
 
     [:div.form-group.add-player_form
+     [:input.form-control
+      #_[drop-down companies :display-fn :name :value-fn :id]]
+
      [:div
       [:input.form-control {:type "text"
                             :value (:name @player)
