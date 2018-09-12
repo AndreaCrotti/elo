@@ -10,11 +10,9 @@
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 
-(defn- drop-down-players
-  [opts dispatch-key]
-  (drop-down opts dispatch-key
-             :value-fn :id
-             :display-fn :name))
+(defn drop-down-players
+  [opts dispatch-key value]
+  [drop-down opts dispatch-key value :value-fn :id :display-fn :name])
 
 (defn- translate
   [term]
@@ -51,19 +49,19 @@
     [:div.form-group.game_form {:on-submit (fn [] false)}
      [:div
       [:label {:for "p1"} "Player 1"]
-      [drop-down-players players :p1]]
+      [drop-down-players players :p1 (:p1 @game)]]
 
      [:div
       [:label {:for "p2_name"} "Player 2"]
-      [drop-down-players players :p2]]
+      [drop-down-players players :p2 (:p2 @game)]]
 
      [:div
       [:label {:for "p1_points"} (str "# " (translate :points))]
-      [drop-down points-range :p1_points]]
+      [drop-down points-range :p1_points (:p1_points @game)]]
 
      [:div
       [:label {:for "p2_points"} (str "# " (translate :points))]
-      [drop-down points-range :p2_points]]
+      [drop-down points-range :p2_points (:p2_points @game)]]
 
      [:div
       [:label (translate :using)]
