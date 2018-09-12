@@ -5,6 +5,7 @@
             [elo.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
             [elo.db :as db]
             [elo.pages.home :as home]
+            [elo.validate :as validate]
             [environ.core :refer [env]]
             [hiccup.core :as hiccup]
             [ring.adapter.jetty :as jetty]
@@ -29,7 +30,9 @@
 
 (defn add-game!
   [{:keys [params]}]
-  (let [game-id (db/add-game! params)]
+  (let [validated (validate/conform :game params)
+        game-id (db/add-game! validated)]
+
     (as-json
      (resp/created "/api/games"
                    {:id game-id}))))
@@ -55,16 +58,12 @@
 
 ;;TODO: the league_id has to be extracted on all these different handlers
 
-(defn to-uuid
-  [v]
-  (UUID/fromString v))
-
 (defn- get-league-id
   [request]
   (-> request
       :params
       :league_id
-      to-uuid))
+      validate/to-uuid))
 
 (defn get-players
   [req]

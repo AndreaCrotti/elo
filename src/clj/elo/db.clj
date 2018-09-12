@@ -86,28 +86,7 @@
   (-> (h/insert-into :game)
       (h/values [params])))
 
-(defn to-uuid
-  [uuid-str]
-  (UUID/fromString uuid-str))
-
 (defn gen-uuid [] (UUID/randomUUID))
-
-(def transformations
-  {:p1 to-uuid
-   :p2 to-uuid
-   :league_id to-uuid
-   :p1_points #(Integer. %)
-   :p2_points #(Integer. %)})
-
-;;TODO: this transformation should not be done here really
-
-(defn conform
-  [data]
-  (assoc (reduce-kv update
-                    data
-                    transformations)
-         :id
-         (UUID/randomUUID)))
 
 (defn add-row-sql
   [table]
@@ -148,16 +127,7 @@
 (defn add-game!
   [params]
   {:pre [(not= (:p1 params) (:p2 params))]}
-  (let [new-params (-> params
-                       conform
-                       (update :played_at #(tc/to-sql-time (f/parse
-                                                            (f/formatter timestamp-format) %)))
-                       (assoc :recorded_at (tc/to-sql-time (t/now))))
-
-        query (store-sql new-params)]
-
-    (jdbc/execute! (db-spec)
-                   (sql/format query))))
+  ((add-row! store-sql) params))
 
 (def add-user! (add-row! add-user-sql))
 
