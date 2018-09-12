@@ -2,6 +2,7 @@
   (:require [cljsjs.moment]
             [elo.routes :as routes]
             [elo.utils :as utils]
+            [elo.common.views :refer [drop-down]]
             [accountant.core :as accountant]
             [elo.date-picker-utils :refer [date-time-picker]]
             [elo.shared-config :as config]
@@ -9,22 +10,11 @@
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 
-;; have a more generic way to define dropdowns possibly
-(defn- drop-down
-  [opts key value]
-  (into [:select.form-control {:on-change (utils/set-val key)
-                               :value (or value "")}]
-        (cons [:option ""]
-              (for [o opts]
-                [:option {:value o} o]))))
-
 (defn- drop-down-players
-  [players key value]
-  (into [:select.form-control {:on-change (utils/set-val key)
-                               :value (or value "")}]
-        (cons [:option ""]
-              (for [p (sort-by :name players)]
-                [:option {:value (:id p)} (:name p)]))))
+  [opts dispatch-key]
+  (drop-down opts dispatch-key
+             :value-fn :id
+             :display-fn :name))
 
 (defn- translate
   [term]
@@ -61,19 +51,19 @@
     [:div.form-group.game_form {:on-submit (fn [] false)}
      [:div
       [:label {:for "p1"} "Player 1"]
-      [drop-down-players players :p1 (:p1 @game)]]
+      [drop-down-players players :p1]]
 
      [:div
       [:label {:for "p2_name"} "Player 2"]
-      [drop-down-players players :p2 (:p2 @game)]]
+      [drop-down-players players :p2]]
 
      [:div
       [:label {:for "p1_points"} (str "# " (translate :points))]
-      [drop-down points-range :p1_points (:p1_points @game)]]
+      [drop-down points-range :p1_points]]
 
      [:div
       [:label {:for "p2_points"} (str "# " (translate :points))]
-      [drop-down points-range :p2_points (:p2_points @game)]]
+      [drop-down points-range :p2_points]]
 
      [:div
       [:label (translate :using)]

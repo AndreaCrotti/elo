@@ -2,10 +2,15 @@
   (:require [re-frame.core :as rf]
             [elo.utils :as utils]))
 
+;; we need a couple more dropdowns
+;; - companies
+;; - leagues (which updates from the company dropdown changes)
+
 (defn add-player-form
   []
   (let [valid-player? (rf/subscribe [:valid-player?])
         player (rf/subscribe [:player])]
+
     [:div.form-group.add-player_form
      [:div
       [:input.form-control {:type "text"
