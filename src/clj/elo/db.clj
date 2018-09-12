@@ -64,7 +64,7 @@
       (h/from :league)
       (h/where [:= :id league-id])))
 
-(defn- query
+(defn query
   [func & args]
   (jdbc/query (db-spec)
               (sql/format (apply func args))))
@@ -134,14 +134,13 @@
 (def add-player! (add-row! add-player-sql))
 
 (defn add-player-full!
-  [{:keys [name email league-id]}]
-  (let [company-id (:company_id (load-league league-id))
+  [{:keys [name email league_id]}]
+  (let [company-id (:company_id (load-league league_id))
         user-id (add-user! {:email email})
         player-id (add-player! {:user_id user-id :name name})]
 
     (add-user-to-company! {:user_id user-id :company_id company-id})
-
-    (add-player-to-league! {:league_id league-id :player_id player-id})
+    (add-player-to-league! {:league_id league_id :player_id player-id})
 
     {:user-id user-id
      :player-id player-id}))

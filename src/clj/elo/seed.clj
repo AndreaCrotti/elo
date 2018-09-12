@@ -1,5 +1,7 @@
 (ns elo.seed
-  (:require [elo.generators :as gen]
+  (:require [clj-time.core :as t]
+            [clj-time.coerce :as tc]
+            [elo.generators :as gen]
             [elo.shared-config :as shared]
             [elo.db :as db]))
 
@@ -11,10 +13,21 @@
   (let [p1-id (rand-nth player-ids)
         p2-id (rand-nth (remove #(= % p1-id) player-ids))]
 
-    (gen/game-gen {:p1 (str p1-id)
-                   :p2 (str p2-id)
+    (gen/game-gen {:p1 p1-id
+                   :p2 p2-id
                    :p1_points (rand-nth (shared/opts :fifa :points))
                    :p2_points (rand-nth (shared/opts :fifa :points))})))
+
+(defn get-player-ids
+  []
+  (map :id
+       (db/query (fn [] {:select [:id]
+                        :from [:player]}))))
+
+(defn random-ts
+  []
+  (tc/to-sql-time
+   (t/now)))
 
 ;;TODO: now generate some random players and some random games
 (defn seed
@@ -32,20 +45,22 @@
     (db/add-company! company)
     (db/add-league! league)
 
-    (let [players (repeatedly n-players gen/player-gen)
-          player-ids (map :id players)
-          games (repeatedly n-games #(random-game player-ids))
-          games-full (map #(merge % {:league_id (str league-id) :played_at "2018-08-16+01:0001:48:00"})
-                          games)]
+    (let [players (repeatedly n-players gen/player-gen)]
 
       (doseq [n (range n-players)]
         (println "Creating player number" n (nth players n))
-        (db/add-player-full! (assoc (nth players n) :email "sample-email")
-                             league-id))
+        (db/add-player-full! (assoc (nth players n)
+                                    :email "sample-email"
+                                    :league_id league-id)))
 
-      (doseq [game games-full]
-        (println game)
-        (db/add-game! game)))))
+      (let [games (repeatedly n-games #(random-game (get-player-ids)))
+            games-full (map #(merge % {:league_id league-id
+                                       :played_at (random-ts)})
+                            games)]
+
+        (doseq [game games-full]
+          (println game)
+          (db/add-game! game))))))
 
 (defn -main
   [& args]
