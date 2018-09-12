@@ -11,11 +11,14 @@
   []
   (let [valid-player? (rf/subscribe [:valid-player?])
         companies (rf/subscribe [:companies])
+        company (rf/subscribe [:company])
         player (rf/subscribe [:player])]
 
+    (js/console.log @companies " and " @company)
     [:div.form-group.add-player_form
      [:input.form-control
-      #_[drop-down companies :display-fn :name :value-fn :id]]
+      #_[drop-down @companies :company "" #_@company
+       :display-fn :name :value-fn :id]]
 
      [:div
       [:input.form-control {:type "text"
@@ -42,5 +45,7 @@
 
 (defn root
   []
-  [:div.admin__page
-   [add-player-form]])
+  (rf/dispatch [:load-companies])
+  (fn []
+    [:div.admin__page
+     [add-player-form]]))
