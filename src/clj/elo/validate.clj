@@ -41,4 +41,4 @@
 
 (defmethod conform :player
   [_ data]
-  )
+  (apply-transformations data {:league_id to-uuid}))

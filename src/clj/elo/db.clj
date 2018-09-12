@@ -134,11 +134,10 @@
 (def add-player! (add-row! add-player-sql))
 
 (defn add-player-full!
-  [player league-id]
+  [{:keys [name email league-id]}]
   (let [company-id (:company_id (load-league league-id))
-        user-id (add-user! (select-keys player [:email]))
-        player-id (add-player! (assoc (select-keys player [:id :name])
-                                      :user_id user-id))]
+        user-id (add-user! {:email email})
+        player-id (add-player! {:user_id user-id :name name})]
 
     (add-user-to-company! {:user_id user-id :company_id company-id})
 

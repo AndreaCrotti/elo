@@ -42,7 +42,9 @@
   [{:keys [params] :as request}]
   (with-basic-auth
     request
-    (let [ids (db/add-player-full! (:user params) (:league-id params))]
+    (let [validated (validate/conform :player params)
+          ids (db/add-player-full! validated)]
+
       (as-json
        (resp/created "/api/players" ids)))))
 

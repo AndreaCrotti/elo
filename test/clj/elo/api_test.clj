@@ -44,18 +44,18 @@
 
 (defn- store-users!
   []
-  (let [p1 {:name "bob" :email "email"}
-        p2 {:name "fred" :email "email"}
-        p1-id (db/add-player-full! p1 sample-league-id)
-        p2-id (db/add-player-full! p2 sample-league-id)]
+  (let [p1 {:name "bob" :email "email" :league_id sample-league-id}
+        p2 {:name "fred" :email "email" :league_id sample-league-id}
+        p1-id (db/add-player-full! p1)
+        p2-id (db/add-player-full! p2)]
 
     [p1-id p2-id]))
 
 (deftest store-results-test
   (testing "Should be able to store results"
     (let [[p1-id p2-id] (store-users!)
-          sample {:p1 p1-id
-                  :p2 p2-id
+          sample {:p1 (:player-id p1-id)
+                  :p2 (:player-id p2-id)
                   :league_id sample-league-id
                   :p1_using "RM"
                   :p2_using "Juv"
@@ -66,10 +66,10 @@
           _ (write-api-call "/add-game" sample)
           games (sut/app (mock/request :get "/api/games" {:league_id sample-league-id}))
 
-          desired {"p1" (str p1-id)
+          desired {"p1" (str (:player-id p1-id))
                    "p1_points" 3,
                    "p1_using" "RM",
-                   "p2" (str p2-id),
+                   "p2" (str (:player-id p2-id)),
                    "p2_points" 0,
                    "p2_using" "Juv"
                    "played_at" "2018-08-29T20:50:00Z"}]
@@ -87,9 +87,7 @@
 (deftest add-player-user-test
   (with-redefs [env (assoc env :admin-password "admin-password")]
     (testing "Add a new user without right user/password"
-      (let [user {:user {:name "name" :email "email"}
-                  :league_id sample-league-id}
-
+      (let [user {:name "name" :email "email" :league_id sample-league-id}
             response (write-api-call "/add-player" user)]
 
         (is (= 401 (:status response)))
@@ -97,11 +95,7 @@
 
     (testing "Adds a new user with the right user/password"
       (with-redefs [authenticated? (fn [r] true)]
-        (let [params {:user {:name "name"
-                             :email "email"}
-
-                      :league_id sample-league-id}
-
+        (let [params {:name "name" :email "email" :league_id sample-league-id}
               response (sut/app (mock/header
                                  (mock/request :post "/api/add-player" params)
                                  "Authorization" (make-admin-header)))]
