@@ -12,7 +12,6 @@
 
     ;;TODO: just check that this works correctly and some rows get written to the db
     (sut/seed)
-
     (let [games-count
           (db/wrap-db-call
            (jdbc/query (db/db-spec)

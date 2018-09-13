@@ -2,6 +2,7 @@
   (:require [cljsjs.moment]
             [elo.routes :as routes]
             [elo.utils :as utils]
+            [elo.common.views :refer [drop-down]]
             [accountant.core :as accountant]
             [elo.date-picker-utils :refer [date-time-picker]]
             [elo.shared-config :as config]
@@ -9,22 +10,9 @@
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 
-;; have a more generic way to define dropdowns possibly
-(defn- drop-down
-  [opts key value]
-  (into [:select.form-control {:on-change (utils/set-val key)
-                               :value (or value "")}]
-        (cons [:option ""]
-              (for [o opts]
-                [:option {:value o} o]))))
-
-(defn- drop-down-players
-  [players key value]
-  (into [:select.form-control {:on-change (utils/set-val key)
-                               :value (or value "")}]
-        (cons [:option ""]
-              (for [p (sort-by :name players)]
-                [:option {:value (:id p)} (:name p)]))))
+(defn drop-down-players
+  [opts dispatch-key value]
+  [drop-down opts dispatch-key value :value-fn :id :display-fn :name])
 
 (defn- translate
   [term]

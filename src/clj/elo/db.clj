@@ -2,7 +2,6 @@
   (:require [clj-time.coerce :as tc]
             [clj-time.format :as f]
             [clj-time.core :as t]
-            [clojure.edn :as edn]
             [clojure.java.jdbc :as jdbc]
             [environ.core :refer [env]]
             [honeysql-postgres.helpers :as ph]
@@ -38,33 +37,63 @@
     (with-redefs [db-spec (fn [] tx)]
       (test-fn))))
 
+(defn- load-games-sql
+  [league-id]
+  (-> (h/select :*)
+      (h/from :game)
+      (h/where [:= :league_id league-id])
+      (h/order-by [:played_at :asc])))
+
+(defn load-players-sql
+  [league-id]
+  (-> (h/select :*)
+      (h/from [:player :pl])
+      (h/join [:league_players :lg]
+              [:= :pl.id :lg.player_id])
+
+      (h/where [:= :lg.league_id league-id])))
+
+(defn load-leagues-sql
+  []
+  (-> (h/select :*)
+      (h/from :league)))
+
+(defn load-companies-sql
+  []
+  (-> (h/select :*)
+      (h/from :company)))
+
+(defn load-league-sql
+  [league-id]
+  (-> (h/select :*)
+      (h/from :league)
+      (h/where [:= :id league-id])))
+
+(defn query
+  [func & args]
+  (jdbc/query (db-spec)
+              (sql/format (apply func args))))
+
+(defn- get-single
+  [func & args]
+  (first (apply query func args)))
+
+(defn load-games [league-id] (query load-games-sql league-id))
+
+(defn load-players [league-id] (query load-players-sql league-id))
+
+(defn load-leagues [] (query load-leagues-sql))
+
+(defn load-league [league-id] (get-single load-league-sql league-id))
+
+(defn load-companies [] (query load-companies-sql))
+
 (defn- store-sql
   [params]
   (-> (h/insert-into :game)
       (h/values [params])))
 
-(defn to-uuid
-  [uuid-str]
-  (UUID/fromString uuid-str))
-
 (defn gen-uuid [] (UUID/randomUUID))
-
-(def transformations
-  {:p1 to-uuid
-   :p2 to-uuid
-   :league_id to-uuid
-   :p1_points #(Integer. %)
-   :p2_points #(Integer. %)})
-
-;;TODO: this transformation should not be done here really
-
-(defn conform
-  [data]
-  (assoc (reduce-kv update
-                    data
-                    transformations)
-         :id
-         (UUID/randomUUID)))
 
 (defn add-row-sql
   [table]
@@ -105,77 +134,24 @@
 (defn add-game!
   [params]
   {:pre [(not= (:p1 params) (:p2 params))]}
-  (let [new-params (-> params
-                       conform
-                       (update :played_at #(tc/to-sql-time (f/parse
-                                                            (f/formatter timestamp-format) %)))
-                       (assoc :recorded_at (tc/to-sql-time (t/now))))
-
-        query (store-sql new-params)]
-
-    (jdbc/execute! (db-spec)
-                   (sql/format query))))
+  ((add-row! store-sql) params))
 
 (def add-user! (add-row! add-user-sql))
 
-(defn add-player!
-  [params]
-  (let [without-league-id (dissoc params :league_id)
-        player-id ((add-row! add-player-sql) without-league-id)]
+(def add-player! (add-row! add-player-sql))
 
-    (add-player-to-league! {:player_id player-id
-                            :league_id (to-uuid (:league_id params))})
-    player-id))
+(defn add-player-full!
+  [{:keys [name email league_id]}]
+  (let [company-id (:company_id (load-league league_id))
+        user-id (add-user! {:email email})
+        player-id (add-player! {:user_id user-id :name name})]
 
-(defn- load-games-sql
-  [league-id]
-  (-> (h/select :*)
-      (h/from :game)
-      (h/where [:= :league_id league-id])
-      (h/order-by [:played_at :asc])))
+    (add-user-to-company! {:user_id user-id :company_id company-id})
+    (add-player-to-league! {:league_id league_id :player_id player-id})
 
-(defn load-players-sql
-  [league-id]
-  (-> (h/select :*)
-      (h/from [:player :pl])
-      (h/join [:league_players :lg]
-              [:= :pl.id :lg.player_id])
-
-      (h/where [:= :lg.league_id league-id])))
-
-(defn load-leagues-sql
-  []
-  (-> (h/select :*)
-      (h/from :league)))
-
-(defn load-league-sql
-  [league-id]
-  (-> (h/select :*)
-      (h/from :league)
-      (h/where [:= :id league-id])))
-
-(defn- query
-  [func & args]
-  (jdbc/query (db-spec)
-              (sql/format (apply func args))))
-
-(defn- get-single
-  [func & args]
-  (first (apply query func args)))
-
-(defn load-games [league-id] (query load-games-sql league-id))
-
-(defn load-players [league-id] (query load-players-sql league-id))
-
-(defn load-leagues [] (query load-leagues-sql))
-
-(defn load-league [league-id] (get-single load-league-sql league-id))
+    {:user-id user-id
+     :player-id player-id}))
 
 (defn count-sql [table]
   (-> (h/select :%count.*)
       (h/from table)))
-
-(defn insert-game-sql
-  [values]
-  (-> (h/insert-into :game)
-      (h/values values)))

@@ -5,6 +5,7 @@
             [elo.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
             [elo.db :as db]
             [elo.pages.home :as home]
+            [elo.validate :as validate]
             [environ.core :refer [env]]
             [hiccup.core :as hiccup]
             [ring.adapter.jetty :as jetty]
@@ -29,9 +30,11 @@
 
 (defn add-game!
   [{:keys [params]}]
-  (let [game-id (db/add-game! params)]
+  (let [validated (validate/conform :game params)
+        game-id (db/add-game! validated)]
+
     (as-json
-     (resp/created "/games"
+     (resp/created "/api/games"
                    {:id game-id}))))
 
 (defn add-player!
@@ -39,10 +42,11 @@
   [{:keys [params] :as request}]
   (with-basic-auth
     request
-    (let [player-id (db/add-player! params)]
+    (let [validated (validate/conform :player params)
+          ids (db/add-player-full! validated)]
+
       (as-json
-       (resp/created "/players"
-                     {:id player-id})))))
+       (resp/created "/api/players" ids)))))
 
 (defn- render-page
   [page]
@@ -56,16 +60,12 @@
 
 ;;TODO: the league_id has to be extracted on all these different handlers
 
-(defn to-uuid
-  [v]
-  (UUID/fromString v))
-
 (defn- get-league-id
   [request]
   (-> request
       :params
       :league_id
-      to-uuid))
+      validate/to-uuid))
 
 (defn get-players
   [req]
@@ -88,6 +88,12 @@
   (as-json
    (resp/response (db/load-leagues))))
 
+(defn get-companies
+  [req]
+  ;;TODO: should get the company-id as argument ideally
+  (as-json
+   (resp/response (db/load-companies))))
+
 (defn github-callback
   [request]
   {:status 200
@@ -100,6 +106,7 @@
 
                 "league" get-league
                 "leagues" get-leagues
+                "companies" get-companies
                 "players" get-players
                 "games" get-games
 
@@ -114,6 +121,7 @@
   (make-handler routes))
 
 (defn log-request
+  "Simple middleware to log all the requests"
   [handler]
   (fn [request]
     (info request)

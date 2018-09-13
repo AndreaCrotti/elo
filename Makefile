@@ -21,3 +21,7 @@ migrate-test:
 
 db-graph:
 	eralchemy -i postgres://elo@localhost:5445/elo -o elo_db.png
+
+
+test:
+	lein test
