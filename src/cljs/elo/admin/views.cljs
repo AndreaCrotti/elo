@@ -3,9 +3,9 @@
             [elo.common.views :refer [drop-down]]
             [elo.utils :as utils]))
 
-;; we need a couple more dropdowns
-;; - companies
-;; - leagues (which updates from the company dropdown changes)
+;; there are two important use cases
+;; 1. add a new user to the system just by email
+;; 2. add an existing player from a company to a given league
 
 (defn add-player-form
   []
