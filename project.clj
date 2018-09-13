@@ -32,9 +32,12 @@
 
                  [org.clojure/clojurescript "1.10.339"]
                  [cljsjs/plotly "1.36.1-0"]
-                 [cljs-react-material-ui "0.2.48"]
                  [re-frame "0.10.6"]
+                 [reagent-forms "0.5.42"]
+                 [org.webjars/font-awesome "5.3.1"]
 
+                 ;; these below are all needed by react datepicker and
+                 ;; everything blows up if they are not pinned apparently
                  [cljsjs/react-datepicker "1.5.0-0"]
                  [cljsjs/classnames "2.2.5-1"]
                  [cljsjs/prop-types "15.6.1-0"]

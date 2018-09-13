@@ -146,7 +146,12 @@
     [:div
      [:h3 "Players Rankings"]
      [:div
-      [:label {:for "up-to-games"} (str "Compute Rankings up to game #" up-to-current)]
+      [:label {:for "up-to-games"} "Compute Rankings up to game"]
+      [:span
+       [:i.fas.fa-chevron-left]
+       [:p.up-to-current-games up-to-current]
+       [:i.fas.fa-chevron-right]]
+
       [:input {:type "range"
                :min 0
                :max (count @games)

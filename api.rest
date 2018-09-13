@@ -34,3 +34,6 @@ GET :local/oauth2/github
 
 # Fetch directly
 GET http://localhost:3452/
+
+# Fetch font awesome
+GET https://use.fontawesome.com/releases/5.3.1/css/all.css
