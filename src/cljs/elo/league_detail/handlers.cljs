@@ -53,6 +53,16 @@
 
                 (sort-by #(- (second %)) rankings))))
 
+(rf/reg-event-db :next-game
+                 (fn [db _]
+                   ()))
+
+(rf/reg-event-db :prev-game
+                 (fn [db _]
+                   ()))
+
+;;TODO: add can-go-back and can-go-forward which allows the view to know if to disable the buttons or not
+
 
 (rf/reg-sub :rankings-data
             compute-rankings-data

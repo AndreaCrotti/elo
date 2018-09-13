@@ -148,6 +148,7 @@
      [:div
       [:label {:for "up-to-games"} "Compute Rankings up to game"]
       [:span
+       ;; disable them if it's the first or the last already
        [:i.fas.fa-chevron-left]
        [:p.up-to-current-games up-to-current]
        [:i.fas.fa-chevron-right]]
