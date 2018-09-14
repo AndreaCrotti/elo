@@ -149,9 +149,11 @@
       [:label {:for "up-to-games"} "Compute Rankings up to game"]
       [:span
        ;; disable them if it's the first or the last already
-       [:i.fas.fa-chevron-left]
+       [:a.prev-game {:on-click #(js/alert "Clicked") :href "#"}]
+       #_[:i.fas.fa-chevron-left {:on-click #(js/alert "Clicked chevron left")}]
        [:p.up-to-current-games up-to-current]
-       [:i.fas.fa-chevron-right]]
+       [:a.next-game {:on-click #(js/alert "Clicked") :href "#"}]
+       #_[:i.fas.fa-chevron-right]]
 
       [:input {:type "range"
                :min 0
