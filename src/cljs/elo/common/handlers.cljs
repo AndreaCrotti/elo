@@ -1,5 +1,6 @@
 (ns elo.common.handlers
   (:require [ajax.core :as ajax]
+            [day8.re-frame.http-fx]
             [re-frame.core :as rf]))
 
 (defn get-in*

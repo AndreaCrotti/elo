@@ -2,7 +2,6 @@
 (ns elo.league-detail.handlers
   (:require ;; these two imports are actually needed
             [cljsjs.moment]
-            [day8.re-frame.http-fx]
             [elo.common.handlers :as common]
             [elo.games :as games]
             [elo.shared-config :as shared]
