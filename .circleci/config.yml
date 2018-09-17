@@ -32,6 +32,9 @@ jobs:
 
       - run: lein migratus migrate
       - run: lein test2junit
+      - store_test_results:
+          path: target/test2junit
+
       # move this to a frontend section
       - run:
           name: Install phantomjs
