@@ -62,7 +62,7 @@
             [test2junit "1.3.3"]
             [lein-garden "0.2.8"]]
 
-  :pedantic? :warn
+  ;; :pedantic? :warn
 
   :test2junit-output-dir ~(or (System/getenv "CIRCLE_TEST_REPORTS") "target/test2junit")
 

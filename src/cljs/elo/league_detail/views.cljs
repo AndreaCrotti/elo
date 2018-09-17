@@ -44,16 +44,17 @@
         game (rf/subscribe [:game])
         league (rf/subscribe [:league])
         game-type (or (:game_type @league) :fifa)
-        points-range (map str (config/opts game-type :points))]
+        points-range (map str (config/opts game-type :points))
+        sorted-players (sort-by :name players)]
 
     [:div.form-group.game_form {:on-submit (fn [] false)}
      [:div
-      [:label {:for "p1"} "Player 1"]
-      [drop-down-players players :p1 (:p1 @game)]]
+      [:label {:for "p1_name"} "Player 1"]
+      [drop-down-players sorted-players :p1 (:p1 @game)]]
 
      [:div
       [:label {:for "p2_name"} "Player 2"]
-      [drop-down-players players :p2 (:p2 @game)]]
+      [drop-down-players sorted-players :p2 (:p2 @game)]]
 
      [:div
       [:label {:for "p1_points"} (str "# " (translate :points))]
