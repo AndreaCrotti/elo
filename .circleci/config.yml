@@ -31,7 +31,7 @@ jobs:
           key: elo-{{ checksum "project.clj" }}
 
       - run: lein migratus migrate
-      - run: lein test
+      - run: lein test2junit
       # move this to a frontend section
       - run:
           name: Install phantomjs
