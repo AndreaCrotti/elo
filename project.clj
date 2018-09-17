@@ -27,9 +27,10 @@
                  [buddy/buddy-auth "2.1.0"]
                  [migratus "1.0.9"]
                  [org.clojure/test.check "0.9.0"]
-                 [cljsjs/plotly "1.36.1-0"]
+                 [junit/junit "4.12"]
 
                  [org.clojure/clojurescript "1.10.339"]
+                 [cljsjs/plotly "1.36.1-0"]
                  [cljs-react-material-ui "0.2.48"]
                  [re-frame "0.10.6"]
                  [reagent-forms "0.5.42"]
@@ -60,7 +61,10 @@
             [lein-cljsbuild "1.1.4"]
             [lein-ring "0.9.7"]
             [lein-cljfmt "0.5.7"]
+            [test2junit "1.3.3"]
             [lein-garden "0.2.8"]]
+
+  :test2junit-output-dir ~(or (System/getenv "CIRCLE_TEST_REPORTS") "target/test2junit")
 
   :main elo.api
   :aot [elo.api]
