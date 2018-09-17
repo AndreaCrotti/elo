@@ -5,27 +5,28 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[org.clojure/clojure "1.9.0"]
-                 [org.clojure/data.csv "0.1.4"]
                  [org.clojure/spec.alpha "0.2.176"]
-                 [clj-http "3.9.1"]
+
+                 ;; server side libs
+                 [org.clojure/data.csv "0.1.4"]
                  [ring "1.6.3"]
-                 [compojure "1.6.1"]
                  [org.clojure/java.jdbc "0.7.8"]
                  [org.postgresql/postgresql "42.2.5"]
                  [nilenso/honeysql-postgres "0.2.4"]
+                 [honeysql "0.9.3"]
+
                  [environ/environ.core "0.3.1"]
                  [hiccup "1.0.5"]
                  [ring/ring-json "0.4.0"]
                  [ring-oauth2 "0.1.4"]
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-mock "0.3.2"]
-                 [org.clojure/tools.cli "0.3.7"]
-                 [honeysql "0.9.3"]
-                 [environ "1.1.0"]
+
                  [garden "1.3.6"]
                  [buddy "2.0.0"]
                  [buddy/buddy-auth "2.1.0"]
                  [migratus "1.0.9"]
+                 ;;TODO: move these to the test profile
                  [org.clojure/test.check "0.9.0"]
                  [junit/junit "4.12"]
 
@@ -33,7 +34,6 @@
                  [cljsjs/plotly "1.36.1-0"]
                  [cljs-react-material-ui "0.2.48"]
                  [re-frame "0.10.6"]
-                 [reagent-forms "0.5.42"]
 
                  [cljsjs/react-datepicker "1.5.0-0"]
                  [cljsjs/classnames "2.2.5-1"]
@@ -48,8 +48,6 @@
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [cljs-ajax "0.7.4"]
                  [cljs-http "0.1.45"]
-                 [buddy/buddy-auth "2.1.0"]
-                 [buddy "2.0.0"]
                  [com.taoensso/timbre "4.10.0"]
                  [re-com "2.1.0"]
                  [bidi "2.1.4"]
@@ -63,6 +61,8 @@
             [lein-cljfmt "0.5.7"]
             [test2junit "1.3.3"]
             [lein-garden "0.2.8"]]
+
+  :pedantic? :warn
 
   :test2junit-output-dir ~(or (System/getenv "CIRCLE_TEST_REPORTS") "target/test2junit")
 

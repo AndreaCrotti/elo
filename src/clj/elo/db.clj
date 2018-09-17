@@ -1,8 +1,5 @@
 (ns elo.db
-  (:require [clj-time.coerce :as tc]
-            [clj-time.format :as f]
-            [clj-time.core :as t]
-            [clojure.java.jdbc :as jdbc]
+  (:require [clojure.java.jdbc :as jdbc]
             [environ.core :refer [env]]
             [honeysql-postgres.helpers :as ph]
             [honeysql.core :as sql]
