@@ -52,15 +52,22 @@
 
                 (sort-by #(- (second %)) rankings))))
 
-;;TODO: add can-go-back and can-go-forward which allows the view to know if to disable the buttons or not
+(rf/reg-event-db :prev-game
+                 (fn [db _]
+                   (let [up-to (:up-to-games db)]
+                     (js/console.log "calling prev game")
+                     (if (nil? up-to)
+                       (assoc db :up-to-games (dec (count (:games db))))
+                       (if (pos? (:up-to-games db))
+                         (common/update-in* db page [:up-to-games] dec)
+                         db)))))
 
 (rf/reg-event-db :next-game
                  (fn [db _]
-                   ()))
-
-(rf/reg-event-db :prev-game
-                 (fn [db _]
-                   ()))
+                   (js/console.log "calling next game")
+                   (if (< (:up-to-games db) (-> db :games count))
+                     (update db :up-to-games inc)
+                     db)))
 
 (rf/reg-sub :name-mapping
             (fn [query-v _]

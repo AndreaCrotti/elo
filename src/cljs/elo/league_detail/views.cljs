@@ -152,9 +152,9 @@
      [:div
       [:label {:for "up-to-games"} "Compute Rankings up to game"]
       [:div.rankings-chevrons
-       [:i.fas.fa-chevron-left {:on-click #(js/alert "Clicked chevron left")}]
+       [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [:prev-game])}]
        [:span.up-to-current-games up-to-current]
-       [:i.fas.fa-chevron-right {:on-click #(js/alert "Clicked chevron right")}]]]
+       [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [:next-game])}]]]
 
      [:table.table.table-striped
       [:thead header]
