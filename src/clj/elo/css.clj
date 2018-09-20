@@ -27,7 +27,8 @@
 
    [:th {:text-transform "uppercase"}]
 
-   [:label {:text-transform "capitalize"}]
+   ;;[:label {:text-transform "capitalize"}]
+   [:.rankings-chevrons {:display "inline"}]
 
    [:.add-player_form
     {:display "grid"

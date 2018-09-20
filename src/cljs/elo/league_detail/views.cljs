@@ -147,20 +147,10 @@
      [:h3 "Players Rankings"]
      [:div
       [:label {:for "up-to-games"} "Compute Rankings up to game"]
-      [:span
-       ;; disable them if it's the first or the last already
-       [:a.prev-game {:on-click #(js/alert "Clicked") :href "#"}]
-       #_[:i.fas.fa-chevron-left {:on-click #(js/alert "Clicked chevron left")}]
-       [:p.up-to-current-games up-to-current]
-       [:a.next-game {:on-click #(js/alert "Clicked") :href "#"}]
-       #_[:i.fas.fa-chevron-right]]
-
-      [:input {:type "range"
-               :min 0
-               :max (count @games)
-               :value up-to-current
-               :class "slider"
-               :on-change (utils/set-val :up-to-games)}]]
+      [:div.rankings-chevrons
+       [:i.fas.fa-chevron-left {:on-click #(js/alert "Clicked chevron left")}]
+       [:span.up-to-current-games up-to-current]
+       [:i.fas.fa-chevron-right {:on-click #(js/alert "Clicked chevron right")}]]]
 
      [:table.table.table-striped
       [:thead header]
