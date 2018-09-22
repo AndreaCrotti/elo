@@ -10,6 +10,12 @@
 
    [:title title]
 
+   ;; should we get different packages?
+   [:link {:rel "stylesheet"
+           :href "https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+           :integrity "sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+           :crossorigin "anonymous"}]
+
    [:link {:href (cache-buster "/css/react-datepicker.css")
            :rel "stylesheet"
            :type "text/css"}]
@@ -22,6 +28,10 @@
            :crossorigin "anonymous"}]
 
    [:link {:href (cache-buster "/css/screen.css")
+           :rel "stylesheet"
+           :type "text/css"}]
+
+   [:link {:href (cache-buster "/css/playground.css")
            :rel "stylesheet"
            :type "text/css"}]
 

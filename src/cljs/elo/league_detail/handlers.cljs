@@ -2,7 +2,6 @@
 (ns elo.league-detail.handlers
   (:require ;; these two imports are actually needed
             [cljsjs.moment]
-            [day8.re-frame.http-fx]
             [elo.common.handlers :as common]
             [elo.games :as games]
             [elo.shared-config :as shared]
@@ -53,6 +52,37 @@
 
                 (sort-by #(- (second %)) rankings))))
 
+(defn prev-game
+  [db _]
+  (let [up-to @(rf/subscribe [:up-to-games])
+        games @(rf/subscribe [:games])]
+
+    (if (nil? up-to)
+      (common/assoc-in* db page [:up-to-games] (dec (count games)))
+      (if (pos? up-to)
+        (common/update-in* db page [:up-to-games] dec)
+        db))))
+
+(rf/reg-event-db :prev-game prev-game)
+
+(defn next-game
+  [db _]
+  (let [up-to @(rf/subscribe [:up-to-games])
+        games @(rf/subscribe [:games])]
+
+    (if (< up-to (count games))
+      (common/update-in* db page [:up-to-games] inc)
+      db)))
+
+(rf/reg-event-db :next-game next-game)
+
+(rf/reg-sub :name-mapping
+            (fn [query-v _]
+              [(rf/subscribe [:players])])
+
+            (fn [[players] _]
+              (into {} (for [p players]
+                         {(:id p) p}))))
 
 (rf/reg-sub :rankings-data
             compute-rankings-data

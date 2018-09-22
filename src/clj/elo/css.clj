@@ -26,8 +26,11 @@
      :border 0}]
 
    [:th {:text-transform "uppercase"}]
+   [:.rankings-chevrons {:display "inline"}]
+   [:.fas {:font-size "20px"}]
+   [:.up-to-current-games {:font-size "20px"
+                           :background-color "#DDDDDD"}]
 
-   [:label {:text-transform "capitalize"}]
 
    [:.add-player_form
     {:display "grid"
@@ -51,5 +54,3 @@
 (defstyles screen
   ;; could maybe even split creating multiple CSS files?
   (concat leagues-page home-page))
-
-#_(concat [[1] [2]] [[3] [4]])

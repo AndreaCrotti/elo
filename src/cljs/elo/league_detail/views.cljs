@@ -39,13 +39,14 @@
                         :class "date-picker-class"}]]))
 
 (defn game-form
-  [players]
-  (let [valid-game? (rf/subscribe [:valid-game?])
+  []
+  (let [players (rf/subscribe [:players])
+        valid-game? (rf/subscribe [:valid-game?])
         game (rf/subscribe [:game])
         league (rf/subscribe [:league])
         game-type (or (:game_type @league) :fifa)
         points-range (map str (config/opts game-type :points))
-        sorted-players (sort-by :name players)]
+        sorted-players (sort-by :name @players)]
 
     [:div.form-group.game_form {:on-submit (fn [] false)}
      [:div
@@ -97,8 +98,10 @@
   (sort (zipmap (map inc (range (count xs))) xs)))
 
 (defn games-table
-  [games name-mapping]
-  (let [up-to (rf/subscribe [:up-to-games])
+  []
+  (let [games @(rf/subscribe [:games])
+        name-mapping @(rf/subscribe [:name-mapping])
+        up-to (rf/subscribe [:up-to-games])
         first-games (if (some? @up-to)
                       (take @up-to games)
                       games)
@@ -131,8 +134,9 @@
                [:td (.format (js/moment played_at) "LLLL")]]))]]))
 
 (defn rankings-table
-  [name-mapping]
-  (let [header [:tr
+  []
+  (let [name-mapping @(rf/subscribe [:name-mapping])
+        header [:tr
                 [:th "position"]
                 [:th "player"]
                 [:th "ranking"]
@@ -146,13 +150,19 @@
     [:div
      [:h3 "Players Rankings"]
      [:div
-      [:label {:for "up-to-games"} (str "Compute Rankings up to game #" up-to-current)]
-      [:input {:type "range"
-               :min 0
-               :max (count @games)
-               :value up-to-current
-               :class "slider"
-               :on-change (utils/set-val :up-to-games)}]]
+      [:div.rankings-chevrons
+
+       [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [:prev-game])}]
+       [:span.up-to-current-games up-to-current]
+       [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [:next-game])}]]
+
+      [:div
+       [:input.up-to-range-slider {:type "range"
+                                   :min 0
+                                   :max (count @games)
+                                   :value up-to-current
+                                   :class "slider"
+                                   :on-change (utils/set-val :up-to-games)}]]]
 
      [:table.table.table-striped
       [:thead header]
@@ -164,41 +174,45 @@
                [:td (int ranking)]
                [:td ngames]]))]]))
 
+(defn github-fork-me
+  []
+  [:a {:href "https://github.com/AndreaCrotti/elo"}
+   [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
+                  :alt "Fork me on Github"}]])
+
+(defn show-error
+  []
+  (let [error @(rf/subscribe [:error])]
+    (when error
+      [:div.section.alert.alert-danger
+       [:pre (:status-text error)]
+       [:pre (:original-text error)]])))
+
+(defn preamble
+  []
+  (let [league @(rf/subscribe [:league])]
+    [:div.preamble
+     [:img {:src "/logos/home.png"
+            :width "50px"
+            :on-click #(accountant/navigate! (routes/path-for :league-list))}]
+
+     (when (some? (:game_type league))
+       [:span.league__logo
+        [:img {:width "100px"
+               :src (config/logo (-> league :game_type))}]])]))
+
 (defn root
   []
   (rf/dispatch [:load-games])
   (rf/dispatch [:load-players])
   (rf/dispatch [:load-league])
 
-  (let [games (rf/subscribe [:games])
-        players (rf/subscribe [:players])
-        error (rf/subscribe [:error])
-        league (rf/subscribe [:league])
-        ;; graph-data @(rf/subscribe [:rankings-data])
-        ]
+  (fn []
+    [:div.content
+     [github-fork-me]
+     [show-error]
+     [preamble]
 
-    (fn []
-      (let [name-mapping (into {} (for [p @players] {(:id p) p}))]
-        [:div.content
-         [:a {:href "https://github.com/AndreaCrotti/elo"}
-          [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
-                         :alt "Fork me on Github"}]]
-
-         (when @error
-           [:div.section.alert.alert-danger
-            [:pre (:status-text @error)]
-            [:pre (:original-text @error)]])
-
-         [:div.preamble
-          [:img {:src "/logos/home.png"
-                 :width "50px"
-                 :on-click #(accountant/navigate! (routes/path-for :league-list))}]
-
-          (when (some? (:game_type @league))
-            [:span.league__logo
-             [:img {:width "100px"
-                    :src (config/logo (-> @league :game_type))}]])]
-
-         [:div.section.players__form_container (game-form @players)]
-         [:div.section.rankings__table (rankings-table name-mapping)]
-         [:div.section.games__table (games-table @games name-mapping)]]))))
+     [:div.section.players__form_container [game-form]]
+     [:div.section.rankings__table [rankings-table]]
+     [:div.section.games__table [games-table]]]))
