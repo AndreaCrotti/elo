@@ -10,4 +10,4 @@
   (when (some? slack-hook-url)
     (http/post slack-hook-url
                {:content-type :json
-                :data (json/write-str msg)})))
+                :body (json/write-str {"text" msg})})))
