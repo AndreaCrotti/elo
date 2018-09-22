@@ -27,9 +27,11 @@
 
    [:th {:text-transform "uppercase"}]
    [:.rankings-chevrons {:display "inline"}]
-   [:.fas {:font-size "24px"}]
-   [:.up-to-current-games {:font-size "24px"
+   [:.fas {:font-size "20px"}]
+   [:.up-to-current-games {:font-size "20px"
                            :background-color "#DDDDDD"}]
+
+   [:.up-to-range-slider {:vertical-align "baseline"}]
 
    [:.add-player_form
     {:display "grid"

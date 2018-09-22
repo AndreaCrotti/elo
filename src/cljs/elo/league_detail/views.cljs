@@ -151,9 +151,18 @@
      [:h3 "Players Rankings"]
      [:div
       [:div.rankings-chevrons
+
        [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [:prev-game])}]
        [:span.up-to-current-games up-to-current]
-       [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [:next-game])}]]]
+       [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [:next-game])}]]
+
+      [:div
+       [:input.up-to-range-slider {:type "range"
+                                   :min 0
+                                   :max (count @games)
+                                   :value up-to-current
+                                   :class "slider"
+                                   :on-change (utils/set-val :up-to-games)}]]]
 
      [:table.table.table-striped
       [:thead header]
