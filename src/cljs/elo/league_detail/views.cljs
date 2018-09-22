@@ -153,7 +153,7 @@
      [:h3 "Players Rankings"]
      [:div
       [:div.rankings-chevrons
-
+       [:p "Move to go back and forth in history"]
        [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [:prev-game])}]
        [:span.up-to-current-games up-to-current]
        [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [:next-game])}]]
