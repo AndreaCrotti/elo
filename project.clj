@@ -6,6 +6,7 @@
 
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/spec.alpha "0.2.176"]
+                 [clj-http "3.9.1"]
 
                  ;; server side libs
                  [org.clojure/data.csv "0.1.4"]
