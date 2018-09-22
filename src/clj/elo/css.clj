@@ -26,9 +26,10 @@
      :border 0}]
 
    [:th {:text-transform "uppercase"}]
-
-   ;;[:label {:text-transform "capitalize"}]
    [:.rankings-chevrons {:display "inline"}]
+   [:.fas {:font-size "24px"}]
+   [:.up-to-current-games {:font-size "24px"
+                           :background-color "#DDDDDD"}]
 
    [:.add-player_form
     {:display "grid"

@@ -150,7 +150,6 @@
     [:div
      [:h3 "Players Rankings"]
      [:div
-      [:label {:for "up-to-games"} "Compute Rankings up to game"]
       [:div.rankings-chevrons
        [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [:prev-game])}]
        [:span.up-to-current-games up-to-current]
