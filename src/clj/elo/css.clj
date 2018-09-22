@@ -31,7 +31,6 @@
    [:.up-to-current-games {:font-size "20px"
                            :background-color "#DDDDDD"}]
 
-   [:.up-to-range-slider {:vertical-align "baseline"}]
 
    [:.add-player_form
     {:display "grid"
@@ -55,5 +54,3 @@
 (defstyles screen
   ;; could maybe even split creating multiple CSS files?
   (concat leagues-page home-page))
-
-#_(concat [[1] [2]] [[3] [4]])
