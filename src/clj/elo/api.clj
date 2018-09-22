@@ -4,6 +4,7 @@
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [elo.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
             [elo.db :as db]
+            [elo.notifications :as notifications]
             [elo.pages.home :as home]
             [elo.validate :as validate]
             [environ.core :refer [env]]
@@ -30,6 +31,7 @@
 
 (defn add-game!
   [{:keys [params]}]
+  (notifications/notify-slack "A new game was added!")
   (let [validated (validate/conform :game params)
         game-id (db/add-game! validated)]
 
@@ -40,6 +42,7 @@
 (defn add-player!
   "Adds a new user to the platform, authenticated with basic Auth"
   [{:keys [params] :as request}]
+  (notifications/notify-slack "A new player just joined!")
   (with-basic-auth
     request
     (let [validated (validate/conform :player params)
