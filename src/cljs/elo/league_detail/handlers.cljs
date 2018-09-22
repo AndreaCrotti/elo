@@ -52,22 +52,29 @@
 
                 (sort-by #(- (second %)) rankings))))
 
-(rf/reg-event-db :prev-game
-                 (fn [db _]
-                   (let [up-to (:up-to-games db)]
-                     (js/console.log "calling prev game")
-                     (if (nil? up-to)
-                       (assoc db :up-to-games (dec (count (:games db))))
-                       (if (pos? (:up-to-games db))
-                         (common/update-in* db page [:up-to-games] dec)
-                         db)))))
+(defn prev-game
+  [db _]
+  (let [up-to @(rf/subscribe [:up-to-games])
+        games @(rf/subscribe [:games])]
 
-(rf/reg-event-db :next-game
-                 (fn [db _]
-                   (js/console.log "calling next game")
-                   (if (< (:up-to-games db) (-> db :games count))
-                     (update db :up-to-games inc)
-                     db)))
+    (if (nil? up-to)
+      (common/assoc-in* db page [:up-to-games] (dec (count games)))
+      (if (pos? up-to)
+        (common/update-in* db page [:up-to-games] dec)
+        db))))
+
+(rf/reg-event-db :prev-game prev-game)
+
+(defn next-game
+  [db _]
+  (let [up-to @(rf/subscribe [:up-to-games])
+        games @(rf/subscribe [:games])]
+
+    (if (< up-to (count games))
+      (common/update-in* db page [:up-to-games] inc)
+      db)))
+
+(rf/reg-event-db :next-game next-game)
 
 (rf/reg-sub :name-mapping
             (fn [query-v _]
