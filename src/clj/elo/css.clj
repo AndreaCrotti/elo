@@ -29,6 +29,8 @@
    [:.rankings-chevrons {:display "inline"}]
    [:.fas {:font-size "20px"}]
    [:.up-to-current-games {:font-size "20px"
+                           :padding-left "5px"
+                           :padding-right "5px"
                            :background-color "#DDDDDD"}]
 
 
