@@ -7,9 +7,11 @@
             [re-frame.core :as rf]))
 
 (defn sign-up-button
+  "Generate a generic sign up button"
   [provider]
+  [:a {:class (classes ["btn" "btn-social" "btn-block" (str "btn-" provider)])
+       :href (str "/oauth2/" provider)}
 
-  [:a {:class (classes ["btn" "btn-social" "btn-block" (str "btn-" provider)])}
    [:span {:class (classes ["fa" (str "fa-" provider)])}]
    (str "Sign in with " provider)])
 
