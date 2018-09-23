@@ -4,7 +4,9 @@
 
 (defn classes
   [cls]
-  (str/join " " (filter some? cls)))
+  (str/join " "
+            (map name
+                 (filter some? cls))))
 
 (defn set-val
   [handler-key]
