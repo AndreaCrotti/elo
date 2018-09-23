@@ -147,11 +147,13 @@
         games (rf/subscribe [:games])
         sorted-rankings @(rf/subscribe [:rankings])
         non-zero-games (filter #(pos? (:ngames %)) sorted-rankings)
-        up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
+        up-to-current (if (some? @up-to-games) @up-to-games (count @games))
+        rankings-average @(rf/subscribe [:rankings-average])]
 
     [:div
      [:h3 "Players Rankings"]
-     [:div
+     [:div.players-rankings__root
+      #_[:div "Current average = " rankings-average]
       [:div.rankings-chevrons
        [:p "Move to go back and forth in history"]
        [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [:prev-game])}]

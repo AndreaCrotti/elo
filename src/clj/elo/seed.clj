@@ -22,7 +22,7 @@
   []
   (map :id
        (db/query (fn [] {:select [:id]
-                        :from [:player]}))))
+                         :from [:player]}))))
 
 (defn random-ts
   []

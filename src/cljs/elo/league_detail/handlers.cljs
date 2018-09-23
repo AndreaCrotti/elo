@@ -41,16 +41,17 @@
    (rf/subscribe [:players])
    (rf/subscribe [:up-to-games])])
 
-(rf/reg-sub :rankings
-            compute-rankings-data
-            (fn [[games players up-to-games] _]
-              (let [rankings
-                    (games/get-rankings (if (some? up-to-games)
-                                          (take up-to-games games)
-                                          games)
-                                        players)]
+(defn get-rankings
+  [[games players up-to-games] _]
+  (let [rankings
+        (games/get-rankings (if (some? up-to-games)
+                              (take up-to-games games)
+                              games)
+                            players)]
 
-                (sort-by #(- (second %)) rankings))))
+    (sort-by #(- (second %)) rankings)))
+
+(rf/reg-sub :rankings compute-rankings-data get-rankings)
 
 (defn prev-game
   [db _]
@@ -173,3 +174,11 @@
 
 (rf/reg-event-fx :add-game (common/writer page "/api/add-game"
                                           :add-game-success game-transform))
+
+(rf/reg-sub :rankings-average
+            (fn [query-v _]
+              [(rf/subscribe [:rankings])])
+
+            (fn [[rankings] _]
+              (js/console.log "rankings = " rankings)
+              (float (/ (apply + (map :ranking rankings)) (count rankings)))))
