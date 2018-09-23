@@ -2,6 +2,8 @@
 
 [![CircleCI](https://circleci.com/gh/AndreaCrotti/elo/tree/master.svg?style=svg)](https://circleci.com/gh/AndreaCrotti/elo/tree/master)
 
+[![Dependencies Status](https://versions.deps.co/AndreaCrotti/elo/status.svg)](https://versions.deps.co/AndreaCrotti/elo)
+
 Compute the Elo ranking from Fifa games.
 
 ## Usage
