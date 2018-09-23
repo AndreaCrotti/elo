@@ -10,10 +10,11 @@
   "Generate a generic sign up button"
   [provider]
   [:a {:class (classes ["btn" "btn-social" "btn-block" (str "btn-" provider)])
-       :href (str "/oauth2/" provider)}
+       ;; should we post to that `/oauth2/github` instead?
+       :on-click #(rf/dispatch [:oauth2-auth provider])}
 
    [:span {:class (classes ["fa" (str "fa-" provider)])}]
-   (str "Sign in with " provider)])
+   (str "Sign in with " (clojure.string/capitalize provider))])
 
 (defn sign-in-block
   []
