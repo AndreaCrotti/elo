@@ -38,6 +38,9 @@
                                                            :padding-left "15px"
                                                            :grid-gap internal-grid-gap}]
 
+   [:.game_result__won
+    {:content "won"}]
+
    [:.game_form
     {:display "grid"
      :width "80%"

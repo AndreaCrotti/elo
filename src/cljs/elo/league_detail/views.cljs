@@ -99,9 +99,14 @@
   ;; without sorting it only works up to 30 !!
   (sort (zipmap (map inc (range (count xs))) xs)))
 
+(def result-class
+  {1 "fa fas-smile-beam"
+   0.5 "fa fas-grin-beam-sweat"
+   0 "fa fas-sad-cry"})
+
 (defn games-table
   []
-  (let [games @(rf/subscribe [:games])
+  (let [games @(rf/subscribe [:games-enriched])
         name-mapping @(rf/subscribe [:name-mapping])
         up-to (rf/subscribe [:up-to-games])
         first-games (if (some? @up-to)
@@ -122,15 +127,20 @@
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
-            (for [[idx {:keys [p1 p2 p1_using p2_using p1_points p2_points played_at]}]
+            (for [[idx {:keys [p1 p2
+                               p1_using p2_using
+                               r1 r2
+                               p1_points p2_points
+                               played_at]}]
+
                   (reverse (enumerate first-games))]
 
               [:tr
                [:td idx]
-               [:td (:name (get name-mapping p1))]
+               [:td {:class (result-class r1)} (:name (get name-mapping p1))]
                [:td p1_using]
                [:td p1_points]
-               [:td (:name (get name-mapping p2))]
+               [:td {:class (result-class r2)} (:name (get name-mapping p2))]
                [:td p2_using]
                [:td p2_points]
                [:td (.format (js/moment played_at) "LLLL")]]))]]))

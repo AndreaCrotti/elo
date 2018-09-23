@@ -59,7 +59,7 @@
   changes to this normalizatione that could also be taken into account."
 
   ;;TODO: if we return both scores in one go we don't need the extra
-  ;;normalizationq done above
+  ;;normalization done above
   [{:keys [p1 p2 p1_points p2_points]}]
   (cond
     (= p1_points p2_points) [p1 p2 0.5]

@@ -124,6 +124,23 @@
                keyword)))
 
 (rf/reg-sub :games (getter [:games]))
+
+(defn get-winners
+  [game]
+  (let [[_ _ r1 r2]
+        (games/normalize-game (assoc game :game :fifa))]
+
+    (assoc game
+           :r1 r1
+           :r2 r2)))
+
+(rf/reg-sub :games-enriched
+            (fn [query-v _]
+              [(rf/subscribe [:games])])
+
+            (fn [[games] _]
+              (map get-winners games)))
+
 (rf/reg-sub :players (getter [:players]))
 
 (rf/reg-event-db ::initialize-db
