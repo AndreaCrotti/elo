@@ -4,18 +4,28 @@
 
 (def games #{"fifa" "street-fighter" "table-tennis"})
 
+;;TODO: add a spec for the game configuration
 (def games-config
   {:fifa
    {:terminology {:using "team"
                   :points "goals"}
     :form {:points (range 10)}
-    :logo "fifa.png"}
+    :logo "fifa.png"
+    :draw? true}
 
    :street-fighter
    {:terminology {:using "character"
                   :points "rounds"}
     :form {:points (range 3)}
-    :logo "street_fighter.gif"}})
+    :logo "street_fighter.gif"
+    :draw? false}
+
+   :table-tennis
+   {:terminology {:using "player"
+                  :points "games"}
+    :form {:points (range 6)}
+    :logo "table_tennis.png"
+    :draw? false}})
 
 (defn term
   [game k]

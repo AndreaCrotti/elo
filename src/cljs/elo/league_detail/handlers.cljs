@@ -33,6 +33,7 @@
    :game {}
    :error nil
    :up-to-games nil
+   :league {}
    :league_id nil})
 
 (defn- compute-rankings-data
@@ -101,10 +102,58 @@
 
 (rf/reg-sub :error (getter [:error]))
 
-(rf/reg-sub :valid-game?
+(rf/reg-sub :game-type
+            (fn [db _]
+              (common/get-in* db page [:league :game_type])))
+
+(defn valid-players?
+  [{:keys [p1 p2]}]
+  (not= p1 p2))
+
+;; I could return some kind of coeffect when there is an error
+;; to give a better warning in the UI
+(defn valid-result?
+  [game-type game]
+  (let [p1 (:p1_points game)
+        p2 (:p2_points game)
+        draw? (-> shared/games-config :fifa :draw?)]
+
+    (and (or (> p1 0)
+             (> p2 0))
+
+         (or draw?
+             (not= p1 p2)))))
+
+(rf/reg-sub :valid-players?
+            (fn [query-v _]
+              [(rf/subscribe [:game])])
+
+            (fn [[game] _]
+              (valid-players? game)))
+
+(rf/reg-sub :valid-result?
+            (fn [query-v _]
+              [(rf/subscribe [:game-type])
+               (rf/subscribe [:game])])
+
+            (fn [[game-type game] _]
+              (valid-result? game-type game)))
+
+(rf/reg-sub :filled-game?
             (fn [db _]
               (not-any? #(= % "")
                         (vals (common/get-in* db page [:game])))))
+
+(rf/reg-sub :valid-game?
+            (fn [query-v _]
+              [(rf/subscribe [:valid-result?])
+               (rf/subscribe [:filled-game?])
+               (rf/subscribe [:valid-players?])])
+
+            (fn [[valid-result? filled-game? valid-players?] _]
+              (and valid-result?
+                   filled-game?
+                   valid-players?)))
 
 (rf/reg-event-db :reset-game (fn [db _]
                                (common/assoc-in* db page [:game] default-game)))

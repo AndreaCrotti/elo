@@ -90,7 +90,7 @@
                 :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-game? "disabled")])
                 :on-click (if @valid-game?
                             #(rf/dispatch [:add-game])
-                            #(js/alert "Fill up the form first"))}
+                            #(js/alert "Invalid results or incomplete form"))}
 
        "Add Game"]]]))
 
@@ -205,9 +205,9 @@
 
 (defn root
   []
+  (rf/dispatch [:load-league])
   (rf/dispatch [:load-games])
   (rf/dispatch [:load-players])
-  (rf/dispatch [:load-league])
 
   (fn []
     [:div.content
