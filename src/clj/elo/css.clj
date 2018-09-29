@@ -32,14 +32,11 @@
    [:.up-to-current-games {:font-size "20px"
                            :padding-left "5px"
                            :padding-right "5px"
-                           :background-color "#DDDDDD"}]
-
-
-   [:.add-player_form
-    {:display "grid"
-     :width "70%"
-     :padding-left "15px"
-     :grid-gap internal-grid-gap}]
+                           :background-color "#DDDDDD"}] [:.add-player_form
+                                                          {:display "grid"
+                                                           :width "70%"
+                                                           :padding-left "15px"
+                                                           :grid-gap internal-grid-gap}]
 
    [:.game_form
     {:display "grid"

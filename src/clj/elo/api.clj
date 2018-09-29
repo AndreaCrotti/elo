@@ -165,8 +165,9 @@
         players (db/load-players league-id)
         header (map :name players)
         csv-rows (for [n (range (inc (count games)))]
-                   (map (comp str :ranking) (games/get-rankings (take n games)
-                                                     players)))]
+                   (map (comp str :ranking) (games/get-rankings
+                                             (take n games)
+                                             players)))]
 
     (-> {}
         (csv-body header csv-rows)
