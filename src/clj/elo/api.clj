@@ -5,6 +5,7 @@
             [elo.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
             [elo.db :as db]
             [elo.csv :as csv]
+            [elo.games :as games]
             [elo.notifications :as notifications]
             [elo.pages.home :as home]
             [elo.validate :as validate]
@@ -63,8 +64,6 @@
 
 (defn spa [_] (render-page (home/body)))
 
-;;TODO: the league_id has to be extracted on all these different handlers
-
 (defn- get-league-id
   [request]
   (-> request
@@ -112,14 +111,36 @@
   {:status 200
    :body "Correctly Went throught the whole process"})
 
+(def csv-header
+  [:p1
+   :p1_using
+   :p2
+   :p2_using
+   :played_at])
+
+(defn csv-transform
+  [fields rows name-mapping]
+  (let [filtered-rows (map #(select-keys % fields) rows)
+        to-name #(get name-mapping %)
+        transform {:played_at str
+                   :p1 to-name
+                   :p2 to-name}]
+
+    (map #(vals (reduce-kv update % transform)) filtered-rows)))
+
 (defn games-csv
   [request]
   ;; fetch all the games normalizing the player names if possible as
   ;; part of the process
-  (let [games (db/load-games (get-league-id request))]
+  (let [league-id (get-league-id request)
+        games (db/load-games league-id)
+        players (db/load-players league-id)
+        names-mapping (games/player->names players)]
+
     (-> {:status 200
          :body (ring-io/piped-input-stream
-                (csv/write-csv ["a"] [[100]]))}
+                (csv/write-csv csv-header
+                               (csv-transform csv-header games names-mapping)))}
 
         (resp/content-type "text/csv")
         (resp/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
@@ -143,6 +164,7 @@
         ;; quite a crude way to make sure all the other urls actually
         ;; render to the SPA, letting the routing be handled by
         ;; accountant
+        ;; TODO: this might be a problem for things like the ring oauth
         true spa}])
 
 (def handler

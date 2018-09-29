@@ -33,7 +33,7 @@ GET :prod
 GET :local/oauth2/github
 
 # Fetch directly
-GET http://localhost:3452/
+GET http://localhost:3452/api/leagues
 
 # fetch CSV data
-GET :local/api/games-csv
+GET :local/api/games-csv?league_id=640246a0-3153-4ae6-963c-75a5047a9e45
