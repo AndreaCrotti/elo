@@ -3,8 +3,8 @@
   (:require [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [elo.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
-            [elo.db :as db]
             [elo.csv :as csv]
+            [elo.db :as db]
             [elo.games :as games]
             [elo.notifications :as notifications]
             [elo.pages.home :as home]
@@ -15,8 +15,8 @@
             [ring.middleware.defaults :as r-def]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
-            [ring.middleware.resource :as resources]
             [ring.middleware.oauth2 :refer [wrap-oauth2]]
+            [ring.middleware.resource :as resources]
             [ring.util.io :as ring-io]
             [ring.util.response :as resp]
             [taoensso.timbre :as timbre :refer [log info debug]])
@@ -111,7 +111,7 @@
   {:status 200
    :body "Correctly Went throught the whole process"})
 
-(def csv-header
+(def games-csv-header
   [:p1
    :p1_using
    :p2
@@ -128,6 +128,13 @@
 
     (map #(vals (reduce-kv update % transform)) filtered-rows)))
 
+(defn csv-body
+  [response csv-header csv-rows]
+  (assoc response
+         :body
+         (ring-io/piped-input-stream
+          (csv/write-csv csv-header csv-rows))))
+
 (defn games-csv
   [request]
   ;; fetch all the games normalizing the player names if possible as
@@ -137,13 +144,34 @@
         players (db/load-players league-id)
         names-mapping (games/player->names players)]
 
-    (-> {:status 200
-         :body (ring-io/piped-input-stream
-                (csv/write-csv csv-header
-                               (csv-transform csv-header games names-mapping)))}
-
+    (-> {}
+        (csv-body games-csv-header (csv-transform csv-header games names-mapping))
+        (resp/status 200)
         (resp/content-type "text/csv")
         (resp/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
+
+(defn rankings-csv
+  [request]
+  ;; return the list of all the rankings per player
+  ;; in a form like
+  ;; p1, p2, p3
+  ;; 1500, 1500, 1500
+  ;; 1512, 1488, 1500
+  ;; for all the possible games played
+
+  (let [league-id (get-league-id request)
+        games (db/load-games league-id)
+        players (db/load-players league-id)
+        header (map :name players)
+        csv-rows (for [n (range (inc (count games)))]
+                   (map (comp str :ranking) (games/get-rankings (take n games)
+                                                     players)))]
+
+    (-> {}
+        (csv-body header csv-rows)
+        (resp/status 200)
+        (resp/content-type "text/csv")
+        (resp/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
 
 ;;TODO: add a not found page for everything else?
 (def routes
@@ -158,6 +186,7 @@
 
                 ;; csv stuff
                 "games-csv" games-csv
+                "rankings-csv" rankings-csv
 
                 "oauth2/github/callback" github-callback}
 
