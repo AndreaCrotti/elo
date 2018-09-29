@@ -127,10 +127,10 @@
 
               [:tr
                [:td idx]
-               [:td (:name (get name-mapping p1))]
+               [:td (get name-mapping p1)]
                [:td p1_using]
                [:td p1_points]
-               [:td (:name (get name-mapping p2))]
+               [:td (get name-mapping p2)]
                [:td p2_using]
                [:td p2_points]
                [:td (.format (js/moment played_at) "LLLL")]]))]]))
@@ -172,7 +172,7 @@
             (for [[idx {:keys [id ranking ngames]}] (enumerate non-zero-games)]
               [:tr
                [:td idx]
-               [:td (:name (get name-mapping id))]
+               [:td (get name-mapping id)]
                [:td (int ranking)]
                [:td ngames]]))]]))
 

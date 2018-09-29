@@ -36,6 +36,8 @@
                           (expected (- ra rb))
                           (invert-score score)))))
 
+;;TODO: this should return the whole history of the rankings instead
+;;of simply the last one??
 (defn update-ratings
   [ratings games]
   (if (empty? games)

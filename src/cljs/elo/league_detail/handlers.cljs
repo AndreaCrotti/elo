@@ -82,7 +82,7 @@
               [(rf/subscribe [:players])])
 
             (fn [[players] _]
-              (into {} (for [p players] {(:id p) p}))))
+              (games/player->names players)))
 
 (rf/reg-sub :rankings-data
             compute-rankings-data

@@ -3,7 +3,9 @@
   (:require [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [elo.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
+            [elo.csv :as csv]
             [elo.db :as db]
+            [elo.games :as games]
             [elo.notifications :as notifications]
             [elo.pages.home :as home]
             [elo.validate :as validate]
@@ -13,8 +15,9 @@
             [ring.middleware.defaults :as r-def]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
-            [ring.middleware.resource :as resources]
             [ring.middleware.oauth2 :refer [wrap-oauth2]]
+            [ring.middleware.resource :as resources]
+            [ring.util.io :as ring-io]
             [ring.util.response :as resp]
             [taoensso.timbre :as timbre :refer [log info debug]])
   (:import (java.util UUID)))
@@ -61,8 +64,6 @@
 
 (defn spa [_] (render-page (home/body)))
 
-;;TODO: the league_id has to be extracted on all these different handlers
-
 (defn- get-league-id
   [request]
   (-> request
@@ -71,36 +72,108 @@
       validate/to-uuid))
 
 (defn get-players
-  [req]
-  (as-json
-   (resp/response (db/load-players (get-league-id req)))))
+  [request]
+  (-> (get-league-id request)
+      db/load-players
+      resp/response
+      as-json))
 
 (defn get-games
-  [req]
-  (as-json
-   (resp/response (db/load-games (get-league-id req)))))
+  [request]
+  (-> (get-league-id request)
+      db/load-games
+      resp/response
+      as-json))
 
 (defn get-league
-  [req]
-  (as-json
-   (resp/response (db/load-league (get-league-id req)))))
+  [request]
+  (-> (get-league-id request)
+      db/load-league
+      resp/response
+      as-json))
 
 (defn get-leagues
-  [req]
+  [request]
   ;;TODO: should get the company-id as argument ideally
-  (as-json
-   (resp/response (db/load-leagues))))
+  (-> (db/load-leagues)
+      resp/response
+      as-json))
 
 (defn get-companies
-  [req]
+  [request]
   ;;TODO: should get the company-id as argument ideally
-  (as-json
-   (resp/response (db/load-companies))))
+  (-> (db/load-companies)
+      resp/response
+      as-json))
 
 (defn github-callback
   [request]
   {:status 200
    :body "Correctly Went throught the whole process"})
+
+(def games-csv-header
+  [:p1
+   :p1_using
+   :p2
+   :p2_using
+   :played_at])
+
+(defn csv-transform
+  [fields rows name-mapping]
+  (let [filtered-rows (map #(select-keys % fields) rows)
+        to-name #(get name-mapping %)
+        transform {:played_at str
+                   :p1 to-name
+                   :p2 to-name}]
+
+    (map #(vals (reduce-kv update % transform)) filtered-rows)))
+
+(defn csv-body
+  [response csv-header csv-rows]
+  (assoc response
+         :body
+         (ring-io/piped-input-stream
+          (csv/write-csv csv-header csv-rows))))
+
+(defn games-csv
+  [request]
+  ;; fetch all the games normalizing the player names if possible as
+  ;; part of the process
+  (let [league-id (get-league-id request)
+        games (db/load-games league-id)
+        players (db/load-players league-id)
+        names-mapping (games/player->names players)]
+
+    (-> {}
+        (csv-body games-csv-header
+                  (csv-transform games-csv-header games names-mapping))
+        (resp/status 200)
+        (resp/content-type "text/csv")
+        (resp/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
+
+(defn rankings-csv
+  [request]
+  ;; return the list of all the rankings per player
+  ;; in a form like
+  ;; p1, p2, p3
+  ;; 1500, 1500, 1500
+  ;; 1512, 1488, 1500
+  ;; for all the possible games played
+
+  (let [league-id (get-league-id request)
+        games (db/load-games league-id)
+        players (db/load-players league-id)
+        header (map :name players)
+        csv-rows (for [n (range (inc (count games)))]
+                   (map (comp str :ranking) (games/get-rankings
+                                             (take n games)
+                                             players)))]
+
+    (-> {}
+        (csv-body header csv-rows)
+        (resp/status 200)
+        (resp/content-type "text/csv")
+        (resp/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
 
 ;;TODO: add a not found page for everything else?
 (def routes
@@ -113,11 +186,16 @@
                 "players" get-players
                 "games" get-games
 
+                ;; csv stuff
+                "games-csv" games-csv
+                "rankings-csv" rankings-csv
+
                 "oauth2/github/callback" github-callback}
 
         ;; quite a crude way to make sure all the other urls actually
         ;; render to the SPA, letting the routing be handled by
         ;; accountant
+        ;; TODO: this might be a problem for things like the ring oauth
         true spa}])
 
 (def handler

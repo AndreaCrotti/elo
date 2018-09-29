@@ -17,6 +17,11 @@
     (for [g games]
       ((juxt :p1 :p2) g)))))
 
+(defn player->names
+  "Transform players data into simpler id->name mapping"
+  [players]
+  (into {} (for [p players] {(:id p) (:name p)})))
+
 (defn get-rankings
   "Return all the rankings"
   [games players]

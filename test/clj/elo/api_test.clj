@@ -113,6 +113,20 @@
                  json/read-str
                  (get "id")))))))
 
+(deftest games-csv-test
+  (testing "Retrieve list of games"
+    (let [req (mock/request :get "/api/games-csv" {:league_id sample-league-id})
+          response (sut/app req)]
+
+      (is (= 200 (:status response))))))
+
+(deftest rankings-csv-test
+  (testing "Retrieve list of rankings"
+    (let [req (mock/request :get "/api/rankings-csv" {:league_id sample-league-id})
+          response (sut/app req)]
+
+      (is (= 200 (:status response))))))
+
 (deftest auth-test
   (testing "Creating a new user with github")
 
