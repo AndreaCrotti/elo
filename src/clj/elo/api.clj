@@ -145,7 +145,8 @@
         names-mapping (games/player->names players)]
 
     (-> {}
-        (csv-body games-csv-header (csv-transform csv-header games names-mapping))
+        (csv-body games-csv-header
+                  (csv-transform games-csv-header games names-mapping))
         (resp/status 200)
         (resp/content-type "text/csv")
         (resp/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
