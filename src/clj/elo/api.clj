@@ -4,6 +4,7 @@
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [elo.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
             [elo.db :as db]
+            [elo.csv :as csv]
             [elo.notifications :as notifications]
             [elo.pages.home :as home]
             [elo.validate :as validate]
@@ -15,6 +16,7 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.resource :as resources]
             [ring.middleware.oauth2 :refer [wrap-oauth2]]
+            [ring.util.io :as ring-io]
             [ring.util.response :as resp]
             [taoensso.timbre :as timbre :refer [log info debug]])
   (:import (java.util UUID)))
@@ -71,36 +73,56 @@
       validate/to-uuid))
 
 (defn get-players
-  [req]
-  (as-json
-   (resp/response (db/load-players (get-league-id req)))))
+  [request]
+  (-> (get-league-id request)
+      db/load-players
+      resp/response
+      as-json))
 
 (defn get-games
-  [req]
-  (as-json
-   (resp/response (db/load-games (get-league-id req)))))
+  [request]
+  (-> (get-league-id request)
+      db/load-games
+      resp/response
+      as-json))
 
 (defn get-league
-  [req]
-  (as-json
-   (resp/response (db/load-league (get-league-id req)))))
+  [request]
+  (-> (get-league-id request)
+      db/load-league
+      resp/response
+      as-json))
 
 (defn get-leagues
-  [req]
+  [request]
   ;;TODO: should get the company-id as argument ideally
-  (as-json
-   (resp/response (db/load-leagues))))
+  (-> (db/load-leagues)
+      resp/response
+      as-json))
 
 (defn get-companies
-  [req]
+  [request]
   ;;TODO: should get the company-id as argument ideally
-  (as-json
-   (resp/response (db/load-companies))))
+  (-> (db/load-companies)
+      resp/response
+      as-json))
 
 (defn github-callback
   [request]
   {:status 200
    :body "Correctly Went throught the whole process"})
+
+(defn games-csv
+  [request]
+  ;; fetch all the games normalizing the player names if possible as
+  ;; part of the process
+  (let [games (db/load-games (get-league-id request))]
+    (-> {:status 200
+         :body (ring-io/piped-input-stream
+                (csv/write-csv ["a"] [[100]]))}
+
+        (resp/content-type "text/csv")
+        (resp/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
 
 ;;TODO: add a not found page for everything else?
 (def routes
@@ -112,6 +134,9 @@
                 "companies" get-companies
                 "players" get-players
                 "games" get-games
+
+                ;; csv stuff
+                "games-csv" games-csv
 
                 "oauth2/github/callback" github-callback}
 

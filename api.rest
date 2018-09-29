@@ -34,3 +34,6 @@ GET :local/oauth2/github
 
 # Fetch directly
 GET http://localhost:3452/
+
+# fetch CSV data
+GET :local/api/games-csv
