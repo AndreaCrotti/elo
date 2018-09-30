@@ -151,6 +151,19 @@
         (resp/content-type "text/csv")
         (resp/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
 
+(defn rankings-header-rows
+  "To make sure that the order is returned correctly we simply sort by
+  id both the player names and the rankings returned"
+  [players games]
+  (let [header (map :name (sort-by :id players))
+        csv-rows (for [n (range (inc (count games)))]
+                   (map (comp str :ranking)
+                        (sort-by :id
+                                 (games/get-rankings
+                                  (take n games)
+                                  players))))]
+    [header csv-rows]))
+
 (defn rankings-csv
   [request]
   ;; return the list of all the rankings per player
@@ -163,11 +176,7 @@
   (let [league-id (get-league-id request)
         games (db/load-games league-id)
         players (db/load-players league-id)
-        header (map :name players)
-        csv-rows (for [n (range (inc (count games)))]
-                   (map (comp str :ranking) (games/get-rankings
-                                             (take n games)
-                                             players)))]
+        [header csv-rows] (rankings-header-rows players games)]
 
     (-> {}
         (csv-body header csv-rows)
