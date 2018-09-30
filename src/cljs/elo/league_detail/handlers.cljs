@@ -118,11 +118,8 @@
         p2 (:p2_points game)
         draw? (-> shared/games-config :fifa :draw?)]
 
-    (and (or (> p1 0)
-             (> p2 0))
-
-         (or draw?
-             (not= p1 p2)))))
+    (or draw?
+        (not= p1 p2))))
 
 (rf/reg-sub :valid-players?
             (fn [query-v _]
