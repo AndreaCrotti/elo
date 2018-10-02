@@ -150,7 +150,7 @@
   ;;from the player table!
   (let [company-id (:company_id (load-league league_id))
         user-id (add-user! {:email email})
-        player-id (add-player! {:user_id user-id :name name :email email})]
+        player-id (add-player! {:user_id user-id :name name})]
 
     (add-user-to-company! {:user_id user-id :company_id company-id})
     (add-player-to-league! {:league_id league_id :player_id player-id})
