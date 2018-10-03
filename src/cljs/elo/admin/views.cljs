@@ -3,24 +3,17 @@
             [elo.common.views :refer [drop-down]]
             [elo.utils :as utils]))
 
-;; there are two important use cases
-;; 1. add a new user to the system just by email
-;; 2. add an existing player from a company to a given league
-
 (defn add-player-form
   []
   (let [valid-player? (rf/subscribe [:valid-player?])
-        companies (rf/subscribe [:companies])
-        company (rf/subscribe [:company])
-        player (rf/subscribe [:player])]
+        player (rf/subscribe [:player])
+        league (rf/subscribe [:league])
+        leagues (rf/subscribe [:leagues])]
 
-    (js/console.log @companies " and " @company)
     [:div.form-group.add-player_form
-     [:input.form-control
-      #_[drop-down @companies :company "" #_@company
-         :display-fn :name :value-fn :id]]
-
      [:div
+      [drop-down @leagues :league]
+
       [:input.form-control {:type "text"
                             :value (:name @player)
                             :name "name"
@@ -45,7 +38,7 @@
 
 (defn root
   []
-  (rf/dispatch [:load-companies])
+  (rf/dispatch [:load-leagues])
   (fn []
     [:div.admin__page
      [add-player-form]]))

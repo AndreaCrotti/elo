@@ -14,15 +14,15 @@
 
 (def default-db
   {:player default-player
-   :company nil
-   :companies []})
+   :leagues []
+   :league nil})
 
 (rf/reg-event-db :name (setter [:player :name]))
 (rf/reg-event-db :email (setter [:player :email]))
-(rf/reg-event-db :company (setter [:company]))
+(rf/reg-event-db :league (setter [:league]))
 
-(rf/reg-sub :company (getter [:company]))
-(rf/reg-sub :companies (getter [:companies]))
+(rf/reg-sub :league (getter [:league]))
+(rf/reg-sub :leagues (getter [:leagues]))
 (rf/reg-sub :player (getter [:player]))
 
 (rf/reg-sub :valid-player?
@@ -43,9 +43,9 @@
 (rf/reg-event-fx :add-player (common/writer page "/api/add-player"
                                             :add-player-success player-transform))
 
-(rf/reg-event-db :load-companies-success (setter [:companies]))
+(rf/reg-event-db :load-leagues-success (setter [:leagues]))
 
-(rf/reg-event-db :load-companies (common/loader page "/api/companies" :load-companies-success))
+(rf/reg-event-db :load-leagues (common/loader page "/api/leagues" :load-leagues-success))
 
 (rf/reg-event-db ::initialize-db
                  (fn [db _]
