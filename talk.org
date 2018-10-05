@@ -68,7 +68,17 @@
 
 * Elo
 
+*The Elo rating system is a method for calculating the relative skill levels of players in zero-sum games such as chess.*
+
 ** Elo scores example
+
+By default:
+- initial value = 1500
+- k = 32
+
+P1: 1500
+P2: 1500
+
 
 * Putting it all together
 
