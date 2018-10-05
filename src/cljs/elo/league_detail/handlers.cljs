@@ -1,11 +1,11 @@
 ;;TODO: migrate to always use namespaced keywords
 (ns elo.league-detail.handlers
   (:require ;; these two imports are actually needed
-            [cljsjs.moment]
-            [elo.common.handlers :as common]
-            [elo.games :as games]
-            [elo.shared-config :as shared]
-            [re-frame.core :as rf]))
+   [cljsjs.moment]
+   [elo.common.handlers :as common]
+   [elo.games :as games]
+   [elo.shared-config :as shared]
+   [re-frame.core :as rf]))
 
 (def page ::page-id)
 
@@ -52,6 +52,20 @@
                                         players)]
 
                 (sort-by #(- (second %)) rankings))))
+
+(defn games-signal
+  [query-v _]
+  [(rf/subscribe [:games])])
+
+(rf/reg-sub :results
+            games-signal
+            (fn [[gs] _]
+              (games/results gs)))
+
+(rf/reg-sub :stats
+            games-signal
+            (fn [[gs] _]
+              (games/summarise gs)))
 
 (defn prev-game
   [db _]
