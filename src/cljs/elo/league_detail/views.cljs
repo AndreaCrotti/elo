@@ -144,7 +144,9 @@
                 [:th "position"]
                 [:th "player"]
                 [:th "ranking"]
-                [:th "# of games"]]
+                [:th "# of games"]
+                [:th "form"]
+                [:th "stats"]]
         up-to-games (rf/subscribe [:up-to-games])
         games (rf/subscribe [:games])
         sorted-rankings @(rf/subscribe [:rankings])
@@ -171,12 +173,18 @@
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
-            (for [[idx {:keys [id ranking ngames]}] (enumerate non-zero-games)]
+            (for [[idx {:keys [id ranking ngames]}] (enumerate non-zero-games)
+                  :let [{:keys [wins losses draws]} (get stats id)]]
               [:tr
                [:td idx]
                [:td (get name-mapping id)]
                [:td (int ranking)]
-               [:td ngames]]))]]))
+               [:td ngames]
+               [:td (clojure.string/join
+                     (map (comp clojure.string/capitalize name)
+                          (take 5 (reverse (get results id)))))]
+
+               [:td (str wins "/" losses "/" draws)]]))]]))
 
 (defn github-fork-me
   []
