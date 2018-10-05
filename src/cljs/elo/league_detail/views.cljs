@@ -138,6 +138,8 @@
 (defn rankings-table
   []
   (let [name-mapping @(rf/subscribe [:name-mapping])
+        results @(rf/subscribe [:results])
+        stats @(rf/subscribe [:stats])
         header [:tr
                 [:th "position"]
                 [:th "player"]

@@ -38,6 +38,16 @@
   (testing "Should be able to summarize raw results"
     (are [summary games] (= summary (sut/summarise games))
       ;; one single game should be extracted correctly
-      {:p1 {:wins 1 :losses 0 :draws 0 :points-done 3 :points-received 0}}
+      {:p1 {:wins 1 :losses 0 :draws 0 :points-done 3 :points-received 0}
+       :p2 {:wins 0 :losses 1 :draws 0 :points-done 0 :points-received 3}}
+
       [{:game :fifa :p1 :p1 :p2 :p2
         :p1_points 3 :p2_points 0}])))
+
+(deftest last-games-result-test
+  (testing "Should be able to compute the results for all the games"
+    (is (= {:p1 [:w] :p2 [:l]}
+           (sut/results
+            [{:game :fifa :p1 :p1 :p2 :p2
+              :p1_points 3 :p2_points 0}])))))
+
