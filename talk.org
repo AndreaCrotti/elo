@@ -1,0 +1,75 @@
+#+AUTHOR: Andrea Crotti (@andreacrotti)
+#+TITLE: Full Stack Clojure development
+#+OPTIONS: num:nil toc:nil ^:nil tex:t reveal_progress:t reveal_control:t reveal_overview:t
+#+REVEAL_TRANS: none
+#+REVEAL_SPEED: fast
+#+REVEAL_HLEVEL: 1
+#+TOC: listings
+
+* Introduction
+
+* Clojure
+
+- Lisp
+- Data Centric
+- Functional
+- Immutable
+- Hosted on JVM and Javascript
+
+* One language to rule them all
+
+** Clojure -> Javascript
+
+#+BEGIN_SRC clojure
+
+#+END_SRC
+
+** Clojure -> HTML
+
+#+BEGIN_SRC clojure
+  (defn body
+    []
+    [:html
+     [:body
+      [:div {:id "app"}]
+      [:script {:src "/js/compiled/app.js"}]
+      [:script "elo.core.init();"]]])
+#+END_SRC
+
+** Clojure -> CSS
+
+#+BEGIN_SRC clojure
+  (def leagues-page
+    [[:.league__content {:width "80%"
+                         :padding-top "10px"
+                         :padding-left "10px"}]
+     [:.language_pick {:font-size "24px"
+                       :text-align "center"}]])
+#+END_SRC
+
+#+BEGIN_SRC css
+  .league__content {
+    width: 80%;
+    padding-top: 10px;
+    padding-left: 10px;
+  }
+
+  .language_pick {
+    font-size: 24px;
+    text-align: center;
+  }
+#+END_SRC
+
+* Re-frame
+
+** FRP
+
+** 
+
+* Elo
+
+** Elo scores example
+
+* Putting it all together
+
+* Demo Time
