@@ -1,11 +1,10 @@
 ;;TODO: migrate to always use namespaced keywords
 (ns elo.league-detail.handlers
-  (:require ;; these two imports are actually needed
-   [cljsjs.moment]
-   [elo.common.handlers :as common]
-   [elo.games :as games]
-   [elo.shared-config :as shared]
-   [re-frame.core :as rf]))
+  (:require [cljsjs.moment]
+            [elo.common.handlers :as common]
+            [elo.games :as games]
+            [elo.shared-config :as shared]
+            [re-frame.core :as rf]))
 
 (def page ::page-id)
 
