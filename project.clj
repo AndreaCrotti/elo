@@ -56,7 +56,8 @@
                  [re-com "2.1.0"]
                  [bidi "2.1.4"]
                  [com.cemerick/url "0.1.1"]
-                 [venantius/accountant "0.2.4"]]
+                 [venantius/accountant "0.2.4"]
+                 [medley "1.0.0"]]
 
   :plugins [[environ/environ.lein "0.3.1"]
             [migratus-lein "0.5.0"]

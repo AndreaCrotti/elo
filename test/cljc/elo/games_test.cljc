@@ -4,16 +4,16 @@
             [elo.games :as sut]))
 
 (deftest normalize-game-test
-  (testing "Shoul compute correctly"
+  (testing "Should normalize games correctly"
     (are [out game] (= out (sut/normalize-game game))
       [:p1 :p2 1 0] {:game :fifa :p1 :p1 :p2 :p2
                      :p1_points 3 :p2_points 0}
+
       [:p1 :p2 0.5 0.5] {:game :fifa :p1 :p1 :p2 :p2
                          :p1_points 2 :p2_points 2})))
 
 (deftest get-rankings-test
-  (testing "Compute Fifa rankings"
-
+  (testing "Should compute the rankings correctly"
     (let [[p1 p2] [(gen/player-gen {:name "p1"})
                    (gen/player-gen {:name "p2"})]
 
@@ -33,3 +33,11 @@
                :ngames 1}]
 
              rankings)))))
+
+(deftest results-summary-test
+  (testing "Should be able to summarize raw results"
+    (are [summary games] (= summary (sut/summarise games))
+      ;; one single game should be extracted correctly
+      {:p1 {:wins 1 :losses 0 :draws 0 :points-done 3 :points-received 0}}
+      [{:game :fifa :p1 :p1 :p2 :p2
+        :p1_points 3 :p2_points 0}])))
