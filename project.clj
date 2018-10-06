@@ -111,12 +111,6 @@
 
    :dev
    {:repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
-    ;; :figwheel {:css-dirs ["resources/public/css"]
-    ;;            :ring-handler elo.api/app
-    ;;            :server-logfile "log/figwheel.log"
-    ;;            :server-ip "127.0.0.1"
-    ;;            :server-port 3452}
-
     :plugins [[lein-doo "0.1.10"]
               [migratus-lein "0.5.0"]]
 
