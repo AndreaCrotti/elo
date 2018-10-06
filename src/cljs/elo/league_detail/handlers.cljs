@@ -52,19 +52,27 @@
 
                 (sort-by #(- (second %)) rankings))))
 
-(defn games-signal
+(defn- truncate-games
+  [games up-to-games]
+  (js/console.log "To truncate" games
+                  "and " up-to-games)
+  (if (some? up-to-games)
+    (take up-to-games games)
+    games))
+
+(defn truncated-games-signal
   [query-v _]
-  [(rf/subscribe [:games])])
+  [(rf/subscribe [:games]) (rf/subscribe [:up-to-games])])
 
 (rf/reg-sub :results
-            games-signal
-            (fn [[gs] _]
-              (games/results gs)))
+            truncated-games-signal
+            (fn [[gs up-to] _]
+              (games/results (truncate-games gs up-to))))
 
 (rf/reg-sub :stats
-            games-signal
-            (fn [[gs] _]
-              (games/summarise gs)))
+            truncated-games-signal
+            (fn [[gs up-to] _]
+              (games/summarise (truncate-games gs up-to))))
 
 (defn prev-game
   [db _]
