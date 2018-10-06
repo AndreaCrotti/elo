@@ -11,13 +11,19 @@
    [:.language_pick {:font-size "24px"
                      :text-align "center"}]])
 
-(def home-page
+(def league-detail-page
   [[:.content
     {:display "grid"
      :width "90%"
      :padding-left "20px"
      :padding-top "30px"
      :grid-gap grid-gap}]
+
+   [:.players__form_container
+    {:width "60%"}]
+
+   [:.rankings__table
+    {:width "60%"}]
 
    [:.fork-me
     {:position "absolute"
@@ -53,4 +59,4 @@
 
 (defstyles screen
   ;; could maybe even split creating multiple CSS files?
-  (concat leagues-page home-page))
+  (concat leagues-page league-detail-page))
