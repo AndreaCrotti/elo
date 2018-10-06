@@ -54,19 +54,19 @@
     [:div.form-group.game_form {:on-submit (fn [] false)}
      [:div
       [:label {:for "p1_name"} "Player 1"]
-      [drop-down-players sorted-players :p1 (:p1 @game)]]
+      [drop-down-players sorted-players ::handlers/p1 (:p1 @game)]]
 
      [:div
       [:label {:for "p2_name"} "Player 2"]
-      [drop-down-players sorted-players :p2 (:p2 @game)]]
+      [drop-down-players sorted-players ::handlers/p2 (:p2 @game)]]
 
      [:div
       [:label {:for "p1_points"} (str "# " (translate :points))]
-      [drop-down points-range :p1_points (:p1_points @game)]]
+      [drop-down points-range ::handlers/p1_points (:p1_points @game)]]
 
      [:div
       [:label {:for "p2_points"} (str "# " (translate :points))]
-      [drop-down points-range :p2_points (:p2_points @game)]]
+      [drop-down points-range ::handlers/p2_points (:p2_points @game)]]
 
      [:div
       [:label (translate :using)]
