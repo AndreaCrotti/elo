@@ -229,3 +229,4 @@
      [:div.section.players__form_container [game-form]]
      [:div.section.rankings__table [rankings-table]]
      [:div.section.games__table [games-table]]]))
+

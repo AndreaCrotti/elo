@@ -76,7 +76,7 @@
 
   :uberjar-name "elo.jar"
   :min-lein-version "2.7.1"
-  :source-paths ["src/cljc" "src/clj"]
+  :source-paths ["src/cljc" "src/clj" "src/cljs"]
   :test-paths ["test/clj" "test/cljc"]
   :ring {:handler elo.api/app}
   :resource-paths ["config" "resources"]
@@ -93,7 +93,9 @@
                                 :pretty-print? true}}]}
 
 
-  :aliases {"test-cljs" ["doo" "phantom" "test" "once"]}
+  :aliases {"test-cljs" ["doo" "phantom" "test" "once"]
+            "fig" ["trampoline" "run" "-m" "figwheel.main"]
+            "build" ["trampoline" "run" "-m" "figwheel.main" "-b" "elo"]}
 
   :profiles
   {:production {:env {:production true}}
@@ -109,53 +111,24 @@
 
    :dev
    {:repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
-    :figwheel {:css-dirs ["resources/public/css"]
-               :ring-handler elo.api/app
-               :server-logfile "log/figwheel.log"
-               :server-ip "127.0.0.1"
-               :server-port 3452}
-
-    :plugins [[lein-figwheel "0.5.16"]
-              [lein-doo "0.1.10"]
+    :plugins [[lein-doo "0.1.10"]
               [migratus-lein "0.5.0"]]
 
     :dependencies [[binaryage/devtools "0.9.10"]
                    [cider/piggieback "0.3.9"]
-                   [figwheel "0.5.16"]
-                   [figwheel-sidecar "0.5.16"]
+                   [com.bhauman/figwheel-main "0.1.9"]
                    [day8.re-frame/re-frame-10x "0.3.3"]
+                   [com.bhauman/rebel-readline-cljs "0.1.4"]
                    ;; dependencies for the reloaded workflow
                    [reloaded.repl "0.2.4"]
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
   {:builds
-   [#_{:id "test"
-     :source-paths ["src/cljs" "test/cljs" "src/cljc" "test/cljc" "test/doo"]
-     :compiler {:output-to "resources/public/js/testable.js"
-                :main doo.test-runner
-                :optimizations :none}}
-
-    {:id "dev"
-     :source-paths ["src/cljs" "src/cljc"]
-     :figwheel     {:on-jsload "elo.core/mount-root"}
-     :compiler     {:main elo.core
-                    :output-to "resources/public/js/compiled/app.js"
-                    :output-dir "resources/public/js/compiled/out"
-                    :asset-path "/js/compiled/out"
-                    :optimizations :none
-                    :source-map true
-                    :source-map-timestamp true
-                    :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}
-                    :preloads [devtools.preload day8.re-frame-10x.preload]
-                    :external-config {:devtools/config {:features-to-install [:formatters
-                                                                              :async
-                                                                              :hints]}}}}
-    {:id "min"
+   [{:id "min"
      :source-paths ["src/cljs" "src/cljc"]
      :compiler     {:main elo.core
-                    :output-to "resources/public/js/compiled/app.js"
-                    :optimizations :advanced
-                    :output-dir "resources/public/js/compiled"
-                    :source-map "resources/public/js/compiled/app.js.map"
+                    :output-to "resources/public/cljs-out/elo-main.js"
+                    :asset-path "resources/public/cljs-out/elo"
+                    :optimizations :simple
                     :closure-defines {goog.DEBUG false}
                     :pretty-print false}}]})
