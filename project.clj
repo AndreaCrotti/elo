@@ -127,9 +127,8 @@
    [{:id "min"
      :source-paths ["src/cljs" "src/cljc"]
      :compiler     {:main elo.core
-                    :output-to "resources/public/js/compiled/app.js"
-                    :optimizations :advanced
-                    :output-dir "resources/public/js/compiled"
-                    :source-map "resources/public/js/compiled/app.js.map"
+                    :output-to "target/public/cljs-out/elo-main.js"
+                    :asset-path "target/public/cljs-out/elo"
+                    :optimizations :simple
                     :closure-defines {goog.DEBUG false}
                     :pretty-print false}}]})
