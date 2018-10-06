@@ -3,10 +3,10 @@
 
 (defn drop-down
   [opts dispatch-key value & {:keys [value-fn display-fn]
-               :or {value-fn identity
-                    display-fn identity}}]
+                              :or {value-fn identity
+                                   display-fn identity}}]
 
-  (into [:select.form-control {:on-change (utils/set-val dispatch-key) :value (or value"")}]
+  (into [:select.form-control {:on-change (utils/set-val dispatch-key) :value (or value "")}]
         (cons [:option ""]
               (for [o opts]
                 [:option {:value (value-fn o)} (display-fn o)]))))

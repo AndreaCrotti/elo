@@ -18,7 +18,7 @@
     [:div.form-group.add-player_form
      [:input.form-control
       #_[drop-down @companies :company "" #_@company
-       :display-fn :name :value-fn :id]]
+         :display-fn :name :value-fn :id]]
 
      [:div
       [:input.form-control {:type "text"

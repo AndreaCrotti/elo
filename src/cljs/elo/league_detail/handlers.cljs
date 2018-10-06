@@ -53,17 +53,17 @@
                     (games/get-rankings (truncate-games games up-to-games) players)]
                 (sort-by #(- (second %)) rankings))))
 
-(defn truncated-games-signal
+(defn games-signal
   [query-v _]
   [(rf/subscribe [::games]) (rf/subscribe [::up-to-games])])
 
 (rf/reg-sub ::results
-            truncated-games-signal
+            games-signal
             (fn [[gs up-to] _]
               (games/results (truncate-games gs up-to))))
 
 (rf/reg-sub ::stats
-            truncated-games-signal
+            games-signal
             (fn [[gs up-to] _]
               (games/summarise (truncate-games gs up-to))))
 
@@ -104,9 +104,9 @@
             (fn [[games players up-to-games] _]
               (let [x-axis (range up-to-games)
                     compute-games (fn [up-to] (games/get-rankings (if (some? up-to)
-                                                                   (take up-to games)
-                                                                   games)
-                                                                 players))
+                                                                    (take up-to games)
+                                                                    games)
+                                                                  players))
                     all-rankings (map compute-games x-axis)
                     grouped (group-by :id (flatten all-rankings))]
 
@@ -232,4 +232,4 @@
    #(.format % shared/timestamp-format)))
 
 (rf/reg-event-fx ::add-game (common/writer page "/api/add-game"
-                                          ::add-game-success game-transform))
+                                           ::add-game-success game-transform))

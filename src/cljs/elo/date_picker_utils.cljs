@@ -19,12 +19,12 @@
   [{:keys [date]}]
   (let [selected-date (reagent/atom (when date (js/moment date)))]
     (fn [{:keys [class
-                name
-                on-change
-                placeholder
-                react-key
-                min-date
-                max-date]}]
+                 name
+                 on-change
+                 placeholder
+                 react-key
+                 min-date
+                 max-date]}]
       [:div.date-range-input__side {:key react-key
                                     :class class}
        (js/React.createElement
