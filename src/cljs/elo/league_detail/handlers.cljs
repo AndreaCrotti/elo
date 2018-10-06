@@ -41,24 +41,18 @@
    (rf/subscribe [:players])
    (rf/subscribe [:up-to-games])])
 
+(defn- truncate-games
+  [games up-to-games]
+  (if (some? up-to-games)
+    (take up-to-games games)
+    games))
+
 (rf/reg-sub :rankings
             compute-rankings-data
             (fn [[games players up-to-games] _]
               (let [rankings
-                    (games/get-rankings (if (some? up-to-games)
-                                          (take up-to-games games)
-                                          games)
-                                        players)]
-
+                    (games/get-rankings (truncate-games games up-to-games) players)]
                 (sort-by #(- (second %)) rankings))))
-
-(defn- truncate-games
-  [games up-to-games]
-  (js/console.log "To truncate" games
-                  "and " up-to-games)
-  (if (some? up-to-games)
-    (take up-to-games games)
-    games))
 
 (defn truncated-games-signal
   [query-v _]
