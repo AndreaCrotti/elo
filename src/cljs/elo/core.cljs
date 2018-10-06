@@ -1,4 +1,4 @@
-(ns elo.core
+(ns ^:figwheel-hooks elo.core
   (:require [accountant.core :as accountant]
             [cemerick.url :refer [url]]
             [elo.league-detail.handlers :as league-detail-handlers]
@@ -31,25 +31,34 @@
   (when debug?
     (enable-console-print!)))
 
-(defn mount-root [page]
-  (re-frame/clear-subscription-cache!)
-  (reagent/render [page]
-                  (.getElementById js/document "app")))
-
-(defn nav-handler
-  [path]
-  (let [new-handler (routes/match-route path)
-        new-page (get pages (:handler new-handler))]
-
-    (re-frame/dispatch [:set-route-params (:route-params new-handler)])
-    (mount-root new-page)))
-
 (defn curr-path
   []
   (->
    js/window.location.href
    url
    :path))
+
+(defn get-current-page
+  []
+  (let [path (curr-path)
+        route (routes/match-route path)]
+    (get pages (:handler route))))
+
+(defn mount-root
+  [page]
+  (re-frame/clear-subscription-cache!)
+  (reagent/render [page]
+                  (.getElementById js/document "app")))
+
+(defn ^:after-load reload-hook
+  []
+  (mount-root (get-current-page)))
+
+(defn nav-handler
+  [path]
+  (let [new-handler (routes/match-route path)]
+    (re-frame/dispatch [:set-route-params (:route-params new-handler)])
+    (reload-hook)))
 
 (defn ^:export init []
   (re-frame/dispatch-sync [::league-list-handlers/initialize-db])
