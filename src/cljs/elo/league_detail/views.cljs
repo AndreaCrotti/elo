@@ -1,11 +1,12 @@
 (ns elo.league-detail.views
-  (:require [cljsjs.moment]
-            [elo.routes :as routes]
-            [elo.utils :as utils]
+  (:require [accountant.core :as accountant]
+            [cljsjs.moment]
             [elo.common.views :refer [drop-down]]
-            [accountant.core :as accountant]
             [elo.date-picker-utils :refer [date-time-picker]]
+            [elo.league-detail.handlers :as handlers]
+            [elo.routes :as routes]
             [elo.shared-config :as config]
+            [elo.utils :as utils]
             [re-frame.core :as rf]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
@@ -16,7 +17,7 @@
 
 (defn- translate
   [term]
-  (let [league (rf/subscribe [:league])]
+  (let [league (rf/subscribe [::handlers/league])]
     ;;XXX: is there a way to avoid all this extra safety?
     (config/term (or (:game_type @league) :fifa) term)))
 
@@ -26,7 +27,7 @@
 
 (defn date-range-picker
   []
-  (let [game (rf/subscribe [:game])]
+  (let [game (rf/subscribe [::handlers/game])]
     [:div.filter-panel--range__inputs.date-range__inputs
      [date-time-picker {:name "datetime-widget"
                         :selected (:played_at @game)
@@ -35,15 +36,15 @@
                         :min-date "2018-08-01"
                         :max-date (js/moment)
                         :placeholder "When was it played"
-                        :on-change #(rf/dispatch [:played_at %])
+                        :on-change #(rf/dispatch [::handlers/played_at %])
                         :class "date-picker-class"}]]))
 
 (defn game-form
   []
-  (let [players (rf/subscribe [:players])
-        valid-game? (rf/subscribe [:valid-game?])
-        game (rf/subscribe [:game])
-        league (rf/subscribe [:league])
+  (let [players (rf/subscribe [::handlers/players])
+        valid-game? (rf/subscribe [::handlers/valid-game?])
+        game (rf/subscribe [::handlers/game])
+        league (rf/subscribe [::handlers/league])
         game-type (or (:game_type @league) :fifa)
         points-range (map str (config/opts game-type :points))
         ;; with two different players list we can filter out directly
@@ -72,14 +73,14 @@
       [:input.form-control {:type "text"
                             :placeholder (str (translate :using) " Name")
                             :value (:p1_using @game)
-                            :on-change (utils/set-val :p1_using)}]]
+                            :on-change (utils/set-val ::handlers/p1_using)}]]
 
      [:div
       [:label (translate :using)]
       [:input.form-control {:type "text"
                             :placeholder (str (translate :using) " Name")
                             :value (:p2_using @game)
-                            :on-change (utils/set-val :p2_using)}]]
+                            :on-change (utils/set-val ::handlers/p2_using)}]]
 
      [:div
       [:label "Played at"]
@@ -89,7 +90,7 @@
       [:button {:type "button"
                 :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-game? "disabled")])
                 :on-click (if @valid-game?
-                            #(rf/dispatch [:add-game])
+                            #(rf/dispatch [::handlers/add-game])
                             #(js/alert "Invalid results or incomplete form"))}
 
        "Add Game"]]]))
@@ -101,9 +102,9 @@
 
 (defn games-table
   []
-  (let [games @(rf/subscribe [:games])
-        name-mapping @(rf/subscribe [:name-mapping])
-        up-to (rf/subscribe [:up-to-games])
+  (let [games @(rf/subscribe [::handlers/games])
+        name-mapping @(rf/subscribe [::handlers/name-mapping])
+        up-to (rf/subscribe [::handlers/up-to-games])
         first-games (if (some? @up-to)
                       (take @up-to games)
                       games)
@@ -137,9 +138,9 @@
 
 (defn rankings-table
   []
-  (let [name-mapping @(rf/subscribe [:name-mapping])
-        results @(rf/subscribe [:results])
-        stats @(rf/subscribe [:stats])
+  (let [name-mapping @(rf/subscribe [::handlers/name-mapping])
+        results @(rf/subscribe [::handlers/results])
+        stats @(rf/subscribe [::handlers/stats])
         header [:tr
                 [:th "position"]
                 [:th "player"]
@@ -147,9 +148,9 @@
                 [:th "# of games"]
                 [:th "form"]
                 [:th "stats"]]
-        up-to-games (rf/subscribe [:up-to-games])
-        games (rf/subscribe [:games])
-        sorted-rankings @(rf/subscribe [:rankings])
+        up-to-games (rf/subscribe [::handlers/up-to-games])
+        games (rf/subscribe [::handlers/games])
+        sorted-rankings @(rf/subscribe [::handlers/rankings])
         non-zero-games (filter #(pos? (:ngames %)) sorted-rankings)
         up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
 
@@ -158,9 +159,9 @@
      [:div
       [:div.rankings-chevrons
        [:p "Move to go back and forth in history"]
-       [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [:prev-game])}]
+       [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
        [:span.up-to-current-games up-to-current]
-       [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [:next-game])}]]
+       [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]
 
       [:div
        [:input.up-to-range-slider {:type "range"
@@ -168,7 +169,7 @@
                                    :max (count @games)
                                    :value up-to-current
                                    :class "slider"
-                                   :on-change (utils/set-val :up-to-games)}]]]
+                                   :on-change (utils/set-val ::handlers/up-to-games)}]]]
 
      [:table.table.table-striped
       [:thead header]
@@ -194,7 +195,7 @@
 
 (defn show-error
   []
-  (let [error @(rf/subscribe [:error])]
+  (let [error @(rf/subscribe [::handlers/error])]
     (when error
       [:div.section.alert.alert-danger
        [:pre (:status-text error)]
@@ -202,7 +203,7 @@
 
 (defn preamble
   []
-  (let [league @(rf/subscribe [:league])]
+  (let [league @(rf/subscribe [::handlers/league])]
     [:div.preamble
      [:img {:src "/logos/home.png"
             :width "50px"
@@ -215,9 +216,9 @@
 
 (defn root
   []
-  (rf/dispatch [:load-league])
-  (rf/dispatch [:load-games])
-  (rf/dispatch [:load-players])
+  (rf/dispatch [::handlers/load-league])
+  (rf/dispatch [::handlers/load-games])
+  (rf/dispatch [::handlers/load-players])
 
   (fn []
     [:div.content

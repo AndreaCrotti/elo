@@ -18,7 +18,7 @@
                  (fn [db _]
                    (assoc db page default-db)))
 
-(rf/reg-event-db :load-leagues-success (setter [:leagues]))
+(rf/reg-event-db ::load-leagues-success (setter [:leagues]))
 
 (defn loader
   [page uri on-success]
@@ -31,7 +31,7 @@
                   :on-success [on-success]
                   :on-failure [:failed]}}))
 
-(rf/reg-event-fx :load-leagues
-                 (loader page "/api/leagues" :load-leagues-success))
+(rf/reg-event-fx ::load-leagues
+                 (loader page "/api/leagues" ::load-leagues-success))
 
-(rf/reg-sub :leagues (getter [:leagues]))
+(rf/reg-sub ::leagues (getter [:leagues]))

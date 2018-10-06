@@ -1,14 +1,15 @@
 (ns elo.league-list.views
   (:require [elo.shared-config :as config]
             [elo.routes :as routes]
+            [elo.league-list.handlers :as handlers]
             [accountant.core :as accountant]
             [re-frame.core :as rf]))
 
 (defn root
   []
-  (rf/dispatch [:load-leagues])
+  (rf/dispatch [::handlers/load-leagues])
   (fn []
-    (let [leagues (rf/subscribe [:leagues])]
+    (let [leagues (rf/subscribe [::handlers/leagues])]
       [:div.league__content
        [:div.language_pick "Pick your League"]
        (into [:ul.list-group]
