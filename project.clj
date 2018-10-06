@@ -124,27 +124,7 @@
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
   {:builds
-   [#_{:id "test"
-     :source-paths ["src/cljs" "test/cljs" "src/cljc" "test/cljc" "test/doo"]
-     :compiler {:output-to "resources/public/js/testable.js"
-                :main doo.test-runner
-                :optimizations :none}}
-
-    #_{:id "dev"
-     :source-paths ["src/cljs" "src/cljc"]
-     :compiler     {:main elo.core
-                    :output-to "resources/public/js/compiled/app.js"
-                    :output-dir "resources/public/js/compiled/out"
-                    :asset-path "/js/compiled/out"
-                    :optimizations :none
-                    :source-map true
-                    :source-map-timestamp true
-                    :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}
-                    :preloads [devtools.preload day8.re-frame-10x.preload]
-                    :external-config {:devtools/config {:features-to-install [:formatters
-                                                                              :async
-                                                                              :hints]}}}}
-    {:id "min"
+   [{:id "min"
      :source-paths ["src/cljs" "src/cljc"]
      :compiler     {:main elo.core
                     :output-to "resources/public/js/compiled/app.js"
