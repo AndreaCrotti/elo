@@ -157,7 +157,7 @@
                 [:th "ranking"]
                 [:th "# of games"]
                 [:th "form"]
-                [:th "stats"]]
+                [:th "# W/L/D"]]
         up-to-games (rf/subscribe [::handlers/up-to-games])
         games (rf/subscribe [::handlers/games])
         sorted-rankings @(rf/subscribe [::handlers/rankings])
