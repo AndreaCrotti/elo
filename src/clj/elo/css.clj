@@ -23,7 +23,7 @@
     {:width "60%"}]
 
    [:.rankings__table
-    {:width "60%"}]
+    {:width "900px"}]
 
    [:.result__element
     {:color "white"
