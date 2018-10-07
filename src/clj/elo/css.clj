@@ -25,6 +25,20 @@
    [:.rankings__table
     {:width "60%"}]
 
+   [:.result__element
+    {:color "white"
+     :margin "2px"
+     :font-weight :bolder}]
+
+   [:.result__w
+    {:background-color "green"}]
+
+   [:.result__d
+    {:background-color "black"}]
+
+   [:.result__l
+    {:background-color "red"}]
+
    [:.fork-me
     {:position "absolute"
      :top 0
@@ -35,6 +49,7 @@
    [:.rankings-chevrons {:display "inline"}]
    [:.fas {:font-size "20px"
            :cursor "pointer"}]
+
    [:.up-to-current-games {:font-size "20px"
                            :padding-left "5px"
                            :padding-right "5px"

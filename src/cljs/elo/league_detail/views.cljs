@@ -10,6 +10,7 @@
             [re-frame.core :as rf]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
+(def form-size 5)
 
 (defn drop-down-players
   [opts dispatch-key value]
@@ -136,6 +137,15 @@
                [:td p2_points]
                [:td (.format (js/moment played_at) "LLLL")]]))]]))
 
+(defn el-result
+  [idx result]
+  [:span {:key idx :class (str "result__element result__" (name result))}
+   (-> result name clojure.string/capitalize)])
+
+(defn results-boxes
+  [results]
+  (map-indexed el-result (take form-size (reverse results))))
+
 (defn rankings-table
   []
   (let [name-mapping @(rf/subscribe [::handlers/name-mapping])
@@ -181,10 +191,7 @@
                [:td (get name-mapping id)]
                [:td (int ranking)]
                [:td ngames]
-               [:td (clojure.string/join
-                     (map (comp clojure.string/capitalize name)
-                          (take 5 (reverse (get results id)))))]
-
+               [:td (results-boxes (get results id))]
                [:td (str wins "/" losses "/" draws)]]))]]))
 
 (defn github-fork-me

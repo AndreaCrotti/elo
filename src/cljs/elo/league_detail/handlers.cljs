@@ -16,6 +16,7 @@
             (fn [db _]
               (get-in db [:route-params :league-id])))
 
+;;TODO: add some spec validation here
 (def default-game
   {:p1 ""
    :p2 ""
