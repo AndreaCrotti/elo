@@ -23,12 +23,15 @@
     {:width "60%"}]
 
    [:.rankings__table
-    {:width "900px"}]
+    {:width "75%"}]
 
    [:.result__element
     {:color "white"
      :margin "2px"
      :font-weight :bolder}]
+
+   [:.rankings-slider
+    {:padding "20px"}]
 
    [:.result__w
     {:background-color "green"}]
@@ -46,18 +49,19 @@
      :border 0}]
 
    [:th {:text-transform "uppercase"}]
-   [:.rankings-chevrons {:display "inline"}]
    [:.fas {:font-size "20px"
            :cursor "pointer"}]
 
    [:.up-to-current-games {:font-size "20px"
                            :padding-left "5px"
                            :padding-right "5px"
-                           :background-color "#DDDDDD"}] [:.add-player_form
-                                                          {:display "grid"
-                                                           :width "70%"
-                                                           :padding-left "15px"
-                                                           :grid-gap internal-grid-gap}]
+                           :background-color "#DDDDDD"}]
+
+   [:.add-player_form
+    {:display "grid"
+     :width "70%"
+     :padding-left "15px"
+     :grid-gap internal-grid-gap}]
 
    [:.game_form
     {:display "grid"

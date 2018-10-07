@@ -74,12 +74,10 @@
         games @(rf/subscribe [::games])]
 
     (if (nil? up-to)
-      (common/assoc-in* db page [::up-to-games] (dec (count games)))
+      (common/assoc-in* db page [:up-to-games] (dec (count games)))
       (if (pos? up-to)
-        (common/update-in* db page [::up-to-games] dec)
+        (common/update-in* db page [:up-to-games] dec)
         db))))
-
-(rf/reg-event-db ::prev-game prev-game)
 
 (defn next-game
   [db _]
@@ -87,9 +85,10 @@
         games @(rf/subscribe [::games])]
 
     (if (< up-to (count games))
-      (common/update-in* db page [::up-to-games] inc)
+      (common/update-in* db page [:up-to-games] inc)
       db)))
 
+(rf/reg-event-db ::prev-game prev-game)
 (rf/reg-event-db ::next-game next-game)
 
 (rf/reg-sub ::name-mapping

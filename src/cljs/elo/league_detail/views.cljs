@@ -167,19 +167,18 @@
     [:div
      [:h3 "Players Rankings"]
      [:div
-      [:div.rankings-chevrons
-       [:p "Move to go back and forth in history"]
-       [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
-       [:span.up-to-current-games up-to-current]
-       [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]
-
-      [:div
+      [:span.rankings-slider
        [:input.up-to-range-slider {:type "range"
                                    :min 0
                                    :max (count @games)
                                    :value up-to-current
                                    :class "slider"
-                                   :on-change (utils/set-val ::handlers/up-to-games)}]]]
+                                   :on-change (utils/set-val ::handlers/up-to-games)}]]
+
+      [:span.rankings-chevrons
+       [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
+       [:span.up-to-current-games up-to-current]
+       [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]
 
      [:table.table.table-striped
       [:thead header]
