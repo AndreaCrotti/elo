@@ -1,4 +1,4 @@
-:local = http://localhost:3452
+:local = http://localhost:9500
 :staging = http://fifa-elo-staging.herokuapp.com
 :prod = http://fifa-elo.herokuapp.com
 

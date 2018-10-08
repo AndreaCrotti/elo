@@ -7,6 +7,7 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/spec.alpha "0.2.176"]
                  [clj-http "3.9.1"]
+                 [prone "1.6.1"]
 
                  ;; server side libs
                  [org.clojure/data.csv "0.1.4"]
@@ -110,7 +111,8 @@
              :main elo.api}
 
    :dev
-   {:repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
+   {:ring {:stacktrace-middleware prone.middleware/wrap-exceptions}
+    :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
     :plugins [[lein-doo "0.1.10"]
               [migratus-lein "0.5.0"]]
 
