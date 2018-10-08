@@ -8,9 +8,14 @@ Compute the Elo ranking from Fifa games.
 
 ### Local development
 
-This project uses `figwheel-main` for all the reloading magic, so you
-can just it locally with `lein build` or simply `jack-in` with `cider`
-which should do the right thing out of the box (see [.dir-locals file](./.dir-locals.el)).
+Get it running locally:
+
+- run `lein build` in one terminal (or `cider-in` with Cider)
+- in another terminal run `lein garden auto` (this will compile
+  automatically all the CSS)
+- run `docker-compose up -d` to fire up your local db
+- the first time run `./setup_db.sh`, this will migrate your local
+  databases and seed them with randomly generated data
 
 ### CSS
 
