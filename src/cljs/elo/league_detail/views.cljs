@@ -1,6 +1,7 @@
 (ns elo.league-detail.views
   (:require [accountant.core :as accountant]
             [cljsjs.moment]
+            [clojure.string :as str]
             [elo.common.views :refer [drop-down]]
             [elo.date-picker-utils :refer [date-time-picker]]
             [elo.league-detail.handlers :as handlers]
@@ -140,11 +141,11 @@
 (defn el-result
   [idx result]
   [:span {:key idx :class (str "result__element result__" (name result))}
-   (-> result name clojure.string/capitalize)])
+   (-> result name str/capitalize)])
 
 (defn results-boxes
   [results]
-  (map-indexed el-result (take form-size (reverse results))))
+  (map-indexed el-result (take-last form-size results)))
 
 (defn rankings-table
   []
