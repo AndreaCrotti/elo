@@ -40,6 +40,6 @@
     :client-secret config/github-secret-id
     :scopes ["user:email"]
     :launch-uri "/oauth2/github"
-    :redirect-uri "/oauth2/github/callback"
+    :redirect-uri "/api/oauth2/github/callback"
     :landing-uri "/"
     :basic-auth? true}})

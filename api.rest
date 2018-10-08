@@ -40,3 +40,6 @@ GET :local/api/games-csv?league_id=640246a0-3153-4ae6-963c-75a5047a9e45
 
 # fetch CSV data for the rankings
 GET :local/api/rankings-csv?league_id=640246a0-3153-4ae6-963c-75a5047a9e45
+
+# test the oauth2 callback to see what happens
+GET :local/api/oauth2/github/callback?code=xxx&state=xxx

@@ -232,8 +232,8 @@
       wrap-keyword-params
       wrap-json-params
       wrap-json-response
-      (wrap-oauth2 oauth2-config)
-      log-request))
+      log-request
+      (wrap-oauth2 oauth2-config)))
 
 (defn -main [& args]
   (jetty/run-jetty app {:port (get-port)}))
