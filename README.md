@@ -8,7 +8,9 @@ Compute the Elo ranking from Fifa games.
 
 ### Local development
 
-Run locally with `lein figwheel`
+This project uses `figwheel-main` for all the reloading magic, so you
+can just it locally with `lein build` or simply `jack-in` with `cider`
+which should do the right thing out of the box (see [.dir-locals file](./.dir-locals.el)).
 
 ### Deployment
 
@@ -19,12 +21,6 @@ You can deploy this to Heroku directly or build an uberjar and deploy it on any 
 You can run database migrations with:
 
     lein migratus migrate
-
-## Technical decisions
-
-### Routing
-
-Routing is done using Bidi and Accountant together.
 
 ## License
 
