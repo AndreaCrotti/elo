@@ -96,7 +96,7 @@
   :aliases {"test-cljs" ["doo" "phantom" "test" "once"]
             "fig" ["trampoline" "run" "-m" "figwheel.main"]
             "build" ["trampoline" "run" "-m" "figwheel.main" "-b" "elo"]}
-
+  
   :profiles
   {:production {:env {:production true}}
    :uberjar {:hooks []

@@ -12,6 +12,10 @@ This project uses `figwheel-main` for all the reloading magic, so you
 can just it locally with `lein build` or simply `jack-in` with `cider`
 which should do the right thing out of the box (see [.dir-locals file](./.dir-locals.el)).
 
+### CSS
+
+CSS is written using `garden`
+
 ### Deployment
 
 You can deploy this to Heroku directly or build an uberjar and deploy it on any other platform.
