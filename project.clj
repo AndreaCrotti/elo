@@ -10,11 +10,11 @@
 
                  ;; server side libs
                  [org.clojure/data.csv "0.1.4"]
-                 [ring "1.6.3"]
+                 [ring "1.7.0"]
                  [org.clojure/java.jdbc "0.7.8"]
                  [org.postgresql/postgresql "42.2.5"]
                  [nilenso/honeysql-postgres "0.2.4"]
-                 [honeysql "0.9.3"]
+                 [honeysql "0.9.4"]
 
                  [environ/environ.core "0.3.1"]
                  [hiccup "1.0.5"]
@@ -32,22 +32,22 @@
                  [junit/junit "4.12"]
 
                  [org.clojure/clojurescript "1.10.339"]
-                 [cljsjs/plotly "1.36.1-0"]
-                 [cljs-react-material-ui "0.2.48"]
                  [re-frame "0.10.6"]
                  [org.webjars/font-awesome "5.3.1"]
 
+                 [cljsjs/react "16.5.2-0"]
+                 [cljsjs/react-dom "16.5.2-0"]
                  ;; these below are all needed by react datepicker and
                  ;; everything blows up if they are not pinned apparently
                  [cljsjs/react-datepicker "1.5.0-0"]
                  [cljsjs/classnames "2.2.5-1"]
-                 [cljsjs/prop-types "15.6.1-0"]
+                 [cljsjs/prop-types "15.6.2-0"]
                  [cljsjs/react-onclickoutside "6.7.1-1"]
                  [cljsjs/react-popper "0.10.4-0"]
                  [cljsjs/popperjs "1.14.3-1"]
 
                  [ns-tracker "0.3.1"]
-                 [cljsjs/moment "2.22.2-0"]
+                 [cljsjs/moment "2.22.2-1"]
                  [day8.re-frame/http-fx "0.1.6"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [cljs-ajax "0.7.4"]
