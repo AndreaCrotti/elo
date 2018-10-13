@@ -17,7 +17,6 @@
 
 (defn sign-in-block
   []
-  (js/console.log "hello sign in block")
   [:div.sign-up__block
    (sign-up-button "github")])
 

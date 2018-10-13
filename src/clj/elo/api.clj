@@ -19,6 +19,7 @@
             [ring.middleware.resource :as resources]
             [ring.util.io :as ring-io]
             [ring.util.response :as resp]
+            [ring.util.http-response :as hr]
             [taoensso.timbre :as timbre :refer [log info debug]])
   (:import (java.util UUID)))
 
@@ -210,6 +211,14 @@
 (def handler
   (make-handler routes))
 
+(defn check-token
+  [handler]
+  ;; return 401 if the request is not authenticated properly
+  (fn [request]
+    (if (some? (-> request :session :oauth2/access-tokens :github))
+      (handler request)
+      (hr/unauthorized "Can not access the given request"))))
+
 (defn log-request
   "Simple middleware to log all the requests"
   [handler]
@@ -232,6 +241,7 @@
       wrap-keyword-params
       wrap-json-params
       wrap-json-response
+      check-token
       log-request
       (wrap-oauth2 oauth2-config)))
 

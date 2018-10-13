@@ -37,7 +37,7 @@
    {:authorize-uri "https://github.com/login/oauth/authorize"
     :access-token-uri "https://github.com/login/oauth/access_token"
     :client-id config/github-client-id
-    :client-secret config/github-secret-id
+    :client-secret config/github-client-secret
     :scopes ["user:email"]
     :launch-uri "/oauth2/github"
     :redirect-uri "/api/oauth2/github/callback"
