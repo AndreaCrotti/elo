@@ -1,7 +1,8 @@
 (ns elo.league-list.handlers
-  (:require [re-frame.core :as rf]
-            [ajax.core :as ajax]
-            [elo.common.handlers :as common]))
+  (:require [ajax.core :as ajax]
+            [day8.re-frame.http-fx]
+            [elo.common.handlers :as common]
+            [re-frame.core :as rf]))
 
 ;;TODO: use the path interceptor instead of this
 

@@ -7,6 +7,7 @@
             [elo.league-list.views :as league-list-views]
             [elo.admin.views :as admin-views]
             [elo.admin.handlers :as admin-handlers]
+            [elo.auth :as auth]
             [elo.routes :as routes]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
@@ -64,6 +65,7 @@
   (re-frame/dispatch-sync [::league-list-handlers/initialize-db])
   (re-frame/dispatch-sync [::league-detail-handlers/initialize-db])
   (re-frame/dispatch-sync [::admin-handlers/initialize-db])
+  #_(re-frame/dispatch-sync [::auth/authenticated?])
 
   (dev-setup)
   (accountant/configure-navigation!

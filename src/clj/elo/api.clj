@@ -184,6 +184,11 @@
         (hr/content-type "text/csv")
         (hr/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
 
+#_(defn authenticated?
+  [request]
+  (hr/ok
+   (some? (-> request :session :oauth2/access-tokens :github))))
+
 ;;TODO: add a not found page for everything else?
 (def routes
   ["/" {"api/" {"add-player" add-player!
@@ -198,6 +203,8 @@
                 ;; csv stuff
                 "games-csv" games-csv
                 "rankings-csv" rankings-csv
+
+                ;; "authenticated" authenticated?
 
                 "oauth2/github/callback" github-callback}
 
