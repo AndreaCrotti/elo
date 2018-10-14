@@ -18,7 +18,6 @@
             [ring.middleware.oauth2 :refer [wrap-oauth2]]
             [ring.middleware.resource :as resources]
             [ring.util.io :as ring-io]
-            [ring.util.response :as resp]
             [ring.util.http-response :as hr]
             [taoensso.timbre :as timbre :refer [log info debug]])
   (:import (java.util UUID)))
@@ -31,7 +30,7 @@
 
 (defn- as-json
   [response]
-  (resp/content-type response "application/json"))
+  (hr/content-type response "application/json"))
 
 (defn add-game!
   [{:keys [params]}]
@@ -40,8 +39,8 @@
         game-id (db/add-game! validated)]
 
     (as-json
-     (resp/created "/api/games"
-                   {:id game-id}))))
+     (hr/created "/api/games"
+                 {:id game-id}))))
 
 (defn add-player!
   "Adds a new user to the platform, authenticated with basic Auth"
@@ -53,12 +52,12 @@
           ids (db/add-player-full! validated)]
 
       (as-json
-       (resp/created "/api/players" ids)))))
+       (hr/created "/api/players" ids)))))
 
 (defn- render-page
   [page]
-  (resp/content-type
-   (resp/response
+  (hr/content-type
+   (hr/ok
     (hiccup/html page))
 
    "text/html"))
@@ -76,35 +75,35 @@
   [request]
   (-> (get-league-id request)
       db/load-players
-      resp/response
+      hr/ok
       as-json))
 
 (defn get-games
   [request]
   (-> (get-league-id request)
       db/load-games
-      resp/response
+      hr/ok
       as-json))
 
 (defn get-league
   [request]
   (-> (get-league-id request)
       db/load-league
-      resp/response
+      hr/ok
       as-json))
 
 (defn get-leagues
   [request]
   ;;TODO: should get the company-id as argument ideally
   (-> (db/load-leagues)
-      resp/response
+      hr/ok
       as-json))
 
 (defn get-companies
   [request]
   ;;TODO: should get the company-id as argument ideally
   (-> (db/load-companies)
-      resp/response
+      hr/ok
       as-json))
 
 (defn github-callback
@@ -148,9 +147,9 @@
     (-> {}
         (csv-body games-csv-header
                   (csv-transform games-csv-header games names-mapping))
-        (resp/status 200)
-        (resp/content-type "text/csv")
-        (resp/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
+        (hr/status 200)
+        (hr/content-type "text/csv")
+        (hr/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
 
 (defn rankings-header-rows
   "To make sure that the order is returned correctly we simply sort by
@@ -181,9 +180,9 @@
 
     (-> {}
         (csv-body header csv-rows)
-        (resp/status 200)
-        (resp/content-type "text/csv")
-        (resp/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
+        (hr/status 200)
+        (hr/content-type "text/csv")
+        (hr/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
 
 ;;TODO: add a not found page for everything else?
 (def routes
