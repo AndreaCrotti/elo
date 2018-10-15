@@ -8,12 +8,10 @@
 
 (rf/reg-event-db :failed
                  (fn [db _]
-                   (js/console.log "Db = " db)
                    (common/assoc-in* db page [:failed] true)))
 
 (rf/reg-event-db ::set-authentication
                  (fn [db [_ auth-details]]
-                   (js/console.log "auth details = " auth-details)
                    (common/assoc-in* db page [:auth] auth-details)))
 
 (rf/reg-sub ::authenticated?

@@ -187,7 +187,7 @@
 
 (defn- get-github-token
   [request]
-  (get-in request [:session ::oauth2/access-tokens :github :token]))
+  (get-in request [:oauth2/access-tokens :github :token]))
 
 (defn authenticated?
   [request]
