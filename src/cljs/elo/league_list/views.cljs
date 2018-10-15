@@ -45,4 +45,6 @@
         (do (rf/dispatch [::handlers/load-leagues])
             [:div.league_list__root
              [league-picker]])
-        [sign-in-block]))))
+
+        [:div.auth__root
+         [sign-in-block]]))))

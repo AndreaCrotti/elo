@@ -17,6 +17,12 @@
    [:.language_pick {:font-size "24px"
                      :text-align "center"}]])
 
+(def auth
+  [[:.auth__root {:align-self "center"
+                  :justify-content "center"
+                  :padding-top "50px"
+                  :display "flex"}]])
+
 (def league-detail-page
   [[:.league_detail__root
     {:display "grid"
@@ -84,4 +90,6 @@
 
 (defstyles screen
   ;; could maybe even split creating multiple CSS files?
-  (concat leagues-page league-detail-page))
+  (concat auth
+          leagues-page
+          league-detail-page))
