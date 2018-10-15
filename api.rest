@@ -1,4 +1,4 @@
-:local = http://localhost:3452
+:local = http://localhost:9500
 :staging = http://fifa-elo-staging.herokuapp.com
 :prod = http://fifa-elo.herokuapp.com
 
@@ -33,10 +33,16 @@ GET :prod
 GET :local/oauth2/github
 
 # Fetch directly
-GET http://localhost:3452/api/leagues
+GET :local/api/leagues
 
 # fetch CSV data
 GET :local/api/games-csv?league_id=640246a0-3153-4ae6-963c-75a5047a9e45
 
 # fetch CSV data for the rankings
 GET :local/api/rankings-csv?league_id=640246a0-3153-4ae6-963c-75a5047a9e45
+
+# test the oauth2 callback to see what happens
+GET :local/api/oauth2/github/callback?code=xxx&state=xxx
+
+# check if a user is authenticated already
+GET :local/authenticated

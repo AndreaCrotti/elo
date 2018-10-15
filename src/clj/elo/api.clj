@@ -18,11 +18,14 @@
             [ring.middleware.oauth2 :refer [wrap-oauth2]]
             [ring.middleware.resource :as resources]
             [ring.util.io :as ring-io]
-            [ring.util.response :as resp]
+            [ring.util.http-response :as hr]
+            [ring.middleware.oauth2 :as oauth2]
             [taoensso.timbre :as timbre :refer [log info debug]])
   (:import (java.util UUID)))
 
 (def ^:private default-port 3000)
+
+(def github-token-path [:oauth2/access-tokens :github :token])
 
 (defn- get-port
   []
@@ -30,7 +33,7 @@
 
 (defn- as-json
   [response]
-  (resp/content-type response "application/json"))
+  (hr/content-type response "application/json"))
 
 (defn add-game!
   [{:keys [params]}]
@@ -39,8 +42,8 @@
         game-id (db/add-game! validated)]
 
     (as-json
-     (resp/created "/api/games"
-                   {:id game-id}))))
+     (hr/created "/api/games"
+                 {:id game-id}))))
 
 (defn add-player!
   "Adds a new user to the platform, authenticated with basic Auth"
@@ -52,12 +55,12 @@
           ids (db/add-player-full! validated)]
 
       (as-json
-       (resp/created "/api/players" ids)))))
+       (hr/created "/api/players" ids)))))
 
 (defn- render-page
   [page]
-  (resp/content-type
-   (resp/response
+  (hr/content-type
+   (hr/ok
     (hiccup/html page))
 
    "text/html"))
@@ -75,35 +78,35 @@
   [request]
   (-> (get-league-id request)
       db/load-players
-      resp/response
+      hr/ok
       as-json))
 
 (defn get-games
   [request]
   (-> (get-league-id request)
       db/load-games
-      resp/response
+      hr/ok
       as-json))
 
 (defn get-league
   [request]
   (-> (get-league-id request)
       db/load-league
-      resp/response
+      hr/ok
       as-json))
 
 (defn get-leagues
   [request]
   ;;TODO: should get the company-id as argument ideally
   (-> (db/load-leagues)
-      resp/response
+      hr/ok
       as-json))
 
 (defn get-companies
   [request]
   ;;TODO: should get the company-id as argument ideally
   (-> (db/load-companies)
-      resp/response
+      hr/ok
       as-json))
 
 (defn github-callback
@@ -147,9 +150,9 @@
     (-> {}
         (csv-body games-csv-header
                   (csv-transform games-csv-header games names-mapping))
-        (resp/status 200)
-        (resp/content-type "text/csv")
-        (resp/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
+        (hr/status 200)
+        (hr/content-type "text/csv")
+        (hr/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
 
 (defn rankings-header-rows
   "To make sure that the order is returned correctly we simply sort by
@@ -180,9 +183,20 @@
 
     (-> {}
         (csv-body header csv-rows)
-        (resp/status 200)
-        (resp/content-type "text/csv")
-        (resp/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
+        (hr/status 200)
+        (hr/content-type "text/csv")
+        (hr/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
+
+(defn- get-github-token
+  [request]
+  (get-in request github-token-path))
+
+(defn authenticated?
+  [request]
+  (let [github-token (get-github-token request)]
+    (hr/ok
+     {:authenticated (some? github-token)
+      :token github-token})))
 
 ;;TODO: add a not found page for everything else?
 (def routes
@@ -199,7 +213,11 @@
                 "games-csv" games-csv
                 "rankings-csv" rankings-csv
 
+                "authenticated" authenticated?
+
                 "oauth2/github/callback" github-callback}
+
+        "authenticated" authenticated?
 
         ;; quite a crude way to make sure all the other urls actually
         ;; render to the SPA, letting the routing be handled by
@@ -209,6 +227,16 @@
 
 (def handler
   (make-handler routes))
+
+(defn check-token
+  [handler]
+  ;; return 401 if the request is not authenticated properly
+  (fn [request]
+    (if (or (not (clojure.string/starts-with? (:uri request) "/api"))
+            (some? (get-github-token request)))
+
+      (handler request)
+      (hr/unauthorized "Can not access the given request"))))
 
 (defn log-request
   "Simple middleware to log all the requests"
@@ -232,8 +260,9 @@
       wrap-keyword-params
       wrap-json-params
       wrap-json-response
-      (wrap-oauth2 oauth2-config)
-      log-request))
+      check-token
+      log-request
+      (wrap-oauth2 oauth2-config)))
 
 (defn -main [& args]
   (jetty/run-jetty app {:port (get-port)}))

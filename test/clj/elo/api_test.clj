@@ -12,6 +12,8 @@
 
 (defn- gen-uuid [] (UUID/randomUUID))
 
+(def sample-github-token (str (UUID/randomUUID)))
+
 ;; this league is always present, which makes it easier to write tests using it
 (def sample-company-id (gen-uuid))
 
@@ -34,10 +36,27 @@
   (format "Basic %s" (-> (b64/encode (format "%s:%s" "admin" "password"))
                          (bytes->str))))
 
+(defn authenticated-req
+  [request]
+  (-> request
+      (assoc-in sut/github-token-path sample-github-token)))
+
+(defn read-api-call
+  ([endpoint]
+   (read-api-call endpoint {}))
+
+  ([endpoint args]
+   (-> (mock/request :get endpoint args)
+       authenticated-req
+       sut/app)))
+
 (defn- write-api-call
   [endpoint content]
   (let [full-api-path (str "/api" endpoint)
-        {:keys [status] :as response} (sut/app (mock/request :post full-api-path content))]
+        {:keys [status] :as response}
+        (-> (mock/request :post full-api-path content)
+            authenticated-req
+            sut/app)]
 
     (assert (contains? #{201 401} status), "Invalid status code")
     response))
@@ -64,7 +83,7 @@
                   :played_at "2018-08-29+01:0021:50:32"}
 
           _ (write-api-call "/add-game" sample)
-          games (sut/app (mock/request :get "/api/games" {:league_id sample-league-id}))
+          games (read-api-call "/api/games" {:league_id sample-league-id})
 
           desired {"p1" (str (:player-id p1-id))
                    "p1_points" 3,
@@ -96,16 +115,16 @@
     (testing "Adds a new user with the right user/password"
       (with-redefs [authenticated? (fn [r] true)]
         (let [params {:name "name" :email "email" :league_id sample-league-id}
+              ;;TODO: use the write helper also here
               response (sut/app (mock/header
-                                 (mock/request :post "/api/add-player" params)
+                                 (authenticated-req (mock/request :post "/api/add-player" params))
                                  "Authorization" (make-admin-header)))]
 
           (is (= 201 (:status response))))))))
 
 (deftest get-league-test
   (testing "Get a league by the id"
-    (let [req (mock/request :get "/api/league" {:league_id sample-league-id})
-          response (sut/app req)]
+    (let [response (read-api-call "/api/league" {:league_id sample-league-id})]
 
       (is (= 200 (:status response)))
       (is (= (str sample-league-id)
@@ -115,19 +134,21 @@
 
 (deftest games-csv-test
   (testing "Retrieve list of games"
-    (let [req (mock/request :get "/api/games-csv" {:league_id sample-league-id})
-          response (sut/app req)]
+    (let [response (read-api-call "/api/games-csv" {:league_id sample-league-id})]
 
       (is (= 200 (:status response))))))
 
 (deftest rankings-csv-test
   (testing "Retrieve list of rankings"
-    (let [req (mock/request :get "/api/rankings-csv" {:league_id sample-league-id})
-          response (sut/app req)]
+    (let [response (read-api-call "/api/rankings-csv" {:league_id sample-league-id})]
 
       (is (= 200 (:status response))))))
 
 (deftest auth-test
-  (testing "Creating a new user with github")
-
-  (testing "Logging in with an existing user"))
+  (testing "Should be able to check if a user is already authenticated"
+    (let [response (read-api-call "/authenticated")]
+      (is (= 200 (:status response)))
+      (is (true? (-> response
+                     :body
+                     json/read-str
+                     (get "authenticated")))))))

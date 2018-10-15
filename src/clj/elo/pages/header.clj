@@ -27,6 +27,10 @@
            :integrity "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
            :crossorigin "anonymous"}]
 
+   [:link {:href (cache-buster "/css/bootstrap-social.css")
+           :rel "stylesheet"
+           :type "text/css"}]
+
    [:link {:href (cache-buster "/css/screen.css")
            :rel "stylesheet"
            :type "text/css"}]

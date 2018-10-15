@@ -5,14 +5,26 @@
 (def grid-gap "15px")
 
 (def leagues-page
-  [[:.league__content {:width "80%"
-                       :padding-top "10px"
-                       :padding-left "10px"}]
+  [[:.league_list__root {:display "grid"
+                         :width "80%"
+                         :grid-gap "30px"
+                         :padding-top "10px"
+                         :padding-left "10px"}]
+
+   [:.sign-up__block {:width "200px"
+                      :justify-self "center"}]
+
    [:.language_pick {:font-size "24px"
                      :text-align "center"}]])
 
+(def auth
+  [[:.auth__root {:align-self "center"
+                  :justify-content "center"
+                  :padding-top "50px"
+                  :display "flex"}]])
+
 (def league-detail-page
-  [[:.content
+  [[:.league_detail__root
     {:display "grid"
      :width "90%"
      :padding-left "20px"
@@ -78,4 +90,6 @@
 
 (defstyles screen
   ;; could maybe even split creating multiple CSS files?
-  (concat leagues-page league-detail-page))
+  (concat auth
+          leagues-page
+          league-detail-page))

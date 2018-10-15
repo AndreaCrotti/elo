@@ -1,7 +1,8 @@
 (ns elo.league-list.handlers
-  (:require [re-frame.core :as rf]
-            [ajax.core :as ajax]
-            [elo.common.handlers :as common]))
+  (:require [ajax.core :as ajax]
+            [day8.re-frame.http-fx]
+            [elo.common.handlers :as common]
+            [re-frame.core :as rf]))
 
 ;;TODO: use the path interceptor instead of this
 
@@ -35,3 +36,23 @@
                  (loader page "/api/leagues" ::load-leagues-success))
 
 (rf/reg-sub ::leagues (getter [:leagues]))
+
+(defn auth-success
+  [db [_ provider]]
+  (common/assoc-in* db page
+                    [:authenticatetion]
+                    provider))
+
+(defn oauth2-auth
+  [{:keys [db]} [_ provider]]
+  {:db db
+   :http-xhrio {:method :post
+                :uri (str "/oauth2/" provider)
+                :format (ajax/json-request-format)
+                :response-format (ajax/json-response-format {:keywords? true})
+                :on-success [:auth-success]
+                :on-failure [:failed]}})
+
+(rf/reg-event-fx :oauth2-auth oauth2-auth)
+
+(rf/reg-event-db :auth-success auth-success)
