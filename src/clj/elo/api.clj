@@ -184,10 +184,15 @@
         (hr/content-type "text/csv")
         (hr/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
 
-#_(defn authenticated?
+(def unauthenticated-urls
+  #{"/api/authenticated"})
+
+(defn authenticated?
   [request]
-  (hr/ok
-   (some? (-> request :session :oauth2/access-tokens :github))))
+  (let [github-token (-> request :session :oauth2/access-tokens :github)]
+    (hr/ok
+     {:authenticated (some? github-token)
+      :token github-token})))
 
 ;;TODO: add a not found page for everything else?
 (def routes
@@ -204,7 +209,7 @@
                 "games-csv" games-csv
                 "rankings-csv" rankings-csv
 
-                ;; "authenticated" authenticated?
+                "authenticated" authenticated?
 
                 "oauth2/github/callback" github-callback}
 
@@ -221,7 +226,8 @@
   [handler]
   ;; return 401 if the request is not authenticated properly
   (fn [request]
-    (if (some? (-> request :session :oauth2/access-tokens :github))
+    (if (or (contains? unauthenticated-urls (:uri request))
+            (some? (-> request :session :oauth2/access-tokens :github)))
       (handler request)
       (hr/unauthorized "Can not access the given request"))))
 

@@ -146,6 +146,14 @@
       (is (= 200 (:status response))))))
 
 (deftest auth-test
+  (testing "Should be able to check if a user is already authenticated"
+    (let [response (read-api-call "/api/authenticated")]
+      (is (= 200 (:status response)))
+      (is (false? (-> response
+                      :body
+                      json/read-str
+                      (get "authenticated"))))))
+  
   (testing "Creating a new user with github")
 
   (testing "Logging in with an existing user"))
