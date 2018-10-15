@@ -19,6 +19,7 @@
             [ring.middleware.resource :as resources]
             [ring.util.io :as ring-io]
             [ring.util.http-response :as hr]
+            [ring.middleware.oauth2 :as oauth2]
             [taoensso.timbre :as timbre :refer [log info debug]])
   (:import (java.util UUID)))
 
@@ -184,12 +185,13 @@
         (hr/content-type "text/csv")
         (hr/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
 
-(def unauthenticated-urls
-  #{"/api/authenticated"})
+(defn- get-github-token
+  [request]
+  (get-in request [:session ::oauth2/access-tokens :github :token]))
 
 (defn authenticated?
   [request]
-  (let [github-token (-> request :session :oauth2/access-tokens :github)]
+  (let [github-token (get-github-token request)]
     (hr/ok
      {:authenticated (some? github-token)
       :token github-token})))
@@ -213,6 +215,8 @@
 
                 "oauth2/github/callback" github-callback}
 
+        "authenticated" authenticated?
+
         ;; quite a crude way to make sure all the other urls actually
         ;; render to the SPA, letting the routing be handled by
         ;; accountant
@@ -226,8 +230,9 @@
   [handler]
   ;; return 401 if the request is not authenticated properly
   (fn [request]
-    (if (or (contains? unauthenticated-urls (:uri request))
-            (some? (-> request :session :oauth2/access-tokens :github)))
+    (if (or (not (clojure.string/starts-with? (:uri request) "/api"))
+            (some? (get-github-token request)))
+
       (handler request)
       (hr/unauthorized "Can not access the given request"))))
 

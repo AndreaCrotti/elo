@@ -65,7 +65,7 @@
   (re-frame/dispatch-sync [::league-list-handlers/initialize-db])
   (re-frame/dispatch-sync [::league-detail-handlers/initialize-db])
   (re-frame/dispatch-sync [::admin-handlers/initialize-db])
-  #_(re-frame/dispatch-sync [::auth/authenticated?])
+  (re-frame/dispatch-sync [::auth/authenticated?])
 
   (dev-setup)
   (accountant/configure-navigation!

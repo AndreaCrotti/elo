@@ -6,16 +6,26 @@
 
 (def page ::page-id)
 
+(rf/reg-event-db :failed
+                 (fn [db _]
+                   (js/console.log "Db = " db)
+                   (common/assoc-in* db page [:failed] true)))
+
 (rf/reg-event-db ::set-authentication
-                 (fn [db [_ value]]
-                   (common/assoc-in* db page [:authenticated] value)))
+                 (fn [db [_ auth-details]]
+                   (js/console.log "auth details = " auth-details)
+                   (common/assoc-in* db page [:auth] auth-details)))
+
+(rf/reg-sub ::authenticated?
+            (fn [db _]
+              (common/get-in* db page [:auth :authenticated])))
 
 (defn authenticated?
   [{:keys [db]}]
 
   {:db db
    :http-xhrio {:method :get
-                :uri "/api/is-authenticated"
+                :uri "/authenticated"
                 :format (ajax/json-request-format)
                 :response-format (ajax/json-response-format {:keywords? true})
                 :on-success [::set-authentication]

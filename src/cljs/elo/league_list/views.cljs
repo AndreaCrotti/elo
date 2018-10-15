@@ -1,9 +1,10 @@
 (ns elo.league-list.views
-  (:require [elo.shared-config :as config]
-            [elo.routes :as routes]
+  (:require [accountant.core :as accountant]
+            [elo.auth :as auth]
             [elo.league-list.handlers :as handlers]
+            [elo.routes :as routes]
+            [elo.shared-config :as config]
             [elo.utils :refer [classes]]
-            [accountant.core :as accountant]
             [re-frame.core :as rf]))
 
 (defn sign-up-button
@@ -18,7 +19,7 @@
 (defn sign-in-block
   []
   [:div.sign-up__block
-   (sign-up-button "github")])
+   [sign-up-button "github"]])
 
 (defn league-picker
   []
@@ -38,7 +39,10 @@
 
 (defn root
   []
-  (rf/dispatch [::handlers/load-leagues])
-  [:div.league_list__root
-   [league-picker]
-   [sign-in-block]])
+  (let [authenticated? (rf/subscribe [::auth/authenticated?])]
+    (fn []
+      (if @authenticated?
+        (do (rf/dispatch [::handlers/load-leagues])
+            [:div.league_list__root
+             [league-picker]])
+        [sign-in-block]))))
