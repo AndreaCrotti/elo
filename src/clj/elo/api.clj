@@ -213,8 +213,6 @@
                 "games-csv" games-csv
                 "rankings-csv" rankings-csv
 
-                "authenticated" authenticated?
-
                 "oauth2/github/callback" github-callback}
 
         "authenticated" authenticated?
