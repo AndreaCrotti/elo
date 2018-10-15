@@ -6,3 +6,5 @@
 
 (def github-client-id (:github-client-id env))
 (def github-client-secret (:github-client-secret env))
+
+(def auth-enabled (:auth-enabled env))
