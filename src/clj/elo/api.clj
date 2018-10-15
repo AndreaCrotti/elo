@@ -25,6 +25,8 @@
 
 (def ^:private default-port 3000)
 
+(def github-token-path [:oauth2/access-tokens :github :token])
+
 (defn- get-port
   []
   (Integer. (or (env :port) default-port)))
@@ -187,7 +189,7 @@
 
 (defn- get-github-token
   [request]
-  (get-in request [:oauth2/access-tokens :github :token]))
+  (get-in request github-token-path))
 
 (defn authenticated?
   [request]
