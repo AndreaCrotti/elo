@@ -213,10 +213,9 @@
 
                 ;; csv stuff
                 "games-csv" games-csv
-                "rankings-csv" rankings-csv
+                "rankings-csv" rankings-csv}
 
-                "oauth2/github/callback" github-callback}
-
+        "oauth2/github/callback" github-callback
         "authenticated" authenticated?
 
         ;; quite a crude way to make sure all the other urls actually
