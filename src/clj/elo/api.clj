@@ -112,8 +112,8 @@
 
 (defn github-callback
   [request]
-  {:status 200
-   :body "Correctly Went throught the whole process"})
+  (as-json
+   (hr/ok {:result "Correctly Went throught the whole process"})))
 
 (def games-csv-header
   [:p1
