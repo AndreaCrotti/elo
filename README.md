@@ -31,6 +31,12 @@ You can run database migrations with:
 
     lein migratus migrate
 
+## Contributing
+
+Please see [CONTRIBUTING.md][1].
+
+[1]: https://github.com/AndreaCrotti/elo/blob/master/CONTRIBUTING.md
+
 ## License
 
 Copyright © 2018 Andrea Crotti
