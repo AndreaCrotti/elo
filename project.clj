@@ -104,7 +104,7 @@
              :source-paths ["src/clj" "src/cljc"]
              :prep-tasks [["compile"]
                           ["garden" "once"]
-                          ["cljsbuild" "once" "min"]]
+                          ["with-profile" "dev" "cljsbuild" "once" "min"]]
 
              :omit-source true
              :aot :all
