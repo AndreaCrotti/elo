@@ -44,3 +44,20 @@
             :c 1516.0338330211207,
             :d 1500}
            (sut/compute-rankings games [:a :b :c :d])))))
+
+(deftest rankings-timeseries-test
+  (testing "Given a game and some initial rankings we should get an event timeseries"
+    (let [game ["P1" "P2" 0 0]
+          desired [{:time "2018-10-18T14:15:03.889Z"
+                    :ranking 1500
+                    :game 1
+                    :player "P1"
+                    :result "P1 vs P2 (0 - 0)"}
+
+                   {:time "2018-10-18T14:15:03.889Z"
+                    :ranking 1500
+                    :game 1
+                    :player "P2"
+                    :result "P1 vs P2 (0 - 0)"}]]
+
+      (is (= desired (sut/timeseries game))))))
