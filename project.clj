@@ -96,16 +96,15 @@
 
   :aliases {"test-cljs" ["doo" "phantom" "test" "once"]
             "fig" ["trampoline" "run" "-m" "figwheel.main"]
-            "build" ["trampoline" "run" "-m" "figwheel.main" "-b" "elo"]}
+            "build" ["trampoline" "run" "-m" "figwheel.main" "-b" "elo"]
+            "build-uberjar" ["do"
+                             ["garden" "once"]
+                             ["cljsbuild" "once" "min"]
+                             "uberjar"]}
 
   :profiles
   {:production {:env {:production true}}
-   :uberjar {:hooks []
-             :source-paths ["src/clj" "src/cljc"]
-             :prep-tasks [["compile"]
-                          ["garden" "once"]
-                          ["with-profile" "dev" "cljsbuild" "once" "min"]]
-
+   :uberjar {:source-paths ["src/clj" "src/cljc"]
              :omit-source true
              :aot :all
              :main elo.api}
