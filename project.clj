@@ -32,7 +32,6 @@
                  [org.clojure/test.check "0.9.0"]
                  [junit/junit "4.12"]
 
-                 [org.clojure/clojurescript "1.10.339"]
                  [re-frame "0.10.6"]
                  [org.webjars/font-awesome "5.3.1"]
 
@@ -98,7 +97,7 @@
   :aliases {"test-cljs" ["doo" "phantom" "test" "once"]
             "fig" ["trampoline" "run" "-m" "figwheel.main"]
             "build" ["trampoline" "run" "-m" "figwheel.main" "-b" "elo"]}
-  
+
   :profiles
   {:production {:env {:production true}}
    :uberjar {:hooks []
@@ -118,6 +117,7 @@
               [migratus-lein "0.5.0"]]
 
     :dependencies [[binaryage/devtools "0.9.10"]
+                   [org.clojure/clojurescript "1.10.339"]
                    [cider/piggieback "0.3.9"]
                    [com.bhauman/figwheel-main "0.1.9"]
                    [day8.re-frame/re-frame-10x "0.3.3"]
