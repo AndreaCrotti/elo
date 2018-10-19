@@ -98,7 +98,7 @@
             "fig" ["trampoline" "run" "-m" "figwheel.main"]
             "build" ["trampoline" "run" "-m" "figwheel.main" "-b" "elo"]
             "build-uberjar" ["do"
-                             ["garden" "once"]
+                             ["with-profile" "dev" "garden" "once"]
                              ["with-profile" "dev" "cljsbuild" "once" "min"]
                              "uberjar"]}
 
