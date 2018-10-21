@@ -68,6 +68,11 @@
             (fn [[gs up-to] _]
               (games/summarise (truncate-games gs up-to))))
 
+(rf/reg-sub ::timeseries
+            games-signal
+            (fn [[gs up-to] _]
+              (games/timeseries (truncate-games gs up-to))))
+
 (defn prev-game
   [db _]
   (let [up-to @(rf/subscribe [::up-to-games])
