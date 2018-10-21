@@ -57,13 +57,13 @@
           desired [{:time "2018-10-18T14:15:03.889Z"
                     :ranking 1500.0
                     :game 0
-                    :player "P1"
+                    :player "P2"
                     :result "P1 vs P2: 0 - 0"}
 
                    {:time "2018-10-18T14:15:03.889Z"
                     :ranking 1500.0
                     :game 0
-                    :player "P2"
+                    :player "P1"
                     :result "P1 vs P2: 0 - 0"}]]
 
       (is (= desired (sut/timeseries [game]))))))

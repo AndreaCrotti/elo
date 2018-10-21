@@ -49,7 +49,7 @@
   [players]
   (zipmap players (repeat initial-ranking)))
 
-(defn- extract-players
+(defn extract-players
   [games]
   (vec (set (apply concat
                    (for [[f s] games]

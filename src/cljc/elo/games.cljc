@@ -105,14 +105,17 @@
 
 (defn timeseries
   [games]
-  (flatten
-   (loop [idx 0
-          rankings (elo/initial-rankings ["P1" "P2"])
-          result []]
+  (let [norm-games (map elo/normalize-game games)
+        players (elo/extract-players norm-games)]
 
-     (cond (= idx (count games)) result
-           :else
-           (let [[new-rankings res] (game-expanded rankings idx (nth games idx))]
-             (recur (inc idx)
-                    new-rankings
-                    (conj result res)))))))
+    (flatten
+     (loop [idx 0
+            rankings (elo/initial-rankings players)
+            result []]
+
+       (cond (= idx (count games)) result
+             :else
+             (let [[new-rankings res] (game-expanded rankings idx (nth games idx))]
+               (recur (inc idx)
+                      new-rankings
+                      (conj result res))))))))
