@@ -24,7 +24,11 @@
                   :display "flex"}]])
 
 (def league-detail-page
-  [[:.league_detail__root
+  [[:.vega-visualization
+    {:width "600px"
+     :height "500px"}]
+
+   [:.league_detail__root
     {:display "grid"
      :width "90%"
      :padding-left "20px"

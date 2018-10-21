@@ -1,19 +1,33 @@
 (ns elo.vega
-  (:require [cljsjs.vega :as v]))
+  (:require [cljsjs.vega]))
 
 (def schema-url "https://vega.github.io/schema/vega-lite/v2.json")
 
-(def sample-data
+(defn rankings-vega-definition
+  [values]
   {"$schema" schema-url
-   "data" {"values" [{"a" "C" "b" 2}
-                     {"a" "C" "b" 7}
-                     {"a" "C" "b" 4}]}
-   "mark" "bar"
-   "encoding" {"y" {"field" "a"
-                    "type" "nominal"}
-               "x" {"aggregate" "average"
-                    "field" "b"
-                    "type" "quantitative"
-                    "axis" {"title" "Average of b"}}}})
+   "description" "Rankings over time"
+   "data" {"values" values}
+   "mark" {"type" "line"
+           "point" {"tooltip" {"content" "data"}}}
 
-(v/vegaEmbed "#vega-visualization" sample-data)
+   "encoding" {"y" {"field" "ranking"
+                    "type" "quantitative"}
+
+               "x" {"field" "time"
+                    "type" "temporal"}}})
+
+(def fixed
+  [{"ranking" 1400
+    "time" "2018-01-04T12:05:48.000000000-00:00"}
+
+   {"ranking" 1500
+    "time" "2018-01-04T12:05:48.000000000-00:00"}])
+
+(defn init-vega
+  [json]
+  (js/console.log "passing " (clj->js json)
+                  "to init-vega")
+
+  (js/vegaEmbed "#vega-visualization" (clj->js fixed))
+  #_(js/vegaEmbed "#vega-visualization" (clj->js json)))
