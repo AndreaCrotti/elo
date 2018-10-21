@@ -9,8 +9,8 @@
   (:admin-password env))
 
 (defn authdata
-  []
   "All possible authenticated users"
+  []
   {:admin (admin-password)})
 
 (defn authenticate
