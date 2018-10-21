@@ -18,13 +18,13 @@
   [old expected game]
   (+ old (* k (- game expected))))
 
-(defn new-ratings
-  [ratings [p1 p2 p1-score p2-score]]
+(defn new-rankings
+  [rankings [p1 p2 p1-score p2-score]]
 
-  (let [ra (get ratings p1)
-        rb (get ratings p2)]
+  (let [ra (get rankings p1)
+        rb (get rankings p2)]
 
-    (assoc ratings
+    (assoc rankings
            p1 (new-rating ra
                           (expected (- rb ra))
                           p1-score)
@@ -33,18 +33,18 @@
                           (expected (- ra rb))
                           p2-score))))
 
-(defn update-ratings
-  [ratings games]
+(defn update-rankings
+  [rankings games]
   (if (empty? games)
-    ratings
-    (recur (new-ratings ratings (first games))
+    rankings
+    (recur (new-rankings rankings (first games))
            (rest games))))
 
 (defn initial-rankings
   [players]
   (zipmap players (repeat initial-ranking)))
 
-(defn- extract-players
+(defn extract-players
   [games]
   (vec (set (apply concat
                    (for [[f s] games]
@@ -53,7 +53,7 @@
 (defn compute-rankings
   ([games players]
    {:post [(valid-rankings? (vals %))]}
-   (update-ratings (initial-rankings players)
+   (update-rankings (initial-rankings players)
                    games))
   ([games]
    (compute-rankings games (extract-players games))))
