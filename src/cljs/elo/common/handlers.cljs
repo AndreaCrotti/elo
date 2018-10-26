@@ -29,6 +29,17 @@
   [db]
   (get-in db [:route-params :league-id]))
 
+(defn loader-no-league-id
+  [page uri on-success]
+  (fn [{:keys [db]} _]
+    {:db db
+     :http-xhrio {:method :get
+                  :uri uri
+                  :format (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success [on-success]
+                  :on-failure [:failed]}}))
+
 (defn loader
   [page uri on-success]
   (fn [{:keys [db]} _]
@@ -44,6 +55,9 @@
 (defn writer
   [page uri on-success transform-params-fn]
   (fn [{:keys [db]} _]
+    (js/console.log "Passing params = " (merge (transform-params-fn db)
+                                               {:league_id (get-league-id db)}))
+
     {:db db
      :http-xhrio {:method :post
                   :uri uri
@@ -58,7 +72,6 @@
 (defn failed
   [page]
   (fn [db [_ {:keys [status parse-error] :as req}]]
-    (js/console.log "Failed request " parse-error "req" req)
     (assoc-in* db page
                [:error]
                {:status status
