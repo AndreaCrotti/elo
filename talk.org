@@ -56,10 +56,10 @@ So suppose for example
 A: 1500
 B: 1500
 
-*A vs B (3-0)*
-
 $E\_A =  \frac{1}{1 + 10 ^ \frac{RB - RA}{400}} = \frac{1}{1 + 10 ^ \frac{0}{400}}$
 $E\_A = \frac{1}{2} = 0.5$
+
+*A vs B (3-0)*
 
 $R\_A = 1500 + (K * (1 - E\_A)) = 1500 + (32 * (1 - 0.5)) = 1516$
 $R\_B = 1500 + (K * (1 - E\_B)) = 1500 + (32 * (0 - 0.5)) = 1484$
@@ -72,24 +72,55 @@ B: 1650
 
 $E\_A =  \frac{1}{1 + 10 ^ \frac{RB - RA}{400}} = \frac{1}{1 + 10 ^ \frac{300}{400}}$
 $E\_A = \frac{1}{6.62} = 0.15$
+$E\_B = 1 - E\_A = 0.85$
 
 *Big upset, A winning against B*
 
 $R\_A = 1500 + (K * (1 - E\_A)) = 1500 + (32 * (1 - 0.15))$
 $R\_A = 1527$
 
+$R\_B = 1500 + (K * (1 - E\_B)) = 1500 + (32 * (1 - 0.85))$
+
 *Draw between A and B*
 
 $R\_A = 1500 + (K * (1 - E\_A)) = 1500 + (32 * (0.5 - 0.15))$
 $R\_A = 1511$
 
-* Clojure
+** Minor demo time
 
-- Lisp
-- Data Centric
-- Functional
-- Immutable
-- Hosted on JVM and Javascript
+# TODO: would it make sense to move it before the mathematical
+# formulas explaining how it works?
+
+#+BEGIN_NOTES
+
+Here we can simply go to a brand new league, create two players, and
+record some games, so see how their scores update.
+
+#+END_NOTES
+
+* Clojurescript
+
+#+BEGIN_NOTES
+
+Given you are all part of a Clojure group I probably don't have to go
+much into detail in Clojure.
+
+Clojure is a great language as we all know, but maybe the greatest
+advantage for me at the moment compared to most other languages is
+that we also have Clojurescript, which means you can truly create a
+web-app using *only* Clojure full-stack, using the JVM in the backend
+and compiling Javascript for the frontend.
+
+Clojurescript is maintained by the same guys maintaining Clojure so
+it's not just a random spin-off diverging from the official language,
+but actually given how the release cycle works Clojurescript all the
+updates before Clojure itself does.
+
+#+END_NOTES
+
+* Re-frame
+
+
 
 * One language to rule them all
 
