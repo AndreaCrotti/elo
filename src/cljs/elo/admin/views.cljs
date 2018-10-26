@@ -1,51 +1,47 @@
 (ns elo.admin.views
   (:require [re-frame.core :as rf]
+            [elo.admin.handlers :as handlers]
             [elo.common.views :refer [drop-down]]
             [elo.utils :as utils]))
 
-;; there are two important use cases
-;; 1. add a new user to the system just by email
-;; 2. add an existing player from a company to a given league
-
 (defn add-player-form
   []
-  (let [valid-player? (rf/subscribe [:valid-player?])
-        companies (rf/subscribe [:companies])
-        company (rf/subscribe [:company])
-        player (rf/subscribe [:player])]
+  (let [valid-player? (rf/subscribe [::handlers/valid-player?])
+        player (rf/subscribe [::handlers/player])
+        leagues (rf/subscribe [::handlers/leagues])]
 
-    (js/console.log @companies " and " @company)
-    [:div.form-group.add-player_form
-     [:input.form-control
-      #_[drop-down @companies :company "" #_@company
-         :display-fn :name :value-fn :id]]
+    (fn []
+      [:div.form-group.add-player_form
+       [:div
+        [drop-down @leagues ::handlers/league (:league_id @player)
+         :value-fn :id
+         :display-fn :name]
 
-     [:div
-      [:input.form-control {:type "text"
-                            :value (:name @player)
-                            :name "name"
-                            :placeholder "John Smith"
-                            :on-change (utils/set-val :name)}]
+        [:input.form-control {:type "text"
+                              :value (:name @player)
+                              :name "name"
+                              :placeholder "John Smith"
+                              :on-change (utils/set-val ::handlers/name)}]
 
-      [:input.form-control {:type "text"
-                            :value (:email @player)
-                            :name "email"
-                            :placeholder "john.smith@email.com"
-                            :on-change (utils/set-val :email)}]]
+        [:input.form-control {:type "text"
+                              :value (:email @player)
+                              :name "email"
+                              :placeholder "john.smith@email.com"
+                              :on-change (utils/set-val ::handlers/email)}]]
 
-     [:div
-      [:button {:type "button"
-                :name "submit-game"
-                :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-player? "disabled")])
-                :on-click (if @valid-player?
-                            #(rf/dispatch [:add-player])
-                            #(js/alert "Fill up the form first"))}
+       [:div
+        [:button {:type "button"
+                  :name "submit-game"
+                  :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-player? "disabled")])
+                  :on-click (if @valid-player?
+                              #(rf/dispatch [::handlers/add-player])
+                              #(js/alert "Fill up the form first"))}
 
-       "Register New Player"]]]))
+         "Register New Player"]]])))
 
 (defn root
   []
-  (rf/dispatch [:load-companies])
+  (rf/dispatch [::handlers/load-leagues])
   (fn []
     [:div.admin__page
      [add-player-form]]))
