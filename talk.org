@@ -14,9 +14,11 @@ In this talk I will talk about a project I've been working on in my
 free time, which is an platform to manage leagues with your
 colleagues.
 
-It uses the ELO algorithm to compute the rankings, and it can be
-potentially used for any game, even if we only use it for Fifa at the
-moment internally.
+Being quite competitive by nature, I always enjoyed playing in leagues
+and tournaments, and in various places where I previously worked I saw
+various internal implementations of this same project, where the most
+crazy one was probably done in Excel, which didn't prove to scale very
+well.
 
 To build this platform I'm using Clojure in the backend and
 Clojurescript, with Re-frame in the frontend, and I'll try to give an
