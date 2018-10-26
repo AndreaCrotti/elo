@@ -19,7 +19,7 @@
             [ring.middleware.oauth2 :refer [wrap-oauth2]]
             [ring.middleware.resource :as resources]
             [ring.util.io :as ring-io]
-            [ring.util.http-response :as http-response]
+            [ring.util.http-response :as resp]
             [taoensso.timbre :as timbre :refer [log info debug]])
   (:import (java.util UUID)))
 
@@ -33,7 +33,7 @@
 
 (defn- as-json
   [response]
-  (http-response/content-type response "application/json"))
+  (resp/content-type response "application/json"))
 
 (defn add-game!
   [{:keys [params]}]
@@ -42,8 +42,8 @@
         game-id (db/add-game! validated)]
 
     (as-json
-     (http-response/created "/api/games"
-                            {:id game-id}))))
+     (resp/created "/api/games"
+                   {:id game-id}))))
 
 (defn add-player!
   "Adds a new user to the platform, authenticated with basic Auth"
@@ -55,12 +55,12 @@
           ids (db/add-player-full! validated)]
 
       (as-json
-       (http-response/created "/api/players" ids)))))
+       (resp/created "/api/players" ids)))))
 
 (defn- render-page
   [page]
-  (http-response/content-type
-   (http-response/ok
+  (resp/content-type
+   (resp/ok
     (hiccup/html page))
 
    "text/html"))
@@ -78,41 +78,41 @@
   [request]
   (-> (get-league-id request)
       db/load-players
-      http-response/ok
+      resp/ok
       as-json))
 
 (defn get-games
   [request]
   (-> (get-league-id request)
       db/load-games
-      http-response/ok
+      resp/ok
       as-json))
 
 (defn get-league
   [request]
   (-> (get-league-id request)
       db/load-league
-      http-response/ok
+      resp/ok
       as-json))
 
 (defn get-leagues
   [request]
   ;;TODO: should get the company-id as argument ideally
   (-> (db/load-leagues)
-      http-response/ok
+      resp/ok
       as-json))
 
 (defn get-companies
   [request]
   ;;TODO: should get the company-id as argument ideally
   (-> (db/load-companies)
-      http-response/ok
+      resp/ok
       as-json))
 
 (defn github-callback
   [request]
   (as-json
-   (http-response/ok {:result "Correctly Went throught the whole process"})))
+   (resp/ok {:result "Correctly Went throught the whole process"})))
 
 (def games-csv-header
   [:p1
@@ -150,9 +150,9 @@
     (-> {}
         (csv-body games-csv-header
                   (csv-transform games-csv-header games names-mapping))
-        (http-response/status 200)
-        (http-response/content-type "text/csv")
-        (http-response/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
+        (resp/status 200)
+        (resp/content-type "text/csv")
+        (resp/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
 
 (defn rankings-header-rows
   "To make sure that the order is returned correctly we simply sort by
@@ -183,9 +183,9 @@
 
     (-> {}
         (csv-body header csv-rows)
-        (http-response/status 200)
-        (http-response/content-type "text/csv")
-        (http-response/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
+        (resp/status 200)
+        (resp/content-type "text/csv")
+        (resp/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
 
 (defn- get-github-token
   [request]
@@ -194,7 +194,7 @@
 (defn authenticated?
   [request]
   (let [github-token (get-github-token request)]
-    (http-response/ok
+    (resp/ok
      {:authenticated (or (not config/auth-enabled)
                          (some? github-token))
       :token github-token})))
@@ -235,7 +235,7 @@
             (not config/auth-enabled))
 
       (handler request)
-      (http-response/unauthorized "Can not access the given request"))))
+      (resp/unauthorized "Can not access the given request"))))
 
 (defn log-request
   "Simple middleware to log all the requests"
