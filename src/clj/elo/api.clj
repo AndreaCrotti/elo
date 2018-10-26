@@ -224,7 +224,7 @@
         ;; TODO: this might be a problem for things like the ring oauth
         true spa}])
 
-(def handler
+(def routes-handler
   (make-handler routes))
 
 (defn check-token
@@ -250,7 +250,7 @@
   (assoc-in params [:session :cookie-attrs :same-site] :lax))
 
 (def app
-  (-> handler
+  (-> routes-handler
       (resources/wrap-resource "public")
       (r-def/wrap-defaults
        (enable-cookies r-def/api-defaults))

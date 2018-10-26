@@ -46,6 +46,9 @@
                  [cljsjs/react-onclickoutside "6.7.1-1"]
                  [cljsjs/react-popper "0.10.4-0"]
                  [cljsjs/popperjs "1.14.3-1"]
+                 ;; [metasoarous/oz "1.3.1"]
+                 [cljsjs/vega-lite "2.6.0-0"]
+                 [cljsjs/vega "3.3.1-0"]
 
                  [ns-tracker "0.3.1"]
                  [cljsjs/moment "2.22.2-1"]

@@ -21,13 +21,13 @@
         (= 1 score) 0
         :else score))
 
-(defn new-ratings
-  [ratings [p1 p2 score]]
+(defn new-rankings
+  [rankings [p1 p2 score]]
 
-  (let [ra (get ratings p1)
-        rb (get ratings p2)]
+  (let [ra (get rankings p1)
+        rb (get rankings p2)]
 
-    (assoc ratings
+    (assoc rankings
            p1 (new-rating ra
                           (expected (- rb ra))
                           score)
@@ -38,18 +38,18 @@
 
 ;;TODO: this should return the whole history of the rankings instead
 ;;of simply the last one??
-(defn update-ratings
-  [ratings games]
+(defn update-rankings
+  [rankings games]
   (if (empty? games)
-    ratings
-    (recur (new-ratings ratings (first games))
+    rankings
+    (recur (new-rankings rankings (first games))
            (rest games))))
 
 (defn initial-rankings
   [players]
   (zipmap players (repeat initial-ranking)))
 
-(defn- extract-players
+(defn extract-players
   [games]
   (vec (set (apply concat
                    (for [[f s] games]
@@ -72,7 +72,7 @@
   ([games players]
    ;; this could simply have a bit more leeway to work (2/3% max)
    #_{:post [(valid-rankings? (vals %))]}
-   (update-ratings (initial-rankings players)
+   (update-rankings (initial-rankings players)
                    games))
   ([games]
    (compute-rankings games (extract-players games))))

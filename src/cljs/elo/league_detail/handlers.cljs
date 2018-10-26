@@ -4,6 +4,7 @@
             [elo.common.handlers :as common]
             [elo.games :as games]
             [elo.shared-config :as shared]
+            [elo.vega :as vega]
             [re-frame.core :as rf]))
 
 (def page ::page-id)
@@ -67,6 +68,20 @@
             games-signal
             (fn [[gs up-to] _]
               (games/summarise (truncate-games gs up-to))))
+
+(rf/reg-sub ::timeseries
+            games-signal
+            (fn [[gs up-to] _]
+              (games/timeseries (truncate-games gs up-to))))
+
+(rf/reg-event-fx ::load-graph
+                 (fn [{:keys [db]} _]
+                   (let [ts (rf/subscribe [::timeseries])
+                         json (vega/rankings-vega-definition @ts)]
+
+                     (vega/init-vega json))
+
+                   {:db db}))
 
 (defn prev-game
   [db _]

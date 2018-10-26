@@ -221,6 +221,14 @@
         [:img {:width "100px"
                :src (config/logo (-> league :game_type))}]])]))
 
+(defn vega
+  []
+  (rf/dispatch [::handlers/load-graph])
+  (let [ts (rf/subscribe [::handlers/timeseries])]
+    (fn []
+      (js/console.log @ts)
+      [:div "hello world"])))
+
 (defn root
   []
   (rf/dispatch [::handlers/load-league])
@@ -233,6 +241,7 @@
      [show-error]
      [preamble]
 
+     #_[:div.vega-visualization [vega]]
      [:div.section.players__form_container [game-form]]
      [:div.section.rankings__table [rankings-table]]
      [:div.section.games__table [games-table]]]))

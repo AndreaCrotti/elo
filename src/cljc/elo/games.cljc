@@ -1,5 +1,6 @@
 (ns elo.games
   (:require [elo.algorithms.elo :as elo]
+            [clojure.core.specs.alpha :as s]
             [medley.core :as medley]))
 
 (def default-results (zipmap [:losses :wins :draws] (repeat 0)))
@@ -68,6 +69,9 @@
   [players]
   (into {} (for [p players] {(:id p) (:name p)})))
 
+;;TODO: find a way to normalize the games at the boundaries so we can
+;;more easily always use the same data structure internally
+
 (defn get-rankings
   "Return all the rankings"
   [games players]
@@ -79,3 +83,39 @@
      (sort-by :ranking
               (for [[k v] rankings]
                 {:id k :ranking v :ngames (get ngames k 0)})))))
+
+(defn result-str
+  [game]
+  (str (:p1 game) " vs " (:p2 game) ": "
+       (:p1_points game) " - " (:p2_points game)))
+
+(defn game-expanded
+  "Expand the result of the game call"
+  [rankings idx game]
+  (let [norm-game (elo/normalize-game game)
+        new-rankings (elo/new-rankings rankings norm-game)
+        as-map (map (fn [[k v]] {:player k :ranking v}) new-rankings)]
+
+    [new-rankings
+     (map #(assoc %
+                  :game idx
+                  :result (result-str game)
+                  :time (:played_at game))
+          as-map)]))
+
+(defn timeseries
+  [games]
+  (let [norm-games (map elo/normalize-game games)
+        players (elo/extract-players norm-games)]
+
+    (flatten
+     (loop [idx 0
+            rankings (elo/initial-rankings players)
+            result []]
+
+       (cond (= idx (count games)) result
+             :else
+             (let [[new-rankings res] (game-expanded rankings idx (nth games idx))]
+               (recur (inc idx)
+                      new-rankings
+                      (conj result res))))))))

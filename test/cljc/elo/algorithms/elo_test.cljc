@@ -9,7 +9,7 @@
    [:b :c 0.5 0.5]
    [:a :c 0 1]])
 
-(def initial-ratings
+(def initial-rankings
   (sut/initial-rankings [:a :b :c]))
 
 (deftest new-rating-test
@@ -21,7 +21,7 @@
 (deftest elo-rating-test
   (testing "Should be a zero sum game"
     (let [game [:a :b 0 1]
-          rs (sut/new-ratings {:a 1500 :b 1500} game)]
+          rs (sut/new-rankings {:a 1500 :b 1500} game)]
       (is (== 3000
               (apply + (vals rs))))))
 
@@ -30,8 +30,8 @@
           game-inv [:b :a 0 1]]
 
       (is (= {:a 1516.0, :b 1484.0, :c 1500}
-             (sut/new-ratings initial-ratings game)
-             (sut/new-ratings initial-ratings game-inv))))))
+             (sut/new-rankings initial-rankings game)
+             (sut/new-rankings initial-rankings game-inv))))))
 
 (deftest compute-rankings-test
   (testing "Passing in all the games computes in the right order returns the rankings"
