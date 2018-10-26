@@ -86,6 +86,8 @@ $R\_B = 1500 + (K * (1 - E\_B)) = 1500 + (32 * (1 - 0.85))$
 $R\_A = 1500 + (K * (1 - E\_A)) = 1500 + (32 * (0.5 - 0.15))$
 $R\_A = 1511$
 
+** Elo implementation
+
 ** Minor demo time
 
 # TODO: would it make sense to move it before the mathematical
@@ -120,59 +122,45 @@ updates before Clojure itself does.
 
 * Re-frame
 
+#+BEGIN_NOTES
 
+Another very important piece of the puzzle is Re-Frame, which is a
+great little framework to create SPAs doing Functional Reactive
+Programming for real.
 
-* One language to rule them all
+It uses Reagent underneath which is just a wrapper around react, so
+whenever you create a re-frame app will eventually become a react
+application.
 
-** Clojure -> Javascript
+#+END_NOTES
 
-#+BEGIN_SRC clojure
-
-#+END_SRC
-
-** Clojure -> HTML
-
-#+BEGIN_SRC clojure
-  (defn body
-    []
-    [:html
-     [:body
-      [:div {:id "app"}]
-      [:script {:src "/js/compiled/app.js"}]
-      [:script "elo.core.init();"]]])
-#+END_SRC
-
-** Clojure -> CSS
-
-#+BEGIN_SRC clojure
-  (def leagues-page
-    [[:.league__content {:width "80%"
-                         :padding-top "10px"
-                         :padding-left "10px"}]
-     [:.language_pick {:font-size "24px"
-                       :text-align "center"}]])
-#+END_SRC
-
-#+BEGIN_SRC css
-  .league__content {
-    width: 80%;
-    padding-top: 10px;
-    padding-left: 10px;
-  }
-
-  .language_pick {
-    font-size: 24px;
-    text-align: center;
-  }
-#+END_SRC
-
-* Re-frame
-
-** FRP
-
-**
-
-
-* Putting it all together
+React \arrow Reagent \arrow Re-Frame
 
 * Demo Time
+
+#+BEGIN_NOTES
+
+We are going to do a quick demo now, to show what it means to do full
+stack development with Clojure and re-frame.  So we'll add a simple
+new feature to our platform, simply showing some extra stats in the
+player page.
+
+To do this we'll need:
+
+- one extra reagent component
+- a re-frame subscription
+- more business logic to compute the desired stats
+- a bit of CSS to make it look pretty
+
+#+END_NOTES
+
+* Conclusions
+
+*Frontend development is fun again*
+
+* Tasks
+** TODO add something about CLJC files and how easy is to share business logic across frontend and backend?
+** TODO add the sample ELO implementation code
+** TODO add some graph explaining how re-frame works?
+** TODO think about what can be done in a small demo
+** TODO add some motivation to work on this specific project
