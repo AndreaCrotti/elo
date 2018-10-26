@@ -241,7 +241,7 @@
      [show-error]
      [preamble]
 
-     [:div.vega-visualization [vega]]
+     #_[:div.vega-visualization [vega]]
      [:div.section.players__form_container [game-form]]
      [:div.section.rankings__table [rankings-table]]
      [:div.section.games__table [games-table]]]))
