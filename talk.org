@@ -1,5 +1,5 @@
 #+AUTHOR: Andrea Crotti (@andreacrotti)
-#+TITLE: Full Stack Clojure development
+#+TITLE: An ELO platform with Clojure and Re-Frame
 #+OPTIONS: num:nil toc:nil ^:nil tex:t reveal_progress:t reveal_control:t reveal_overview:t
 #+REVEAL_TRANS: none
 #+REVEAL_SPEED: fast
@@ -7,6 +7,61 @@
 #+TOC: listings
 
 * Introduction
+
+#+BEGIN_NOTES
+
+In this talk I will talk about a project I've been working on in my
+free time, which is an platform to manage leagues with your
+colleagues.
+
+It uses the ELO algorithm to compute the rankings, and it can be
+potentially used for any game, even if we only use it for Fifa at the
+moment internally.
+
+To build this platform I'm using Clojure in the backend and
+Clojurescript, with Re-frame in the frontend, and I'll try to give an
+idea about why it's so great and fun.
+
+#+END_NOTES
+
+* Elo
+
+# TODO: do we need to read the full definition out loud?
+
+#+BEGIN_NOTES
+
+Before going into the Clojure details, I'll just introduce who the ELO algorithm works.
+The Elo rating system is a method for calculating the relative skill level of players in zero-sum games such as Chess.
+To clarify a *zero-sum* game is simply a game where one player wins and another player loses, or they draw.
+Some interesting are social traps, like the prisoner dilemma or other similar things.
+
+So as you can imagine this rating system can be applied to any office
+game like Pool, Table Tennis, Fifa, or any other game you can imagine really.
+
+#+END_NOTES
+
+*The Elo rating system is a method for calculating the relative skill levels of players in zero-sum games such as chess.*
+
+** Elo scores example
+
+#+BEGIN_NOTES
+
+You can compute the new rankings of two players with simply the current rankings and the result of the game.
+Everyone starts from 1500, and overall that will always be the average of all the scores in the league.
+
+So suppose for example
+
+#+END_NOTES
+
+P1: 1500
+P2: 1500
+
+\begin{equation}
+$E\_A =  \frac{1}{1 + {\pow{10}{\frac{RB - RA}{400}}}}$
+$E\_A = \frac{1}{1 + {\pow{10}{\frac{0}{400}}}}$
+$E\_A = 0.5$
+
+\end{equation}
 
 * Clojure
 
@@ -64,20 +119,7 @@
 
 ** FRP
 
-** 
-
-* Elo
-
-*The Elo rating system is a method for calculating the relative skill levels of players in zero-sum games such as chess.*
-
-** Elo scores example
-
-By default:
-- initial value = 1500
-- k = 32
-
-P1: 1500
-P2: 1500
+**
 
 
 * Putting it all together
