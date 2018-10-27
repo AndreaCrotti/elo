@@ -61,7 +61,8 @@
 
 (defn games-signal
   [query-v _]
-  [(rf/subscribe [::games]) (rf/subscribe [::up-to-games])])
+  [(rf/subscribe [::games-live-players])
+   (rf/subscribe [::up-to-games])])
 
 (rf/reg-sub ::results
             games-signal
@@ -90,7 +91,7 @@
 (defn prev-game
   [db _]
   (let [up-to @(rf/subscribe [::up-to-games])
-        games @(rf/subscribe [::games])]
+        games @(rf/subscribe [::games-live-players])]
 
     (if (nil? up-to)
       (common/assoc-in* db page [:up-to-games] (dec (count games)))
@@ -101,7 +102,7 @@
 (defn next-game
   [db _]
   (let [up-to @(rf/subscribe [::up-to-games])
-        games @(rf/subscribe [::games])]
+        games @(rf/subscribe [::games-live-players])]
 
     (if (< up-to (count games))
       (common/update-in* db page [:up-to-games] inc)

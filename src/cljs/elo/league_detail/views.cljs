@@ -185,7 +185,7 @@
                 [:th "form"]
                 [:th "# W/L/D"]]
         up-to-games (rf/subscribe [::handlers/up-to-games])
-        games (rf/subscribe [::handlers/games])
+        games (rf/subscribe [::handlers/games-live-players])
         sorted-rankings @(rf/subscribe [::handlers/rankings])
         non-zero-games (filter #(pos? (:ngames %)) sorted-rankings)
         up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
