@@ -268,6 +268,7 @@
 
      #_[:div.vega-visualization [vega]]
      [:div.section.players__form_container [game-form]]
-     [:div.section.players__alive_container [live-players]]
-     [:div.section.rankings__table [rankings-table]]
+     [:div.rankings__alive
+      [:div.section.players__alive_container [live-players]]
+      [:div.section.rankings__table [rankings-table]]]
      [:div.section.games__table [games-table]]]))

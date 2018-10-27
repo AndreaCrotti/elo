@@ -35,6 +35,8 @@
      :padding-top "30px"
      :grid-gap grid-gap}]
 
+   [:.rankings__alive {:display "flex"}]
+
    [:.players__form_container
     {:width "60%"}]
 
