@@ -42,7 +42,7 @@
 
 (defn- compute-rankings-data
   [query-v _]
-  [(rf/subscribe [::games])
+  [(rf/subscribe [::games-live-players])
    (rf/subscribe [::players])
    (rf/subscribe [::up-to-games])])
 
@@ -275,7 +275,6 @@
 
 (defn change-player-status
   [db uuid action]
-  (js/console.log "Calling change status = " action)
   (let [func (if (= action :kill) conj disj)]
     (common/update-in* db
                        page
