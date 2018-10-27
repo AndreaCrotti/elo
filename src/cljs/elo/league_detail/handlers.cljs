@@ -202,7 +202,20 @@
                keyword)))
 
 (rf/reg-sub ::games (getter [:games]))
+
 (rf/reg-sub ::players (getter [:players]))
+
+(rf/reg-sub ::dead-players (getter [:dead-players]))
+
+(rf/reg-sub ::games-live-players
+            (fn [query-v _]
+              [(rf/subscribe [::games])
+               (rf/subscribe [::players])
+               (rf/subscribe [::dead-players])])
+
+            (fn [[games players dead-players]]
+              (let [inner (fn [field v] (not (contains? dead-players (field v))))]
+                (filter #(and (inner :p1 %) (inner :p2 %)) games))))
 
 (rf/reg-event-db ::initialize-db
                  (fn [db _]

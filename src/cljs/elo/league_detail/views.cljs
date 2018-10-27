@@ -104,7 +104,7 @@
 
 (defn games-table
   []
-  (let [games @(rf/subscribe [::handlers/games])
+  (let [games @(rf/subscribe [::handlers/games-live-players])
         name-mapping @(rf/subscribe [::handlers/name-mapping])
         up-to (rf/subscribe [::handlers/up-to-games])
         first-games (if (some? @up-to)
@@ -198,12 +198,15 @@
       [:thead header]
       (into [:tbody]
             (for [[idx {:keys [id ranking ngames]}] (enumerate non-zero-games)
-                  :let [{:keys [wins losses draws]} (get stats id)]]
+                  :let [{:keys [wins losses draws]} (get stats id)
+                        dead? @(rf/subscribe [::handlers/dead id])]]
               [:tr
                [:td [change-status id]]
                [:td idx]
                [:td (get name-mapping id)]
-               [:td (int ranking)]
+               [:td (if dead?
+                      [:span.fa.fa-skull]
+                      (int ranking))]
                [:td ngames]
                [:td (results-boxes (get results id))]
                [:td (str wins "/" losses "/" draws)]]))]]))
