@@ -17,6 +17,8 @@
             (fn [db _]
               (get-in db [:route-params :league-id])))
 
+;; should I just add a watcher to the reagent db to get the desired checks?
+
 ;;TODO: add some spec validation here
 (def default-game
   {:p1 ""
@@ -30,6 +32,8 @@
 (def default-db
   {:games []
    :players []
+   ;; uuids of players that are marked as dead
+   :dead-players #{}
    :game {}
    :error nil
    :up-to-games nil
@@ -248,3 +252,27 @@
 
 (rf/reg-event-fx ::add-game (common/writer page "/api/add-game"
                                            ::add-game-success game-transform))
+
+(defn dead?
+  [db uuid]
+  (contains? (common/get-in* db page [:dead-players]) uuid))
+
+(rf/reg-sub ::dead
+            (fn [db [_ uuid]] (dead? db uuid)))
+
+(defn change-player-status
+  [db uuid action]
+  (js/console.log "Calling change status = " action)
+  (let [func (if (= action :kill) conj disj)]
+    (common/update-in* db
+                       page
+                       [:dead-players]
+                       #(func % uuid))))
+
+(rf/reg-event-db ::kill-player
+                 (fn [db [_ uuid]]
+                   (change-player-status db uuid :kill)))
+
+(rf/reg-event-db ::resuscitate-player
+                 (fn [db [_ uuid]]
+                   (change-player-status db uuid :resuscitate)))

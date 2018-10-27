@@ -147,12 +147,25 @@
   [results]
   (map-indexed el-result (take-last form-size results)))
 
+(defn change-status
+  [uuid]
+  (let [dead? @(rf/subscribe [::handlers/dead uuid])
+        action (if dead? ::handlers/resuscitate-player ::handlers/kill-player)
+        caption (if dead? "resuscitate!" "kill!")]
+
+    [:button {:type "button"
+              :class "btn btn-secondary"
+              :on-click #(rf/dispatch [action uuid])}
+
+     caption]))
+
 (defn rankings-table
   []
   (let [name-mapping @(rf/subscribe [::handlers/name-mapping])
         results @(rf/subscribe [::handlers/results])
         stats @(rf/subscribe [::handlers/stats])
         header [:tr
+                [:th "dead?"]
                 [:th "position"]
                 [:th "player"]
                 [:th "ranking"]
@@ -187,6 +200,7 @@
             (for [[idx {:keys [id ranking ngames]}] (enumerate non-zero-games)
                   :let [{:keys [wins losses draws]} (get stats id)]]
               [:tr
+               [:td [change-status id]]
                [:td idx]
                [:td (get name-mapping id)]
                [:td (int ranking)]
