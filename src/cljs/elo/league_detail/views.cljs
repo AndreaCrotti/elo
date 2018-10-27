@@ -102,6 +102,31 @@
   ;; without sorting it only works up to 30 !!
   (sort (zipmap (map inc (range (count xs))) xs)))
 
+(defn change-status
+  [uuid]
+  (let [dead? @(rf/subscribe [::handlers/dead uuid])
+        action (if dead? ::handlers/resuscitate-player ::handlers/kill-player)
+        caption (if dead? "resuscitate!" "kill!")]
+
+    [:button {:type "button"
+              :class "btn btn-secondary"
+              :on-click #(rf/dispatch [action uuid])}
+
+     caption]))
+
+(defn live-players
+  []
+  (let [players @(rf/subscribe [::handlers/players])
+        name-mapping @(rf/subscribe [::handlers/name-mapping])]
+
+    [:table.table.table-striped
+     [:thead [:tr [:th "dead?"] [:th "name"]]]
+      (into [:tbody]
+            (for [{:keys [id]} players]
+              [:tr
+               [:td [change-status id]]
+               [:td (get name-mapping id)]]))]))
+
 (defn games-table
   []
   (let [games @(rf/subscribe [::handlers/games-live-players])
@@ -147,25 +172,12 @@
   [results]
   (map-indexed el-result (take-last form-size results)))
 
-(defn change-status
-  [uuid]
-  (let [dead? @(rf/subscribe [::handlers/dead uuid])
-        action (if dead? ::handlers/resuscitate-player ::handlers/kill-player)
-        caption (if dead? "resuscitate!" "kill!")]
-
-    [:button {:type "button"
-              :class "btn btn-secondary"
-              :on-click #(rf/dispatch [action uuid])}
-
-     caption]))
-
 (defn rankings-table
   []
   (let [name-mapping @(rf/subscribe [::handlers/name-mapping])
         results @(rf/subscribe [::handlers/results])
         stats @(rf/subscribe [::handlers/stats])
         header [:tr
-                [:th "dead?"]
                 [:th "position"]
                 [:th "player"]
                 [:th "ranking"]
@@ -198,15 +210,11 @@
       [:thead header]
       (into [:tbody]
             (for [[idx {:keys [id ranking ngames]}] (enumerate non-zero-games)
-                  :let [{:keys [wins losses draws]} (get stats id)
-                        dead? @(rf/subscribe [::handlers/dead id])]]
+                  :let [{:keys [wins losses draws]} (get stats id)]]
               [:tr
-               [:td [change-status id]]
                [:td idx]
                [:td (get name-mapping id)]
-               [:td (if dead?
-                      [:span.fa.fa-skull]
-                      (int ranking))]
+               [:td (int ranking)]
                [:td ngames]
                [:td (results-boxes (get results id))]
                [:td (str wins "/" losses "/" draws)]]))]]))
@@ -260,5 +268,6 @@
 
      #_[:div.vega-visualization [vega]]
      [:div.section.players__form_container [game-form]]
+     [:div.section.players__alive_container [live-players]]
      [:div.section.rankings__table [rankings-table]]
      [:div.section.games__table [games-table]]]))
