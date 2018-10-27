@@ -17,6 +17,8 @@
             (fn [db _]
               (get-in db [:route-params :league-id])))
 
+;; should I just add a watcher to the reagent db to get the desired checks?
+
 ;;TODO: add some spec validation here
 (def default-game
   {:p1 ""
@@ -30,6 +32,8 @@
 (def default-db
   {:games []
    :players []
+   ;; uuids of players that are marked as dead
+   :dead-players #{}
    :game {}
    :error nil
    :up-to-games nil
@@ -38,7 +42,7 @@
 
 (defn- compute-rankings-data
   [query-v _]
-  [(rf/subscribe [::games])
+  [(rf/subscribe [::games-live-players])
    (rf/subscribe [::players])
    (rf/subscribe [::up-to-games])])
 
@@ -198,7 +202,20 @@
                keyword)))
 
 (rf/reg-sub ::games (getter [:games]))
+
 (rf/reg-sub ::players (getter [:players]))
+
+(rf/reg-sub ::dead-players (getter [:dead-players]))
+
+(rf/reg-sub ::games-live-players
+            (fn [query-v _]
+              [(rf/subscribe [::games])
+               (rf/subscribe [::players])
+               (rf/subscribe [::dead-players])])
+
+            (fn [[games players dead-players]]
+              (let [inner (fn [field v] (not (contains? dead-players (field v))))]
+                (filter #(and (inner :p1 %) (inner :p2 %)) games))))
 
 (rf/reg-event-db ::initialize-db
                  (fn [db _]
@@ -248,3 +265,26 @@
 
 (rf/reg-event-fx ::add-game (common/writer page "/api/add-game"
                                            ::add-game-success game-transform))
+
+(defn dead?
+  [db uuid]
+  (contains? (common/get-in* db page [:dead-players]) uuid))
+
+(rf/reg-sub ::dead
+            (fn [db [_ uuid]] (dead? db uuid)))
+
+(defn change-player-status
+  [db uuid action]
+  (let [func (if (= action :kill) conj disj)]
+    (common/update-in* db
+                       page
+                       [:dead-players]
+                       #(func % uuid))))
+
+(rf/reg-event-db ::kill-player
+                 (fn [db [_ uuid]]
+                   (change-player-status db uuid :kill)))
+
+(rf/reg-event-db ::resuscitate-player
+                 (fn [db [_ uuid]]
+                   (change-player-status db uuid :resuscitate)))
