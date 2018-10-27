@@ -116,16 +116,14 @@
 
 (defn live-players
   []
-  (let [players @(rf/subscribe [::handlers/players])
-        name-mapping @(rf/subscribe [::handlers/name-mapping])]
-
+  (let [players @(rf/subscribe [::handlers/players])]
     [:table.table.table-striped
      [:thead [:tr [:th "dead?"] [:th "name"]]]
       (into [:tbody]
-            (for [{:keys [id]} players]
+            (for [{:keys [id name]} (sort-by :name players)]
               [:tr
                [:td [change-status id]]
-               [:td (get name-mapping id)]]))]))
+               [:td name]]))]))
 
 (defn games-table
   []
