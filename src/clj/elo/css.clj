@@ -33,6 +33,12 @@
     {:width "600px"
      :height "500px"}]
 
+   ;; [:input {:display "block"}]
+   [:label {:display "block"}]
+
+   [:select {:background-color "white"
+             :border-size "2px"}]
+
    [:.league_detail__root
     {:width "90%"
      :padding-left "20px"
