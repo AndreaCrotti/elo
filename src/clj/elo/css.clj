@@ -37,6 +37,11 @@
 
    [:.rankings__alive {:display "flex"}]
 
+   [:.change__status
+    {:padding-right "5px"
+     :padding-left "5px"
+     :margin-right "8px"}]
+
    [:.players__form_container
     {:width "60%"}]
 
