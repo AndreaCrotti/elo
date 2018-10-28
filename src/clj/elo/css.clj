@@ -14,10 +14,10 @@
                          :width "80%"
                          :grid-gap "30px"
                          :padding-top "10px"
-                         :padding-left "10px"}]
+                         :padding-left "10px"}
 
-   [:.sign-up__block {:width "200px"
-                      :justify-self "center"}]
+    [:.sign-up__block {:width "200px"
+                       :justify-self "center"}]]
 
    [:.language_pick {:font-size "24px"
                      :text-align "center"}]])
@@ -34,11 +34,9 @@
      :height "500px"}]
 
    [:.league_detail__root
-    {:display "grid"
-     :width "90%"
+    {:width "90%"
      :padding-left "20px"
-     :padding-top "30px"
-     :grid-gap grid-gap}]
+     :padding-top "30px"}]
 
    [:.rankings__alive {:display "flex"}]
 
@@ -70,12 +68,6 @@
    [:.result__l
     {:background-color "red"}]
 
-   [:.fork-me
-    {:position "absolute"
-     :top 0
-     :right 0
-     :border 0}]
-
    [:th {:text-transform "uppercase"}]
    [:.fas {:font-size "20px"
            :cursor "pointer"}]
@@ -84,6 +76,11 @@
                            :padding-left "5px"
                            :padding-right "5px"
                            :background-color "#DDDDDD"}]
+
+   [:.navbar__container
+    {:display "flex"
+     :justify-content "space-between"
+     :width "80%"}]
 
    [:.add-player_form
     {:display "grid"
@@ -99,6 +96,19 @@
 
    [:.section {:padding "10px"
                :box-shadow "-1px 1px 2px 2px rgba(0,0,0,0.2)"}]])
+
+;;TODO: add some media wrapping with media magic
+;;and flexbox
+;; @media all and (max-width: 600px) {
+  
+;;   .container {
+;;     flex-wrap: wrap;
+;;   }
+  
+;;   .container > li {
+;;     flex-basis: 50%;
+;;   }
+;; }
 
 (defstyles screen
   ;; could maybe even split creating multiple CSS files?

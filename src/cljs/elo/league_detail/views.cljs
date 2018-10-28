@@ -216,12 +216,6 @@
                [:td (results-boxes (get results id))]
                [:td (str wins "/" losses "/" draws)]]))]]))
 
-(defn github-fork-me
-  []
-  [:a {:href "https://github.com/AndreaCrotti/elo"}
-   [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
-                  :alt "Fork me on Github"}]])
-
 (defn show-error
   []
   (let [error @(rf/subscribe [::handlers/error])]
@@ -229,19 +223,6 @@
       [:div.section.alert.alert-danger
        [:pre (:status-text error)]
        [:pre (:original-text error)]])))
-
-(defn preamble
-  []
-  (let [league @(rf/subscribe [::handlers/league])]
-    [:div.preamble
-     [:img {:src "/logos/home.png"
-            :width "50px"
-            :on-click #(accountant/navigate! (routes/path-for :league-list))}]
-
-     (when (some? (:game_type league))
-       [:span.league__logo
-        [:img {:width "100px"
-               :src (config/logo (-> league :game_type))}]])]))
 
 (defn vega
   []
@@ -251,6 +232,18 @@
       (js/console.log @ts)
       [:div "hello world"])))
 
+(defn navbar
+  []
+  (let [league @(rf/subscribe [::handlers/league])]
+    [:span.navbar__container
+     [:a.navbar__home
+      {:href "#"
+       :on-click #(accountant/navigate! (routes/path-for :league-list))}
+      "Home"]
+     [:p.navbar__game_type (:game_type league)]
+     [:a.navbar__fork_me {:href "http://github.com/AndreaCrotti/elo"}
+      "Fork Me"]]))
+
 (defn root
   []
   (rf/dispatch [::handlers/load-league])
@@ -259,10 +252,9 @@
 
   (fn []
     [:div.league_detail__root
-     [github-fork-me]
+     [navbar]
      [show-error]
-     [preamble]
-
+     
      #_[:div.vega-visualization [vega]]
      [:div.section.players__form_container [game-form]]
      [:div.rankings__alive
