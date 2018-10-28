@@ -144,7 +144,6 @@
                 [:th "played At"]]]
 
     [:div
-     [:h3 "List of Games"]
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
@@ -189,7 +188,6 @@
         up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
 
     [:div
-     [:h3 "Players Rankings"]
      [:div
       [:span.rankings-slider
        [:input.up-to-range-slider {:type "range"
