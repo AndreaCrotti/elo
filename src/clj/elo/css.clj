@@ -86,13 +86,9 @@
      :padding-left "15px"
      :grid-gap internal-grid-gap}]
 
-   [:.game_form
-    {:display "grid"
-     :width "80%"
-     :padding-left "15px"
-     :grid-gap internal-grid-gap
-     :grid-template-rows "auto auto auto auto"
-     :grid-template-columns "auto auto"}]
+   [:.form__row
+    {:display "flex"
+     :flex-wrap "wrap"}]
 
    [:label {:padding-right "30px"}]
 

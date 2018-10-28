@@ -53,42 +53,38 @@
         ;; the one that was already selected
         sorted-players (sort-by :name @players)]
 
-    [:div.form-group.game_form {:on-submit (fn [] false)}
-     [:div
+    [:div.form-group.game__form {:on-submit (fn [] false)}
+     [:div.form__row
       [:label {:for "p1_name"} "Player 1"]
-      [drop-down-players sorted-players ::handlers/p1 (:p1 @game)]]
+      [drop-down-players sorted-players ::handlers/p1 (:p1 @game)]
 
-     [:div
       [:label {:for "p2_name"} "Player 2"]
       [drop-down-players sorted-players ::handlers/p2 (:p2 @game)]]
 
-     [:div
+     [:div.form__row
       [:label {:for "p1_points"} (str "# " (translate :points))]
-      [drop-down points-range ::handlers/p1_points (:p1_points @game)]]
+      [drop-down points-range ::handlers/p1_points (:p1_points @game)]
 
-     [:div
       [:label {:for "p2_points"} (str "# " (translate :points))]
       [drop-down points-range ::handlers/p2_points (:p2_points @game)]]
 
-     [:div
+     [:div.form__row
       [:label (translate :using)]
       [:input.form-control {:type "text"
                             :placeholder (str (translate :using) " Name")
                             :value (:p1_using @game)
-                            :on-change (utils/set-val ::handlers/p1_using)}]]
+                            :on-change (utils/set-val ::handlers/p1_using)}]
 
-     [:div
       [:label (translate :using)]
       [:input.form-control {:type "text"
                             :placeholder (str (translate :using) " Name")
                             :value (:p2_using @game)
                             :on-change (utils/set-val ::handlers/p2_using)}]]
 
-     [:div
+     [:div.form__row
       [:label "Played at"]
-      [date-range-picker]]
+      [date-range-picker]
 
-     [:div
       [:button {:type "button"
                 :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-game? "disabled")])
                 :on-click (if @valid-game?
