@@ -25,6 +25,7 @@
                  react-key
                  min-date
                  max-date]}]
+
       [:div.date-range-input__side {:key react-key
                                     :class class}
        (js/React.createElement

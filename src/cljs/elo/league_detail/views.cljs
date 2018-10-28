@@ -62,28 +62,28 @@
       [drop-down-players sorted-players ::handlers/p2 (:p2 @game)]]
 
      [:div.form__row
-      [:label {:for "p1_points"} (str "# " (translate :points))]
+      [:label {:for "p1_points"} (str "Player 1 " (translate :points) " #")]
       [drop-down points-range ::handlers/p1_points (:p1_points @game)]
 
-      [:label {:for "p2_points"} (str "# " (translate :points))]
+      [:label {:for "p2_points"} (str "Player 2 " (translate :points) " #")]
       [drop-down points-range ::handlers/p2_points (:p2_points @game)]]
 
      [:div.form__row
-      [:label {:for "p1_using"} (str (translate :using) " 1")]
+      [:label {:for "p1_using"} (str "Player 1 " (translate :using))]
       [:input.form-control {:type "text"
                             :placeholder (str (translate :using) " Name")
                             :value (:p1_using @game)
                             :on-change (utils/set-val ::handlers/p1_using)}]
 
-      [:label {:for "p2_using"} (str (translate :using) " 2")]
+      [:label {:for "p2_using"} (str "Player 2 " (translate :using))]
       [:input.form-control {:type "text"
                             :placeholder (str (translate :using) " Name")
                             :value (:p2_using @game)
                             :on-change (utils/set-val ::handlers/p2_using)}]]
 
      [:div.form__row
-      [date-range-picker]
-
+      [:label {:for "played_at"} "Played at"]
+      [:div.played_at [date-range-picker]]
       [:button {:type "button"
                 :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-game? "disabled")])
                 :on-click (if @valid-game?

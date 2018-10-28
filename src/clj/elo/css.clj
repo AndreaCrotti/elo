@@ -45,12 +45,6 @@
      :padding-left "5px"
      :margin-right "8px"}]
 
-   [:.players__form_container
-    {:width "60%"}]
-
-   [:.rankings__table
-    {:width "75%"}]
-
    [:.result__element
     {:color "white"
      :margin "2px"
@@ -81,12 +75,6 @@
     {:display "flex"
      :justify-content "space-between"
      :width "80%"}]
-
-   [:.add-player_form
-    {:display "grid"
-     :width "70%"
-     :padding-left "15px"
-     :grid-gap internal-grid-gap}]
 
    [:.form__row
     {:display "flex"
