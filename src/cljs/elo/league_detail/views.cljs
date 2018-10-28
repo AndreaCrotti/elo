@@ -53,7 +53,7 @@
         ;; the one that was already selected
         sorted-players (sort-by :name @players)]
 
-    [:div.form-group.game__form {:on-submit (fn [] false)}
+    [:div.game__form {:on-submit (fn [] false)}
      [:div.form__row
       [:label {:for "p1_name"} "Player 1"]
       [drop-down-players sorted-players ::handlers/p1 (:p1 @game)]
@@ -69,20 +69,19 @@
       [drop-down points-range ::handlers/p2_points (:p2_points @game)]]
 
      [:div.form__row
-      [:label (translate :using)]
+      [:label {:for "p1_using"} (str (translate :using) " 1")]
       [:input.form-control {:type "text"
                             :placeholder (str (translate :using) " Name")
                             :value (:p1_using @game)
                             :on-change (utils/set-val ::handlers/p1_using)}]
 
-      [:label (translate :using)]
+      [:label {:for "p2_using"} (str (translate :using) " 2")]
       [:input.form-control {:type "text"
                             :placeholder (str (translate :using) " Name")
                             :value (:p2_using @game)
                             :on-change (utils/set-val ::handlers/p2_using)}]]
 
      [:div.form__row
-      [:label "Played at"]
       [date-range-picker]
 
       [:button {:type "button"

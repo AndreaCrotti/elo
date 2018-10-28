@@ -11,7 +11,7 @@
         leagues (rf/subscribe [::handlers/leagues])]
 
     (fn []
-      [:div.form-group.add-player_form
+      [:div.add-player_form
        [:div
         [drop-down @leagues ::handlers/league (:league_id @player)
          :value-fn :id

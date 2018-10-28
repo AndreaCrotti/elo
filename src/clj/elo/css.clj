@@ -4,6 +4,11 @@
 (def internal-grid-gap "10px")
 (def grid-gap "15px")
 
+(def color-palette
+  {:aggressive {:main "#FF4136"
+                :secondary "#001f3f"
+                :third "#85144b"}})
+
 (def leagues-page
   [[:.league_list__root {:display "grid"
                          :width "80%"
