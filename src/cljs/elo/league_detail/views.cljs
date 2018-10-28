@@ -54,32 +54,23 @@
         sorted-players (sort-by :name @players)]
 
     [:div.game__form {:on-submit (fn [] false)}
+     [:h3 "Player 1"]
      [:div.form__row
-      [:label {:for "p1_name"} "Player 1"]
       [drop-down-players sorted-players ::handlers/p1 (:p1 @game)]
-
-      [:label {:for "p2_name"} "Player 2"]
-      [drop-down-players sorted-players ::handlers/p2 (:p2 @game)]]
-
-     [:div.form__row
-      [:label {:for "p1_points"} (str "Player 1 " (translate :points) " #")]
       [drop-down points-range ::handlers/p1_points (:p1_points @game)]
+      [:input {:type "text"
+               :placeholder (str (translate :using) " Name")
+               :value (:p1_using @game)
+               :on-change (utils/set-val ::handlers/p1_using)}]]
 
-      [:label {:for "p2_points"} (str "Player 2 " (translate :points) " #")]
-      [drop-down points-range ::handlers/p2_points (:p2_points @game)]]
-
+     [:h3 "Player 2"]
      [:div.form__row
-      [:label {:for "p1_using"} (str "Player 1 " (translate :using))]
-      [:input.form-control {:type "text"
-                            :placeholder (str (translate :using) " Name")
-                            :value (:p1_using @game)
-                            :on-change (utils/set-val ::handlers/p1_using)}]
-
-      [:label {:for "p2_using"} (str "Player 2 " (translate :using))]
-      [:input.form-control {:type "text"
-                            :placeholder (str (translate :using) " Name")
-                            :value (:p2_using @game)
-                            :on-change (utils/set-val ::handlers/p2_using)}]]
+      [drop-down-players sorted-players ::handlers/p2 (:p2 @game)]
+      [drop-down points-range ::handlers/p2_points (:p2_points @game)]
+      [:input {:type "text"
+               :placeholder (str (translate :using) " Name")
+               :value (:p2_using @game)
+               :on-change (utils/set-val ::handlers/p2_using)}]]
 
      [:div.form__row
       [:label {:for "played_at"} "Played at"]

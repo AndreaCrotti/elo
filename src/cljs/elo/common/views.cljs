@@ -6,9 +6,12 @@
                               :or {value-fn identity
                                    display-fn identity}}]
 
-  (into [:select.form-control
+  (into [:select
          {:on-change (utils/set-val dispatch-key) :value (or value "")}]
 
-        (cons [:option ""]
+        (cons [:option "select your option"
+               #_{:disabled true
+                :value "Select your option"
+                :selected true}]
               (for [o opts]
                 [:option {:value (value-fn o)} (display-fn o)]))))

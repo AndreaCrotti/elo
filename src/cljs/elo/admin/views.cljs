@@ -17,17 +17,17 @@
          :value-fn :id
          :display-fn :name]
 
-        [:input.form-control {:type "text"
-                              :value (:name @player)
-                              :name "name"
-                              :placeholder "John Smith"
-                              :on-change (utils/set-val ::handlers/name)}]
+        [:input {:type "text"
+                 :value (:name @player)
+                 :name "name"
+                 :placeholder "John Smith"
+                 :on-change (utils/set-val ::handlers/name)}]
 
-        [:input.form-control {:type "text"
-                              :value (:email @player)
-                              :name "email"
-                              :placeholder "john.smith@email.com"
-                              :on-change (utils/set-val ::handlers/email)}]]
+        [:input {:type "text"
+                 :value (:email @player)
+                 :name "email"
+                 :placeholder "john.smith@email.com"
+                 :on-change (utils/set-val ::handlers/email)}]]
 
        [:div
         [:button {:type "button"
