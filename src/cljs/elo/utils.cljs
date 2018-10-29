@@ -9,5 +9,8 @@
                  (filter some? cls))))
 
 (defn set-val
-  [handler-key]
-  #(rf/dispatch [handler-key (-> % .-target .-value)]))
+  ([handler-key transform-fn]
+   #(rf/dispatch [handler-key (-> % .-target .-value transform-fn)]))
+
+  ([handler-key]
+   (set-val handler-key identity)))
