@@ -23,6 +23,7 @@
                  [ring-oauth2 "0.1.4"]
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-mock "0.3.2"]
+                 [ring-cljsjs "0.1.0"]
 
                  [garden "1.3.6"]
                  [buddy "2.0.0"]
