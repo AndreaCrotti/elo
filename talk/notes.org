@@ -26,7 +26,7 @@ idea about why it's so great and fun.
 
 #+END_NOTES
 
-* Competitivity
+* Play
 
 #+BEGIN_NOTES
 
@@ -37,13 +37,19 @@ a moment from that nasty problem you are debugging.
 However of course playing is even more fun if you make it a proper
 competition, with a proper league and such.
 
+I've had internal leagues for table tennis and similar office sports
+in various companies, where the tracking tool was sometimes just an
+extremely complicated spreadsheet, and since there wasn't nothing here
+at funding circle currently I just decided to build a new tool.
+
 #+END_NOTES
 
-  :PROPERTIES:
-  :reveal_background: ./competitivekid.jpg
-  :reveal_background_trans: slide
-  :reveal_background_size: 800px
-  :END:
+#+BEGIN_QUOTE
+All work and no play makes
+Jack a dull boy
+#+END_QUOTE
+
+[[./competitivekid.jpg]]
 
 * Elo
 
