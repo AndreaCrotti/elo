@@ -26,6 +26,25 @@ idea about why it's so great and fun.
 
 #+END_NOTES
 
+* Competitivity
+
+#+BEGIN_NOTES
+
+Playing with your colleagues is a great way to have fun at work, bond
+on a more personal level with your collegues, and relax your brain for
+a moment from that nasty problem you are debugging.
+
+However of course playing is even more fun if you make it a proper
+competition, with a proper league and such.
+
+#+END_NOTES
+
+  :PROPERTIES:
+  :reveal_background: ./competitivekid.jpg
+  :reveal_background_trans: slide
+  :reveal_background_size: 800px
+  :END:
+
 * Elo
 
 # TODO: do we need to read the full definition out loud?
@@ -166,3 +185,6 @@ To do this we'll need:
 ** TODO add some graph explaining how re-frame works?
 ** TODO think about what can be done in a small demo
 ** TODO add some motivation to work on this specific project
+
+* References
+- http://doctoranddad.com/kid-becoming-competitive/
