@@ -191,17 +191,17 @@
         up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
 
     [:div
-     [:div
-      [:span.rankings-slider
-       [:input.up-to-range-slider {:type "range"
-                                   :min 0
-                                   :max (count @games)
-                                   :value up-to-current
-                                   :class "slider"
-                                   :on-change (utils/set-val ::handlers/up-to-games
-                                                             js/parseInt)}]]
+     [:div.form-group
+      [:input.form-control.up-to-range-slider
+       {:type "range"
+        :min 0
+        :max (count @games)
+        :value up-to-current
+        :class "slider"
+        :on-change (utils/set-val ::handlers/up-to-games
+                                  js/parseInt)}]
 
-      [:span.rankings-chevrons
+      [:span.rankings-chevrons.form-control
        [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
        [:span.up-to-current-games up-to-current]
        [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]

@@ -60,8 +60,14 @@
      :margin "2px"
      :font-weight :bolder}]
 
-   [:.rankings-slider
-    {:padding "20px"}]
+   [:.up-to-range-slider
+    {:height "15px"
+     :border-radius "5px"
+     :background (-> color-palette :aggressive :third)
+     :outline "none"
+     :opacity "0.6"
+     :-webkit-transition ".2s"
+     :transition "opacity .2s"}]
 
    [:.result__w
     {:background-color "green"}]
