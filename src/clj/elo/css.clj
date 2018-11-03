@@ -37,16 +37,12 @@
     {:width "600px"
      :height "500px"}]
 
-   [:h2 {:font-family (:monoton font-families)}]
-   [:label {:display "block"}]
+   #_[:body {:background-color (-> color-palette :aggressive :third)
+           :color "white"}]
 
-   [:select {:background-color "white"
-             :border-size "2px"}]
-
-   [:.league_detail__root
-    {:width "90%"
-     :padding-left "20px"
-     :padding-top "30px"}]
+   [:.section {:max-width "1000px"
+               :width "500px"
+               :margin "0 30"}]
 
    [:.rankings__alive {:display "flex"}]
 
@@ -99,7 +95,8 @@
    [:label {:padding-right "30px"}]
 
    [:.section {:padding "10px"
-               :box-shadow "-1px 1px 2px 2px rgba(0,0,0,0.2)"}]])
+               ;; :box-shadow "-1px 1px 2px 2px rgba(0,0,0,0.2)"
+               }]])
 
 ;;TODO: add some media wrapping with media magic
 ;;and flexbox
