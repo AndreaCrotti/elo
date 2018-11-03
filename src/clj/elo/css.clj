@@ -4,6 +4,10 @@
 (def internal-grid-gap "10px")
 (def grid-gap "15px")
 
+(def font-families
+  {:lilita "'Lilita One', cursive"
+   :monoton "'Monoton', cursive"})
+
 (def color-palette
   {:aggressive {:main "#FF4136"
                 :secondary "#001f3f"
@@ -33,7 +37,7 @@
     {:width "600px"
      :height "500px"}]
 
-   ;; [:input {:display "block"}]
+   [:h2 {:font-family (:monoton font-families)}]
    [:label {:display "block"}]
 
    [:select {:background-color "white"

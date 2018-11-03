@@ -11,7 +11,6 @@
          {:on-change (utils/set-val dispatch-key) :value (or value "")}]
 
         (cons [:option {:disabled true
-                        :selected false
                         :value caption}
                caption]
               (for [o opts]

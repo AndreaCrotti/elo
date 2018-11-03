@@ -3,12 +3,24 @@
             [elo.pages.utils :refer [cache-buster]]
             [elo.pages.common :refer [adsense-js ga-js]]))
 
+(defn- google-font
+  [font-name]
+  [:link {:rel "stylesheet"
+          :href (format "//fonts.googleapis.com/css?family=%s" font-name)}])
+
+(def fonts
+  {:titles "Monoton"
+   :smaller-titles "Lilita+One"})
+
 (defn gen-header
   [title]
   [:head [:meta {:charset "utf-8"
                  :description "FIFA championship little helper"}]
 
    [:title title]
+
+   (google-font (:titles fonts))
+   (google-font (:smaller-titles fonts))
 
    ;; should we get different packages?
    [:link {:rel "stylesheet"
