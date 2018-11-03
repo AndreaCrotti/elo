@@ -54,40 +54,44 @@
         sorted-players (sort-by :name @players)]
 
     [:div.game__form {:on-submit (fn [] false)}
-     [:h3 "Player 1"]
-     [:div.form__row
-      [drop-down-players sorted-players ::handlers/p1 (:p1 @game)
-       {:caption "Name"}]
+     [:div.form-group.player1__group
+      [:h3 "Player 1"]
+      [:div.form__row.form-control
+       [drop-down-players sorted-players ::handlers/p1 (:p1 @game)
+        {:caption "Name"}]
 
-      [drop-down points-range ::handlers/p1_points (:p1_points @game)
-       {:caption (translate :points)}]
+       [drop-down points-range ::handlers/p1_points (:p1_points @game)
+        {:caption (translate :points)}]
 
-      [:input {:type "text"
-               :placeholder (str (translate :using) " Name")
-               :value (:p1_using @game)
-               :on-change (utils/set-val ::handlers/p1_using)}]]
+       [:input.form-control
+        {:type "text"
+         :placeholder (str (translate :using) " Name")
+         :value (:p1_using @game)
+         :on-change (utils/set-val ::handlers/p1_using)}]]]
 
-     [:h3 "Player 2"]
-     [:div.form__row
-      [drop-down-players sorted-players ::handlers/p2 (:p2 @game)
-       {:caption "Name"}]
+     [:div.form-group.player2__group
+      [:h3 "Player 2"]
+      [:div.form__row.form-control
+       [drop-down-players sorted-players ::handlers/p2 (:p2 @game)
+        {:caption "Name"}]
 
-      [drop-down points-range ::handlers/p2_points (:p2_points @game)
-       {:caption (translate :points)}]
+       [drop-down points-range ::handlers/p2_points (:p2_points @game)
+        {:caption (translate :points)}]
 
-      [:input {:type "text"
-               :placeholder (str (translate :using) " Name")
-               :value (:p2_using @game)
-               :on-change (utils/set-val ::handlers/p2_using)}]]
+       [:input.form-control {:type "text"
+                             :placeholder (str (translate :using) " Name")
+                             :value (:p2_using @game)
+                             :on-change (utils/set-val ::handlers/p2_using)}]]]
 
-     [:div.form__row
+     [:div.form__row.form-group
       [:label {:for "played_at"} "Played at"]
-      [:div.played_at [date-range-picker]]
-      [:button {:type "button"
-                :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-game? "disabled")])
-                :on-click (if @valid-game?
-                            #(rf/dispatch [::handlers/add-game])
-                            #(js/alert "Invalid results or incomplete form"))}
+      [:div.form-control {:id "played_at"} [date-range-picker]]]
+     [:div.form__row.form-group
+      [:button.form-control {:type "button"
+                             :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-game? "disabled")])
+                             :on-click (if @valid-game?
+                                         #(rf/dispatch [::handlers/add-game])
+                                         #(js/alert "Invalid results or incomplete form"))}
 
        "Add Game"]]]))
 

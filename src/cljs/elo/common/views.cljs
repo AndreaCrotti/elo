@@ -7,7 +7,7 @@
                                    caption ""
                                    display-fn identity}}]
 
-  (into [:select
+  (into [:select.form-control
          {:on-change (utils/set-val dispatch-key) :value (or value "")}]
 
         (cons [:option {:disabled true
