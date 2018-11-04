@@ -2,6 +2,7 @@
   (:gen-class)
   (:require [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
+            [clojure.string :as str]
             [elo.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
             [elo.config :as config]
             [elo.csv :as csv]
@@ -231,7 +232,7 @@
   [handler]
   ;; return 401 if the request is not authenticated properly
   (fn [request]
-    (if (or (not (clojure.string/starts-with? (:uri request) "/api"))
+    (if (or (not (str/starts-with? (:uri request) "/api"))
             (some? (get-github-token request))
             (not config/auth-enabled))
 
