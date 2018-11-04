@@ -30,6 +30,7 @@ jobs:
 
           key: elo-{{ checksum "project.clj" }}
 
+      - run: lein eastwood
       - run: lein migratus migrate
       - run: lein test2junit
       - store_test_results:

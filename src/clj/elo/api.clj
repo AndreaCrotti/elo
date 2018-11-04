@@ -2,6 +2,7 @@
   (:gen-class)
   (:require [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
+            [clojure.string :as str]
             [elo.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
             [elo.config :as config]
             [elo.csv :as csv]
@@ -19,8 +20,8 @@
             [ring.middleware.oauth2 :refer [wrap-oauth2]]
             [ring.middleware.resource :as resources]
             [ring.util.io :as ring-io]
-            [ring.util.http-response :as hr]
-            [ring.middleware.oauth2 :as oauth2]
+            [ring.util.response]
+            [ring.util.http-response :as resp]
             [taoensso.timbre :as timbre :refer [log info debug]])
   (:import (java.util UUID)))
 
@@ -34,17 +35,17 @@
 
 (defn- as-json
   [response]
-  (hr/content-type response "application/json"))
+  (resp/content-type response "application/json"))
 
 (defn add-game!
   [{:keys [params]}]
   (notifications/notify-slack "A new game was added!")
-  (let [validated (validate/conform :game params)
+  (let [validated (validate/conform-data :game params)
         game-id (db/add-game! validated)]
 
     (as-json
-     (hr/created "/api/games"
-                 {:id game-id}))))
+     (resp/created "/api/games"
+                   {:id game-id}))))
 
 (defn add-player!
   "Adds a new user to the platform, authenticated with basic Auth"
@@ -52,16 +53,16 @@
   (notifications/notify-slack "A new player just joined!")
   (with-basic-auth
     request
-    (let [validated (validate/conform :player params)
+    (let [validated (validate/conform-data :player params)
           ids (db/add-player-full! validated)]
 
       (as-json
-       (hr/created "/api/players" ids)))))
+       (resp/created "/api/players" ids)))))
 
 (defn- render-page
   [page]
-  (hr/content-type
-   (hr/ok
+  (resp/content-type
+   (resp/ok
     (hiccup/html page))
 
    "text/html"))
@@ -79,41 +80,41 @@
   [request]
   (-> (get-league-id request)
       db/load-players
-      hr/ok
+      resp/ok
       as-json))
 
 (defn get-games
   [request]
   (-> (get-league-id request)
       db/load-games
-      hr/ok
+      resp/ok
       as-json))
 
 (defn get-league
   [request]
   (-> (get-league-id request)
       db/load-league
-      hr/ok
+      resp/ok
       as-json))
 
 (defn get-leagues
   [request]
   ;;TODO: should get the company-id as argument ideally
   (-> (db/load-leagues)
-      hr/ok
+      resp/ok
       as-json))
 
 (defn get-companies
   [request]
   ;;TODO: should get the company-id as argument ideally
   (-> (db/load-companies)
-      hr/ok
+      resp/ok
       as-json))
 
 (defn github-callback
   [request]
   (as-json
-   (hr/ok {:result "Correctly Went throught the whole process"})))
+   (resp/ok {:result "Correctly Went throught the whole process"})))
 
 (def games-csv-header
   [:p1
@@ -151,9 +152,9 @@
     (-> {}
         (csv-body games-csv-header
                   (csv-transform games-csv-header games names-mapping))
-        (hr/status 200)
-        (hr/content-type "text/csv")
-        (hr/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
+        (resp/status 200)
+        (resp/content-type "text/csv")
+        (resp/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
 
 (defn rankings-header-rows
   "To make sure that the order is returned correctly we simply sort by
@@ -184,9 +185,9 @@
 
     (-> {}
         (csv-body header csv-rows)
-        (hr/status 200)
-        (hr/content-type "text/csv")
-        (hr/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
+        (resp/status 200)
+        (resp/content-type "text/csv")
+        (resp/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
 
 (defn- get-github-token
   [request]
@@ -195,7 +196,7 @@
 (defn authenticated?
   [request]
   (let [github-token (get-github-token request)]
-    (hr/ok
+    (resp/ok
      {:authenticated (or (not config/auth-enabled)
                          (some? github-token))
       :token github-token})))
@@ -231,12 +232,12 @@
   [handler]
   ;; return 401 if the request is not authenticated properly
   (fn [request]
-    (if (or (not (clojure.string/starts-with? (:uri request) "/api"))
+    (if (or (not (str/starts-with? (:uri request) "/api"))
             (some? (get-github-token request))
             (not config/auth-enabled))
 
       (handler request)
-      (hr/unauthorized "Can not access the given request"))))
+      (resp/unauthorized "Can not access the given request"))))
 
 (defn log-request
   "Simple middleware to log all the requests"

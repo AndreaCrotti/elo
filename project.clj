@@ -67,6 +67,7 @@
   :plugins [[environ/environ.lein "0.3.1"]
             [migratus-lein "0.5.0"]
             [lein-cljsbuild "1.1.4"]
+            [jonase/eastwood "0.3.3"]
             [lein-ring "0.9.7"]
             [lein-cljfmt "0.5.7"]
             [test2junit "1.3.3"]
@@ -101,7 +102,7 @@
   :aliases {"test-cljs" ["doo" "phantom" "test" "once"]
             "fig" ["trampoline" "run" "-m" "figwheel.main"]
             "build" ["trampoline" "run" "-m" "figwheel.main" "-b" "elo"]}
-  
+
   :profiles
   {:production {:env {:production true}}
    :uberjar {:hooks []
