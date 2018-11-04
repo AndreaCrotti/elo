@@ -238,14 +238,14 @@
 (defn navbar
   []
   (let [league @(rf/subscribe [::handlers/league])]
-    [:span.navbar__container
-     [:a.navbar__home
-      {:href "#"
-       :on-click #(accountant/navigate! (routes/path-for :league-list))}
-      "Home"]
-     [:p.navbar__game_type (:game_type league)]
-     [:a.navbar__fork_me {:href "http://github.com/AndreaCrotti/elo"}
-      "Fork Me"]]))
+    [:ul
+     [:li
+      [:a {:href "#"
+           :on-click #(accountant/navigate! (routes/path-for :league-list))}
+       "Home"]]
+     [:li [:a.active {:href "#"} (:game_type league)]]
+     [:li [:a {:href "http://github.com/AndreaCrotti/elo"}
+           "Fork Me"]]]))
 
 (defn root
   []
