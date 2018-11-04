@@ -4,15 +4,24 @@
 (def internal-grid-gap "10px")
 (def grid-gap "15px")
 
+(def font-families
+  {:lilita "'Lilita One', cursive"
+   :monoton "'Monoton', cursive"})
+
+(def color-palette
+  {:aggressive {:main "#FF4136"
+                :secondary "#001f3f"
+                :third "#85144b"}})
+
 (def leagues-page
   [[:.league_list__root {:display "grid"
                          :width "80%"
                          :grid-gap "30px"
                          :padding-top "10px"
-                         :padding-left "10px"}]
+                         :padding-left "10px"}
 
-   [:.sign-up__block {:width "200px"
-                      :justify-self "center"}]
+    [:.sign-up__block {:width "200px"
+                       :justify-self "center"}]]
 
    [:.language_pick {:font-size "24px"
                      :text-align "center"}]])
@@ -28,12 +37,12 @@
     {:width "600px"
      :height "500px"}]
 
-   [:.league_detail__root
-    {:display "grid"
-     :width "90%"
-     :padding-left "20px"
-     :padding-top "30px"
-     :grid-gap grid-gap}]
+   #_[:body {:background-color (-> color-palette :aggressive :third)
+           :color "white"}]
+
+   [:.section {:max-width "1000px"
+               :width "500px"
+               :margin "0 30"}]
 
    [:.rankings__alive {:display "flex"}]
 
@@ -42,19 +51,19 @@
      :padding-left "5px"
      :margin-right "8px"}]
 
-   [:.players__form_container
-    {:width "60%"}]
-
-   [:.rankings__table
-    {:width "75%"}]
-
    [:.result__element
     {:color "white"
      :margin "2px"
      :font-weight :bolder}]
 
-   [:.rankings-slider
-    {:padding "20px"}]
+   [:.up-to-range-slider
+    {:height "15px"
+     :border-radius "5px"
+     :background (-> color-palette :aggressive :third)
+     :outline "none"
+     :opacity "0.6"
+     :-webkit-transition ".2s"
+     :transition "opacity .2s"}]
 
    [:.result__w
     {:background-color "green"}]
@@ -65,12 +74,6 @@
    [:.result__l
     {:background-color "red"}]
 
-   [:.fork-me
-    {:position "absolute"
-     :top 0
-     :right 0
-     :border 0}]
-
    [:th {:text-transform "uppercase"}]
    [:.fas {:font-size "20px"
            :cursor "pointer"}]
@@ -80,24 +83,33 @@
                            :padding-right "5px"
                            :background-color "#DDDDDD"}]
 
-   [:.add-player_form
-    {:display "grid"
-     :width "70%"
-     :padding-left "15px"
-     :grid-gap internal-grid-gap}]
+   [:.navbar__container
+    {:display "flex"
+     :justify-content "space-between"
+     :width "80%"}]
 
-   [:.game_form
-    {:display "grid"
-     :width "80%"
-     :padding-left "15px"
-     :grid-gap internal-grid-gap
-     :grid-template-rows "auto auto auto auto"
-     :grid-template-columns "auto auto"}]
+   [:.form__row
+    {:display "flex"
+     :flex-wrap "wrap"}]
 
    [:label {:padding-right "30px"}]
 
    [:.section {:padding "10px"
-               :box-shadow "-1px 1px 2px 2px rgba(0,0,0,0.2)"}]])
+               ;; :box-shadow "-1px 1px 2px 2px rgba(0,0,0,0.2)"
+               }]])
+
+;;TODO: add some media wrapping with media magic
+;;and flexbox
+;; @media all and (max-width: 600px) {
+  
+;;   .container {
+;;     flex-wrap: wrap;
+;;   }
+  
+;;   .container > li {
+;;     flex-basis: 50%;
+;;   }
+;; }
 
 (defstyles screen
   ;; could maybe even split creating multiple CSS files?

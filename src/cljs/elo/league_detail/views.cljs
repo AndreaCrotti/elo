@@ -53,47 +53,45 @@
         ;; the one that was already selected
         sorted-players (sort-by :name @players)]
 
-    [:div.form-group.game_form {:on-submit (fn [] false)}
-     [:div
-      [:label {:for "p1_name"} "Player 1"]
-      [drop-down-players sorted-players ::handlers/p1 (:p1 @game)]]
+    [:div.game__form {:on-submit (fn [] false)}
+     [:div.form-group.player1__group
+      [:h3 "Player 1"]
+      [:div.form__row.form-control
+       [drop-down-players sorted-players ::handlers/p1 (:p1 @game)
+        {:caption "Name"}]
 
-     [:div
-      [:label {:for "p2_name"} "Player 2"]
-      [drop-down-players sorted-players ::handlers/p2 (:p2 @game)]]
+       [drop-down points-range ::handlers/p1_points (:p1_points @game)
+        {:caption (translate :points)}]
 
-     [:div
-      [:label {:for "p1_points"} (str "# " (translate :points))]
-      [drop-down points-range ::handlers/p1_points (:p1_points @game)]]
+       [:input.form-control
+        {:type "text"
+         :placeholder (str (translate :using) " Name")
+         :value (:p1_using @game)
+         :on-change (utils/set-val ::handlers/p1_using)}]]]
 
-     [:div
-      [:label {:for "p2_points"} (str "# " (translate :points))]
-      [drop-down points-range ::handlers/p2_points (:p2_points @game)]]
+     [:div.form-group.player2__group
+      [:h3 "Player 2"]
+      [:div.form__row.form-control
+       [drop-down-players sorted-players ::handlers/p2 (:p2 @game)
+        {:caption "Name"}]
 
-     [:div
-      [:label (translate :using)]
-      [:input.form-control {:type "text"
-                            :placeholder (str (translate :using) " Name")
-                            :value (:p1_using @game)
-                            :on-change (utils/set-val ::handlers/p1_using)}]]
+       [drop-down points-range ::handlers/p2_points (:p2_points @game)
+        {:caption (translate :points)}]
 
-     [:div
-      [:label (translate :using)]
-      [:input.form-control {:type "text"
-                            :placeholder (str (translate :using) " Name")
-                            :value (:p2_using @game)
-                            :on-change (utils/set-val ::handlers/p2_using)}]]
+       [:input.form-control {:type "text"
+                             :placeholder (str (translate :using) " Name")
+                             :value (:p2_using @game)
+                             :on-change (utils/set-val ::handlers/p2_using)}]]]
 
-     [:div
-      [:label "Played at"]
-      [date-range-picker]]
-
-     [:div
-      [:button {:type "button"
-                :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-game? "disabled")])
-                :on-click (if @valid-game?
-                            #(rf/dispatch [::handlers/add-game])
-                            #(js/alert "Invalid results or incomplete form"))}
+     [:div.form__row.form-group
+      [:label {:for "played_at"} "Played at"]
+      [:div.form-control {:id "played_at"} [date-range-picker]]]
+     [:div.form__row.form-group
+      [:button.form-control {:type "button"
+                             :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-game? "disabled")])
+                             :on-click (if @valid-game?
+                                         #(rf/dispatch [::handlers/add-game])
+                                         #(js/alert "Invalid results or incomplete form"))}
 
        "Add Game"]]]))
 
@@ -149,7 +147,6 @@
                 [:th "played At"]]]
 
     [:div
-     [:h3 "List of Games"]
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
@@ -194,18 +191,17 @@
         up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
 
     [:div
-     [:h3 "Players Rankings"]
-     [:div
-      [:span.rankings-slider
-       [:input.up-to-range-slider {:type "range"
-                                   :min 0
-                                   :max (count @games)
-                                   :value up-to-current
-                                   :class "slider"
-                                   :on-change (utils/set-val ::handlers/up-to-games
-                                                             js/parseInt)}]]
+     [:div.form-group
+      [:input.form-control.up-to-range-slider
+       {:type "range"
+        :min 0
+        :max (count @games)
+        :value up-to-current
+        :class "slider"
+        :on-change (utils/set-val ::handlers/up-to-games
+                                  js/parseInt)}]
 
-      [:span.rankings-chevrons
+      [:span.rankings-chevrons.form-control
        [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
        [:span.up-to-current-games up-to-current]
        [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]
@@ -223,12 +219,6 @@
                [:td (results-boxes (get results id))]
                [:td (str wins "/" losses "/" draws)]]))]]))
 
-(defn github-fork-me
-  []
-  [:a {:href "https://github.com/AndreaCrotti/elo"}
-   [:img.fork-me {:src "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
-                  :alt "Fork me on Github"}]])
-
 (defn show-error
   []
   (let [error @(rf/subscribe [::handlers/error])]
@@ -236,19 +226,6 @@
       [:div.section.alert.alert-danger
        [:pre (:status-text error)]
        [:pre (:original-text error)]])))
-
-(defn preamble
-  []
-  (let [league @(rf/subscribe [::handlers/league])]
-    [:div.preamble
-     [:img {:src "/logos/home.png"
-            :width "50px"
-            :on-click #(accountant/navigate! (routes/path-for :league-list))}]
-
-     (when (some? (:game_type league))
-       [:span.league__logo
-        [:img {:width "100px"
-               :src (config/logo (-> league :game_type))}]])]))
 
 (defn vega
   []
@@ -258,6 +235,18 @@
       (js/console.log @ts)
       [:div "hello world"])))
 
+(defn navbar
+  []
+  (let [league @(rf/subscribe [::handlers/league])]
+    [:span.navbar__container
+     [:a.navbar__home
+      {:href "#"
+       :on-click #(accountant/navigate! (routes/path-for :league-list))}
+      "Home"]
+     [:p.navbar__game_type (:game_type league)]
+     [:a.navbar__fork_me {:href "http://github.com/AndreaCrotti/elo"}
+      "Fork Me"]]))
+
 (defn root
   []
   (rf/dispatch [::handlers/load-league])
@@ -266,13 +255,11 @@
 
   (fn []
     [:div.league_detail__root
-     [github-fork-me]
+     [navbar]
      [show-error]
-     [preamble]
-
+     
      #_[:div.vega-visualization [vega]]
      [:div.section.players__form_container [game-form]]
-     [:div.rankings__alive
-      [:div.section.players__alive_container [live-players]]
-      [:div.section.rankings__table [rankings-table]]]
+     [:div.section.rankings__table [rankings-table]]
+     [:div.section.players__alive_container [live-players]]
      [:div.section.games__table [games-table]]]))

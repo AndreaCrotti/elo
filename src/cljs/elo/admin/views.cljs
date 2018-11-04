@@ -11,23 +11,23 @@
         leagues (rf/subscribe [::handlers/leagues])]
 
     (fn []
-      [:div.form-group.add-player_form
+      [:div.add-player_form
        [:div
         [drop-down @leagues ::handlers/league (:league_id @player)
          :value-fn :id
          :display-fn :name]
 
-        [:input.form-control {:type "text"
-                              :value (:name @player)
-                              :name "name"
-                              :placeholder "John Smith"
-                              :on-change (utils/set-val ::handlers/name)}]
+        [:input {:type "text"
+                 :value (:name @player)
+                 :name "name"
+                 :placeholder "John Smith"
+                 :on-change (utils/set-val ::handlers/name)}]
 
-        [:input.form-control {:type "text"
-                              :value (:email @player)
-                              :name "email"
-                              :placeholder "john.smith@email.com"
-                              :on-change (utils/set-val ::handlers/email)}]]
+        [:input {:type "text"
+                 :value (:email @player)
+                 :name "email"
+                 :placeholder "john.smith@email.com"
+                 :on-change (utils/set-val ::handlers/email)}]]
 
        [:div
         [:button {:type "button"
