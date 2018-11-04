@@ -21,10 +21,16 @@ li a {
 }
 
 li a:hover:not(.active) {
-    background-color: #ddd;
+    color: white;
+    background-color: #85144b;
 }
 
 li a.active {
     color: white;
     background-color: #FF4136;
+    text-transform: uppercase;
+}
+
+.fork_me {
+    float: right;
 }

@@ -244,8 +244,8 @@
            :on-click #(accountant/navigate! (routes/path-for :league-list))}
        "Home"]]
      [:li [:a.active {:href "#"} (:game_type league)]]
-     [:li [:a {:href "http://github.com/AndreaCrotti/elo"}
-           "Fork Me"]]]))
+     [:li.fork_me [:a {:href "http://github.com/AndreaCrotti/elo"}
+                   "Fork Me"]]]))
 
 (defn root
   []
