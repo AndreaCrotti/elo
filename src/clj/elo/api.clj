@@ -19,6 +19,7 @@
             [ring.middleware.oauth2 :refer [wrap-oauth2]]
             [ring.middleware.resource :as resources]
             [ring.util.io :as ring-io]
+            [ring.util.response]
             [ring.util.http-response :as resp]
             [taoensso.timbre :as timbre :refer [log info debug]])
   (:import (java.util UUID)))
