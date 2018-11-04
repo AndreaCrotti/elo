@@ -25,8 +25,7 @@
    :played_at #(tc/to-sql-time (f/parse
                                 (f/formatter timestamp-format) %))})
 
-(defmulti conform
-  "Conform data received from the API"
+(defmulti conform-data
   (fn [type data] type))
 
 (defn apply-transformations
@@ -35,10 +34,10 @@
    (reduce-kv update data transformations)
    (keys data)))
 
-(defmethod conform :game
+(defmethod conform-data :game
   [_ data]
   (apply-transformations data game-transformations))
 
-(defmethod conform :player
+(defmethod conform-data :player
   [_ data]
   (apply-transformations data {:league_id to-uuid}))

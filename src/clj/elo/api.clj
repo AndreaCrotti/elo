@@ -38,7 +38,7 @@
 (defn add-game!
   [{:keys [params]}]
   (notifications/notify-slack "A new game was added!")
-  (let [validated (validate/conform :game params)
+  (let [validated (validate/conform-data :game params)
         game-id (db/add-game! validated)]
 
     (as-json
@@ -51,7 +51,7 @@
   (notifications/notify-slack "A new player just joined!")
   (with-basic-auth
     request
-    (let [validated (validate/conform :player params)
+    (let [validated (validate/conform-data :player params)
           ids (db/add-player-full! validated)]
 
       (as-json
