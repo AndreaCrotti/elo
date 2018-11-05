@@ -41,6 +41,12 @@
                         :on-change #(rf/dispatch [::handlers/played_at %])
                         :class "date-picker-class"}]]))
 
+(defn- enable-button
+  [valid-game? opts]
+  (if valid-game?
+    opts
+    (assoc opts :disabled "true")))
+
 (defn game-form
   []
   (let [players (rf/subscribe [::handlers/players])
@@ -52,6 +58,8 @@
         ;; with two different players list we can filter out directly
         ;; the one that was already selected
         sorted-players (sort-by :name @players)]
+
+    (js/console.log "Valid game = " @valid-game?)
 
     [:div.game__form {:on-submit (fn [] false)}
      [:div.form-group.player1__group
@@ -86,12 +94,13 @@
      [:div.form__row.form-group
       [:label {:for "played_at"} "Played at"]
       [:div.form-control {:id "played_at"} [date-range-picker]]]
+
      [:div.form__row.form-group
-      [:button.form-control {:type "button"
-                             :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-game? "disabled")])
-                             :on-click (if @valid-game?
-                                         #(rf/dispatch [::handlers/add-game])
-                                         #(js/alert "Invalid results or incomplete form"))}
+      [:button.submit__game
+       [enable-button @valid-game?
+        {:on-click (if @valid-game?
+                    #(rf/dispatch [::handlers/add-game])
+                    #(js/alert "Invalid results or incomplete form"))}]
 
        "Add Game"]]]))
 

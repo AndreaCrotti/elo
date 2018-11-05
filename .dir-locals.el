@@ -3,4 +3,6 @@
 
 ((nil
   (cider-default-cljs-repl . figwheel-main)
-  (cider-figwheel-main-default-options . ":elo")))
+  (cider-figwheel-main-default-options . ":elo"))
+ (css-mode
+  (css-indent-offset . 2)))
