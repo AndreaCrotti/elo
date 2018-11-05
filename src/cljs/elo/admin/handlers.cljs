@@ -51,7 +51,6 @@
                   :on-success [on-success]
                   :on-failure [:failed]}}))
 
-
 (rf/reg-event-fx ::add-player (writer page
                                       "/api/add-player"
                                       ::add-player-success))

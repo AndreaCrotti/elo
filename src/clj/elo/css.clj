@@ -38,7 +38,7 @@
      :height "500px"}]
 
    #_[:body {:background-color (-> color-palette :aggressive :third)
-           :color "white"}]
+             :color "white"}]
 
    [:.section {:max-width "1000px"
                :width "500px"
@@ -96,16 +96,16 @@
 
    [:.section {:padding "10px"
                ;; :box-shadow "-1px 1px 2px 2px rgba(0,0,0,0.2)"
-               }]])
+}]])
 
 ;;TODO: add some media wrapping with media magic
 ;;and flexbox
 ;; @media all and (max-width: 600px) {
-  
+
 ;;   .container {
 ;;     flex-wrap: wrap;
 ;;   }
-  
+
 ;;   .container > li {
 ;;     flex-basis: 50%;
 ;;   }

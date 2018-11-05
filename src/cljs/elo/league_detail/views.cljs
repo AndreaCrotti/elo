@@ -41,6 +41,12 @@
                         :on-change #(rf/dispatch [::handlers/played_at %])
                         :class "date-picker-class"}]]))
 
+(defn- enable-button
+  [valid-game? opts]
+  (if valid-game?
+    opts
+    (assoc opts :disabled "true")))
+
 (defn game-form
   []
   (let [players (rf/subscribe [::handlers/players])
@@ -86,12 +92,13 @@
      [:div.form__row.form-group
       [:label {:for "played_at"} "Played at"]
       [:div.form-control {:id "played_at"} [date-range-picker]]]
+
      [:div.form__row.form-group
-      [:button.form-control {:type "button"
-                             :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-game? "disabled")])
-                             :on-click (if @valid-game?
-                                         #(rf/dispatch [::handlers/add-game])
-                                         #(js/alert "Invalid results or incomplete form"))}
+      [:button.submit__game
+       [enable-button @valid-game?
+        {:on-click (if @valid-game?
+                     #(rf/dispatch [::handlers/add-game])
+                     #(js/alert "Invalid results or incomplete form"))}]
 
        "Add Game"]]]))
 
@@ -119,14 +126,14 @@
     [:table.table.table-striped
      [:thead [:tr [:th "dead?"] [:th "name"]]]
 
-      (into [:tbody]
-            (for [{:keys [id name]} (sort-by :name players)]
-              (let [dead? @(rf/subscribe [::handlers/dead id])]
-                [:tr
-                 [:td (if dead?
-                        [:span.fa.fa-skull]
-                        [:span.fa.fa-smile])]
-                 [:td [:span [change-status id] name]]])))]))
+     (into [:tbody]
+           (for [{:keys [id name]} (sort-by :name players)]
+             (let [dead? @(rf/subscribe [::handlers/dead id])]
+               [:tr
+                [:td (if dead?
+                       [:span.fa.fa-skull]
+                       [:span.fa.fa-smile])]
+                [:td [:span [change-status id] name]]])))]))
 
 (defn games-table
   []
@@ -239,13 +246,15 @@
   []
   (let [league @(rf/subscribe [::handlers/league])]
     [:ul
-     [:li
+     [:li.navbar__element
       [:a {:href "#"
            :on-click #(accountant/navigate! (routes/path-for :league-list))}
        "Home"]]
-     [:li [:a.active {:href "#"} (:game_type league)]]
-     [:li.fork_me [:a {:href "http://github.com/AndreaCrotti/elo"}
-                   "Fork Me"]]]))
+     [:li.navbar__element
+      [:a.active {:href "#"} (:game_type league)]]
+     [:li.navbar__element.fork_me
+      [:a {:href "http://github.com/AndreaCrotti/elo"}
+       "Fork Me"]]]))
 
 (defn root
   []
@@ -257,7 +266,7 @@
     [:div.league_detail__root
      [navbar]
      [show-error]
-     
+
      #_[:div.vega-visualization [vega]]
      [:div.section.players__form_container [game-form]]
      [:div.section.rankings__table [rankings-table]]

@@ -1,36 +1,46 @@
 /* hello css */
 ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    border: 1px solid #e7e7e7;
-    background-color: #85144b;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #e7e7e7;
+  background-color: #85144b;
 }
 
-li {
-    float: left;
+.navbar__element {
+  float: left;
 }
 
-li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+.navbar__element a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
 }
 
-li a:hover:not(.active) {
-    color: white;
-    background-color: #85144b;
+.navbar__element a:hover:not(.active) {
+  color: white;
+  background-color: #85144b;
 }
 
-li a.active {
-    color: white;
-    background-color: #FF4136;
-    text-transform: uppercase;
+.navbar__element a.active {
+  color: white;
+  background-color: #FF4136;
+  text-transform: uppercase;
 }
 
 .fork_me {
-    float: right;
+  float: right;
+}
+
+.submit__game {
+  color: white;
+  width: 100%;
+  background-color: #85144b;
+}
+
+.submit__game:disabled {
+  background-color: grey;
 }

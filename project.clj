@@ -103,6 +103,10 @@
             "fig" ["trampoline" "run" "-m" "figwheel.main"]
             "build" ["trampoline" "run" "-m" "figwheel.main" "-b" "elo"]}
 
+  :cljfmt {:indents {for-all [[:block 1]]
+                     fdef [[:block 1]]
+                     checking [[:inner 0]]}}
+
   :profiles
   {:production {:env {:production true}}
    :uberjar {:hooks []
