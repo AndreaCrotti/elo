@@ -126,14 +126,14 @@
     [:table.table.table-striped
      [:thead [:tr [:th "dead?"] [:th "name"]]]
 
-      (into [:tbody]
-            (for [{:keys [id name]} (sort-by :name players)]
-              (let [dead? @(rf/subscribe [::handlers/dead id])]
-                [:tr
-                 [:td (if dead?
-                        [:span.fa.fa-skull]
-                        [:span.fa.fa-smile])]
-                 [:td [:span [change-status id] name]]])))]))
+     (into [:tbody]
+           (for [{:keys [id name]} (sort-by :name players)]
+             (let [dead? @(rf/subscribe [::handlers/dead id])]
+               [:tr
+                [:td (if dead?
+                       [:span.fa.fa-skull]
+                       [:span.fa.fa-smile])]
+                [:td [:span [change-status id] name]]])))]))
 
 (defn games-table
   []
