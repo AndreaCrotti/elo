@@ -95,10 +95,10 @@
 
      [:div.form__row.form-group
       [:button.submit__game
-       [enable-button @valid-game?
-        {:on-click (if @valid-game?
-                     #(rf/dispatch [::handlers/add-game])
-                     #(js/alert "Invalid results or incomplete form"))}]
+       (enable-button @valid-game?
+                      {:on-click (if @valid-game?
+                                   #(rf/dispatch [::handlers/add-game])
+                                   #(js/alert "Invalid results or incomplete form"))})
 
        "Add Game"]]]))
 
