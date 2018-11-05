@@ -1,5 +1,5 @@
 #+AUTHOR: Andrea Crotti (@andreacrotti)
-#+TITLE: An ELO platform with Clojure and Re-Frame
+#+TITLE: Build an ELO platform with Clojure and Re-Frame
 #+OPTIONS: num:nil toc:nil ^:nil tex:t reveal_progress:t reveal_control:t reveal_overview:t
 #+REVEAL_TRANS: none
 #+REVEAL_SPEED: fast
@@ -55,6 +55,8 @@ Jack a dull boy
 
 # TODO: do we need to read the full definition out loud?
 
+[[./arpad_elo.jpeg]]
+
 #+BEGIN_NOTES
 
 Before going into the Clojure details, I'll just introduce who the ELO algorithm works.
@@ -69,6 +71,15 @@ game like Pool, Table Tennis, Fifa, or any other game you can imagine really.
 
 *The Elo rating system is a method for calculating the relative skill levels of players in zero-sum games such as chess.*
 
+** Minor demo time
+
+#+BEGIN_NOTES
+
+It's probably a bit abstract rigt now, so let's look at a simple demo
+of how the scores are computed.
+
+#+END_NOTES
+
 ** Elo scores example
 
 #+BEGIN_NOTES
@@ -76,26 +87,25 @@ game like Pool, Table Tennis, Fifa, or any other game you can imagine really.
 You can compute the new rankings of two players with simply the current rankings and the result of the game.
 Everyone starts from 1500, and overall that will always be the average of all the scores in the league.
 
-So suppose for example
-
 #+END_NOTES
 
-A: 1500
-B: 1500
+*A: 1500, B: 1500*
 
 $E\_A =  \frac{1}{1 + 10 ^ \frac{RB - RA}{400}} = \frac{1}{1 + 10 ^ \frac{0}{400}}$
 $E\_A = \frac{1}{2} = 0.5$
+$E\_B = \frac{1}{2} = 0.5$
 
-*A vs B (3-0)*
+*A vs B (3-0):*
 
 $R\_A = 1500 + (K * (1 - E\_A)) = 1500 + (32 * (1 - 0.5)) = 1516$
 $R\_B = 1500 + (K * (1 - E\_B)) = 1500 + (32 * (0 - 0.5)) = 1484$
+
+*A = 1516, B = 1484*
 
 ** Second example
 
 A: 1350
 B: 1650
-
 
 $E\_A =  \frac{1}{1 + 10 ^ \frac{RB - RA}{400}} = \frac{1}{1 + 10 ^ \frac{300}{400}}$
 $E\_A = \frac{1}{6.62} = 0.15$
@@ -115,17 +125,38 @@ $R\_A = 1511$
 
 ** Elo implementation
 
-** Minor demo time
+#+BEGIN_SRC clojure
+(defn expected
+  [diff]
+  (/ 1.0 (inc (Math/pow 10 (/ diff 400)))))
 
-# TODO: would it make sense to move it before the mathematical
-# formulas explaining how it works?
+#+END_SRC
 
-#+BEGIN_NOTES
+#+BEGIN_SRC clojure
+(defn new-rating
+  [old expected game]
+  (+ old (* k (- game expected))))
 
-Here we can simply go to a brand new league, create two players, and
-record some games, so see how their scores update.
+#+END_SRC
 
-#+END_NOTES
+#+BEGIN_SRC clojure
+
+(defn new-rankings
+  [rankings [p1 p2 score]]
+
+  (let [ra (get rankings p1)
+        rb (get rankings p2)]
+
+    (assoc rankings
+           p1 (new-rating ra
+                          (expected (- rb ra))
+                          score)
+
+           p2 (new-rating rb
+                          (expected (- ra rb))
+                          (invert-score score)))))
+
+#+END_SRC
 
 * Clojurescript
 
@@ -147,6 +178,9 @@ updates before Clojure itself does.
 
 #+END_NOTES
 
+- *full stack* Clojure development
+- fully supported by the Clojure maintainers
+
 * Re-frame
 
 #+BEGIN_NOTES
@@ -161,7 +195,19 @@ application.
 
 #+END_NOTES
 
-React \arrow Reagent \arrow Re-Frame
+React → Reagent → Re-Frame
+
+** Re-frame architecture
+
+[[./reframe_dominoes.png]]
+
+* Main advantages
+
+# TODO: should this be here or maybe in the conclusions of the talk?
+
+- 1 language to rule them all
+- FRP rocks
+- auto reloading everything
 
 * Demo Time
 
