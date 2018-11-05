@@ -239,13 +239,15 @@
   []
   (let [league @(rf/subscribe [::handlers/league])]
     [:ul
-     [:li
+     [:li.navbar__element
       [:a {:href "#"
            :on-click #(accountant/navigate! (routes/path-for :league-list))}
        "Home"]]
-     [:li [:a.active {:href "#"} (:game_type league)]]
-     [:li.fork_me [:a {:href "http://github.com/AndreaCrotti/elo"}
-                   "Fork Me"]]]))
+     [:li.navbar__element
+      [:a.active {:href "#"} (:game_type league)]]
+     [:li.navbar__element.fork_me
+      [:a {:href "http://github.com/AndreaCrotti/elo"}
+       "Fork Me"]]]))
 
 (defn root
   []
@@ -257,7 +259,7 @@
     [:div.league_detail__root
      [navbar]
      [show-error]
-     
+
      #_[:div.vega-visualization [vega]]
      [:div.section.players__form_container [game-form]]
      [:div.section.rankings__table [rankings-table]]
