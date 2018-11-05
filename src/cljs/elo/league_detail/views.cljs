@@ -59,8 +59,6 @@
         ;; the one that was already selected
         sorted-players (sort-by :name @players)]
 
-    (js/console.log "Valid game = " @valid-game?)
-
     [:div.game__form {:on-submit (fn [] false)}
      [:div.form-group.player1__group
       [:h3 "Player 1"]
@@ -99,8 +97,8 @@
       [:button.submit__game
        [enable-button @valid-game?
         {:on-click (if @valid-game?
-                    #(rf/dispatch [::handlers/add-game])
-                    #(js/alert "Invalid results or incomplete form"))}]
+                     #(rf/dispatch [::handlers/add-game])
+                     #(js/alert "Invalid results or incomplete form"))}]
 
        "Add Game"]]]))
 
