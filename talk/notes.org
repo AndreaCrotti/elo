@@ -205,16 +205,16 @@ Reagent allows you to define components using Hiccup syntax
 
 React → (Clojurescript) → Reagent → Re-Frame
 
-** Re-frame architecture
-
-[[./reframe_dominoes.png]]
-
 ** Concepts
 
 - single *app db*
 - subscriptions: *reg-sub*
 - event handler: *reg-event-db*
 - effect handler: *reg-event-fx*
+
+** Form
+
+[[./form.png]]
 
 ** DB
 
@@ -265,20 +265,22 @@ React → (Clojurescript) → Reagent → Re-Frame
 ** API Call
 
 #+BEGIN_SRC clojure
-  (rf/reg-event-db ::on-success
-                   (fn [db [_ games]]
-                     (assoc db ::games games)))
+  (rf/reg-event-db
+   ::on-success
+   (fn [db [_ games]]
+     (assoc db ::games games)))
 
-  (rf/reg-event-fx ::load-games
-                   (fn [{:keys [db]} _]
-                     {:db db
-                      :http-xhrio {:method :get
-                                   :uri "/api/games"
-                                   :params {:league_id (get-league-id db)}
-                                   :format (ajax/json-request-format)
-                                   :response-format (ajax/json-response-format {:keywords? true})
-                                   :on-success [::on-success]
-                                   :on-failure [:failed]}}))
+  (rf/reg-event-fx
+   ::load-games
+   (fn [{:keys [db]} _]
+     {:db db
+      :http-xhrio {:method :get
+                   :uri "/api/games"
+                   :params {:league_id (get-league-id db)}
+                   :format (ajax/json-request-format)
+                   :response-format (ajax/json-response-format {:keywords? true})
+                   :on-success [::on-success]
+                   :on-failure [:failed]}}))
 #+END_SRC
 
 * Demo Time
@@ -315,6 +317,11 @@ To do this we'll need:
 ** TODO add some graph explaining how re-frame works?
 ** TODO think about what can be done in a small demo
 ** TODO add some motivation to work on this specific project
+** TODO improve explanation of Elo
+** TODO improve conclusions
+** TODO fix all the code
+** TODO show some events handling in 10x?
+** TODO improve pictures/gifs
 
 * Ideas for the demo
 
