@@ -32,7 +32,7 @@
                  [org.clojure/test.check "0.9.0"]
                  [junit/junit "4.12"]
 
-                 [org.clojure/clojurescript "1.10.339"]
+                 [org.clojure/clojurescript "1.10.439"]
                  [re-frame "0.10.6"]
                  [org.webjars/font-awesome "5.3.1"]
 
