@@ -4,6 +4,7 @@
 #+REVEAL_TRANS: none
 #+REVEAL_SPEED: fast
 #+REVEAL_HLEVEL: 1
+#+REVEAL_THEME: white
 #+TOC: listings
 
 * Play
@@ -59,15 +60,15 @@ to the rankings.
 
 *The Elo rating system is a method for calculating the relative skill levels of players in zero-sum games such as chess.*
 
-** Minor demo time
-
-[[./rocket_main.gif]]
+** Demo time
 
 #+BEGIN_NOTES
 
-Let's see in practice how this looks like with a simple example.
+Let's see in practice how this works with a very simple demo.
 
 #+END_NOTES
+
+[[./rocket_man.gif]]
 
 ** Elo example
 
@@ -155,20 +156,17 @@ $R\_A = R\_A + (K * (1 - E\_A))$
 
 #+END_SRC
 
-P1 wins:
-
 #+BEGIN_SRC clojure
+  ;; P1 wins against same level opponent:
   (new-rankings {:p1 1500 :p2 1500} [:p1 :p2 0])
   ;; => {:p1 1484.0, :p2 1516.0}
 #+END_SRC
 
-P1 wins, *big upset*:
-
 #+BEGIN_SRC clojure
+  ;; P1 wins against much stronger opponent:
   (new-rankings {:p1 1300 :p2 1700} [:p1 :p2 1])
   ;; => {:p1 1329.090909090909, :p2 1670.909090909091}
 #+END_SRC
-
 
 * Re-frame
 
@@ -187,8 +185,6 @@ application.
 React → Clojurescript → Reagent → Re-Frame
 
 ** Re-frame architecture
-
-*FRP* all the way down
 
 [[./reframe_dominoes.png]]
 
@@ -227,5 +223,12 @@ To do this we'll need:
 ** TODO think about what can be done in a small demo
 ** TODO add some motivation to work on this specific project
 
+* Ideas for the demo
+
+- change parameters of the Elo algorithm
+- change slightly the Elo algorithm to take into consideration the goal difference
+- add the rankings difference into the table of results
+
 * References
 - http://doctoranddad.com/kid-becoming-competitive/
+- https://purelyfunctional.tv/article/react-vs-re-frame/
