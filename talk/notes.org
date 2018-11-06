@@ -188,6 +188,67 @@ React → Clojurescript → Reagent → Re-Frame
 
 [[./reframe_dominoes.png]]
 
+** DB
+
+#+BEGIN_SRC clojure
+
+(def default-db
+  {:games []
+   :players []
+   :dead-players #{}
+   :game {}
+   :error nil
+   :up-to-games nil
+   :league {}
+   :league_id nil})
+
+(def default-game
+  {:p1 ""
+   :p2 ""
+   :p1_points ""
+   :p2_points ""
+   :p1_using ""
+   :p2_using ""
+   :played_at (js/moment)})
+
+#+END_SRC
+
+** Subscription
+
+#+BEGIN_SRC clojure
+  (rf/reg-sub ::game
+              (fn [db _]
+                [::game db]))
+
+  (rf/reg-event-db ::p1_using
+                   (fn [db [_ val]]
+                     (assoc-in db [::game :p1_using] val)))
+#+END_SRC
+
+#+BEGIN_SRC clojure
+  (let [game @(rf/subscribe [::handlers/game])]
+    [:input.form-control
+     {:type "text"
+      :placeholder "Name"
+      :value (:p1_using @game)
+      :on-change (utils/set-val ::handlers/p1_using)}])
+#+END_SRC
+
+** API Call
+
+#+BEGIN_SRC clojure
+  (rf/reg-event-fx ::load-games
+                   (fn [{:keys [db]} _]
+                     {:db db
+                      :http-xhrio {:method :get
+                                   :uri "/api/games"
+                                   :params {:league_id (get-league-id db)}
+                                   :format (ajax/json-request-format)
+                                   :response-format (ajax/json-response-format {:keywords? true})
+                                   :on-success [::on-success]
+                                   :on-failure [:failed]}}))
+#+END_SRC
+
 * Demo Time
 
 [[./rocket.gif]]

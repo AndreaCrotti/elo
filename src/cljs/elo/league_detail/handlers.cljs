@@ -32,7 +32,6 @@
 (def default-db
   {:games []
    :players []
-   ;; uuids of players that are marked as dead
    :dead-players #{}
    :game {}
    :error nil
