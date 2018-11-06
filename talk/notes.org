@@ -6,26 +6,6 @@
 #+REVEAL_HLEVEL: 1
 #+TOC: listings
 
-* Introduction
-
-#+BEGIN_NOTES
-
-In this talk I will talk about a project I've been working on in my
-free time, which is an platform to manage leagues with your
-colleagues.
-
-Being quite competitive by nature, I always enjoyed playing in leagues
-and tournaments, and in various places where I previously worked I saw
-various internal implementations of this same project, where the most
-crazy one was probably done in Excel, which didn't prove to scale very
-well.
-
-To build this platform I'm using Clojure in the backend and
-Clojurescript, with Re-frame in the frontend, and I'll try to give an
-idea about why it's so great and fun.
-
-#+END_NOTES
-
 * Play
 
 #+BEGIN_NOTES
@@ -42,6 +22,10 @@ in various companies, where the tracking tool was sometimes just an
 extremely complicated spreadsheet, and since there wasn't nothing here
 at funding circle currently I just decided to build a new tool.
 
+This talk is about the journey of building such platform using Clojure
+full stack, but first let's explain what ELO means, and why I chose
+that.
+
 #+END_NOTES
 
 #+BEGIN_QUOTE
@@ -53,19 +37,23 @@ Jack a dull boy
 
 * Elo
 
-# TODO: do we need to read the full definition out loud?
-
 [[./arpad_elo.jpeg]]
 
 #+BEGIN_NOTES
 
-Before going into the Clojure details, I'll just introduce who the ELO algorithm works.
-The Elo rating system is a method for calculating the relative skill level of players in zero-sum games such as Chess.
-To clarify a *zero-sum* game is simply a game where one player wins and another player loses, or they draw.
-Some interesting are social traps, like the prisoner dilemma or other similar things.
+The Elo rating system is a method for calculating the relative skill
+level of players in zero-sum games such as Chess.
 
-So as you can imagine this rating system can be applied to any office
-game like Pool, Table Tennis, Fifa, or any other game you can imagine really.
+To clarify a *zero-sum* game is simply a game where one player wins
+and another player loses, or they draw, which is really almost every
+game you can play in the office
+
+In practice the rating system just works by to first assigning initial
+rankings to players and then for each game compute the new rankings of
+the two players.
+
+The biggest the difference in rankings the bigger will be the changes
+to the rankings.
 
 #+END_NOTES
 
@@ -75,8 +63,7 @@ game like Pool, Table Tennis, Fifa, or any other game you can imagine really.
 
 #+BEGIN_NOTES
 
-It's probably a bit abstract rigt now, so let's look at a simple demo
-of how the scores are computed.
+Let's see in practice how this looks like with a simple example.
 
 #+END_NOTES
 
