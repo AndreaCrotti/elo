@@ -174,19 +174,47 @@ $R\_A = R\_A + (K * (1 - E\_A))$
 
 Another very important piece of the puzzle is Re-Frame, which is a
 great little framework to create SPAs doing Functional Reactive
-Programming for real.
+Programming.
 
-It uses Reagent underneath which is just a wrapper around react, so
-whenever you create a re-frame app will eventually become a react
-application.
+In this stack we have `React` at the bottom, which is the lower level
+library. On top of that there is a Clojurescript wrapper called
+`Reagent`, which hides all the javascript interop and give you a nice
+Clojure interface to React.
+
+Reagent allows you to define components using Hiccup syntax
 
 #+END_NOTES
 
-React → Clojurescript → Reagent → Re-Frame
+#+BEGIN_SRC clojure
+  (defn some-component []
+    [:div
+     [:h3 "I am a component!"]
+     [:p.someclass
+      "I have " [:strong "bold"]
+      [:span {:style {:color "red"}} " and red"]
+      " text."]])
+#+END_SRC
+
+#+BEGIN_SRC clojure
+  ;; render everything
+  (defn mountit []
+    (r/render [childcaller]
+              (.-body js/document)))
+#+END_SRC
+
+
+React → (Clojurescript) → Reagent → Re-Frame
 
 ** Re-frame architecture
 
 [[./reframe_dominoes.png]]
+
+** Concepts
+
+- single *app db*
+- subscriptions: *reg-sub*
+- event handler: *reg-event-db*
+- effect handler: *reg-event-fx*
 
 ** DB
 
@@ -237,6 +265,10 @@ React → Clojurescript → Reagent → Re-Frame
 ** API Call
 
 #+BEGIN_SRC clojure
+  (rf/reg-event-db ::on-success
+                   (fn [db [_ games]]
+                     (assoc db ::games games)))
+
   (rf/reg-event-fx ::load-games
                    (fn [{:keys [db]} _]
                      {:db db
