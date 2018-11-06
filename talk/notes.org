@@ -61,13 +61,15 @@ to the rankings.
 
 ** Minor demo time
 
+[[./rocket_main.gif]]
+
 #+BEGIN_NOTES
 
 Let's see in practice how this looks like with a simple example.
 
 #+END_NOTES
 
-** Elo scores example
+** Elo example
 
 #+BEGIN_NOTES
 
@@ -89,28 +91,34 @@ $R\_B = 1500 + (K * (1 - E\_B)) = 1500 + (32 * (0 - 0.5)) = 1484$
 
 *A = 1516, B = 1484*
 
-** Second example
+# TODO: actually fix this example if you want to show it
 
-A: 1350
-B: 1650
+# ** Elo example (2)
 
-$E\_A =  \frac{1}{1 + 10 ^ \frac{RB - RA}{400}} = \frac{1}{1 + 10 ^ \frac{300}{400}}$
-$E\_A = \frac{1}{6.62} = 0.15$
-$E\_B = 1 - E\_A = 0.85$
+# A: 1350
+# B: 1650
 
-*Big upset, A winning against B*
+# $E\_A =  \frac{1}{1 + 10 ^ \frac{RB - RA}{400}} = \frac{1}{1 + 10 ^ \frac{300}{400}}$
+# $E\_A = \frac{1}{6.62} = 0.15$
+# $E\_B = 1 - E\_A = 0.85$
 
-$R\_A = 1500 + (K * (1 - E\_A)) = 1500 + (32 * (1 - 0.15))$
-$R\_A = 1527$
+# *Big upset, A winning against B*
 
-$R\_B = 1500 + (K * (1 - E\_B)) = 1500 + (32 * (1 - 0.85))$
+# $R\_A = 1350 + (K * (1 - E\_A)) = 1350 + (32 * (1 - 0.15))$
+# $R\_A = 1377$
 
-*Draw between A and B*
+# $R\_B = 1650 + (K * (1 - E\_B)) = 1650 + (32 * (1 - 0.85))$
 
-$R\_A = 1500 + (K * (1 - E\_A)) = 1500 + (32 * (0.5 - 0.15))$
-$R\_A = 1511$
+# *Draw between A and B*
 
-** Elo implementation
+# $R\_A = 1500 + (K * (1 - E\_A)) = 1500 + (32 * (0.5 - 0.15))$
+# $R\_A = 1511$
+
+** Elo implementation (1)
+
+$E\_A =  \frac{1}{1 + 10 ^ \frac{RB - RA}{400}}$
+
+$R\_A = R\_A + (K * (1 - E\_A))$
 
 #+BEGIN_SRC clojure
 (defn expected
@@ -121,10 +129,12 @@ $R\_A = 1511$
 
 #+BEGIN_SRC clojure
 (defn new-rating
-  [old expected game]
-  (+ old (* k (- game expected))))
+  [old expected score]
+  (+ old (* k (- score expected))))
 
 #+END_SRC
+
+** Elo implementation (2)
 
 #+BEGIN_SRC clojure
 
@@ -145,28 +155,20 @@ $R\_A = 1511$
 
 #+END_SRC
 
-* Clojurescript
+P1 wins:
 
-#+BEGIN_NOTES
+#+BEGIN_SRC clojure
+  (new-rankings {:p1 1500 :p2 1500} [:p1 :p2 0])
+  ;; => {:p1 1484.0, :p2 1516.0}
+#+END_SRC
 
-Given you are all part of a Clojure group I probably don't have to go
-much into detail in Clojure.
+P1 wins, *big upset*:
 
-Clojure is a great language as we all know, but maybe the greatest
-advantage for me at the moment compared to most other languages is
-that we also have Clojurescript, which means you can truly create a
-web-app using *only* Clojure full-stack, using the JVM in the backend
-and compiling Javascript for the frontend.
+#+BEGIN_SRC clojure
+  (new-rankings {:p1 1300 :p2 1700} [:p1 :p2 1])
+  ;; => {:p1 1329.090909090909, :p2 1670.909090909091}
+#+END_SRC
 
-Clojurescript is maintained by the same guys maintaining Clojure so
-it's not just a random spin-off diverging from the official language,
-but actually given how the release cycle works Clojurescript all the
-updates before Clojure itself does.
-
-#+END_NOTES
-
-- *full stack* Clojure development
-- fully supported by the Clojure maintainers
 
 * Re-frame
 
@@ -182,21 +184,17 @@ application.
 
 #+END_NOTES
 
-React → Reagent → Re-Frame
+React → Clojurescript → Reagent → Re-Frame
 
 ** Re-frame architecture
 
+*FRP* all the way down
+
 [[./reframe_dominoes.png]]
 
-* Main advantages
-
-# TODO: should this be here or maybe in the conclusions of the talk?
-
-- 1 language to rule them all
-- FRP rocks
-- auto reloading everything
-
 * Demo Time
+
+[[./rocket.gif]]
 
 #+BEGIN_NOTES
 
@@ -217,6 +215,10 @@ To do this we'll need:
 * Conclusions
 
 *Frontend development is fun again*
+
+- 1 language to rule them all
+- FRP rocks
+- auto reloading everything
 
 * Tasks
 ** TODO add something about CLJC files and how easy is to share business logic across frontend and backend?

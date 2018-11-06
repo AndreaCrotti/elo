@@ -12,8 +12,8 @@
   (/ 1.0 (inc (Math/pow 10 (/ diff 400)))))
 
 (defn new-rating
-  [old expected game]
-  (+ old (* k (- game expected))))
+  [old expected score]
+  (+ old (* k (- score expected))))
 
 (defn invert-score
   [score]
