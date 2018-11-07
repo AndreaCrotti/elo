@@ -322,6 +322,7 @@ To do this we'll need:
 ** TODO fix all the code
 ** TODO show some events handling in 10x?
 ** TODO improve pictures/gifs
+** TODO add link to the project and the twitter handle more clearly
 
 * Ideas for the demo
 
