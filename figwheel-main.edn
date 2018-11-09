@@ -4,4 +4,5 @@
  :auto-testing true
  :log-level :debug
  :target-dir "resources"
- :mode :serve}
+ :mode :serve
+ :ring-server-options {:join? false}}

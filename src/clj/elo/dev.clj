@@ -23,10 +23,12 @@
 
 (defmethod ig/init-key :server/figwheel
   [_ {:keys [build] :as opts}]
-  (figwheel/start build))
+  (figwheel/start build)
+  (assert false))
 
 (defmethod ig/init-key :server/jetty
   [_ {:keys [port]}]
+  (assert false)
   (jetty/run-jetty (wrap-reload #'api/app)
                    {:join? false
                     :port port}))
