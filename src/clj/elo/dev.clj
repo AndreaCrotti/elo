@@ -35,8 +35,6 @@
   [_ server]
   (.stop server))
 
-;;TODO: something to stop figwheel as well is needed?
-
 (def config
   {;;:server/garden {:builds ["screen"]}
    :server/figwheel {:build "elo"}

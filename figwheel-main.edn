@@ -4,4 +4,4 @@
  :auto-testing true
  :log-level :debug
  :target-dir "resources"
- }
+ :mode :serve}
