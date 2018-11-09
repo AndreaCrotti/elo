@@ -1,5 +1,7 @@
 {:watch-dirs ["src/cljs" "src/cljc"]
  :css-dirs ["resources/public/css"]
  :open-url false
+ :auto-testing true
+ :log-level :debug
  :target-dir "resources"
- :ring-handler elo.api/app}
+ }
