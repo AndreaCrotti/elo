@@ -5,8 +5,7 @@
             [ring.adapter.jetty :as jetty]
             [elo.api :as api]
             [figwheel.main.api :as figwheel]
-            [ring.middleware.reload :refer [wrap-reload]]
-            [integrant.repl :as ir])
+            [ring.middleware.reload :refer [wrap-reload]])
 
   (:gen-class))
 
@@ -23,12 +22,11 @@
 
 (defmethod ig/init-key :server/figwheel
   [_ {:keys [build] :as opts}]
-  (figwheel/start build)
-  (assert false))
+  (figwheel/start build))
 
 (defmethod ig/init-key :server/jetty
   [_ {:keys [port]}]
-  (assert false)
+  (println "Running jetty")
   (jetty/run-jetty (wrap-reload #'api/app)
                    {:join? false
                     :port port}))
