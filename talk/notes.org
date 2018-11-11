@@ -34,7 +34,7 @@ All work and no play makes
 Jack a dull boy
 #+END_QUOTE
 
-[[./competitivekid.jpg]]
+[[./chess.jpg]]
 
 * Elo
 
