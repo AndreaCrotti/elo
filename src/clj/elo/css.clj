@@ -37,12 +37,8 @@
     {:width "600px"
      :height "500px"}]
 
-   #_[:body {:background-color (-> color-palette :aggressive :third)
-             :color "white"}]
-
    [:.section {:max-width "1000px"
-               :width "500px"
-               :margin "0 30"}]
+               :margin "0 auto"}]
 
    [:.rankings__alive {:display "flex"}]
 
@@ -112,6 +108,7 @@
 ;; }
 
 (defstyles screen
+
   ;; could maybe even split creating multiple CSS files?
   (concat auth
           leagues-page
