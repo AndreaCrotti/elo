@@ -34,11 +34,11 @@ All work and no play makes
 Jack a dull boy
 #+END_QUOTE
 
-[[./chess.jpg]]
+[[./kittens.jpg]]
 
 * Elo
 
-[[./arpad_elo.jpeg]]
+[[./chess.jpg]]
 
 #+BEGIN_NOTES
 
@@ -67,8 +67,6 @@ to the rankings.
 Let's see in practice how this works with a very simple demo.
 
 #+END_NOTES
-
-[[./rocket_man.gif]]
 
 ** Elo example
 
@@ -284,8 +282,6 @@ React → (Clojurescript) → Reagent → Re-Frame
 #+END_SRC
 
 * Demo Time
-
-[[./rocket.gif]]
 
 #+BEGIN_NOTES
 
