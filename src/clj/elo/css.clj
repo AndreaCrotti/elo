@@ -42,11 +42,6 @@
 
    [:.rankings__alive {:display "flex"}]
 
-   [:.change__status
-    {:padding-right "5px"
-     :padding-left "5px"
-     :margin-right "8px"}]
-
    [:.result__element
     {:color "white"
      :margin "2px"
@@ -94,21 +89,7 @@
                ;; :box-shadow "-1px 1px 2px 2px rgba(0,0,0,0.2)"
 }]])
 
-;;TODO: add some media wrapping with media magic
-;;and flexbox
-;; @media all and (max-width: 600px) {
-
-;;   .container {
-;;     flex-wrap: wrap;
-;;   }
-
-;;   .container > li {
-;;     flex-basis: 50%;
-;;   }
-;; }
-
 (defstyles screen
-
   ;; could maybe even split creating multiple CSS files?
   (concat auth
           leagues-page

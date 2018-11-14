@@ -107,34 +107,6 @@
   ;; without sorting it only works up to 30 !!
   (sort (zipmap (map inc (range (count xs))) xs)))
 
-(defn change-status
-  [uuid]
-  (let [dead? @(rf/subscribe [::handlers/dead uuid])
-        action (if dead? ::handlers/resuscitate-player ::handlers/kill-player)
-        caption (if dead? [:span.fa.fa-smile] [:span.fa.fa-skull])]
-
-    [:button.change__status
-     {:type "button"
-      :class "btn btn-secondary"
-      :on-click #(rf/dispatch [action uuid])}
-
-     caption]))
-
-(defn live-players
-  []
-  (let [players @(rf/subscribe [::handlers/players])]
-    [:table.table.table-striped
-     [:thead [:tr [:th "dead?"] [:th "name"]]]
-
-     (into [:tbody]
-           (for [{:keys [id name]} (sort-by :name players)]
-             (let [dead? @(rf/subscribe [::handlers/dead id])]
-               [:tr
-                [:td (if dead?
-                       [:span.fa.fa-skull]
-                       [:span.fa.fa-smile])]
-                [:td [:span [change-status id] name]]])))]))
-
 (defn games-table
   []
   (let [games @(rf/subscribe [::handlers/games-live-players])
@@ -266,9 +238,7 @@
     [:div.league_detail__root
      [navbar]
      [show-error]
-
      #_[:div.vega-visualization [vega]]
      [:div.section.players__form_container [game-form]]
      [:div.section.rankings__table [rankings-table]]
-     #_[:div.section.players__alive_container [live-players]]
      [:div.section.games__table [games-table]]]))
