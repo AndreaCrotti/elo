@@ -1,11 +1,17 @@
 #+AUTHOR: Andrea Crotti (@andreacrotti)
 #+TITLE: Build an ELO platform with Clojure and Re-Frame
-#+OPTIONS: num:nil toc:nil ^:nil tex:t reveal_progress:t reveal_control:t reveal_overview:t
+#+OPTIONS: num:nil toc:nil ^:nil tex:t reveal_progress:t reveal_control:t reveal_overview:t reveal_single_file:t
 #+REVEAL_TRANS: none
 #+REVEAL_SPEED: fast
 #+REVEAL_HLEVEL: 1
 #+REVEAL_THEME: white
 #+TOC: listings
+
+* Who Am I
+
+- senior software developer at funding circle
+- API & backends for a long time
+- saw the light with Clojure & Clojurescript
 
 * Play
 
@@ -90,43 +96,20 @@ $R\_B = 1500 + (K * (1 - E\_B)) = 1500 + (32 * (0 - 0.5)) = 1484$
 
 *A = 1516, B = 1484*
 
-# TODO: actually fix this example if you want to show it
-
-# ** Elo example (2)
-
-# A: 1350
-# B: 1650
-
-# $E\_A =  \frac{1}{1 + 10 ^ \frac{RB - RA}{400}} = \frac{1}{1 + 10 ^ \frac{300}{400}}$
-# $E\_A = \frac{1}{6.62} = 0.15$
-# $E\_B = 1 - E\_A = 0.85$
-
-# *Big upset, A winning against B*
-
-# $R\_A = 1350 + (K * (1 - E\_A)) = 1350 + (32 * (1 - 0.15))$
-# $R\_A = 1377$
-
-# $R\_B = 1650 + (K * (1 - E\_B)) = 1650 + (32 * (1 - 0.85))$
-
-# *Draw between A and B*
-
-# $R\_A = 1500 + (K * (1 - E\_A)) = 1500 + (32 * (0.5 - 0.15))$
-# $R\_A = 1511$
-
 ** Elo implementation (1)
 
 $E\_A =  \frac{1}{1 + 10 ^ \frac{RB - RA}{400}}$
 
 $R\_A = R\_A + (K * (1 - E\_A))$
 
-#+BEGIN_SRC clojure
+#+BEGIN_SRC clojure :tangle yes
 (defn expected
   [diff]
   (/ 1.0 (inc (Math/pow 10 (/ diff 400)))))
 
 #+END_SRC
 
-#+BEGIN_SRC clojure
+#+BEGIN_SRC clojure :tangle yes
 (defn new-rating
   [old expected score]
   (+ old (* k (- score expected))))
@@ -135,7 +118,7 @@ $R\_A = R\_A + (K * (1 - E\_A))$
 
 ** Elo implementation (2)
 
-#+BEGIN_SRC clojure
+#+BEGIN_SRC clojure :tangle yes
 
 (defn new-rankings
   [rankings [p1 p2 score]]
@@ -154,13 +137,13 @@ $R\_A = R\_A + (K * (1 - E\_A))$
 
 #+END_SRC
 
-#+BEGIN_SRC clojure
+#+BEGIN_SRC clojure :tangle yes
   ;; P1 wins against same level opponent:
   (new-rankings {:p1 1500 :p2 1500} [:p1 :p2 0])
   ;; => {:p1 1484.0, :p2 1516.0}
 #+END_SRC
 
-#+BEGIN_SRC clojure
+#+BEGIN_SRC clojure :tangle yes
   ;; P1 wins against much stronger opponent:
   (new-rankings {:p1 1300 :p2 1700} [:p1 :p2 1])
   ;; => {:p1 1329.090909090909, :p2 1670.909090909091}
@@ -183,7 +166,7 @@ Reagent allows you to define components using Hiccup syntax
 
 #+END_NOTES
 
-#+BEGIN_SRC clojure
+#+BEGIN_SRC clojure :tangle yes
   (defn some-component []
     [:div
      [:h3 "I am a component!"]
@@ -193,7 +176,7 @@ Reagent allows you to define components using Hiccup syntax
       " text."]])
 #+END_SRC
 
-#+BEGIN_SRC clojure
+#+BEGIN_SRC clojure :tangle yes
   ;; render everything
   (defn mountit []
     (r/render [childcaller]
@@ -301,31 +284,42 @@ To do this we'll need:
 
 * Conclusions
 
-*Frontend development is fun again*
+#+BEGIN_NOTES
 
-- 1 language to rule them all
-- FRP rocks
-- auto reloading everything
+To conclude I just want to say that for me frontend development has
+never been so fun.
+
+I did mostly backend in my career and always feared whenever I had to
+do some javascript with horrible things like Angular or Knockout JS,
+but using Re-frame and Clojurescript is really another story.
+
+If you have any ideas which 
+
+#+END_NOTES
+
+*Frontend development is fun*
 
 * Tasks
 ** TODO add something about CLJC files and how easy is to share business logic across frontend and backend?
-** TODO add the sample ELO implementation code
 ** TODO add some graph explaining how re-frame works?
 ** TODO think about what can be done in a small demo
-** TODO add some motivation to work on this specific project
+** TODO improve explanation of why I worked on this specific project
 ** TODO improve explanation of Elo
 ** TODO improve conclusions
 ** TODO fix all the code
+
 ** TODO show some events handling in 10x?
-** TODO use only copyleft pictures to avoid copyright issues
 ** TODO add link to the project and the twitter handle more clearly
+** TODO send slides sample to branding
+
+** DONE add the sample ELO implementation code
+   CLOSED: [2018-11-14 Wed 17:07]
+   - CLOSING NOTE [2018-11-14 Wed 17:07]
+** DONE use only copyleft pictures to avoid copyright issues
+   CLOSED: [2018-11-14 Wed 17:07]
+   - CLOSING NOTE [2018-11-14 Wed 17:07]
 
 * Ideas for the demo
-
 - change parameters of the Elo algorithm
 - change slightly the Elo algorithm to take into consideration the goal difference
 - add the rankings difference into the table of results
-
-* References
-- http://doctoranddad.com/kid-becoming-competitive/
-- https://purelyfunctional.tv/article/react-vs-re-frame/
