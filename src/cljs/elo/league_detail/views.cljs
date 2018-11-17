@@ -238,7 +238,7 @@
     [:div.league_detail__root
      [navbar]
      [show-error]
-     #_[:div.vega-visualization [vega]]
      [:div.section.players__form_container [game-form]]
      [:div.section.rankings__table [rankings-table]]
+     [:div.vega-visualization]
      [:div.section.games__table [games-table]]]))

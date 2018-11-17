@@ -175,13 +175,14 @@
         common-map
         {"Game #" idx
          "Time" (:played_at current-game)}
-        rankings (games/get-rankings (take idx all-games) players)]
+        rankings (games/get-rankings (take idx all-games) players)
+        name-mapping (games/player->names players)]
 
     (map #(merge % common-map)
          (for [r rankings]
            {"Ranking" (:ranking r)
             ;; convert to the player name
-            "Player" (:id r)}))))
+            "Player" (name-mapping (:id r))}))))
 
 (defn rankings-json
   [players games]
