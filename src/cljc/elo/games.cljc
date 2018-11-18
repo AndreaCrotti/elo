@@ -119,3 +119,27 @@
                (recur (inc idx)
                       new-rankings
                       (conj result res))))))))
+
+(defn- plays?
+  [game player-id]
+  (contains? (set ((juxt :p1 :p2) game)) player-id))
+
+(defn- rankings-at-idx*
+  [players idx all-games]
+  (let [current-game (nth all-games idx)
+        common-map
+        {"Game #" idx
+         "Time" (:played_at current-game)}
+        rankings (get-rankings (take idx all-games) players)
+        name-mapping (player->names players)]
+
+    (map #(merge % common-map)
+         (for [r (filter #(plays? current-game (:id %)) rankings)]
+           {"Ranking" (:ranking r)
+            "Player" (name-mapping (:id r))}))))
+
+(defn rankings-history
+  [players games]
+  (flatten
+   (for [idx (range (count games))]
+     (rankings-at-idx* players idx games))))

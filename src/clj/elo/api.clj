@@ -169,27 +169,6 @@
                                   players))))]
     [header csv-rows]))
 
-(defn rankings-at-idx
-  [players idx all-games]
-  (let [current-game (nth all-games idx)
-        common-map
-        {"Game #" idx
-         "Time" (:played_at current-game)}
-        rankings (games/get-rankings (take idx all-games) players)
-        name-mapping (games/player->names players)]
-
-    (map #(merge % common-map)
-         (for [r rankings]
-           {"Ranking" (:ranking r)
-            ;; convert to the player name
-            "Player" (name-mapping (:id r))}))))
-
-(defn rankings-json
-  [players games]
-  (flatten
-   (for [idx (range (count games))]
-     (rankings-at-idx players idx games))))
-
 (defn rankings-csv
   [request]
   ;; return the list of all the rankings per player
@@ -226,7 +205,7 @@
         players (db/load-players league-id)]
 
     (as-json
-     (-> (rankings-json players games)
+     (-> (games/rankings-history players games)
          (resp/ok)))))
 
 (defn- get-github-token

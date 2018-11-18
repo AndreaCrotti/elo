@@ -67,3 +67,19 @@
                     :result "P1 vs P2: 0 - 0"}]]
 
       (is (= desired (sut/timeseries [game]))))))
+
+(deftest rankings-history-test
+  (testing "Rankings history returned correctly"
+    (let [games [{:p1 1 :p2 2 :p1_points 0 :p2_points 0 :played_at "2018-10-18T14:15:03.889Z"}]
+          players [{:id 1 :name "P1"} {:id 2 :name "P2"} {:id 3 :name "P3"}]
+          desired [{"Ranking" 1500,
+                    "Player" "P2",
+                    "Game #" 0,
+                    "Time" "2018-10-18T14:15:03.889Z"}
+
+                   {"Ranking" 1500,
+                    "Player" "P1",
+                    "Game #" 0,
+                    "Time" "2018-10-18T14:15:03.889Z"}]]
+
+      (is (= desired (sut/rankings-history players games))))))

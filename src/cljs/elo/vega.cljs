@@ -42,9 +42,6 @@
     "time" "2018-01-04T12:05:48.000000000-00:00"}])
 
 (defn init-vega
-  [json]
-  (js/console.log "passing " (clj->js json)
-                  "to init-vega")
-
-  (js/vegaEmbed "#vega-visualization" (clj->js fixed))
-  #_(js/vegaEmbed "#vega-visualization" (clj->js json)))
+  []
+  (js/vegaEmbed "#vega-visualization"
+                (clj->js (rankings-vega-definition fixed))))
