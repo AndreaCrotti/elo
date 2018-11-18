@@ -1,0 +1,47 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
+    "description": "Players rankings",
+    "data": {
+        "values": [
+            {
+                "Time": "2018-10-18T14:15:03.889Z",
+                "Ranking": 1500,
+                "Game #": 1,
+                "Player": 1,
+                "Game": "P1 vs P2 (3-0)"
+            },
+            {
+                "Time": "2018-11-18T14:15:03.889Z",
+                "Ranking": 1512,
+                "Game #": 2,
+                "Player": 2,
+                "Game": "P1 vs P2 (3-0)"
+            },
+            {
+                "Time": "2018-12-02T14:15:03.889Z",
+                "Ranking": 1450,
+                "Game #": 3,
+                "Player": 1,
+                "Game": "P2 vs P1 (0-0)"
+            }
+        ]
+    },
+    "mark": {
+        "type": "line",
+        "point": {"tooltip": {"content": "data"}}
+    },
+    "encoding": {
+        "x": {
+            "field": "Time",
+            "type": "temporal"
+        },
+        "y": {
+            "field": "Ranking",
+            "type": "quantitative"
+        },
+        "color": {
+            "field": "Player",
+            "type": "nominal" 
+        }
+    }
+}

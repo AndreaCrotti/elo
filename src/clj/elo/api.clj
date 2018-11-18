@@ -67,7 +67,7 @@
 
    "text/html"))
 
-(defn spa [_] (render-page (home/body)))
+(defn spa [request] (render-page (home/body request)))
 
 (defn- get-league-id
   [request]
@@ -169,6 +169,27 @@
                                   players))))]
     [header csv-rows]))
 
+(defn rankings-at-idx
+  [players idx all-games]
+  (let [current-game (nth all-games idx)
+        common-map
+        {"Game #" idx
+         "Time" (:played_at current-game)}
+        rankings (games/get-rankings (take idx all-games) players)
+        name-mapping (games/player->names players)]
+
+    (map #(merge % common-map)
+         (for [r rankings]
+           {"Ranking" (:ranking r)
+            ;; convert to the player name
+            "Player" (name-mapping (:id r))}))))
+
+(defn rankings-json
+  [players games]
+  (flatten
+   (for [idx (range (count games))]
+     (rankings-at-idx players idx games))))
+
 (defn rankings-csv
   [request]
   ;; return the list of all the rankings per player
@@ -188,6 +209,25 @@
         (resp/status 200)
         (resp/content-type "text/csv")
         (resp/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
+
+(defn rankings-json-api
+  [request]
+  ;; return a vector of player rankings
+  ;; [{
+  ;;     "Time": "2018-10-18T14:15:03.889Z",
+  ;;     "Ranking": 1500,
+  ;;     "Game #": 1,
+  ;;     "Game": "P1 vs P2 (3-0)"
+  ;; }]
+
+  ;; loop over all the matches possible
+  (let [league-id (get-league-id request)
+        games (db/load-games league-id)
+        players (db/load-players league-id)]
+
+    (as-json
+     (-> (rankings-json players games)
+         (resp/ok)))))
 
 (defn- get-github-token
   [request]
@@ -214,7 +254,8 @@
 
                 ;; csv stuff
                 "games-csv" games-csv
-                "rankings-csv" rankings-csv}
+                "rankings-csv" rankings-csv
+                "rankings-json" rankings-json-api}
 
         "oauth2/github/callback" github-callback
         "authenticated" authenticated?
