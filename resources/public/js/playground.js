@@ -39,4 +39,4 @@ const render_graph = async () => {
     vegaEmbed('#vega-visualization', jsonSpec);
 }
 
-render_graph();
+// render_graph();

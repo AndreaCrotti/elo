@@ -124,13 +124,16 @@
   [game player-id]
   (contains? (set ((juxt :p1 :p2) game)) player-id))
 
+#?(:clj (def fmt format))
+#?(:cljs (def fmt goog.string/format))
+
 (defn game-result
   [game name-mapping]
-  (format "%s vs %s: (%d - %d)"
-          (name-mapping (:p1 game))
-          (name-mapping (:p2 game))
-          (:p1_points game)
-          (:p2_points game)))
+  (fmt "%s vs %s: (%d - %d)"
+       (name-mapping (:p1 game))
+       (name-mapping (:p2 game))
+       (:p1_points game)
+       (:p2_points game)))
 
 (defn- rankings-at-idx*
   [players idx all-games]
@@ -147,8 +150,17 @@
            {"Ranking" (:ranking r)
             "Player" (name-mapping (:id r))}))))
 
-(defn rankings-history
+(defn- rankings-history*
   [players games]
   (flatten
    (for [idx (range (count games))]
      (rankings-at-idx* players idx games))))
+
+;; norm-games (map elo/normalize-game games) 
+;; players (elo/extract-players norm-games)
+
+(defn rankings-history
+  [games]
+  (let [norm-games (map elo/normalize-game games)
+        players (elo/extract-players norm-games)]
+    (rankings-history* players games)))

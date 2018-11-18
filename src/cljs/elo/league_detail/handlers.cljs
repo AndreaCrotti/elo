@@ -87,6 +87,16 @@
 
                    {:db db}))
 
+(rf/reg-sub ::rankings-history
+            games-signal
+            (fn [[gs up-to] _]
+              (games/rankings-history (truncate-games gs up-to))))
+
+(rf/reg-event-fx ::load-graph-2
+                 (fn [{:keys [db]} _]
+                   (let [rankings-history(rf/subscribe [::rankings-history])]
+                     (vega/init-vega (vega/rankings-vega-definition @rankings-history)))))
+
 (defn prev-game
   [db _]
   (let [up-to @(rf/subscribe [::up-to-games])
