@@ -49,3 +49,9 @@ GET :local/api/oauth2/github/callback?code=xxx&state=xxx
 
 # check if a user is authenticated already
 GET :local/authenticated
+
+# Staging rankings-csv
+GET :staging/api/rankings-json?league_id=caa8f361-f82d-4e34-8efc-c70ba53064dd
+
+# staging rankings json
+GET http://fifa-elo-staging.herokuapp.com/api/rankings-json?league_id=caa8f361-f82d-4e34-8efc-c70ba53064dd

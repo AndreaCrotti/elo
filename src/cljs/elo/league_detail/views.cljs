@@ -45,7 +45,7 @@
   [valid-game? opts]
   (if valid-game?
     opts
-    (assoc opts :disabled "true")))
+    (assoc opts :disabled "{true}")))
 
 (defn game-form
   []
@@ -240,5 +240,5 @@
      [show-error]
      [:div.section.players__form_container [game-form]]
      [:div.section.rankings__table [rankings-table]]
-     [:div.vega-visualization]
+     [:div.section {:id "vega-visualization"}]
      [:div.section.games__table [games-table]]]))

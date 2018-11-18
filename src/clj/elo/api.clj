@@ -67,7 +67,7 @@
 
    "text/html"))
 
-(defn spa [_] (render-page (home/body)))
+(defn spa [request] (render-page (home/body request)))
 
 (defn- get-league-id
   [request]

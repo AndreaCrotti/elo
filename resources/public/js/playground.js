@@ -1,23 +1,42 @@
-var trace1 = {
-  x: [1, 2, 3, 4],
-  y: [10, 15, 13, 17],
-  mode: 'markers'
-};
+var config = window.config;
+const default_domain = [1300, 1700];
 
-var trace2 = {
-  x: [2, 3, 4, 5],
-  y: [16, 5, 11, 10],
-  mode: 'lines'
-};
+// TODO: use also the game range to filter out the graph generated
+const league_id = config['league_id'];
+var rankings_url = "/api/rankings-json?league_id=" + league_id;
 
-var trace3 = {
-  x: [1, 2, 3, 4],
-  y: [12, 9, 15, 12],
-  mode: 'lines+markers'
-};
+const render_graph = async () => {
+    const response = await fetch(rankings_url);
+    const json = await response.json();
 
-var data = [ trace1, trace2, trace3 ];
+    const jsonSpec = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v3.0.0-rc6.json",
+        "description": "Players rankings",
+        "data": {
+            "values": json,
+        },
+        "mark": {
+            "type": "line",
+            "point": {"tooltip": {"content": "data"}}
+        },
+        "encoding": {
+            "x": {
+                "field": "Time",
+                "type": "temporal"
+            },
+            "y": {
+                "field": "Ranking",
+                "type": "quantitative",
+                "scale": {"domain": default_domain}
+            },
+            "color": {
+                "field": "Player",
+                "type": "nominal" 
+            }
+        }
+    }
 
-var layout = {};
+    vegaEmbed('#vega-visualization', jsonSpec);
+}
 
-Plotly.newPlot('plot-js', data, layout);
+render_graph();

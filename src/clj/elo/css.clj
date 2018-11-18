@@ -33,11 +33,7 @@
                   :display "flex"}]])
 
 (def league-detail-page
-  [[:.vega-visualization
-    {:width "600px"
-     :height "500px"}]
-
-   [:.section {:max-width "1000px"
+  [[:.section {:max-width "1000px"
                :margin "0 auto"}]
 
    [:.rankings__alive {:display "flex"}]
