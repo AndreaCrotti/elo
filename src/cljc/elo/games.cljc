@@ -124,14 +124,23 @@
   [game player-id]
   (contains? (set ((juxt :p1 :p2) game)) player-id))
 
+(defn game-result
+  [game name-mapping]
+  (format "%s vs %s: (%d - %d)"
+          (name-mapping (:p1 game))
+          (name-mapping (:p2 game))
+          (:p1_points game)
+          (:p2_points game)))
+
 (defn- rankings-at-idx*
   [players idx all-games]
   (let [current-game (nth all-games idx)
+        name-mapping (player->names players)
         common-map
         {"Game #" idx
-         "Time" (:played_at current-game)}
-        rankings (get-rankings (take idx all-games) players)
-        name-mapping (player->names players)]
+         "Time" (:played_at current-game)
+         "Result" (game-result current-game name-mapping)}
+        rankings (get-rankings (take idx all-games) players)]
 
     (map #(merge % common-map)
          (for [r (filter #(plays? current-game (:id %)) rankings)]
