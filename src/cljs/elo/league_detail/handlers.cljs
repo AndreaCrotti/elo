@@ -82,11 +82,6 @@
             (fn [[players games up-to] _]
               (games/rankings-history players (truncate-games games up-to))))
 
-(rf/reg-event-fx ::load-graph
-                 (fn [{:keys [db]} _]
-                   (let [rankings-history(rf/subscribe [::rankings-history])]
-                     (vega/init-vega (vega/rankings-vega-definition @rankings-history)))))
-
 (defn prev-game
   [db _]
   (let [up-to @(rf/subscribe [::up-to-games])

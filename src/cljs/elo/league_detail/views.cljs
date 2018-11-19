@@ -209,12 +209,7 @@
 
 (defn vega
   []
-  (rf/dispatch [::handlers/load-graph])
-  (let [history (rf/subscribe [::handlers/rankings-history])]
-    (fn []
-      (js/console.log @history)
-      #_(vega/init @history)
-      [:div {:id "vega-visualization"}])))
+  [vega/vega-outer])
 
 (defn navbar
   []
@@ -235,8 +230,7 @@
   (rf/dispatch [::handlers/load-league])
   (rf/dispatch [::handlers/load-games])
   (rf/dispatch [::handlers/load-players])
-  (rf/dispatch [::handlers/load-graph])
-
+  
   (fn []
     [:div.league_detail__root
      [navbar]
