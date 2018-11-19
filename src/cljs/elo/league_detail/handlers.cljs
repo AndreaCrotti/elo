@@ -74,9 +74,13 @@
               (games/summarise (truncate-games gs up-to))))
 
 (rf/reg-sub ::rankings-history
-            games-signal
-            (fn [[gs up-to] _]
-              (games/rankings-history (truncate-games gs up-to))))
+            (fn [query-v_]
+              [(rf/subscribe [::players])
+               (rf/subscribe [::games-live-players])
+               (rf/subscribe [::up-to-games])])
+
+            (fn [[players games up-to] _]
+              (games/rankings-history players (truncate-games games up-to))))
 
 (rf/reg-event-fx ::load-graph
                  (fn [{:keys [db]} _]

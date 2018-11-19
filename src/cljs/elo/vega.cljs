@@ -35,7 +35,7 @@
                "x" {"field" "time"
                     "type" "temporal"}}})
 
-(defn init-vega
+(defn init
   [data]
   (js/console.log "Got data to visualize = " data)
   (js/vegaEmbed "#vega-visualization"
