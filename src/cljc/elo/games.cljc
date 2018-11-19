@@ -103,23 +103,6 @@
                   :time (:played_at game))
           as-map)]))
 
-(defn timeseries
-  [games]
-  (let [norm-games (map elo/normalize-game games)
-        players (elo/extract-players norm-games)]
-
-    (flatten
-     (loop [idx 0
-            rankings (elo/initial-rankings players)
-            result []]
-
-       (cond (= idx (count games)) result
-             :else
-             (let [[new-rankings res] (game-expanded rankings idx (nth games idx))]
-               (recur (inc idx)
-                      new-rankings
-                      (conj result res))))))))
-
 (defn- plays?
   [game player-id]
   (contains? (set ((juxt :p1 :p2) game)) player-id))
@@ -150,17 +133,8 @@
            {"Ranking" (:ranking r)
             "Player" (name-mapping (:id r))}))))
 
-(defn- rankings-history*
+(defn rankings-history
   [players games]
   (flatten
    (for [idx (range (count games))]
      (rankings-at-idx* players idx games))))
-
-;; norm-games (map elo/normalize-game games) 
-;; players (elo/extract-players norm-games)
-
-(defn rankings-history
-  [games]
-  (let [norm-games (map elo/normalize-game games)
-        players (elo/extract-players norm-games)]
-    (rankings-history* players games)))

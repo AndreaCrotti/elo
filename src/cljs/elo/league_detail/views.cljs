@@ -209,7 +209,7 @@
 (defn vega
   []
   (rf/dispatch [::handlers/load-graph])
-  (let [ts (rf/subscribe [::handlers/timeseries])]
+  (let [ts (rf/subscribe [::handlers/rankings-history])]
     (fn []
       (js/console.log @ts)
       [:div "hello world"])))
@@ -233,7 +233,7 @@
   (rf/dispatch [::handlers/load-league])
   (rf/dispatch [::handlers/load-games])
   (rf/dispatch [::handlers/load-players])
-  (rf/dispatch [::handlers/load-graph-2])
+  (rf/dispatch [::handlers/load-graph])
 
   (fn []
     [:div.league_detail__root

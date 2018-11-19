@@ -51,23 +51,6 @@
             [{:game :fifa :p1 :p1 :p2 :p2
               :p1_points 3 :p2_points 0}])))))
 
-(deftest rankings-timeseries-test
-  (testing "Given a game and some initial rankings we should get an event timeseries"
-    (let [game {:p1 "P1" :p2 "P2" :p1_points 0 :p2_points 0 :played_at "2018-10-18T14:15:03.889Z"}
-          desired [{:time "2018-10-18T14:15:03.889Z"
-                    :ranking 1500.0
-                    :game 0
-                    :player "P2"
-                    :result "P1 vs P2: 0 - 0"}
-
-                   {:time "2018-10-18T14:15:03.889Z"
-                    :ranking 1500.0
-                    :game 0
-                    :player "P1"
-                    :result "P1 vs P2: 0 - 0"}]]
-
-      (is (= desired (sut/timeseries [game]))))))
-
 (deftest rankings-history-test
   (testing "Rankings history returned correctly"
     (let [games [{:p1 1 :p2 2 :p1_points 0 :p2_points 0 :played_at "2018-10-18T14:15:03.889Z"}]
