@@ -237,6 +237,5 @@
      [show-error]
      [:div.section.players__form_container [game-form]]
      [:div.section.rankings__table [rankings-table]]
-     #_[:div.section {:id "vega-visualization"}]
      [:div.section.vega__table [vega]]
      [:div.section.games__table [games-table]]]))

@@ -13,37 +13,35 @@
 
     {"$schema" schema-url
      "description" "Rankings over time"
-     "data" {"values" []}
+     "data" {"values" values}
      "mark" {"type" "line"
              "point" {"tooltip" {"content" "data"}}}
 
-     "encoding" {"y" {"field" "ranking"
+     "encoding" {"y" {"field" "Ranking"
                       "type" "quantitative"
                       "scale" {"domain" [min-r max-r]}}
 
-                 "x" {"field" "time"
+                 "color" {"field" "Player"
+                          "type" "Nominal"}
+
+                 "x" {"field" "Time"
                       "type" "temporal"}}}))
 (defn vega-view
   []
   [:div.rankings-over-time
    [:h4 "Rankings Over Time"]
-   [:div {:id vega-div-id}]])
-
-(defn component-did-mount
-  [values update-fn]
-  (fn [comp]
-    (let [vega (.getElementById js/document vega-div-id)
-          vega-obj (clj->js (rankings-vega-definition values))])))
+   [:div {:id vega-div-id
+          :class vega-div-id}]])
 
 (defn vega-inner
   []
-  (let [values (atom nil)
-        update (fn [comp]
-                 [])]
+  (let [update (fn [comp]
+                 (let [data (second (reagent/argv comp))]
+                   (js/vegaEmbed (str "#" vega-div-id)
+                                 (clj->js (rankings-vega-definition data)))))]
 
     (reagent/create-class
      {:reagent-render vega-view
-      :component-did-mount (component-did-mount values update)
       :component-did-update update
       :display-name "Rankings Over Time Inner"})))
 
