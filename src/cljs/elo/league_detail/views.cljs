@@ -230,7 +230,7 @@
   (rf/dispatch [::handlers/load-league])
   (rf/dispatch [::handlers/load-games])
   (rf/dispatch [::handlers/load-players])
-  
+
   (fn []
     [:div.league_detail__root
      [navbar]
