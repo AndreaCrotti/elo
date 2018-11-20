@@ -1,5 +1,6 @@
 (ns elo.games
   (:require [elo.algorithms.elo :as elo]
+            [taoensso.timbre :as timbre]
             [clojure.core.specs.alpha :as s]
             [medley.core :as medley]))
 
@@ -112,7 +113,11 @@
 
 (defn game-result
   [game name-mapping]
-  (fmt "%s vs %s: (%d - %d)"
+  (timbre/infof "game = " game
+                "name mapping = " name-mapping)
+
+  "Game result"
+  #_(fmt "%s vs %s: (%d - %d)"
        (name-mapping (:p1 game))
        (name-mapping (:p2 game))
        (:p1_points game)
