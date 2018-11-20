@@ -59,12 +59,14 @@
                     "Player" "P2",
                     "Game #" 0,
                     "Time" "2018-10-18T14:15:03.889Z"
-                    "Result" "P1 vs P2: (0 - 0)"}
+                    ;; "Result" "P1 vs P2: (0 - 0)"
+                    }
 
                    {"Ranking" 1500,
                     "Player" "P1",
                     "Game #" 0,
                     "Time" "2018-10-18T14:15:03.889Z"
-                    "Result" "P1 vs P2: (0 - 0)"}]]
+                    ;; "Result" "P1 vs P2: (0 - 0)"
+                    }]]
 
       (is (= desired (sut/rankings-history players games))))))
