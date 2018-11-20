@@ -1,5 +1,6 @@
 (ns elo.games
   (:require [elo.algorithms.elo :as elo]
+            [taoensso.timbre :as timbre]
             [clojure.core.specs.alpha :as s]
             [medley.core :as medley]))
 
@@ -103,35 +104,35 @@
                   :time (:played_at game))
           as-map)]))
 
-(defn timeseries
-  [games]
-  (let [norm-games (map elo/normalize-game games)
-        players (elo/extract-players norm-games)]
-
-    (flatten
-     (loop [idx 0
-            rankings (elo/initial-rankings players)
-            result []]
-
-       (cond (= idx (count games)) result
-             :else
-             (let [[new-rankings res] (game-expanded rankings idx (nth games idx))]
-               (recur (inc idx)
-                      new-rankings
-                      (conj result res))))))))
-
 (defn- plays?
   [game player-id]
   (contains? (set ((juxt :p1 :p2) game)) player-id))
 
+#?(:clj (def fmt format))
+#?(:cljs (def fmt goog.string/format))
+
+(defn game-result
+  [game name-mapping]
+  (timbre/infof "game = " game
+                "name mapping = " name-mapping)
+
+  "Game result"
+  #_(fmt "%s vs %s: (%d - %d)"
+       (name-mapping (:p1 game))
+       (name-mapping (:p2 game))
+       (:p1_points game)
+       (:p2_points game)))
+
 (defn- rankings-at-idx*
   [players idx all-games]
   (let [current-game (nth all-games idx)
+        name-mapping (player->names players)
         common-map
         {"Game #" idx
-         "Time" (:played_at current-game)}
-        rankings (get-rankings (take idx all-games) players)
-        name-mapping (player->names players)]
+         "Time" (:played_at current-game)
+         ;; "Result" (game-result current-game name-mapping)
+         }
+        rankings (get-rankings (take idx all-games) players)]
 
     (map #(merge % common-map)
          (for [r (filter #(plays? current-game (:id %)) rankings)]

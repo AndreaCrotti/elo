@@ -73,19 +73,14 @@
             (fn [[gs up-to] _]
               (games/summarise (truncate-games gs up-to))))
 
-(rf/reg-sub ::timeseries
-            games-signal
-            (fn [[gs up-to] _]
-              (games/timeseries (truncate-games gs up-to))))
+(rf/reg-sub ::rankings-history
+            (fn [query-v_]
+              [(rf/subscribe [::players])
+               (rf/subscribe [::games-live-players])
+               (rf/subscribe [::up-to-games])])
 
-(rf/reg-event-fx ::load-graph
-                 (fn [{:keys [db]} _]
-                   (let [ts (rf/subscribe [::timeseries])
-                         json (vega/rankings-vega-definition @ts)]
-
-                     (vega/init-vega json))
-
-                   {:db db}))
+            (fn [[players games up-to] _]
+              (games/rankings-history players (truncate-games games up-to))))
 
 (defn prev-game
   [db _]

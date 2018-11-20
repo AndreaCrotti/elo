@@ -8,6 +8,7 @@
             [elo.routes :as routes]
             [elo.shared-config :as config]
             [elo.utils :as utils]
+            [elo.vega :as vega]
             [re-frame.core :as rf]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
@@ -208,11 +209,7 @@
 
 (defn vega
   []
-  (rf/dispatch [::handlers/load-graph])
-  (let [ts (rf/subscribe [::handlers/timeseries])]
-    (fn []
-      (js/console.log @ts)
-      [:div "hello world"])))
+  [vega/vega-outer])
 
 (defn navbar
   []
@@ -240,5 +237,5 @@
      [show-error]
      [:div.section.players__form_container [game-form]]
      [:div.section.rankings__table [rankings-table]]
-     [:div.section {:id "vega-visualization"}]
+     [:div.section.vega__table [vega]]
      [:div.section.games__table [games-table]]]))

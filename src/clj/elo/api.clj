@@ -189,25 +189,6 @@
         (resp/content-type "text/csv")
         (resp/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
 
-(defn rankings-json-api
-  [request]
-  ;; return a vector of player rankings
-  ;; [{
-  ;;     "Time": "2018-10-18T14:15:03.889Z",
-  ;;     "Ranking": 1500,
-  ;;     "Game #": 1,
-  ;;     "Game": "P1 vs P2 (3-0)"
-  ;; }]
-
-  ;; loop over all the matches possible
-  (let [league-id (get-league-id request)
-        games (db/load-games league-id)
-        players (db/load-players league-id)]
-
-    (as-json
-     (-> (games/rankings-history players games)
-         (resp/ok)))))
-
 (defn- get-github-token
   [request]
   (get-in request github-token-path))
@@ -233,8 +214,7 @@
 
                 ;; csv stuff
                 "games-csv" games-csv
-                "rankings-csv" rankings-csv
-                "rankings-json" rankings-json-api}
+                "rankings-csv" rankings-csv}
 
         "oauth2/github/callback" github-callback
         "authenticated" authenticated?

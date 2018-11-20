@@ -1,47 +1,52 @@
 (ns elo.vega
   (:require [cljsjs.vega]
+            [re-frame.core :as rf]
             [reagent.core :as reagent]))
 
-(def schema-url "https://vega.github.io/schema/vega-lite/v2.json")
+(def schema-url "https://vega.github.io/schema/vega-lite/v3.0.0-rc6.json")
+(def vega-div-id "rankings-over-time__visualization")
 
+(defn rankings-vega-definition
+  [values]
+  (let [min-r (apply min (map #(get % "Ranking") values))
+        max-r (apply max (map #(get % "Ranking") values))]
+
+    {"$schema" schema-url
+     "description" "Rankings over time"
+     "data" {"values" values}
+     "mark" {"type" "line"
+             "point" {"tooltip" {"content" "data"}}}
+
+     "encoding" {"y" {"field" "Ranking"
+                      "type" "quantitative"
+                      "scale" {"domain" [min-r max-r]}}
+
+                 "color" {"field" "Player"
+                          "type" "Nominal"}
+
+                 "x" {"field" "Time"
+                      "type" "temporal"}}}))
 (defn vega-view
   []
   [:div.rankings-over-time
    [:h4 "Rankings Over Time"]
-   [:div.rankings-over-time__visualization {:style {:height "400px"}}]])
+   [:div {:id vega-div-id
+          :class vega-div-id}]])
 
 (defn vega-inner
   []
-  (let [values (atom nil)
-        update (fn [comp]
-                 [])]
+  (let [update (fn [comp]
+                 (let [data (second (reagent/argv comp))]
+                   (js/vegaEmbed (str "#" vega-div-id)
+                                 (clj->js (rankings-vega-definition data)))))]
+
     (reagent/create-class
      {:reagent-render vega-view
-      :component-did-mount 1
+      :component-did-update update
       :display-name "Rankings Over Time Inner"})))
 
-(defn rankings-vega-definition
-  [values]
-  {"$schema" schema-url
-   "description" "Rankings over time"
-   "data" {"values" values}
-   "mark" {"type" "line"
-           "point" {"tooltip" {"content" "data"}}}
-
-   "encoding" {"y" {"field" "ranking"
-                    "type" "quantitative"}
-
-               "x" {"field" "time"
-                    "type" "temporal"}}})
-
-(def fixed
-  [{"ranking" 1400
-    "time" "2018-01-04T12:05:48.000000000-00:00"}
-
-   {"ranking" 1500
-    "time" "2018-01-04T12:05:48.000000000-00:00"}])
-
-(defn init-vega
+(defn vega-outer
   []
-  (js/vegaEmbed "#vega-visualization"
-                (clj->js (rankings-vega-definition fixed))))
+  (let [history (rf/subscribe [:elo.league-detail.handlers/rankings-history])]
+    (fn []
+      [vega-inner @history])))
