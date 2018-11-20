@@ -141,5 +141,5 @@
                     :output-to "resources/public/cljs-out/elo-main.js"
                     :asset-path "resources/public/cljs-out/elo"
                     :optimizations :none
-                    :closure-defines {goog.DEBUG false}
-                    :pretty-print false}}]})
+                    :closure-defines {goog.DEBUG true}
+                    :pretty-print true}}]})
