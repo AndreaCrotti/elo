@@ -140,6 +140,6 @@
      :compiler     {:main elo.core
                     :output-to "resources/public/cljs-out/elo-main.js"
                     :asset-path "resources/public/cljs-out/elo"
-                    :optimizations :simple
+                    :optimizations :none
                     :closure-defines {goog.DEBUG false}
                     :pretty-print false}}]})
