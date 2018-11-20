@@ -100,8 +100,13 @@
 
 
   :aliases {"test-cljs" ["doo" "phantom" "test" "once"]
+
             "fig" ["trampoline" "run" "-m" "figwheel.main"]
-            "build" ["trampoline" "run" "-m" "figwheel.main" "-b" "elo"]}
+
+            "build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]
+
+            "cljs-prod" ^{:doc "Compile production cljs"}
+            ["run" "-m" "figwheel.main" "--build-once" "prod"]}
 
   :cljfmt {:indents {for-all [[:block 1]]
                      fdef [[:block 1]]
@@ -113,7 +118,7 @@
              :source-paths ["src/clj" "src/cljc"]
              :prep-tasks [["compile"]
                           ["garden" "once"]
-                          ["cljsbuild" "once" "min"]]
+                          ["cljs-prod"]]
 
              :omit-source true
              :aot :all
@@ -132,14 +137,4 @@
                    [com.bhauman/rebel-readline-cljs "0.1.4"]
                    ;; dependencies for the reloaded workflow
                    [reloaded.repl "0.2.4"]
-                   [ring/ring-mock "0.3.2"]]}}
-  :cljsbuild
-  {:builds
-   [{:id "min"
-     :source-paths ["src/cljs" "src/cljc"]
-     :compiler     {:main elo.core
-                    :output-to "resources/public/cljs-out/elo-main.js"
-                    :asset-path "resources/public/cljs-out/elo"
-                    :optimizations :simple
-                    :closure-defines {goog.DEBUG false}
-                    :pretty-print false}}]})
+                   [ring/ring-mock "0.3.2"]]}})
