@@ -19,7 +19,9 @@
      "mark" {"type" "line"
              "point" {"tooltip" [{"field" "Player" "type" "Nominal"},
                                  {"field" "Result" "type" "Nominal"}
-                                 {"field" "Game" "type" "quantitative"}]}}
+                                 {"field" "Game" "type" "quantitative"}
+                                 {"field" "Time" "type" "Temporal"}
+                                 {"field" "Ranking" "type" "quantitative"}]}}
 
      "encoding" {"y" {"field" "Ranking"
                       "type" "quantitative"
