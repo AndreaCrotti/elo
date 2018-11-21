@@ -114,25 +114,21 @@
 
 (defn game-result
   [game name-mapping]
-  (log/infof "game = " game
-             "name mapping = " name-mapping)
+  (fmt "%s vs %s: (%d - %d)"
+       (name-mapping (:p1 game))
+       (name-mapping (:p2 game))
+       (:p1_points game)
+       (:p2_points game)))
 
-  "Game result"
-  #_(fmt "%s vs %s: (%d - %d)"
-         (name-mapping (:p1 game))
-         (name-mapping (:p2 game))
-         (:p1_points game)
-         (:p2_points game)))
-
-(defn- rankings-at-idx*
+(defn rankings-at-idx*
   [players idx all-games]
   (let [current-game (nth all-games idx)
         name-mapping (player->names players)
         common-map
         {"Game #" idx
          "Time" (:played_at current-game)
-         ;; "Result" (game-result current-game name-mapping)
-         }
+         "Result" (game-result current-game name-mapping)}
+
         rankings (get-rankings (take idx all-games) players)]
 
     (map #(merge % common-map)

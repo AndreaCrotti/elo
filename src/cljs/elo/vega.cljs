@@ -17,7 +17,11 @@
      "description" "Rankings over time"
      "data" {"values" values}
      "mark" {"type" "line"
-             "point" {"tooltip" {"content" "data"}}}
+             "point" {"tooltip" [{"field" "Player" "type" "Nominal"},
+                                 {"field" "Result" "type" "Nominal"}
+                                 {"field" "Game" "type" "quantitative"}
+                                 {"field" "Time" "type" "Temporal"}
+                                 {"field" "Ranking" "type" "quantitative"}]}}
 
      "encoding" {"y" {"field" "Ranking"
                       "type" "quantitative"
