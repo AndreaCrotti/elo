@@ -141,7 +141,7 @@
                [:td (get name-mapping p2)]
                [:td p2_using]
                [:td p2_points]
-               [:td (.format (js/moment played_at) "LLLL")]]))]]))
+               [:td (.format (js/moment played_at) "YYYY-MM-DD")]]))]]))
 
 (defn el-result
   [idx result]
