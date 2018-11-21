@@ -62,7 +62,7 @@
 
     [:div.game__form {:on-submit (fn [] false)}
      [:div.form-group.player1__group
-      [:h3 "Player 1"]
+      [:label.form__label "Player 1"]
       [:div.form__row.form-control
        [drop-down-players sorted-players ::handlers/p1 (:p1 @game)
         {:caption "Name"}]
@@ -77,7 +77,7 @@
          :on-change (utils/set-val ::handlers/p1_using)}]]]
 
      [:div.form-group.player2__group
-      [:h3 "Player 2"]
+      [:label.form__label "Player 2"]
       [:div.form__row.form-control
        [drop-down-players sorted-players ::handlers/p2 (:p2 @game)
         {:caption "Name"}]
@@ -91,7 +91,7 @@
                              :on-change (utils/set-val ::handlers/p2_using)}]]]
 
      [:div.form__row.form-group
-      [:label {:for "played_at"} "Played at"]
+      [:label.form__label {:for "played_at"} "Played at"]
       [:div.form-control {:id "played_at"} [date-range-picker]]]
 
      [:div.form__row.form-group

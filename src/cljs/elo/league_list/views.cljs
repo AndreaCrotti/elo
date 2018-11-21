@@ -1,5 +1,6 @@
 (ns elo.league-list.views
   (:require [accountant.core :as accountant]
+            [clojure.string :as string]
             [elo.auth :as auth]
             [elo.league-list.handlers :as handlers]
             [elo.routes :as routes]
@@ -14,7 +15,7 @@
        :href "/oauth2/github"}
 
    [:span {:class (classes ["fa" (str "fa-" provider)])}]
-   (str "Sign in with " (clojure.string/capitalize provider))])
+   (str "Sign in with " (string/capitalize provider))])
 
 (defn sign-in-block
   []
