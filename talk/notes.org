@@ -6,9 +6,34 @@
 #+REVEAL_HLEVEL: 1
 #+TOC: listings
 
+* Introduction
+
+#+BEGIN_QUOTE
+Work hard, play harder
+#+END_QUOTE
+
 * Who Am I
 
-- senior software developer at funding circle
+#+BEGIN_NOTES
+Just to give a very brief introduction about myself, I work here at
+Funding Circle, I have a moustache just because it's Movember and I've
+been for most of my career a backend Developer.
+
+Or well to be precise in a few jobs I was doing some frontend work as
+well, but I would have never even considered doing Angular or Knockout
+JS or CSS for fun!
+
+In the last year instead I worked on 2 medium personal projects using
+Clojure and Clojurescript and I actually really enjoy it.
+Today I'm going to talk about one of the projects,
+
+So today I'm going to talk about one of the projects I've been working
+on, a platform to create leagues with your friends and keep track of
+rankings.
+
+#+END_NOTES
+
+- senior software developer at Funding Circle
 - API & backends for a long time
 - saw the light with Clojure & Clojurescript
 
@@ -16,12 +41,13 @@
 
 #+BEGIN_NOTES
 
-Playing with your colleagues is a great way to have fun at work, bond
-on a more personal level with your collegues, and relax your brain for
-a moment from that nasty problem you are debugging.
+Every respectable start-up out there has a few games, they are after
+all a great way to bond and to take your mind off an annoying bug you
+can't seem to solve.
 
-However of course playing is even more fun if you make it a proper
-competition, with a proper league and such.
+However of course playing is even more fun if you make it competitive,
+so we need a way to keep track of the scores and a way to rank the
+players.
 
 I've had internal leagues for table tennis and similar office sports
 in various companies, where the tracking tool was sometimes just an
@@ -292,7 +318,7 @@ I did mostly backend in my career and always feared whenever I had to
 do some javascript with horrible things like Angular or Knockout JS,
 but using Re-frame and Clojurescript is really another story.
 
-If you have any ideas which 
+If you have any ideas which
 
 #+END_NOTES
 
