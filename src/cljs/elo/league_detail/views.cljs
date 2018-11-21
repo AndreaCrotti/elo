@@ -209,7 +209,7 @@
 (defn navbar
   []
   (let [league @(rf/subscribe [::handlers/league])]
-    [:ul
+    [:ul.navbar__root
      [:li.navbar__element
       [:a {:href "#"
            :on-click #(accountant/navigate! (routes/path-for :league-list))}
