@@ -207,10 +207,6 @@
        [:pre (:status-text error)]
        [:pre (:original-text error)]])))
 
-(defn vega
-  []
-  [vega/vega-outer])
-
 (defn navbar
   []
   (let [league @(rf/subscribe [::handlers/league])]
@@ -236,6 +232,6 @@
      [navbar]
      [show-error]
      [:div.section.players__form_container [game-form]]
+     [:div.section.vega__table [vega/vega-outer]]
      [:div.section.rankings__table [rankings-table]]
-     [:div.section.vega__table [vega]]
      [:div.section.games__table [games-table]]]))

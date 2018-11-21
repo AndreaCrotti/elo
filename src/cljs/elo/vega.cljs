@@ -29,7 +29,6 @@
 (defn vega-view
   []
   [:div.rankings-over-time
-   [:h4 "Rankings Over Time"]
    [:div {:id vega-div-id
           :class vega-div-id}]])
 
