@@ -178,8 +178,7 @@
         :max (count @games)
         :value up-to-current
         :class "slider"
-        :on-change (utils/set-val ::handlers/up-to-games
-                                  js/parseInt)}]
+        :on-change (utils/set-val ::handlers/up-to-games js/parseInt)}]
 
       [:span.rankings-chevrons.form-control
        [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]

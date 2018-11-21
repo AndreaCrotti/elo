@@ -1,6 +1,6 @@
 .vega-embed {
   position: relative;
-  // display: inline-block;
+  display: inline-block;
   padding-right: 38px;
 }
 

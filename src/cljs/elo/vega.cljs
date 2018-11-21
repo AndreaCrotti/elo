@@ -12,6 +12,8 @@
         max-r (apply max (map #(get % "Ranking") values))]
 
     {"$schema" schema-url
+     "width" 500
+     "height" 500
      "description" "Rankings over time"
      "data" {"values" values}
      "mark" {"type" "line"
