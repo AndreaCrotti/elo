@@ -131,8 +131,6 @@
 
         rankings (get-rankings (take idx all-games) players)]
 
-    (log/infof "common map = " (str common-map))
-
     (map #(merge % common-map)
          (for [r (filter #(plays? current-game (:id %)) rankings)]
            {"Ranking" (:ranking r)
