@@ -93,6 +93,9 @@ to the rankings.
 
 ** Demo time
 
+# TODO: should the demo be just showing how to compute things in the
+# Repl or just in this simple scenario.
+
 #+BEGIN_NOTES
 
 Let's see in practice how this works with a very simple demo.
@@ -187,31 +190,69 @@ library. On top of that there is a Clojurescript wrapper called
 `Reagent`, which hides all the javascript interop and give you a nice
 Clojure interface to React.
 
-Reagent allows you to define components using Hiccup syntax
-
 #+END_NOTES
-
-#+BEGIN_SRC clojure :tangle yes
-  (defn some-component []
-    [:div
-     [:h3 "I am a component!"]
-     [:p.someclass
-      "I have " [:strong "bold"]
-      [:span {:style {:color "red"}} " and red"]
-      " text."]])
-#+END_SRC
-
-#+BEGIN_SRC clojure :tangle yes
-  ;; render everything
-  (defn mountit []
-    (r/render [childcaller]
-              (.-body js/document)))
-#+END_SRC
-
 
 React → (Clojurescript) → Reagent → Re-Frame
 
-** Concepts
+** Reagent  Syntax
+
+#+BEGIN_NOTES
+
+I assume probably everyone knows about React, but it was quite a big
+deal for the functional programming community, since it really works
+extremely with functional languages.
+
+The idea of the virtual dom allows you to focus just on pure functions
+that simply render your content, knowing that your page will be
+automatically updated whenever the data changes.
+
+Reagent is just one of the bindings react in Clojurescript, and it
+allows you to write 
+
+#+END_NOTES
+
+*JSX*
+
+#+BEGIN_SRC javascript :tangle no
+function getGreeting(user) {
+  if (user) {
+    return <h1>Hello, {formatName(user)}!</h1>;
+  }
+  return <h1>Hello, Stranger.</h1>;
+}
+
+#+END_SRC
+
+*REAGENT*
+
+#+BEGIN_SRC clojure :tangle yes
+  (defn get-greeting
+    [user]
+    (if user
+      [:h1 "Hello" [format-name user]]
+      [:h1 "Hello, Stranger"]))
+
+#+END_SRC
+
+** Reagent rendering
+
+#+BEGIN_SRC javascript :tangle no
+  const element = <h1>Hello, world</h1>;
+  ReactDOM.render(element, document.getElementById('root'));
+#+END_SRC
+
+#+BEGIN_SRC clojure :tangle yes
+  (def element [:h1 "Hello, world"])
+
+  (defn mountit []
+    (r/render [element]
+              (.-body js/document)))
+#+END_SRC
+
+** Re-frame primitives
+
+# TODO: put actual base concepts here instead of the functions that
+# are going to be shown
 
 - single *app db*
 - subscriptions: *reg-sub*
