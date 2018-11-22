@@ -6,9 +6,34 @@
 #+REVEAL_HLEVEL: 1
 #+TOC: listings
 
+* Introduction
+
+#+BEGIN_QUOTE
+Work hard, play harder
+#+END_QUOTE
+
 * Who Am I
 
-- senior software developer at funding circle
+#+BEGIN_NOTES
+Just to give a very brief introduction about myself, I work here at
+Funding Circle, I have a moustache just because it's Movember and I've
+been for most of my career a backend Developer.
+
+Or well to be precise in a few jobs I was doing some frontend work as
+well, but I would have never even considered doing Angular or Knockout
+JS or CSS for fun!
+
+In the last year instead I worked on 2 medium personal projects using
+Clojure and Clojurescript and I actually really enjoy it.
+Today I'm going to talk about one of the projects,
+
+So today I'm going to talk about one of the projects I've been working
+on, a platform to create leagues with your friends and keep track of
+rankings.
+
+#+END_NOTES
+
+- senior software developer at Funding Circle
 - API & backends for a long time
 - saw the light with Clojure & Clojurescript
 
@@ -16,12 +41,13 @@
 
 #+BEGIN_NOTES
 
-Playing with your colleagues is a great way to have fun at work, bond
-on a more personal level with your collegues, and relax your brain for
-a moment from that nasty problem you are debugging.
+Every respectable start-up out there has a few games, they are after
+all a great way to bond and to take your mind off an annoying bug you
+can't seem to solve.
 
-However of course playing is even more fun if you make it a proper
-competition, with a proper league and such.
+However of course playing is even more fun if you make it competitive,
+so we need a way to keep track of the scores and a way to rank the
+players.
 
 I've had internal leagues for table tennis and similar office sports
 in various companies, where the tracking tool was sometimes just an
@@ -66,6 +92,9 @@ to the rankings.
 *The Elo rating system is a method for calculating the relative skill levels of players in zero-sum games such as chess.*
 
 ** Demo time
+
+# TODO: should the demo be just showing how to compute things in the
+# Repl or just in this simple scenario.
 
 #+BEGIN_NOTES
 
@@ -161,31 +190,69 @@ library. On top of that there is a Clojurescript wrapper called
 `Reagent`, which hides all the javascript interop and give you a nice
 Clojure interface to React.
 
-Reagent allows you to define components using Hiccup syntax
-
 #+END_NOTES
-
-#+BEGIN_SRC clojure :tangle yes
-  (defn some-component []
-    [:div
-     [:h3 "I am a component!"]
-     [:p.someclass
-      "I have " [:strong "bold"]
-      [:span {:style {:color "red"}} " and red"]
-      " text."]])
-#+END_SRC
-
-#+BEGIN_SRC clojure :tangle yes
-  ;; render everything
-  (defn mountit []
-    (r/render [childcaller]
-              (.-body js/document)))
-#+END_SRC
-
 
 React → (Clojurescript) → Reagent → Re-Frame
 
-** Concepts
+** Reagent  Syntax
+
+#+BEGIN_NOTES
+
+I assume probably everyone knows about React, but it was quite a big
+deal for the functional programming community, since it really works
+extremely with functional languages.
+
+The idea of the virtual dom allows you to focus just on pure functions
+that simply render your content, knowing that your page will be
+automatically updated whenever the data changes.
+
+Reagent is just one of the bindings react in Clojurescript, and it
+allows you to write 
+
+#+END_NOTES
+
+*JSX*
+
+#+BEGIN_SRC javascript :tangle no
+function getGreeting(user) {
+  if (user) {
+    return <h1>Hello, {formatName(user)}!</h1>;
+  }
+  return <h1>Hello, Stranger.</h1>;
+}
+
+#+END_SRC
+
+*REAGENT*
+
+#+BEGIN_SRC clojure :tangle yes
+  (defn get-greeting
+    [user]
+    (if user
+      [:h1 "Hello" [format-name user]]
+      [:h1 "Hello, Stranger"]))
+
+#+END_SRC
+
+** Reagent rendering
+
+#+BEGIN_SRC javascript :tangle no
+  const element = <h1>Hello, world</h1>;
+  ReactDOM.render(element, document.getElementById('root'));
+#+END_SRC
+
+#+BEGIN_SRC clojure :tangle yes
+  (def element [:h1 "Hello, world"])
+
+  (defn mountit []
+    (r/render [element]
+              (.-body js/document)))
+#+END_SRC
+
+** Re-frame primitives
+
+# TODO: put actual base concepts here instead of the functions that
+# are going to be shown
 
 - single *app db*
 - subscriptions: *reg-sub*
@@ -292,7 +359,7 @@ I did mostly backend in my career and always feared whenever I had to
 do some javascript with horrible things like Angular or Knockout JS,
 but using Re-frame and Clojurescript is really another story.
 
-If you have any ideas which 
+If you have any ideas which
 
 #+END_NOTES
 

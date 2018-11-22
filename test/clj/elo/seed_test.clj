@@ -17,4 +17,4 @@
            (jdbc/query (db/db-spec)
                        (sql/format (db/count-sql :game))))]
 
-      (is (= [{:count 40}] games-count)))))
+      (is (= [{:count sut/n-games}] games-count)))))

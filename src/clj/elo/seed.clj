@@ -5,8 +5,8 @@
             [elo.shared-config :as shared]
             [elo.db :as db]))
 
-(def n-players 5)
-(def n-games 40)
+(def n-games 100)
+(def players ["John" "Charlie" "Frank" "Fitz" "Emily"])
 
 (defn random-game
   [player-ids]
@@ -33,7 +33,6 @@
 
      (tc/from-epoch (+ zero (rand-int length))))))
 
-;;TODO: now generate some random players and some random games
 (defn seed
   []
   (let [company-id (db/gen-uuid)
@@ -49,9 +48,9 @@
     (db/add-company! company)
     (db/add-league! league)
 
-    (let [players (repeatedly n-players gen/player-gen)]
+    (let [players (map #(gen/player-gen {:name %}) players)]
 
-      (doseq [n (range n-players)]
+      (doseq [n (range (count players))]
         (println "Creating player number" n (nth players n))
         (db/add-player-full! (assoc (nth players n)
                                     :email "sample-email"
