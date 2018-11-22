@@ -53,7 +53,8 @@
 (defn load-leagues-sql
   []
   (-> (h/select :*)
-      (h/from :league)))
+      (h/from :league)
+      (h/where [:= :enabled true])))
 
 (defn load-companies-sql
   []

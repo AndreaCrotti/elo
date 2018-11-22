@@ -5,7 +5,7 @@
             [elo.shared-config :as shared]
             [elo.db :as db]))
 
-(def n-games 100)
+(def n-games 42)
 (def players ["John" "Charlie" "Frank" "Fitz" "Emily"])
 
 (defn random-game
@@ -27,8 +27,8 @@
 (defn random-ts
   []
   (tc/to-sql-time
-   (let [zero (tc/to-epoch (t/date-time 2018 1 1))
-         end (tc/to-epoch (t/date-time 2020 1 1))
+   (let [zero (tc/to-epoch (t/date-time 2017 1 1))
+         end (tc/to-epoch (t/date-time 2018 10 1))
          length (- end zero)]
 
      (tc/from-epoch (+ zero (rand-int length))))))
@@ -39,10 +39,10 @@
         league-id (db/gen-uuid)
 
         company {:id company-id
-                 :name "Sample Company"}
+                 :name "Sample Company Time Fixed"}
 
         league {:company_id company-id
-                :name "Sample League"
+                :name "Sample League Time Fixed"
                 :id league-id}]
 
     (db/add-company! company)

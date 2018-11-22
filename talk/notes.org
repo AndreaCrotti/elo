@@ -1,16 +1,10 @@
 #+AUTHOR: Andrea Crotti (@andreacrotti)
-#+TITLE: Build an ELO platform with Clojure and Re-Frame
-#+OPTIONS: num:nil toc:nil ^:nil tex:t reveal_progress:t reveal_control:t reveal_overview:t reveal_single_file:t
+#+TITLE: Build an ELO platform with Re-Frame
+#+OPTIONS: num:nil toc:nil ^:nil tex:t reveal_progress:t reveal_control:t reveal_overview:t
 #+REVEAL_TRANS: none
 #+REVEAL_SPEED: fast
 #+REVEAL_HLEVEL: 1
 #+TOC: listings
-
-* Introduction
-
-#+BEGIN_QUOTE
-Work hard, play harder
-#+END_QUOTE
 
 * Who Am I
 
@@ -46,17 +40,16 @@ all a great way to bond and to take your mind off an annoying bug you
 can't seem to solve.
 
 However of course playing is even more fun if you make it competitive,
-so we need a way to keep track of the scores and a way to rank the
+so we need a way to keep track of all the games and a way to rank the
 players.
 
 I've had internal leagues for table tennis and similar office sports
 in various companies, where the tracking tool was sometimes just an
 extremely complicated spreadsheet, and since there wasn't nothing here
-at funding circle currently I just decided to build a new tool.
+at funding circle I just decided to build a new tool.
 
-This talk is about the journey of building such platform using Clojure
-full stack, but first let's explain what ELO means, and why I chose
-that.
+In this talk I will first talk about the algorithm used to rank
+players and then introduce re-frame.
 
 #+END_NOTES
 
@@ -69,32 +62,50 @@ Jack a dull boy
 
 * Elo
 
+#+BEGIN_NOTES
+You might have heard of Elo in relation with Chess, where every
+player, at least the good ones, have an elo score.  The name simply
+comes from Elo Arpad, the creator of the algorithm, who actually
+originally created this algorithm for chess players.
+#+END_NOTES
+
 [[./chess.jpg]]
+
+** Elo rating system
 
 #+BEGIN_NOTES
 
-The Elo rating system is a method for calculating the relative skill
-level of players in zero-sum games such as Chess.
+Before we look at how Elo works in more detail, these are the main
+features.  Elo is used to calculate theh *relative* skill level, so
+your ranking will always depend on the other players in the same
+league.
 
-To clarify a *zero-sum* game is simply a game where one player wins
-and another player loses, or they draw, which is really almost every
-game you can play in the office
+It can be used for any zero sum game, here we are only currently using
+it for Fifa but table tennis pool or any other office sport would work
+perfectly well.
 
-In practice the rating system just works by to first assigning initial
-rankings to players and then for each game compute the new rankings of
-the two players.
+Another point to keep in mind is that whenever you play a game the new
+players rankings will only depend on the current rankings *and* the
+result, nothing else. This is very important for scalability reasons
+for example, you don't need to know anything about other games or the
+whole history.
 
-The biggest the difference in rankings the bigger will be the changes
-to the rankings.
+Two more thing are that the amount of points lost and won will depend
+on the players ranking difference, so it's not a fixed amount like in
+football for example, where if a team wins they get 3 points no matter
+who they play against.
 
+And lastly the average of the points is always the same.
 #+END_NOTES
 
-*The Elo rating system is a method for calculating the relative skill levels of players in zero-sum games such as chess.*
+#+ATTR_REVEAL: :frag (appear)
+- method for calculating the *relative* skill levels of players
+- can be applied to *any* zero sum game (chess / tennis / table tennis...)
+- new rankings *only* depends on current rankings and result
+- points won or lost depend on the *ranking difference* between two players
+- average of all the points is constant
 
 ** Demo time
-
-# TODO: should the demo be just showing how to compute things in the
-# Repl or just in this simple scenario.
 
 #+BEGIN_NOTES
 
@@ -126,6 +137,11 @@ $R\_B = 1500 + (K * (1 - E\_B)) = 1500 + (32 * (0 - 0.5)) = 1484$
 
 ** Elo implementation (1)
 
+#+BEGIN_NOTES
+The implementation is quite straight forward, these two functions
+compute the expected score and the new ranking.
+#+END_NOTES
+
 $E\_A =  \frac{1}{1 + 10 ^ \frac{RB - RA}{400}}$
 
 $R\_A = R\_A + (K * (1 - E\_A))$
@@ -145,6 +161,27 @@ $R\_A = R\_A + (K * (1 - E\_A))$
 #+END_SRC
 
 ** Elo implementation (2)
+
+#+BEGIN_NOTES
+To make it more usable though we need a way to compute new rankings
+given existing rankings and a game.
+
+So the function new-rankings takes as input a map with existing player
+rankings, a game which we destructure in the arguments and returns the
+new rankings.
+
+One thing worth to mention is that these functions to compute the
+rankings are all pure, they take immutable data structures in input
+and return new immutable data structures.
+
+They also work both in Clojure and Clojurescript without any changes,
+and actually in the beginning they were part of Clojure files and used
+by the backend API, while now they are in CLJC files and are actually
+used *only* on the client side.
+
+Immutability and the ability to run the same code both on the JVM and
+in the browser opens the door to very exciting possibilities.
+#+END_NOTES
 
 #+BEGIN_SRC clojure :tangle yes
 
@@ -185,6 +222,16 @@ Another very important piece of the puzzle is Re-Frame, which is a
 great little framework to create SPAs doing Functional Reactive
 Programming.
 
+From re-frame github page, re-frame is a pattern for writing SPAs in
+Clojurescript using Reagent.
+
+For what it does it's a surprisingly small library with only around
+750 lines of code, and it's defined as a pattern because the really
+important thing it gives you is a nice and elegant way to define the
+structure of your Spa, using a single centralised DB to store all the
+client side state, and a chain of event handlers to handle user
+interaction with a functional reactive programming approach.
+
 In this stack we have `React` at the bottom, which is the lower level
 library. On top of that there is a Clojurescript wrapper called
 `Reagent`, which hides all the javascript interop and give you a nice
@@ -192,7 +239,12 @@ Clojure interface to React.
 
 #+END_NOTES
 
-React → (Clojurescript) → Reagent → Re-Frame
+*re-frame is a pattern for writing SPAs in ClojureScript, using Reagent.*
+
+#+ATTR_REVEAL: :frag (appear)
+- React
+- Reagent
+- Re-Frame
 
 ** Reagent  Syntax
 
@@ -207,8 +259,8 @@ that simply render your content, knowing that your page will be
 automatically updated whenever the data changes.
 
 Reagent is just one of the bindings react in Clojurescript, and it
-allows you to write 
-
+allows you to write html using Hiccup syntax, which is an very nice
+way to use data structures everywhere.
 #+END_NOTES
 
 *JSX*
@@ -229,7 +281,7 @@ function getGreeting(user) {
   (defn get-greeting
     [user]
     (if user
-      [:h1 "Hello" [format-name user]]
+      [:h1 [str "Hello" [format-name user]]]
       [:h1 "Hello, Stranger"]))
 
 #+END_SRC
@@ -244,17 +296,16 @@ function getGreeting(user) {
 #+BEGIN_SRC clojure :tangle yes
   (def element [:h1 "Hello, world"])
 
-  (defn mountit []
-    (r/render [element]
-              (.-body js/document)))
+  (reagent/render-component element
+                            (.-getElementbyid js/document "root"))
 #+END_SRC
+
+
+* Re-frame in action
 
 ** Re-frame primitives
 
-# TODO: put actual base concepts here instead of the functions that
-# are going to be shown
-
-- single *app db*
+#+ATTR_REVEAL: :frag (appear)
 - subscriptions: *reg-sub*
 - event handler: *reg-event-db*
 - effect handler: *reg-event-fx*
@@ -266,16 +317,6 @@ function getGreeting(user) {
 ** DB
 
 #+BEGIN_SRC clojure
-
-(def default-db
-  {:games []
-   :players []
-   :dead-players #{}
-   :game {}
-   :error nil
-   :up-to-games nil
-   :league {}
-   :league_id nil})
 
 (def default-game
   {:p1 ""
@@ -355,11 +396,9 @@ To do this we'll need:
 To conclude I just want to say that for me frontend development has
 never been so fun.
 
-I did mostly backend in my career and always feared whenever I had to
-do some javascript with horrible things like Angular or Knockout JS,
-but using Re-frame and Clojurescript is really another story.
-
-If you have any ideas which
+So if you have any personal projects you'd like to try out
+definitively give Re-frame a go, you won't regret it, careful you
+might find it addictive though.
 
 #+END_NOTES
 
@@ -371,21 +410,27 @@ If you have any ideas which
 ** TODO add something about CLJC files and how easy is to share business logic across frontend and backend?
 ** TODO add some graph explaining how re-frame works?
 ** TODO think about what can be done in a small demo
-** TODO improve explanation of why I worked on this specific project
-** TODO improve explanation of Elo
 ** TODO improve conclusions
 ** TODO fix all the code
+** DONE improve explanation of Elo
+   CLOSED: [2018-11-22 Thu 13:14]
+   - CLOSING NOTE [2018-11-22 Thu 13:14]
 
-** TODO show some events handling in 10x?
-** TODO add link to the project and the twitter handle more clearly
-** TODO send slides sample to branding
+** DONE add link to the project and the twitter handle more clearly
+   CLOSED: [2018-11-22 Thu 13:13]
+   - CLOSING NOTE [2018-11-22 Thu 13:13] \\
+     linked it to the meetup page
+** DONE send slides sample to branding
+   CLOSED: [2018-11-22 Thu 13:12]
 
+   - CLOSING NOTE [2018-11-22 Thu 13:12]
 ** DONE add the sample ELO implementation code
    CLOSED: [2018-11-14 Wed 17:07]
    - CLOSING NOTE [2018-11-14 Wed 17:07]
 ** DONE use only copyleft pictures to avoid copyright issues
    CLOSED: [2018-11-14 Wed 17:07]
    - CLOSING NOTE [2018-11-14 Wed 17:07]
+
 
 * Ideas for the demo
 - change parameters of the Elo algorithm
