@@ -246,8 +246,8 @@ that simply render your content, knowing that your page will be
 automatically updated whenever the data changes.
 
 Reagent is just one of the bindings react in Clojurescript, and it
-allows you to write 
-
+allows you to write html using Hiccup syntax, which is an very nice
+way to use data structures everywhere.
 #+END_NOTES
 
 *JSX*
@@ -268,7 +268,7 @@ function getGreeting(user) {
   (defn get-greeting
     [user]
     (if user
-      [:h1 "Hello" [format-name user]]
+      [:h1 [str "Hello" [format-name user]]]
       [:h1 "Hello, Stranger"]))
 
 #+END_SRC
@@ -297,6 +297,8 @@ function getGreeting(user) {
 - event handler: *reg-event-db*
 - effect handler: *reg-event-fx*
 
+
+* Re-frame in action
 ** Form
 
 [[./form.png]]
