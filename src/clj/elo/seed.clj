@@ -5,7 +5,7 @@
             [elo.shared-config :as shared]
             [elo.db :as db]))
 
-(def n-games 100)
+(def n-games 42)
 (def players ["John" "Charlie" "Frank" "Fitz" "Emily"])
 
 (defn random-game

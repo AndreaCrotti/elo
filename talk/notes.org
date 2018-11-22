@@ -65,6 +65,7 @@ Jack a dull boy
 
 [[./chess.jpg]]
 
+** Elo rating system
 #+BEGIN_NOTES
 
 The Elo rating system is a method for calculating the relative skill
@@ -79,16 +80,13 @@ to the rankings.
 
 #+END_NOTES
 
-- the Elo rating system is a method for calculating the *relative* skill levels of players
-- can be applied to any zero sum game (chess / tennis / table tennis...)
-- new scores *only* depends on current scores and result
-- the average of all the points is always the same
-- points won or lost depend on the score difference between two players
+- method for calculating the *relative* skill levels of players
+- can be applied to *any* zero sum game (chess / tennis / table tennis...)
+- new rankings *only* depends on current rankings and result
+- points won or lost depend on the *ranking difference* between two players
+- average of all the points is constant
 
 ** Demo time
-
-# TODO: should the demo be just showing how to compute things in the
-# Repl or just in this simple scenario.
 
 #+BEGIN_NOTES
 
