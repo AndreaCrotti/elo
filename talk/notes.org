@@ -6,12 +6,6 @@
 #+REVEAL_HLEVEL: 1
 #+TOC: listings
 
-* Introduction
-
-#+BEGIN_QUOTE
-Work hard, play harder
-#+END_QUOTE
-
 * Who Am I
 
 #+BEGIN_NOTES
@@ -80,16 +74,16 @@ To clarify a *zero-sum* game is simply a game where one player wins
 and another player loses, or they draw, which is really almost every
 game you can play in the office
 
-In practice the rating system just works by to first assigning initial
-rankings to players and then for each game compute the new rankings of
-the two players.
-
 The biggest the difference in rankings the bigger will be the changes
 to the rankings.
 
 #+END_NOTES
 
-*The Elo rating system is a method for calculating the relative skill levels of players in zero-sum games such as chess.*
+- the Elo rating system is a method for calculating the *relative* skill levels of players
+- can be applied to any zero sum game (chess / tennis / table tennis...)
+- new scores *only* depends on current scores and result
+- the average of all the points is always the same
+- points won or lost depend on the score difference between two players
 
 ** Demo time
 
@@ -244,9 +238,8 @@ function getGreeting(user) {
 #+BEGIN_SRC clojure :tangle yes
   (def element [:h1 "Hello, world"])
 
-  (defn mountit []
-    (r/render [element]
-              (.-body js/document)))
+  (reagent/render-component element
+                            (.-getElementbyid js/document "root"))
 #+END_SRC
 
 ** Re-frame primitives
