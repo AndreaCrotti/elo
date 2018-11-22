@@ -137,6 +137,11 @@ $R\_B = 1500 + (K * (1 - E\_B)) = 1500 + (32 * (0 - 0.5)) = 1484$
 
 ** Elo implementation (1)
 
+#+BEGIN_NOTES
+The implementation is quite straight forward, these two functions
+compute the expected score and the new ranking.
+#+END_NOTES
+
 $E\_A =  \frac{1}{1 + 10 ^ \frac{RB - RA}{400}}$
 
 $R\_A = R\_A + (K * (1 - E\_A))$
@@ -156,6 +161,15 @@ $R\_A = R\_A + (K * (1 - E\_A))$
 #+END_SRC
 
 ** Elo implementation (2)
+
+#+BEGIN_NOTES
+To make it more usable though we need a way to compute new rankings
+given existing rankings and a game.
+
+So the function new-rankings takes as input a map with existing player
+rankings, a game which we destructure in the arguments and returns the
+new rankings.
+#+END_NOTES
 
 #+BEGIN_SRC clojure :tangle yes
 
@@ -196,6 +210,15 @@ Another very important piece of the puzzle is Re-Frame, which is a
 great little framework to create SPAs doing Functional Reactive
 Programming.
 
+From re-frame github page, re-frame is a pattern for writing SPAs in
+Clojurescript using Reagent.
+
+So it's not a fully featured web framework or anything like that,
+actually it's surprisingly small library with only around 750 lines of
+code, and it's defined as a pattern because the really important thing
+it gives you is a nice and elegant way to define the structure of your
+Spa, using a single centralised DB to store all the client side state.
+
 In this stack we have `React` at the bottom, which is the lower level
 library. On top of that there is a Clojurescript wrapper called
 `Reagent`, which hides all the javascript interop and give you a nice
@@ -203,7 +226,12 @@ Clojure interface to React.
 
 #+END_NOTES
 
-React → (Clojurescript) → Reagent → Re-Frame
+*re-frame is a pattern for writing SPAs in ClojureScript, using Reagent.*
+
+#+ATTR_REVEAL: :frag (appear)
+- React
+- Reagent
+- Re-Frame
 
 ** Reagent  Syntax
 
