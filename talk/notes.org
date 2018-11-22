@@ -169,6 +169,18 @@ given existing rankings and a game.
 So the function new-rankings takes as input a map with existing player
 rankings, a game which we destructure in the arguments and returns the
 new rankings.
+
+One thing worth to mention is that these functions to compute the
+rankings are all pure, they take immutable data structures in input
+and return new immutable data structures.
+
+They also work both in Clojure and Clojurescript without any changes,
+and actually in the beginning they were part of Clojure files and used
+by the backend API, while now they are in CLJC files and are actually
+used *only* on the client side.
+
+Immutability and the ability to run the same code both on the JVM and
+in the browser opens the door to very exciting possibilities.
 #+END_NOTES
 
 #+BEGIN_SRC clojure :tangle yes
@@ -213,11 +225,12 @@ Programming.
 From re-frame github page, re-frame is a pattern for writing SPAs in
 Clojurescript using Reagent.
 
-So it's not a fully featured web framework or anything like that,
-actually it's surprisingly small library with only around 750 lines of
-code, and it's defined as a pattern because the really important thing
-it gives you is a nice and elegant way to define the structure of your
-Spa, using a single centralised DB to store all the client side state.
+For what it does it's a surprisingly small library with only around
+750 lines of code, and it's defined as a pattern because the really
+important thing it gives you is a nice and elegant way to define the
+structure of your Spa, using a single centralised DB to store all the
+client side state, and a chain of event handlers to handle user
+interaction with a functional reactive programming approach.
 
 In this stack we have `React` at the bottom, which is the lower level
 library. On top of that there is a Clojurescript wrapper called
@@ -287,18 +300,16 @@ function getGreeting(user) {
                             (.-getElementbyid js/document "root"))
 #+END_SRC
 
+
+* Re-frame in action
+
 ** Re-frame primitives
 
-# TODO: put actual base concepts here instead of the functions that
-# are going to be shown
-
-- single *app db*
+#+ATTR_REVEAL: :frag (appear)
 - subscriptions: *reg-sub*
 - event handler: *reg-event-db*
 - effect handler: *reg-event-fx*
 
-
-* Re-frame in action
 ** Form
 
 [[./form.png]]
@@ -306,16 +317,6 @@ function getGreeting(user) {
 ** DB
 
 #+BEGIN_SRC clojure
-
-(def default-db
-  {:games []
-   :players []
-   :dead-players #{}
-   :game {}
-   :error nil
-   :up-to-games nil
-   :league {}
-   :league_id nil})
 
 (def default-game
   {:p1 ""
