@@ -1,6 +1,6 @@
 #+AUTHOR: Andrea Crotti (@andreacrotti)
 #+TITLE: Build an ELO platform with Clojure and Re-Frame
-#+OPTIONS: num:nil toc:nil ^:nil tex:t reveal_progress:t reveal_control:t reveal_overview:t reveal_single_file:t
+#+OPTIONS: num:nil toc:nil ^:nil tex:t reveal_progress:t reveal_control:t reveal_overview:t
 #+REVEAL_TRANS: none
 #+REVEAL_SPEED: fast
 #+REVEAL_HLEVEL: 1
@@ -346,11 +346,9 @@ To do this we'll need:
 To conclude I just want to say that for me frontend development has
 never been so fun.
 
-I did mostly backend in my career and always feared whenever I had to
-do some javascript with horrible things like Angular or Knockout JS,
-but using Re-frame and Clojurescript is really another story.
-
-If you have any ideas which
+So if you have any personal projects you'd like to try out
+definitively give Re-frame a go, you won't regret it, careful you
+might find it addictive though.
 
 #+END_NOTES
 
@@ -362,21 +360,27 @@ If you have any ideas which
 ** TODO add something about CLJC files and how easy is to share business logic across frontend and backend?
 ** TODO add some graph explaining how re-frame works?
 ** TODO think about what can be done in a small demo
-** TODO improve explanation of why I worked on this specific project
-** TODO improve explanation of Elo
 ** TODO improve conclusions
 ** TODO fix all the code
+** DONE improve explanation of Elo
+   CLOSED: [2018-11-22 Thu 13:14]
+   - CLOSING NOTE [2018-11-22 Thu 13:14]
 
-** TODO show some events handling in 10x?
-** TODO add link to the project and the twitter handle more clearly
-** TODO send slides sample to branding
+** DONE add link to the project and the twitter handle more clearly
+   CLOSED: [2018-11-22 Thu 13:13]
+   - CLOSING NOTE [2018-11-22 Thu 13:13] \\
+     linked it to the meetup page
+** DONE send slides sample to branding
+   CLOSED: [2018-11-22 Thu 13:12]
 
+   - CLOSING NOTE [2018-11-22 Thu 13:12]
 ** DONE add the sample ELO implementation code
    CLOSED: [2018-11-14 Wed 17:07]
    - CLOSING NOTE [2018-11-14 Wed 17:07]
 ** DONE use only copyleft pictures to avoid copyright issues
    CLOSED: [2018-11-14 Wed 17:07]
    - CLOSING NOTE [2018-11-14 Wed 17:07]
+
 
 * Ideas for the demo
 - change parameters of the Elo algorithm
