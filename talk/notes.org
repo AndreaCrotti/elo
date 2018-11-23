@@ -53,11 +53,6 @@ players and then introduce re-frame.
 
 #+END_NOTES
 
-#+BEGIN_QUOTE
-All work and no play makes
-Jack a dull boy
-#+END_QUOTE
-
 [[./kittens.jpg]]
 
 * Elo
@@ -401,34 +396,3 @@ might find it addictive though.
 [[./happy_dog.jpg]]
 
 *Frontend development is fun*
-
-* Tasks
-** TODO add something about CLJC files and how easy is to share business logic across frontend and backend?
-** TODO add some graph explaining how re-frame works?
-** TODO think about what can be done in a small demo
-** TODO improve conclusions
-** TODO fix all the code
-** DONE improve explanation of Elo
-   CLOSED: [2018-11-22 Thu 13:14]
-   - CLOSING NOTE [2018-11-22 Thu 13:14]
-
-** DONE add link to the project and the twitter handle more clearly
-   CLOSED: [2018-11-22 Thu 13:13]
-   - CLOSING NOTE [2018-11-22 Thu 13:13] \\
-     linked it to the meetup page
-** DONE send slides sample to branding
-   CLOSED: [2018-11-22 Thu 13:12]
-
-   - CLOSING NOTE [2018-11-22 Thu 13:12]
-** DONE add the sample ELO implementation code
-   CLOSED: [2018-11-14 Wed 17:07]
-   - CLOSING NOTE [2018-11-14 Wed 17:07]
-** DONE use only copyleft pictures to avoid copyright issues
-   CLOSED: [2018-11-14 Wed 17:07]
-   - CLOSING NOTE [2018-11-14 Wed 17:07]
-
-
-* Ideas for the demo
-- change parameters of the Elo algorithm
-- change slightly the Elo algorithm to take into consideration the goal difference
-- add the rankings difference into the table of results
