@@ -6,6 +6,16 @@
 
 (def page ::page-id)
 
+(def setter (partial common/setter* page))
+(def getter (partial common/getter* page))
+
+(def default-db
+  {:current-user nil})
+
+(rf/reg-sub ::current-user (getter [:current-user]))
+
+(rf/reg-event-db ::set-current-user (setter [:current-user]))
+
 (rf/reg-event-db :failed
                  (fn [db _]
                    (common/assoc-in* db page [:failed] true)))
