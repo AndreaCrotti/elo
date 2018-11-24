@@ -157,18 +157,28 @@
   (let [name-mapping @(rf/subscribe [::handlers/name-mapping])
         results @(rf/subscribe [::handlers/results])
         stats @(rf/subscribe [::handlers/stats])
+
+        up-to-games (rf/subscribe [::handlers/up-to-games])
+        games (rf/subscribe [::handlers/games-live-players])
+        sorted-rankings @(rf/subscribe [::handlers/rankings])
+        non-zero-games (filter #(pos? (:ngames %)) sorted-rankings)
+        up-to-current (if (some? @up-to-games) @up-to-games (count @games))
+        hide-show-all [:span
+                       [:i.fas.fa-eye-slash
+                        {:title "Hide All"
+                         :on-click #(rf/dispatch [::handlers/hide-all])}]
+
+                       [:i.fas.fa-eye
+                        {:title "Show All"
+                         :on-click #(rf/dispatch [::handlers/show-all])}]]
         header [:tr
+                [:th hide-show-all]
                 [:th "position"]
                 [:th "player"]
                 [:th "ranking"]
                 [:th "# of games"]
                 [:th "form"]
-                [:th "# W/L/D"]]
-        up-to-games (rf/subscribe [::handlers/up-to-games])
-        games (rf/subscribe [::handlers/games-live-players])
-        sorted-rankings @(rf/subscribe [::handlers/rankings])
-        non-zero-games (filter #(pos? (:ngames %)) sorted-rankings)
-        up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
+                [:th "# W/L/D"]]]
 
     [:div
      [:div.form-group
@@ -189,10 +199,22 @@
       [:thead header]
       (into [:tbody]
             (for [[idx {:keys [id ranking ngames]}] (enumerate non-zero-games)
-                  :let [{:keys [wins losses draws]} (get stats id)]]
+                  :let [{:keys [wins losses draws]} (get stats id)
+                        player-name (get name-mapping id)
+                        hidden? @(rf/subscribe [::handlers/hidden? id])]]
               [:tr
+               [:td [:span
+                     (if hidden?
+                       [:i.fas.fa-eye
+                        {:title (str "Show " player-name)
+                         :on-click #(rf/dispatch [::handlers/show id])}]
+
+                       [:i.fas.fa-eye-slash
+                        {:title (str "Hide " player-name)
+                         :on-click #(rf/dispatch [::handlers/hide id])}])]]
+
                [:td idx]
-               [:td (get name-mapping id)]
+               [:td player-name]
                [:td (int ranking)]
                [:td ngames]
                [:td (results-boxes (get results id))]
