@@ -26,6 +26,7 @@
 
                  [garden "1.3.6"]
                  [buddy "2.0.0"]
+                 [com.bhauman/figwheel-main "0.1.9"]
                  [buddy/buddy-auth "2.1.0"]
                  [migratus "1.0.9"]
                  ;;TODO: move these to the test profile
@@ -72,7 +73,7 @@
   :aot [elo.api]
 
   :uberjar-name "elo.jar"
-  :min-lein-version "2.8.1"
+  :min-lein-version "2.7.1"
   :source-paths ["src/cljc" "src/clj" "src/cljs"]
   :test-paths ["test/clj" "test/cljc"]
   :ring {:handler elo.api/app}
@@ -122,6 +123,6 @@
 
     :dependencies [[binaryage/devtools "0.9.10"]
                    [cider/piggieback "0.3.9"]
-                   [com.bhauman/figwheel-main "0.1.9"]
+
                    [day8.re-frame/re-frame-10x "0.3.3"]
                    [ring/ring-mock "0.3.2"]]}})
