@@ -84,14 +84,12 @@
                (rf/subscribe [::up-to-games])])
 
             (fn [[players visible-players games up-to] _]
-              (let [visible-players-ids (set (map :id visible-players))
+              (let [visible-players-names (set (map :name visible-players))
                     full-rankings
-                    (games/rankings-history players (truncate-games games up-to))
-                    inner (fn [field v] (contains? visible-players-ids (field v)))]
+                    (games/rankings-history players (truncate-games games up-to))]
 
                 (->> full-rankings
-                     (filter #(and (inner :p1 %) (inner :p2 %)))
-                     (map #(dissoc % :p1 :p2))))))
+                     (filter #(contains? visible-players-names (get % "Player")))))))
 
 (rf/reg-sub ::rankings-domain
             (fn [query-v _]
@@ -318,12 +316,10 @@
 
 (rf/reg-event-db ::hide
                  (fn [db [_ uuid]]
-                   (js/console.log "Calling hide on " uuid)
                    (hide-show-players db uuid :hide)))
 
 (rf/reg-event-db ::show
                  (fn [db [_ uuid]]
-                   (js/console.log "Calling show on " uuid)
                    (hide-show-players db uuid :show)))
 
 (rf/reg-event-db ::hide-all
