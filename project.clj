@@ -91,8 +91,8 @@
 
 
   :aliases {"test-cljs" ["doo" "phantom" "test" "once"]
-            "fig" ["trampoline" "run" "-m" "figwheel.main"]
-            "build" ["trampoline" "run" "-m" "figwheel.main" "-b" "elo"]}
+            "dev" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]
+            "cljs-prod" ["trampoline" "run" "-m" "figwheel.main" "--build-once" "prod"] }
 
   :cljfmt {:indents {for-all [[:block 1]]
                      fdef [[:block 1]]
@@ -104,7 +104,7 @@
              :source-paths ["src/clj" "src/cljc"]
              :prep-tasks [["compile"]
                           ["garden" "once"]
-                          ["cljsbuild" "once" "min"]]
+                          ["cljs-prod"]]
 
              :omit-source true
              :aot :all
@@ -125,14 +125,4 @@
                    [cider/piggieback "0.3.9"]
                    [com.bhauman/figwheel-main "0.1.9"]
                    [day8.re-frame/re-frame-10x "0.3.3"]
-                   [ring/ring-mock "0.3.2"]]}}
-  :cljsbuild
-  {:builds
-   [{:id "min"
-     :source-paths ["src/cljs" "src/cljc"]
-     :compiler     {:main elo.core
-                    :output-to "resources/public/cljs-out/elo-main.js"
-                    :asset-path "resources/public/cljs-out/elo"
-                    :optimizations :simple
-                    :closure-defines {goog.DEBUG true}
-                    :pretty-print true}}]})
+                   [ring/ring-mock "0.3.2"]]}})

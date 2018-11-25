@@ -23,6 +23,6 @@
    [:body
     [:div {:id "app"}]
     [:script (format "window['config']=%s" (client-side-config request))]
-    [:script {:src (cache-buster "/cljs-out/elo-main.js")}]
+    [:script {:src (cache-buster "/cljs-out/prod-main.js")}]
 
     [:script "elo.core.init();"]]])
