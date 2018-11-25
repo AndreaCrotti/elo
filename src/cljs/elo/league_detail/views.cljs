@@ -242,6 +242,14 @@
       [:a {:href "http://github.com/AndreaCrotti/elo"}
        "Fork Me"]]]))
 
+(defn vega-outer
+  []
+  (let [history (rf/subscribe [::handlers/rankings-history])
+        rankings-domain (rf/subscribe [::handlers/rankings-domain])]
+
+    (fn []
+      [vega/vega-inner @history @rankings-domain])))
+
 (defn root
   []
   (rf/dispatch [::handlers/load-league])
@@ -253,6 +261,6 @@
      [navbar]
      [show-error]
      [:div.section.players__form_container [game-form]]
-     [:div.section.vega__table [vega/vega-outer]]
+     [:div.section.vega__table [vega-outer]]
      [:div.section.rankings__table [rankings-table]]
      [:div.section.games__table [games-table]]]))

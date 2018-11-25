@@ -83,6 +83,16 @@
             (fn [[players games up-to] _]
               (games/rankings-history players (truncate-games games up-to))))
 
+(rf/reg-sub ::rankings-domain
+            (fn [query-v _]
+              [(rf/subscribe [::games])
+               (rf/subscribe [::players])])
+
+            (fn [[games players]]
+              (let [full-rankings-history (games/rankings-history players games)]
+                [(apply min (map #(get % "Ranking") full-rankings-history))
+                 (apply max (map #(get % "Ranking") full-rankings-history))])))
+
 (defn prev-game
   [db _]
   (let [up-to @(rf/subscribe [::up-to-games])
