@@ -12,6 +12,13 @@
   {:titles "Monoton"
    :smaller-titles "Lilita+One"})
 
+(defn cljsjs-css
+  [path]
+  (let [full-path (format "/cljsjs/%s" path)]
+    [:link {:href (cache-buster full-path)
+            :rel "stylesheet"
+            :type "text/css"}]))
+
 (defn gen-header
   [title]
   [:head [:meta {:charset "utf-8"
@@ -22,26 +29,10 @@
    (google-font (:titles fonts))
    (google-font (:smaller-titles fonts))
 
-   ;; should we get different packages?
-   [:link {:rel "stylesheet"
-           :href "https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-           :integrity "sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-           :crossorigin "anonymous"}]
-
-   [:script {:src "https://cdn.jsdelivr.net/npm/vega@4.2.0"}]
-   [:script {:src "https://cdn.jsdelivr.net/npm/vega-lite@3.0.0-rc6"}]
-   [:script {:src "https://cdn.jsdelivr.net/npm/vega-embed@3.19.2"}]
-
-   [:link {:href (cache-buster "/css/vega_embed.css")
-           :rel "stylesheet"
-           :type "text/css"}]
-
-   [:link {:href (cache-buster "/css/react-datepicker.css")
-           :rel "stylesheet"
-           :type "text/css"}]
-   [:link {:href (cache-buster "/css/bootstrap-social.css")
-           :rel "stylesheet"
-           :type "text/css"}]
+   (cljsjs-css "vega_embed.css")
+   (cljsjs-css "fontawesome/all.css")
+   (cljsjs-css "react-datepicker/production/react-datepicker.min.inc.css")
+   (cljsjs-css "bootstrap.css")
 
    [:link {:href (cache-buster "/css/screen.css")
            :rel "stylesheet"
@@ -51,10 +42,6 @@
            :rel "stylesheet"
            :type "text/css"}]
 
-   [:link {:rel "stylesheet"
-           :href "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-           :integrity "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-           :crossorigin "anonymous"}]
    (when config/google-analytics-tag
      [:script {:async true
                :src (format "https://www.googletagmanager.com/gtag/js?id=%s"

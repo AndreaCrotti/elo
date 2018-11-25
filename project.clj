@@ -7,7 +7,6 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/spec.alpha "0.2.176"]
                  [clj-http "3.9.1"]
-                 [prone "1.6.1"]
 
                  ;; server side libs
                  [org.clojure/data.csv "0.1.4"]
@@ -23,6 +22,7 @@
                  [ring-oauth2 "0.1.4"]
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-mock "0.3.2"]
+                 [ring-cljsjs "0.1.0"]
 
                  [garden "1.3.6"]
                  [buddy "2.0.0"]
@@ -49,29 +49,20 @@
                  ;; [metasoarous/oz "1.3.1"]
                  [cljsjs/vega-lite "2.6.0-0"]
                  [cljsjs/vega "3.3.1-0"]
-
-                 [ns-tracker "0.3.1"]
+                 [cljsjs/vega-embed "3.24.1-0"]
                  [cljsjs/moment "2.22.2-1"]
+                 [cljsjs/bootstrap "3.3.6-1"]
+
                  [day8.re-frame/http-fx "0.1.6"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [cljs-ajax "0.7.4"]
                  [cljs-http "0.1.45"]
                  [com.taoensso/timbre "4.10.0"]
-                 [re-com "2.1.0"]
                  [bidi "2.1.4"]
                  [com.cemerick/url "0.1.1"]
                  [venantius/accountant "0.2.4"]
                  [medley "1.0.0"]
                  [metosin/ring-http-response "0.9.0"]]
-
-  :plugins [[environ/environ.lein "0.3.1"]
-            [migratus-lein "0.5.0"]
-            [lein-cljsbuild "1.1.4"]
-            [jonase/eastwood "0.3.3"]
-            [lein-ring "0.9.7"]
-            [lein-cljfmt "0.5.7"]
-            [test2junit "1.3.3"]
-            [lein-garden "0.2.8"]]
 
   ;; :pedantic? :warn
 
@@ -123,15 +114,17 @@
    {:ring {:stacktrace-middleware prone.middleware/wrap-exceptions}
     :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
     :plugins [[lein-doo "0.1.10"]
-              [migratus-lein "0.5.0"]]
+              [migratus-lein "0.5.0"]
+              [lein-cljsbuild "1.1.4"]
+              [jonase/eastwood "0.3.3"]
+              [lein-cljfmt "0.5.7"]
+              [test2junit "1.3.3"]
+              [lein-garden "0.2.8"]]
 
     :dependencies [[binaryage/devtools "0.9.10"]
                    [cider/piggieback "0.3.9"]
                    [com.bhauman/figwheel-main "0.1.9"]
                    [day8.re-frame/re-frame-10x "0.3.3"]
-                   [com.bhauman/rebel-readline-cljs "0.1.4"]
-                   ;; dependencies for the reloaded workflow
-                   [reloaded.repl "0.2.4"]
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
   {:builds

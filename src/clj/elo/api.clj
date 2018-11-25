@@ -15,6 +15,7 @@
             [hiccup.core :as hiccup]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :as r-def]
+            [ring.middleware.cljsjs :refer [wrap-cljsjs]]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.oauth2 :refer [wrap-oauth2]]
@@ -263,6 +264,7 @@
       wrap-json-response
       check-token
       log-request
+      wrap-cljsjs
       (wrap-oauth2 oauth2-config)))
 
 (defn -main [& args]
