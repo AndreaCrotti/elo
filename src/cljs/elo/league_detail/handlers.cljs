@@ -74,14 +74,24 @@
             (fn [[gs up-to] _]
               (games/summarise (truncate-games gs up-to))))
 
+;;TODO: overcomplicated way of computing history making sure we only
+;;show game of shown players
 (rf/reg-sub ::rankings-history
             (fn [query-v_]
-              [(rf/subscribe [::visible-players])
-               (rf/subscribe [::games-visible-players])
+              [(rf/subscribe [::players])
+               (rf/subscribe [::visible-players])
+               (rf/subscribe [::games-live-players])
                (rf/subscribe [::up-to-games])])
 
-            (fn [[players games up-to] _]
-              (games/rankings-history players (truncate-games games up-to))))
+            (fn [[players visible-players games up-to] _]
+              (let [visible-players-ids (set (map :id visible-players))
+                    full-rankings
+                    (games/rankings-history players (truncate-games games up-to))
+                    inner (fn [field v] (contains? visible-players-ids (field v)))]
+
+                (->> full-rankings
+                     (filter #(and (inner :p1 %) (inner :p2 %)))
+                     (map #(dissoc % :p1 :p2))))))
 
 (rf/reg-sub ::rankings-domain
             (fn [query-v _]
@@ -321,7 +331,7 @@
                    (common/assoc-in* db
                                      page
                                      [:hidden-players]
-                                     (map :id (common/get-in* db page [:players])))))
+                                     (set (map :id (common/get-in* db page [:players]))))))
 
 (rf/reg-event-db ::show-all
                  (fn [db _]
