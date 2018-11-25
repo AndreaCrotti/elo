@@ -1,5 +1,5 @@
 (ns elo.vega
-  (:require [cljsjs.vega]
+  (:require [cljsjs.vega-embed]
             [reagent.core :as reagent]))
 
 (def schema-url "https://vega.github.io/schema/vega-lite/v3.0.0-rc6.json")
