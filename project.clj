@@ -51,7 +51,6 @@
                  [cljsjs/vega "3.3.1-0"]
                  [cljsjs/vega-embed "3.24.1-0"]
                  [cljsjs/moment "2.22.2-1"]
-                 [cljsjs/bootstrap "3.3.6-1"]
                  [ns-tracker "0.3.1"]
 
                  [day8.re-frame/http-fx "0.1.6"]
@@ -116,7 +115,6 @@
     :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
     :plugins [[lein-doo "0.1.10"]
               [migratus-lein "0.5.0"]
-              [lein-cljsbuild "1.1.4"]
               [jonase/eastwood "0.3.3"]
               [lein-cljfmt "0.5.7"]
               [test2junit "1.3.3"]
