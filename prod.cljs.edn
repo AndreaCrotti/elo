@@ -1,0 +1,13 @@
+^{:auto-testing false}
+{:main elo.core
+ :optimizations :advanced
+ :compiler-stats true
+ :parallel-build true
+ ;; File is moved to target/prod.js.map during uberjar
+ ;; until such a time as we can secure it as resource file
+ :pretty-print true
+ :verbose true
+ :closure-defines {goog.DEBUG true}
+ :infer-externs true
+ :aot-cache true
+ :elide-asserts true}
