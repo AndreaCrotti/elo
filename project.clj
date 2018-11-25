@@ -52,6 +52,7 @@
                  [cljsjs/vega-embed "3.24.1-0"]
                  [cljsjs/moment "2.22.2-1"]
                  [cljsjs/bootstrap "3.3.6-1"]
+                 [ns-tracker "0.3.1"]
 
                  [day8.re-frame/http-fx "0.1.6"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
