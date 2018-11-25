@@ -1,10 +1,10 @@
 ;;TODO: migrate to always use namespaced keywords
 (ns elo.league-detail.handlers
   (:require [cljsjs.moment]
+            [clojure.set :as set]
             [elo.common.handlers :as common]
             [elo.games :as games]
             [elo.shared-config :as shared]
-            [elo.vega :as vega]
             [re-frame.core :as rf]))
 
 (def page ::page-id)
@@ -33,6 +33,7 @@
   {:games []
    :players []
    :dead-players #{}
+   :hidden-players #{}
    :game {}
    :error nil
    :up-to-games nil
@@ -73,14 +74,34 @@
             (fn [[gs up-to] _]
               (games/summarise (truncate-games gs up-to))))
 
+;;TODO: overcomplicated way of computing history making sure we only
+;;show game of shown players
 (rf/reg-sub ::rankings-history
             (fn [query-v_]
               [(rf/subscribe [::players])
+               (rf/subscribe [::visible-players])
                (rf/subscribe [::games-live-players])
                (rf/subscribe [::up-to-games])])
 
-            (fn [[players games up-to] _]
-              (games/rankings-history players (truncate-games games up-to))))
+            (fn [[players visible-players games up-to] _]
+              (let [visible-players-ids (set (map :id visible-players))
+                    full-rankings
+                    (games/rankings-history players (truncate-games games up-to))
+                    inner (fn [field v] (contains? visible-players-ids (field v)))]
+
+                (->> full-rankings
+                     (filter #(and (inner :p1 %) (inner :p2 %)))
+                     (map #(dissoc % :p1 :p2))))))
+
+(rf/reg-sub ::rankings-domain
+            (fn [query-v _]
+              [(rf/subscribe [::games])
+               (rf/subscribe [::players])])
+
+            (fn [[games players]]
+              (let [full-rankings-history (games/rankings-history players games)]
+                [(apply min (map #(get % "Ranking") full-rankings-history))
+                 (apply max (map #(get % "Ranking") full-rankings-history))])))
 
 (defn prev-game
   [db _]
@@ -283,3 +304,65 @@
 (rf/reg-event-db ::resuscitate-player
                  (fn [db [_ uuid]]
                    (change-player-status db uuid :resuscitate)))
+
+(defn hide-show-players
+  [db uuid action]
+  (let [func (case action
+               :show disj
+               :hide conj)]
+
+    (common/update-in* db
+                       page
+                       [:hidden-players]
+                       #(func % uuid))))
+
+(rf/reg-event-db ::hide
+                 (fn [db [_ uuid]]
+                   (js/console.log "Calling hide on " uuid)
+                   (hide-show-players db uuid :hide)))
+
+(rf/reg-event-db ::show
+                 (fn [db [_ uuid]]
+                   (js/console.log "Calling show on " uuid)
+                   (hide-show-players db uuid :show)))
+
+(rf/reg-event-db ::hide-all
+                 (fn [db _]
+                   (common/assoc-in* db
+                                     page
+                                     [:hidden-players]
+                                     (set (map :id (common/get-in* db page [:players]))))))
+
+(rf/reg-event-db ::show-all
+                 (fn [db _]
+                   (common/assoc-in* db
+                                     page
+                                     [:hidden-players]
+                                     #{})))
+
+(defn hidden?
+  [db uuid]
+  (contains? (common/get-in* db page [:hidden-players]) uuid))
+
+(rf/reg-sub ::hidden?
+            (fn [db [_ uuid]] (hidden? db uuid)))
+
+(rf/reg-sub ::hidden-players (getter [:hidden-players]))
+
+(rf/reg-sub ::visible-players
+            (fn [query-v _]
+              [(rf/subscribe [::players])
+               (rf/subscribe [::hidden-players])])
+
+            (fn [[players hidden-players]]
+              (filter #(not (contains? hidden-players (:id %)))
+                      players)))
+
+(rf/reg-sub ::games-visible-players
+            (fn [query-v _]
+              [(rf/subscribe [::games])
+               (rf/subscribe [::hidden-players])])
+
+            (fn [[games hidden-players]]
+              (let [inner (fn [field v] (not (contains? hidden-players (field v))))]
+                (filter #(and (inner :p1 %) (inner :p2 %)) games))))

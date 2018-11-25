@@ -127,7 +127,9 @@
         common-map
         {"Game #" idx
          "Time" (:played_at current-game)
-         "Result" (game-result current-game name-mapping)}
+         "Result" (game-result current-game name-mapping)
+         :p1 (:p1 current-game)
+         :p2 (:p2 current-game)}
 
         rankings (get-rankings (take idx all-games) players)]
 

@@ -1,37 +1,33 @@
 (ns elo.vega
   (:require [cljsjs.vega]
-            [re-frame.core :as rf]
             [reagent.core :as reagent]))
 
 (def schema-url "https://vega.github.io/schema/vega-lite/v3.0.0-rc6.json")
 (def vega-div-id "rankings-over-time__visualization")
 
 (defn rankings-vega-definition
-  [values]
-  (let [min-r (apply min (map #(get % "Ranking") values))
-        max-r (apply max (map #(get % "Ranking") values))]
+  [history domain]
+  {"$schema" schema-url
+   "width" 500
+   "height" 500
+   "description" "Rankings over time"
+   "data" {"values" history}
+   "mark" {"type" "line"
+           "point" {"tooltip" [{"field" "Player" "type" "Nominal"},
+                               {"field" "Result" "type" "Nominal"}
+                               {"field" "Game" "type" "quantitative"}
+                               {"field" "Time" "type" "Temporal"}
+                               {"field" "Ranking" "type" "quantitative"}]}}
 
-    {"$schema" schema-url
-     "width" 500
-     "height" 500
-     "description" "Rankings over time"
-     "data" {"values" values}
-     "mark" {"type" "line"
-             "point" {"tooltip" [{"field" "Player" "type" "Nominal"},
-                                 {"field" "Result" "type" "Nominal"}
-                                 {"field" "Game" "type" "quantitative"}
-                                 {"field" "Time" "type" "Temporal"}
-                                 {"field" "Ranking" "type" "quantitative"}]}}
+   "encoding" {"y" {"field" "Ranking"
+                    "type" "quantitative"
+                    "scale" {"domain" domain}}
 
-     "encoding" {"y" {"field" "Ranking"
-                      "type" "quantitative"
-                      "scale" {"domain" [min-r max-r]}}
+               "color" {"field" "Player"
+                        "type" "Nominal"}
 
-                 "color" {"field" "Player"
-                          "type" "Nominal"}
-
-                 "x" {"field" "Time"
-                      "type" "temporal"}}}))
+               "x" {"field" "Time"
+                    "type" "temporal"}}})
 (defn vega-view
   []
   [:div.rankings-over-time
@@ -41,17 +37,11 @@
 (defn vega-inner
   []
   (let [update (fn [comp]
-                 (let [data (second (reagent/argv comp))]
+                 (let [[history domain] (rest (reagent/argv comp))]
                    (js/vegaEmbed (str "#" vega-div-id)
-                                 (clj->js (rankings-vega-definition data)))))]
+                                 (clj->js (rankings-vega-definition history domain)))))]
 
     (reagent/create-class
      {:reagent-render vega-view
       :component-did-update update
       :display-name "Rankings Over Time Inner"})))
-
-(defn vega-outer
-  []
-  (let [history (rf/subscribe [:elo.league-detail.handlers/rankings-history])]
-    (fn []
-      [vega-inner @history])))
