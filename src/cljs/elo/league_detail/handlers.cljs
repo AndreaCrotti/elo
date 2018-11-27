@@ -353,12 +353,3 @@
             (fn [[players hidden-players]]
               (filter #(not (contains? hidden-players (:id %)))
                       players)))
-
-(rf/reg-sub ::games-visible-players
-            (fn [query-v _]
-              [(rf/subscribe [::games])
-               (rf/subscribe [::hidden-players])])
-
-            (fn [[games hidden-players]]
-              (let [inner (fn [field v] (not (contains? hidden-players (field v))))]
-                (filter #(and (inner :p1 %) (inner :p2 %)) games))))
