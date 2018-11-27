@@ -303,53 +303,46 @@
                  (fn [db [_ uuid]]
                    (change-player-status db uuid :resuscitate)))
 
-(defn hide-show-players
-  [db uuid action]
-  (let [func (case action
-               :show disj
-               :hide conj)]
+(defn clear-set
+  [key]
+  (fn [db _]
+    (common/assoc-in* db
+                      page
+                      [key]
+                      #{})))
 
-    (common/update-in* db
-                       page
-                       [:hidden-players]
-                       #(func % uuid))))
+(defn fill-set
+  [key reset-fn]
+  (fn [db _]
+    (common/assoc-in* db
+                      page
+                      [key]
+                      (set (reset-fn db)))))
 
-(rf/reg-event-db ::hide
-                 (fn [db [_ uuid]]
-                   (hide-show-players db uuid :hide)))
+(defn modify-set
+  [key action]
+  (fn [db [_ uuid]]
+    (let [func (case action
+                 :disj disj
+                 :conj conj)]
 
-(rf/reg-event-db ::show
-                 (fn [db [_ uuid]]
-                   (hide-show-players db uuid :show)))
+      (common/update-in* db
+                         page
+                         [:hidden-players]
+                         #(func % uuid)))))
 
-(rf/reg-event-db ::hide-all
-                 (fn [db _]
-                   (common/assoc-in* db
-                                     page
-                                     [:hidden-players]
-                                     (set (map :id (common/get-in* db page [:players]))))))
+(defn in-set?
+  [key]
+  (fn [db [_ uuid]]
+    (contains? (common/get-in* db page [key]) uuid)))
 
-(rf/reg-event-db ::show-all
-                 (fn [db _]
-                   (common/assoc-in* db
-                                     page
-                                     [:hidden-players]
-                                     #{})))
+(rf/reg-sub ::hidden? (in-set? :hidden-players))
 
-(defn hidden?
-  [db uuid]
-  (contains? (common/get-in* db page [:hidden-players]) uuid))
+(rf/reg-event-db ::show (modify-set :hidden-players :disj))
 
-(rf/reg-sub ::hidden?
-            (fn [db [_ uuid]] (hidden? db uuid)))
+(rf/reg-event-db ::hide (modify-set :hidden-players :conj))
 
-(rf/reg-sub ::hidden-players (getter [:hidden-players]))
+(rf/reg-event-db ::hide-all (fill-set :hidden-players
+                                      #(set (map :id (common/get-in* % page [:players])))))
 
-(rf/reg-sub ::visible-players
-            (fn [query-v _]
-              [(rf/subscribe [::players])
-               (rf/subscribe [::hidden-players])])
-
-            (fn [[players hidden-players]]
-              (filter #(not (contains? hidden-players (:id %)))
-                      players)))
+(rf/reg-event-db ::show-all (clear-set :hidden-players))
