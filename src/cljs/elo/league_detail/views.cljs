@@ -108,6 +108,10 @@
   ;; without sorting it only works up to 30 !!
   (sort (zipmap (map inc (range (count xs))) xs)))
 
+(defn- format-date
+  [timestamp]
+  (.format (js/moment timestamp) "YYYY-MM-DD"))
+
 (defn games-table
   []
   (let [games @(rf/subscribe [::handlers/games-live-players])
@@ -141,7 +145,7 @@
                [:td (get name-mapping p2)]
                [:td p2_using]
                [:td p2_points]
-               [:td (.format (js/moment played_at) "YYYY-MM-DD")]]))]]))
+               [:td (format-date played_at)]]))]]))
 
 (defn el-result
   [idx result]
@@ -250,6 +254,17 @@
     (fn []
       [vega/vega-inner @history @rankings-domain])))
 
+(defn highest-rankings
+  []
+  (let [highest-rankings (rf/subscribe [::handlers/highest-rankings])]
+    (fn []
+      (into [:ul.highest__rankings__element]
+            (for [el @highest-rankings]
+              [:li.highest__ranking
+               [:span.highest__ranking__points (int (get el "Ranking"))]
+               [:span.highest__ranking__name (get el "Player")]
+               [:span.highest__ranking__time (format-date (get el "Time"))]])))))
+
 (defn root
   []
   (rf/dispatch [::handlers/load-league])
@@ -261,6 +276,7 @@
      [navbar]
      [show-error]
      [:div.section.players__form_container [game-form]]
+     [:div.section.players__highest_scores [highest-rankings]]
      [:div.section.vega__table [vega-outer]]
      [:div.section.rankings__table [rankings-table]]
      [:div.section.games__table [games-table]]]))

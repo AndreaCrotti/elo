@@ -81,9 +81,10 @@
 
    [:label {:padding-right "30px"}]
 
-   [:.section {:padding "10px"
-               ;; :box-shadow "-1px 1px 2px 2px rgba(0,0,0,0.2)"
-}]])
+   [:.highest__ranking__name {:padding-right "5px"}]
+   [:.highest__ranking__points {:padding-right "5px"}]
+
+   [:.section {:padding "10px"}]])
 
 (defstyles screen
   ;; could maybe even split creating multiple CSS files?
