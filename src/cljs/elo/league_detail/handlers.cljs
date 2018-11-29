@@ -355,7 +355,6 @@
                (rf/subscribe [::hidden-players])])
 
             (fn [[players hidden-players]]
-              (js/console.log "Hello visible players")
               (filter #(not (contains? hidden-players (:id %)))
                       players)))
 

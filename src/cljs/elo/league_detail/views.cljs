@@ -108,6 +108,10 @@
   ;; without sorting it only works up to 30 !!
   (sort (zipmap (map inc (range (count xs))) xs)))
 
+(defn- format-date
+  [timestamp]
+  (.format (js/moment timestamp) "YYYY-MM-DD"))
+
 (defn games-table
   []
   (let [games @(rf/subscribe [::handlers/games-live-players])
@@ -141,7 +145,7 @@
                [:td (get name-mapping p2)]
                [:td p2_using]
                [:td p2_points]
-               [:td (.format (js/moment played_at) "YYYY-MM-DD")]]))]]))
+               [:td (format-date played_at)]]))]]))
 
 (defn el-result
   [idx result]
@@ -252,15 +256,14 @@
 
 (defn highest-rankings
   []
-  (let [highest-rankings @(rf/subscribe [::handlers/highest-rankings])]
+  (let [highest-rankings (rf/subscribe [::handlers/highest-rankings])]
     (fn []
-      (js/console.log "highest-rankings" highest-rankings)
       (into [:ul.highest__rankings__element]
-            (for [el highest-rankings]
+            (for [el @highest-rankings]
               [:li.highest__ranking
+               [:span.highest__ranking__points (int (get el "Ranking"))]
                [:span.highest__ranking__name (get el "Player")]
-               [:span.highest__ranking__points (get el "Ranking")]
-               [:span.highest__ranking__time (get el "Time")]])))))
+               [:span.highest__ranking__time (format-date (get el "Time"))]])))))
 
 (defn root
   []
