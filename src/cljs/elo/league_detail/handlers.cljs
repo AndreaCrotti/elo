@@ -338,6 +338,8 @@
 
 (rf/reg-sub ::hidden? (in-set? :hidden-players))
 
+(rf/reg-sub ::hidden-players (getter [:hidden-players]))
+
 (rf/reg-event-db ::show (modify-set :hidden-players :disj))
 
 (rf/reg-event-db ::hide (modify-set :hidden-players :conj))
@@ -346,3 +348,13 @@
                                       #(set (map :id (common/get-in* % page [:players])))))
 
 (rf/reg-event-db ::show-all (clear-set :hidden-players))
+
+(rf/reg-sub ::visible-players
+            (fn [query-v _]
+              [(rf/subscribe [::players])
+               (rf/subscribe [::hidden-players])])
+
+            (fn [[players hidden-players]]
+              (js/console.log "Hello visible players")
+              (filter #(not (contains? hidden-players (:id %)))
+                      players)))
