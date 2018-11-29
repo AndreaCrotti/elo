@@ -358,3 +358,10 @@
               (js/console.log "Hello visible players")
               (filter #(not (contains? hidden-players (:id %)))
                       players)))
+
+(rf/reg-sub ::highest-rankings
+            (fn [query-v _]
+              [(rf/subscribe [::rankings-history])])
+
+            (fn [[history]]
+              (take 3 (reverse (sort-by #(get % "Ranking") history)))))

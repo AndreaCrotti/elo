@@ -250,6 +250,18 @@
     (fn []
       [vega/vega-inner @history @rankings-domain])))
 
+(defn highest-rankings
+  []
+  (let [highest-rankings @(rf/subscribe [::handlers/highest-rankings])]
+    (fn []
+      (js/console.log "highest-rankings" highest-rankings)
+      (into [:ul.highest__rankings__element]
+            (for [el highest-rankings]
+              [:li.highest__ranking
+               [:span.highest__ranking__name (get el "Player")]
+               [:span.highest__ranking__points (get el "Ranking")]
+               [:span.highest__ranking__time (get el "Time")]])))))
+
 (defn root
   []
   (rf/dispatch [::handlers/load-league])
@@ -261,6 +273,7 @@
      [navbar]
      [show-error]
      [:div.section.players__form_container [game-form]]
+     [:div.section.players__highest_scores [highest-rankings]]
      [:div.section.vega__table [vega-outer]]
      [:div.section.rankings__table [rankings-table]]
      [:div.section.games__table [games-table]]]))
