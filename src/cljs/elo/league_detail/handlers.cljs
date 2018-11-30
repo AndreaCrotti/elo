@@ -85,7 +85,7 @@
                     (games/rankings-history players (truncate-games games up-to))]
 
                 (->> full-rankings
-                     (filter #(contains? visible-players-names (get % "Player")))))))
+                     (filter #(contains? visible-players-names (:player %)))))))
 
 (rf/reg-sub ::rankings-domain
             :<- [::games]
@@ -93,8 +93,8 @@
 
             (fn [[games players]]
               (let [full-rankings-history (games/rankings-history players games)]
-                [(apply min (map #(get % "Ranking") full-rankings-history))
-                 (apply max (map #(get % "Ranking") full-rankings-history))])))
+                [(apply min (map :ranking full-rankings-history))
+                 (apply max (map :ranking full-rankings-history))])))
 
 (defn prev-game
   [db _]
@@ -356,10 +356,22 @@
                    (take 3
                          (sort-by
                           (fn [[_ v]]
-                            (- (get v "Ranking")))
+                            (- (:ranking v)))
 
                           (medley/map-vals
                            (fn [vs] (last
-                                    (sort-by #(get % "Ranking") vs)))
+                                     (sort-by :ranking vs)))
 
-                           (group-by #(get % "Player") history)))))))
+                           (group-by :player history)))))))
+
+(def kw->keyname
+  {:player "Player"
+   :ranking "Ranking"
+   :game-idx "Game #"
+   :time "Time"})
+
+(rf/reg-sub ::rankings-history-vega
+            :<- [::rankings-history]
+
+            (fn [history]
+              (map #(set/rename-keys % kw->keyname) history)))

@@ -125,16 +125,16 @@
   (let [current-game (nth all-games idx)
         name-mapping (player->names players)
         common-map
-        {"Game #" idx
-         "Time" (:played_at current-game)
-         "Result" (game-result current-game name-mapping)}
+        {:game-idx idx
+         :time (:played_at current-game)
+         :result (game-result current-game name-mapping)}
 
         rankings (get-rankings (take idx all-games) players)]
 
     (map #(merge % common-map)
          (for [r (filter #(plays? current-game (:id %)) rankings)]
-           {"Ranking" (:ranking r)
-            "Player" (name-mapping (:id r))}))))
+           {:ranking (:ranking r)
+            :player (name-mapping (:id r))}))))
 
 (defn rankings-history
   [players games]

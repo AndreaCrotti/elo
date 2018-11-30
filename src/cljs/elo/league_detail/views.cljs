@@ -248,7 +248,7 @@
 
 (defn vega-outer
   []
-  (let [history (rf/subscribe [::handlers/rankings-history])
+  (let [history (rf/subscribe [::handlers/rankings-history-vega])
         rankings-domain (rf/subscribe [::handlers/rankings-domain])]
 
     (fn []
@@ -261,11 +261,11 @@
       [:div.highest__rankings__block
        [:h4 "Highest Rankings reached"]
        (into [:ul.highest__rankings__element]
-             (for [el @highest-rankings]
+             (for [{:keys [ranking player time]} @highest-rankings]
                [:li.highest__ranking
-                [:span.highest__ranking__points (int (get el "Ranking"))]
-                [:span.highest__ranking__name (get el "Player")]
-                [:span.highest__ranking__time (format-date (get el "Time"))]]))])))
+                [:span.highest__ranking__points (int ranking)]
+                [:span.highest__ranking__name player]
+                [:span.highest__ranking__time (format-date time)]]))])))
 
 (defn root
   []
