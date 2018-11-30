@@ -5,6 +5,7 @@
             [elo.common.handlers :as common]
             [elo.games :as games]
             [elo.shared-config :as shared]
+            [medley.core :as medley]
             [re-frame.core :as rf]))
 
 (def page ::page-id)
@@ -364,3 +365,20 @@
 
             (fn [[history]]
               (take 3 (reverse (sort-by #(get % "Ranking") history)))))
+
+(rf/reg-sub ::highest-rankings-best
+            (fn [query-v _]
+              [(rf/subscribe [::rankings-history])])
+
+            (fn [[history]]
+              (map second
+                   (take 3
+                         (sort-by
+                          (fn [[_ v]]
+                            (- (get v "Ranking")))
+
+                          (medley/map-vals
+                           (fn [vs] (first
+                                    (sort-by #(get % "Ranking") vs)))
+
+                           (group-by #(get % "Player") history)))))))

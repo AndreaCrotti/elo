@@ -256,14 +256,16 @@
 
 (defn highest-rankings
   []
-  (let [highest-rankings (rf/subscribe [::handlers/highest-rankings])]
+  (let [highest-rankings (rf/subscribe [::handlers/highest-rankings-best])]
     (fn []
-      (into [:ul.highest__rankings__element]
-            (for [el @highest-rankings]
-              [:li.highest__ranking
-               [:span.highest__ranking__points (int (get el "Ranking"))]
-               [:span.highest__ranking__name (get el "Player")]
-               [:span.highest__ranking__time (format-date (get el "Time"))]])))))
+      [:div.highest__rankings__block
+       [:h4 "Highest Rankings reached"]
+       (into [:ul.highest__rankings__element]
+             (for [el @highest-rankings]
+               [:li.highest__ranking
+                [:span.highest__ranking__points (int (get el "Ranking"))]
+                [:span.highest__ranking__name (get el "Player")]
+                [:span.highest__ranking__time (format-date (get el "Time"))]]))])))
 
 (defn root
   []
