@@ -5,6 +5,7 @@
             [elo.common.handlers :as common]
             [elo.games :as games]
             [elo.shared-config :as shared]
+            [medley.core :as medley]
             [re-frame.core :as rf]))
 
 (def page ::page-id)
@@ -40,12 +41,6 @@
    :league {}
    :league_id nil})
 
-(defn- compute-rankings-data
-  [query-v _]
-  [(rf/subscribe [::games-live-players])
-   (rf/subscribe [::players])
-   (rf/subscribe [::up-to-games])])
-
 (defn- truncate-games
   [games up-to-games]
   (if (some? up-to-games)
@@ -53,35 +48,36 @@
     games))
 
 (rf/reg-sub ::rankings
-            compute-rankings-data
+            :<- [::games-live-players]
+            :<- [::players]
+            :<- [::up-to-games]
+
             (fn [[games players up-to-games] _]
               (let [rankings
                     (games/get-rankings (truncate-games games up-to-games) players)]
                 (sort-by #(- (second %)) rankings))))
 
-(defn games-signal
-  [query-v _]
-  [(rf/subscribe [::games-live-players])
-   (rf/subscribe [::up-to-games])])
-
 (rf/reg-sub ::results
-            games-signal
+            :<- [::games-live-players]
+            :<- [::up-to-games]
+
             (fn [[gs up-to] _]
               (games/results (truncate-games gs up-to))))
 
 (rf/reg-sub ::stats
-            games-signal
+            :<- [::games-live-players]
+            :<- [::up-to-games]
+
             (fn [[gs up-to] _]
               (games/summarise (truncate-games gs up-to))))
 
 ;;TODO: overcomplicated way of computing history making sure we only
 ;;show game of shown players
 (rf/reg-sub ::rankings-history
-            (fn [query-v_]
-              [(rf/subscribe [::players])
-               (rf/subscribe [::visible-players])
-               (rf/subscribe [::games-live-players])
-               (rf/subscribe [::up-to-games])])
+            :<- [::players]
+            :<- [::visible-players]
+            :<- [::games-live-players]
+            :<- [::up-to-games]
 
             (fn [[players visible-players games up-to] _]
               (let [visible-players-names (set (map :name visible-players))
@@ -89,17 +85,16 @@
                     (games/rankings-history players (truncate-games games up-to))]
 
                 (->> full-rankings
-                     (filter #(contains? visible-players-names (get % "Player")))))))
+                     (filter #(contains? visible-players-names (:player %)))))))
 
 (rf/reg-sub ::rankings-domain
-            (fn [query-v _]
-              [(rf/subscribe [::games])
-               (rf/subscribe [::players])])
+            :<- [::games]
+            :<- [::players]
 
             (fn [[games players]]
               (let [full-rankings-history (games/rankings-history players games)]
-                [(apply min (map #(get % "Ranking") full-rankings-history))
-                 (apply max (map #(get % "Ranking") full-rankings-history))])))
+                [(apply min (map :ranking full-rankings-history))
+                 (apply max (map :ranking full-rankings-history))])))
 
 (defn prev-game
   [db _]
@@ -125,14 +120,15 @@
 (rf/reg-event-db ::next-game next-game)
 
 (rf/reg-sub ::name-mapping
-            (fn [query-v _]
-              [(rf/subscribe [::players])])
+            :<- [::players]
 
-            (fn [[players] _]
+            (fn [players _]
               (games/player->names players)))
 
 (rf/reg-sub ::rankings-data
-            compute-rankings-data
+            :<- [::games-live-players]
+            :<- [::up-to-games]
+            :<- [::players]
             ;;TODO: might be nice also to have a from-games to slice even more nicely
             (fn [[games players up-to-games] _]
               (let [x-axis (range up-to-games)
@@ -169,16 +165,14 @@
         (not= p1 p2))))
 
 (rf/reg-sub ::valid-players?
-            (fn [query-v _]
-              [(rf/subscribe [::game])])
+            :<- [::game]
 
-            (fn [[game] _]
+            (fn [game _]
               (valid-players? game)))
 
 (rf/reg-sub ::valid-result?
-            (fn [query-v _]
-              [(rf/subscribe [::game-type])
-               (rf/subscribe [::game])])
+            :<- [::game]
+            :<- [::game-type]
 
             (fn [[game-type game] _]
               (valid-result? game-type game)))
@@ -189,10 +183,9 @@
                         (vals (common/get-in* db page [:game])))))
 
 (rf/reg-sub ::valid-game?
-            (fn [query-v _]
-              [(rf/subscribe [::valid-result?])
-               (rf/subscribe [::filled-game?])
-               (rf/subscribe [::valid-players?])])
+            :<- [::valid-result?]
+            :<- [::filled-game?]
+            :<- [::valid-players?]
 
             (fn [[valid-result? filled-game? valid-players?] _]
               (and valid-result?
@@ -222,12 +215,10 @@
 (rf/reg-sub ::dead-players (getter [:dead-players]))
 
 (rf/reg-sub ::games-live-players
-            (fn [query-v _]
-              [(rf/subscribe [::games])
-               (rf/subscribe [::players])
-               (rf/subscribe [::dead-players])])
+            :<- [::games]
+            :<- [::dead-players]
 
-            (fn [[games players dead-players]]
+            (fn [[games dead-players]]
               (let [inner (fn [field v] (not (contains? dead-players (field v))))]
                 (filter #(and (inner :p1 %) (inner :p2 %)) games))))
 
@@ -350,17 +341,37 @@
 (rf/reg-event-db ::show-all (clear-set :hidden-players))
 
 (rf/reg-sub ::visible-players
-            (fn [query-v _]
-              [(rf/subscribe [::players])
-               (rf/subscribe [::hidden-players])])
+            :<- [::players]
+            :<- [::hidden-players]
 
             (fn [[players hidden-players]]
               (filter #(not (contains? hidden-players (:id %)))
                       players)))
 
-(rf/reg-sub ::highest-rankings
-            (fn [query-v _]
-              [(rf/subscribe [::rankings-history])])
+(rf/reg-sub ::highest-rankings-best
+            :<- [::rankings-history]
 
-            (fn [[history]]
-              (take 3 (reverse (sort-by #(get % "Ranking") history)))))
+            (fn [history]
+              (map second
+                   (take 3
+                         (sort-by
+                          (fn [[_ v]]
+                            (- (:ranking v)))
+
+                          (medley/map-vals
+                           (fn [vs] (last
+                                     (sort-by :ranking vs)))
+
+                           (group-by :player history)))))))
+
+(def kw->keyname
+  {:player "Player"
+   :ranking "Ranking"
+   :game-idx "Game #"
+   :time "Time"})
+
+(rf/reg-sub ::rankings-history-vega
+            :<- [::rankings-history]
+
+            (fn [history]
+              (map #(set/rename-keys % kw->keyname) history)))
