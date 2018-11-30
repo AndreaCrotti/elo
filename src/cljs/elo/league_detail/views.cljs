@@ -261,11 +261,25 @@
       [:div.highest__rankings__block
        [:h4 "Highest Rankings reached"]
        (into [:ul.highest__rankings__element]
-             (for [{:keys [ranking player time]} @highest-rankings]
+             (for [{:keys [ranking player time]} (take 3 @highest-rankings)]
                [:li.highest__ranking
                 [:span.highest__ranking__points (int ranking)]
                 [:span.highest__ranking__name player]
                 [:span.highest__ranking__time (format-date time)]]))])))
+
+(defn longest-streaks
+  []
+  (let [longest-streaks (rf/subscribe [::handlers/best-streaks])
+        name-mapping (rf/subscribe [::handlers/name-mapping])]
+
+    (fn []
+      [:div.longest__streaks__block
+       [:h4 "Longest Winning Streaks"]
+       (into [:ul.longest__winning__element]
+             (for [[id streak] (take 3 @longest-streaks)]
+               [:li
+                [:span.longest__name (get @name-mapping id)]
+                [:span.longest__streak streak]]))])))
 
 (defn root
   []
@@ -279,6 +293,7 @@
      [show-error]
      [:div.section.players__form_container [game-form]]
      [:div.section.players__highest_scores [highest-rankings]]
+     [:div.section.players__longest_streak [longest-streaks]]
      [:div.section.vega__table [vega-outer]]
      [:div.section.rankings__table [rankings-table]]
      [:div.section.games__table [games-table]]]))

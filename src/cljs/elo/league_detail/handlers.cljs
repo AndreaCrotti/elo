@@ -353,25 +353,43 @@
 
             (fn [history]
               (map second
-                   (take 3
-                         (sort-by
-                          (fn [[_ v]]
-                            (- (:ranking v)))
+                   (sort-by
+                    (fn [[_ v]]
+                      (- (:ranking v)))
 
-                          (medley/map-vals
-                           (fn [vs] (last
-                                     (sort-by :ranking vs)))
+                    (medley/map-vals
+                     (fn [vs] (last
+                               (sort-by :ranking vs)))
 
-                           (group-by :player history)))))))
-
-(def kw->keyname
-  {:player "Player"
-   :ranking "Ranking"
-   :game-idx "Game #"
-   :time "Time"})
+                     (group-by :player history))))))
 
 (rf/reg-sub ::rankings-history-vega
             :<- [::rankings-history]
 
             (fn [history]
-              (map #(set/rename-keys % kw->keyname) history)))
+              (let [kw->keyname {:player "Player"
+                                 :ranking "Ranking"
+                                 :game-idx "Game #"
+                                 :time "Time"}]
+
+                (map #(set/rename-keys % kw->keyname) history))))
+
+(defn longest-subseq-rec
+  [s]
+  (loop [subseq s
+         curr 0
+         tot 0]
+
+    (if (empty? subseq)
+      tot
+      (if (= :w (first subseq))
+        (recur (rest subseq) (inc curr) (max tot curr))
+        (recur (rest subseq) 0 (max tot curr))))))
+
+(rf/reg-sub ::best-streaks
+            :<- [::results]
+
+            (fn [results]
+              (->> results
+                   (medley/map-vals longest-subseq-rec)
+                   (sort-by #(- (second %))))))

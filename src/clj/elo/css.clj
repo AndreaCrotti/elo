@@ -83,6 +83,7 @@
 
    [:.highest__ranking__name {:padding-right "5px"}]
    [:.highest__ranking__points {:padding-right "5px"}]
+   [:.longest__name {:padding-right "5px"}]
 
    [:.section {:padding "10px"}]])
 
