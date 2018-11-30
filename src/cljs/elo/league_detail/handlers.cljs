@@ -348,12 +348,6 @@
               (filter #(not (contains? hidden-players (:id %)))
                       players)))
 
-(rf/reg-sub ::highest-rankings
-            :<- [::rankings-history]
-
-            (fn [history]
-              (take 3 (reverse (sort-by #(get % "Ranking") history)))))
-
 (rf/reg-sub ::highest-rankings-best
             :<- [::rankings-history]
 
@@ -365,7 +359,7 @@
                             (- (get v "Ranking")))
 
                           (medley/map-vals
-                           (fn [vs] (first
-                                     (sort-by #(get % "Ranking") vs)))
+                           (fn [vs] (last
+                                    (sort-by #(get % "Ranking") vs)))
 
                            (group-by #(get % "Player") history)))))))
