@@ -281,6 +281,19 @@
                 [:span.longest__name (get @name-mapping id)]
                 [:span.longest__streak streak]]))])))
 
+(defn highest-increase
+  []
+  (let [highest (rf/subscribe [::handlers/highest-points])]
+
+    (fn []
+      [:div.highest__increase__block
+       [:h4 "Biggest Point Gains"]
+       (into [:ul.highest__increase__element]
+             (for [[id streak] (take 3 @highest)]
+               [:li
+                [:span.longest__name id]
+                [:span.longest__streak (int streak)]]))])))
+
 (defn root
   []
   (rf/dispatch [::handlers/load-league])
@@ -293,6 +306,7 @@
      [show-error]
      [:div.section.players__form_container [game-form]]
      [:div.section.players__highest_scores [highest-rankings]]
+     [:div.section.players__highest_increase [highest-increase]]
      [:div.section.players__longest_streak [longest-streaks]]
      [:div.section.vega__table [vega-outer]]
      [:div.section.rankings__table [rankings-table]]

@@ -141,3 +141,27 @@
   (flatten
    (for [idx (range (count games))]
      (rankings-at-idx* players idx games))))
+
+(defn longest-winning-subseq
+  [s]
+  (->> s
+       (partition-by identity)
+       (filter #(= #{:w} (set %)))
+       (map count)
+       (apply max)))
+
+(defn highest-points-subseq
+  [s]
+  (loop [s (zipmap s (rest s))
+         curr-increase 0
+         max-increase 0]
+
+    (let [[prev next] (first s)
+          rst (rest s)]
+
+      (let [new-max (max curr-increase max-increase)]
+        (if (empty? s)
+          new-max
+          (if (>= next prev)
+            (recur rst (+ curr-increase (- next prev)) new-max)
+            (recur rst 0 new-max)))))))
