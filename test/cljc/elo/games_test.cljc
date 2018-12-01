@@ -81,4 +81,5 @@
     (are [series increase] (= increase (sut/highest-points-subseq series))
       [1 3 10] 9
       [10] 0
-      [1 2 10 3 5 20] 17)))
+      [1 2 10 3 5 20] 17
+      [1 2 3 4 3 4 8 8] 5)))

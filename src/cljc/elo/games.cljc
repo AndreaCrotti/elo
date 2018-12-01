@@ -150,18 +150,23 @@
        (map count)
        (apply max)))
 
+(defn zipper
+  [xs]
+  (for [idx (range (dec (count xs)))]
+    [(nth xs idx) (nth xs (inc idx))]))
+
 (defn highest-points-subseq
   [s]
-  (loop [s (zipmap s (rest s))
+  (loop [xs (zipper s)
          curr-increase 0
          max-increase 0]
 
-    (let [[prev next] (first s)
-          rst (rest s)]
+    (let [[prev next] (first xs)
+          rst (rest xs)
+          new-max (max curr-increase max-increase)]
 
-      (let [new-max (max curr-increase max-increase)]
-        (if (empty? s)
-          new-max
-          (if (>= next prev)
-            (recur rst (+ curr-increase (- next prev)) new-max)
-            (recur rst 0 new-max)))))))
+      (if (empty? xs)
+        new-max
+        (if (>= next prev)
+          (recur rst (+ curr-increase (- next prev)) new-max)
+          (recur rst 0 new-max))))))
