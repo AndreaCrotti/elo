@@ -374,20 +374,19 @@
 
                 (map #(set/rename-keys % kw->keyname) history))))
 
-(defn longest-winning-subseq
-  [s]
-  (->> s
-       (partition-by identity)
-       (filter #(= #{:w} (set %)))
-       (map count)
-       (apply max)))
-
 (rf/reg-sub ::best-streaks
             :<- [::results]
 
             (fn [results]
               (->> results
-                   (medley/map-vals longest-winning-subseq)
+
+                   (medley/map-vals games/longest-winning-subseq)
                    (sort-by #(- (second %))))))
 
-;;TODO: add rising star and fallen angel functionality
+(rf/reg-sub ::highest-points
+            :<- [::rankings-history]
+
+            (fn [history]
+              (let [by-player (medley/map-vals #(map :ranking %)
+                                               (group-by :player history))] (sort-by #(- (second %))
+                                                                                     (medley/map-vals games/highest-points-subseq by-player)))))
