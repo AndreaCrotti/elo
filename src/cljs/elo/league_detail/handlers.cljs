@@ -387,6 +387,8 @@
             :<- [::rankings-history]
 
             (fn [history]
-              (let [by-player (medley/map-vals #(map :ranking %)
-                                               (group-by :player history))] (sort-by #(- (second %))
-                                                                                     (medley/map-vals games/highest-points-subseq by-player)))))
+              (->> history
+                   (group-by :player)
+                   (medley/map-vals #(map :ranking %))
+                   (medley/map-vals games/highest-points-subseq)
+                   (sort-by #(- (second %))))))
