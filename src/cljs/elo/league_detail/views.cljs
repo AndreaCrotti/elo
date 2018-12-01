@@ -259,7 +259,7 @@
   (let [highest-rankings (rf/subscribe [::handlers/highest-rankings-best])]
     (fn []
       [:div.highest__rankings__block
-       [:h4 "Highest Rankings reached"]
+       [:p.stats__title "Highest Rankings reached"]
        (into [:ul.highest__rankings__element]
              (for [{:keys [ranking player time]} (take 3 @highest-rankings)]
                [:li.highest__ranking
@@ -274,7 +274,7 @@
 
     (fn []
       [:div.longest__streaks__block
-       [:h4 "Longest Winning Streaks"]
+       [:p.stats__title "Longest Winning Streaks"]
        (into [:ul.longest__winning__element]
              (for [[id streak] (take 3 @longest-streaks)]
                [:li
@@ -287,7 +287,7 @@
 
     (fn []
       [:div.highest__increase__block
-       [:h4 "Biggest Point Gains"]
+       [:p.stats__title "Biggest Point Gains"]
        (into [:ul.highest__increase__element]
              (for [[id streak] (take 3 @highest)]
                [:li

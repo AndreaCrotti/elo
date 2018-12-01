@@ -85,7 +85,9 @@
    [:.highest__ranking__points {:padding-right "5px"}]
    [:.longest__name {:padding-right "5px"}]
 
-   [:.section {:padding "10px"}]])
+   [:.section {:padding "10px"}]
+
+   [:.stats__title {:font-weight "bold"}]])
 
 (defstyles screen
   ;; could maybe even split creating multiple CSS files?
