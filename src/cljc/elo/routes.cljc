@@ -5,7 +5,8 @@
   ["/" {["league/" :league-id] :league-detail
         ;;TODO: could redirect to "/leagues" instead ideally here
         "" :league-list
-        "admin" :admin}])
+        "admin" :admin
+        ["user/" :player-id] :player-detail}])
 
 (def path-for (partial bidi/path-for routes))
 
