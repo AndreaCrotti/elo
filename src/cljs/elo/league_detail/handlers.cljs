@@ -374,22 +374,20 @@
 
                 (map #(set/rename-keys % kw->keyname) history))))
 
-(defn longest-subseq-rec
+(defn longest-winning-subseq
   [s]
-  (loop [subseq s
-         curr 0
-         tot 0]
-
-    (if (empty? subseq)
-      tot
-      (if (= :w (first subseq))
-        (recur (rest subseq) (inc curr) (max tot curr))
-        (recur (rest subseq) 0 (max tot curr))))))
+  (->> s
+       (partition-by identity)
+       (filter #(= #{:w} (set %)))
+       (map count)
+       (apply max)))
 
 (rf/reg-sub ::best-streaks
             :<- [::results]
 
             (fn [results]
               (->> results
-                   (medley/map-vals longest-subseq-rec)
+                   (medley/map-vals longest-winning-subseq)
                    (sort-by #(- (second %))))))
+
+;;TODO: add rising star and fallen angel functionality
