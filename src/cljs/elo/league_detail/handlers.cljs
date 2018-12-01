@@ -374,22 +374,18 @@
 
                 (map #(set/rename-keys % kw->keyname) history))))
 
-(defn longest-subseq-rec
-  [s]
-  (loop [subseq s
-         curr 0
-         tot 0]
-
-    (if (empty? subseq)
-      tot
-      (if (= :w (first subseq))
-        (recur (rest subseq) (inc curr) (max tot curr))
-        (recur (rest subseq) 0 (max tot curr))))))
-
 (rf/reg-sub ::best-streaks
             :<- [::results]
 
             (fn [results]
               (->> results
-                   (medley/map-vals longest-subseq-rec)
+                   (medley/map-vals games/longest-winning-subseq)
                    (sort-by #(- (second %))))))
+
+(rf/reg-sub ::highest-points
+            :<- [::rankings-history]
+
+            (fn [history]
+              (let [by-player (medley/map-vals #(map :ranking %)
+                                               (group-by :player history))] (sort-by #(- (second %))
+                                                                                     (medley/map-vals games/highest-points-subseq by-player)))))
