@@ -212,8 +212,6 @@
 
 (rf/reg-sub ::players (getter [:players]))
 
-(rf/reg-sub ::dead-players (getter [:dead-players]))
-
 (rf/reg-sub ::games-live-players
             :<- [::games]
             :<- [::dead-players]
@@ -271,29 +269,6 @@
 (rf/reg-event-fx ::add-game (common/writer page "/api/add-game"
                                            ::add-game-success game-transform))
 
-(defn dead?
-  [db uuid]
-  (contains? (common/get-in* db page [:dead-players]) uuid))
-
-(rf/reg-sub ::dead
-            (fn [db [_ uuid]] (dead? db uuid)))
-
-(defn change-player-status
-  [db uuid action]
-  (let [func (if (= action :kill) conj disj)]
-    (common/update-in* db
-                       page
-                       [:dead-players]
-                       #(func % uuid))))
-
-(rf/reg-event-db ::kill-player
-                 (fn [db [_ uuid]]
-                   (change-player-status db uuid :kill)))
-
-(rf/reg-event-db ::resuscitate-player
-                 (fn [db [_ uuid]]
-                   (change-player-status db uuid :resuscitate)))
-
 (defn clear-set
   [key]
   (fn [db _]
@@ -319,7 +294,7 @@
 
       (common/update-in* db
                          page
-                         [:hidden-players]
+                         [key]
                          #(func % uuid)))))
 
 (defn in-set?
@@ -335,10 +310,26 @@
 
 (rf/reg-event-db ::hide (modify-set :hidden-players :conj))
 
-(rf/reg-event-db ::hide-all (fill-set :hidden-players
-                                      #(set (map :id (common/get-in* % page [:players])))))
+(rf/reg-event-db ::hide-all
+                 (fill-set :hidden-players
+                           #(set (map :id (common/get-in* % page [:players])))))
 
 (rf/reg-event-db ::show-all (clear-set :hidden-players))
+
+;; dead players
+(rf/reg-sub ::dead? (in-set? :dead-players))
+
+(rf/reg-sub ::dead-players (getter [:dead-players]))
+
+(rf/reg-event-db ::revive (modify-set :dead-players :disj))
+
+(rf/reg-event-db ::kill (modify-set :dead-players :conj))
+
+(rf/reg-event-db ::kill-all
+                 (fill-set :dead-players
+                           #(set (map :id (common/get-in* % page [:players])))))
+
+(rf/reg-event-db ::revive-all (clear-set :dead-players))
 
 (rf/reg-sub ::visible-players
             :<- [::players]
