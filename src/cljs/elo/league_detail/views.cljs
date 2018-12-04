@@ -156,27 +156,57 @@
   [results]
   (map-indexed el-result (take-last form-size results)))
 
+(defn game-slider
+  []
+  (let [games (rf/subscribe [::handlers/games-live-players])
+        up-to-games (rf/subscribe [::handlers/up-to-games])]
+
+    (fn []
+      (let [up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
+        [:div.form-group
+         [:input.form-control.up-to-range-slider
+          {:type "range"
+           :min 0
+           :max (count @games)
+           :value up-to-current
+           :class "slider"
+           :on-change (utils/set-val ::handlers/up-to-games js/parseInt)}]
+
+         [:span.rankings-chevrons.form-control
+          [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
+          [:span.up-to-current-games up-to-current]
+          [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]))))
+
+(def hide-show-all
+  [:span.hide__show__all
+   [:i.fas.fa-eye-slash
+    {:title "Hide All"
+     :on-click #(rf/dispatch [::handlers/hide-all])}]
+
+   [:i.fas.fa-eye
+    {:title "Show All"
+     :on-click #(rf/dispatch [::handlers/show-all])}]])
+
+(def kill-revive-all
+  [:span
+   [:i.fas.fa-skull
+    {:title "Kill All"
+     :on-click #(rf/dispatch [::handlers/kill-all])}]
+
+   [:i.fas.fa-life-ring
+    {:title "Revive All"
+     :on-click #(rf/dispatch [::handlers/revive-all])}]])
+
 (defn rankings-table
   []
   (let [name-mapping @(rf/subscribe [::handlers/name-mapping])
         results @(rf/subscribe [::handlers/results])
         stats @(rf/subscribe [::handlers/stats])
-
-        up-to-games (rf/subscribe [::handlers/up-to-games])
-        games (rf/subscribe [::handlers/games-live-players])
         sorted-rankings @(rf/subscribe [::handlers/rankings])
         non-zero-games (filter #(pos? (:ngames %)) sorted-rankings)
-        up-to-current (if (some? @up-to-games) @up-to-games (count @games))
-        hide-show-all [:span
-                       [:i.fas.fa-eye-slash
-                        {:title "Hide All"
-                         :on-click #(rf/dispatch [::handlers/hide-all])}]
-
-                       [:i.fas.fa-eye
-                        {:title "Show All"
-                         :on-click #(rf/dispatch [::handlers/show-all])}]]
         header [:tr
                 [:th hide-show-all]
+                [:th kill-revive-all]
                 [:th "position"]
                 [:th "player"]
                 [:th "ranking"]
@@ -185,27 +215,15 @@
                 [:th "# W/L/D"]]]
 
     [:div
-     [:div.form-group
-      [:input.form-control.up-to-range-slider
-       {:type "range"
-        :min 0
-        :max (count @games)
-        :value up-to-current
-        :class "slider"
-        :on-change (utils/set-val ::handlers/up-to-games js/parseInt)}]
-
-      [:span.rankings-chevrons.form-control
-       [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
-       [:span.up-to-current-games up-to-current]
-       [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]
-
+     [game-slider]
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
             (for [[idx {:keys [id ranking ngames]}] (enumerate non-zero-games)
                   :let [{:keys [wins losses draws]} (get stats id)
                         player-name (get name-mapping id)
-                        hidden? @(rf/subscribe [::handlers/hidden? id])]]
+                        hidden? @(rf/subscribe [::handlers/hidden? id])
+                        dead? @(rf/subscribe [::handlers/dead? id])]]
               [:tr
                [:td [:span
                      (if hidden?
@@ -216,6 +234,16 @@
                        [:i.fas.fa-eye-slash
                         {:title (str "Hide " player-name)
                          :on-click #(rf/dispatch [::handlers/hide id])}])]]
+
+               [:td [:span
+                     (if dead?
+                       [:i.fas.fa-life-ring
+                        {:title (str "Revive " player-name)
+                         :on-click #(rf/dispatch [::handlers/revive id])}]
+
+                       [:i.fas.fa-skull
+                        {:title (str "Kill " player-name)
+                         :on-click #(rf/dispatch [::handlers/kill id])}])]]
 
                [:td idx]
                [:td player-name]
