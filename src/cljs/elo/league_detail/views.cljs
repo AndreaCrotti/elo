@@ -333,9 +333,11 @@
      [navbar]
      [show-error]
      [:div.section.players__form_container [game-form]]
-     [:div.section.players__highest_scores [highest-rankings]]
-     [:div.section.players__highest_increase [highest-increase]]
-     [:div.section.players__longest_streak [longest-streaks]]
+     [:div.section.players__stats
+      [:div.players__highest_scores [highest-rankings]]
+      [:div.players__highest_increase [highest-increase]]
+      [:div.players__longest_streak [longest-streaks]]]
+
      [:div.section.vega__table [vega-outer]]
      [:div.section.rankings__table [rankings-table]]
      [:div.section.games__table [games-table]]]))

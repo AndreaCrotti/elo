@@ -36,6 +36,8 @@
   [[:.section {:max-width "1000px"
                :margin "0 auto"}]
 
+   [:.players__stats {:display "flex"
+                      :justify-content "space-between"}]
    [:.rankings__alive {:display "flex"}]
 
    [:.result__element
