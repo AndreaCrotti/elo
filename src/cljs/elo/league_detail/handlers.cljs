@@ -51,11 +51,16 @@
             :<- [::games-live-players]
             :<- [::players]
             :<- [::up-to-games]
+            :<- [::dead-players]
 
-            (fn [[games players up-to-games] _]
+            (fn [[games players up-to-games dead-players] _]
               (let [rankings
-                    (games/get-rankings (truncate-games games up-to-games) players)]
-                (sort-by #(- (second %)) rankings))))
+                    (games/get-rankings (truncate-games games up-to-games) players)
+                    updated (map #(if (contains? dead-players (:id %))
+                                    (assoc % :ranking 0) %)
+                                 rankings)]
+
+                (sort-by #(- (:ranking %)) updated))))
 
 (rf/reg-sub ::results
             :<- [::games-live-players]
