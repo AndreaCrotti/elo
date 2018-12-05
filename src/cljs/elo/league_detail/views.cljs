@@ -223,7 +223,8 @@
                         player-name (get name-mapping id)
                         hidden? @(rf/subscribe [::handlers/hidden? id])
                         dead? @(rf/subscribe [::handlers/dead? id])]]
-              [:tr
+
+              [:tr {:class (if dead? "dead__ranking__row" "alive__ranking__row")}
                [:td [:span
                      (if hidden?
                        [:i.fas.fa-eye
