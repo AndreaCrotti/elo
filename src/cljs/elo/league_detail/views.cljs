@@ -329,6 +329,19 @@
                 [:span.longest__name id]
                 [:span.longest__streak (int streak)]]))])))
 
+(defn highest-percent
+  []
+  (let [highest (rf/subscribe [::handlers/best-percents])]
+
+    (fn []
+      [:div.highest__percent__block
+       [:p.stats__title "Best Win %"]
+       (into [:ul.highest__percent__element]
+             (for [[id {:keys [w d l]}] (take 3 @highest)]
+               [:li
+                [:span.percent__name id]
+                [:span.percent__streak (str w d l)]]))])))
+
 (defn root
   []
   (rf/dispatch [::handlers/load-league])
@@ -343,7 +356,8 @@
      [:div.section.players__stats
       [:div.players__highest_scores [highest-rankings]]
       [:div.players__highest_increase [highest-increase]]
-      [:div.players__longest_streak [longest-streaks]]]
+      [:div.players__longest_streak [longest-streaks]]
+      [:div.players__highest_percent [highest-percent]]]
 
      [:div.section.vega__table [vega-outer]]
      [:div.section.rankings__table [rankings-table]]
