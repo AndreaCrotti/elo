@@ -56,11 +56,9 @@
         league (rf/subscribe [::handlers/league])
         game-type (or (:game_type @league) :fifa)
         points-range (map str (config/opts game-type :points))
-        ;; with two different players list we can filter out directly
-        ;; the one that was already selected
         sorted-players (sort-by :name @players)]
 
-    [:div.game__form {:on-submit (fn [] false)}
+    [:div.game__form
      [:div.form-group.player1__group
       [:label.form__label "Player 1"]
       [:div.form__row.form-control
