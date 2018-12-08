@@ -331,13 +331,14 @@
 
 (defn highest-percent
   []
-  (let [highest (rf/subscribe [::handlers/best-percents])]
+  (let [best (rf/subscribe [::handlers/best-percents])]
+    (js/console.log "best percents = " @best)
 
     (fn []
-      [:div.highest__percent__block
+      [:div.best__percent__block
        [:p.stats__title "Best Win %"]
-       (into [:ul.highest__percent__element]
-             (for [[id {:keys [w d l]}] (take 3 @highest)]
+       (into [:ul.best__percent__element]
+             (for [[id {:keys [w d l]}] (take 3 @best)]
                [:li
                 [:span.percent__name id]
                 [:span.percent__streak (str w d l)]]))])))
