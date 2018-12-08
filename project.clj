@@ -27,7 +27,7 @@
                  [garden "1.3.6"]
                  [buddy "2.0.0"]
                  [buddy/buddy-auth "2.1.0"]
-                 [migratus "1.2.0"]
+                 [migratus "1.0.9"]
                  ;;TODO: move these to the test profile
                  [org.clojure/test.check "0.9.0"]
                  [junit/junit "4.12"]
