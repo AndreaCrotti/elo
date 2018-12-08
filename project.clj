@@ -27,17 +27,17 @@
                  [garden "1.3.6"]
                  [buddy "2.0.0"]
                  [buddy/buddy-auth "2.1.0"]
-                 [migratus "1.0.9"]
+                 [migratus "1.2.0"]
                  ;;TODO: move these to the test profile
                  [org.clojure/test.check "0.9.0"]
                  [junit/junit "4.12"]
 
                  [org.clojure/clojurescript "1.10.439"]
                  [re-frame "0.10.6"]
-                 [org.webjars/font-awesome "5.3.1"]
+                 [org.webjars/font-awesome "5.5.0"]
 
-                 [cljsjs/react "16.5.2-0"]
-                 [cljsjs/react-dom "16.5.2-0"]
+                 [cljsjs/react "16.6.0-0"]
+                 [cljsjs/react-dom "16.6.0-0"]
                  ;; these below are all needed by react datepicker and
                  ;; everything blows up if they are not pinned apparently
                  [cljsjs/react-datepicker "1.5.0-0"]
@@ -47,22 +47,22 @@
                  [cljsjs/react-popper "0.10.4-0"]
                  [cljsjs/popperjs "1.14.3-1"]
                  ;; [metasoarous/oz "1.3.1"]
-                 [cljsjs/vega-lite "2.6.0-0"]
-                 [cljsjs/vega "3.3.1-0"]
+                 [cljsjs/vega-lite "2.6.0-1"]
+                 [cljsjs/vega "4.3.0-0"]
 
                  [ns-tracker "0.3.1"]
-                 [cljsjs/moment "2.22.2-1"]
+                 [cljsjs/moment "2.22.2-2"]
                  [day8.re-frame/http-fx "0.1.6"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
-                 [cljs-ajax "0.7.4"]
+                 [cljs-ajax "0.8.0"]
                  [cljs-http "0.1.45"]
                  [com.taoensso/timbre "4.10.0"]
-                 [re-com "2.1.0"]
+                 [re-com "2.3.0"]
                  [bidi "2.1.4"]
                  [com.cemerick/url "0.1.1"]
                  [venantius/accountant "0.2.4"]
                  [medley "1.0.0"]
-                 [metosin/ring-http-response "0.9.0"]]
+                 [metosin/ring-http-response "0.9.1"]]
 
   :plugins [[environ/environ.lein "0.3.1"]
             [migratus-lein "0.5.0"]
@@ -126,9 +126,9 @@
               [migratus-lein "0.5.0"]]
 
     :dependencies [[binaryage/devtools "0.9.10"]
-                   [cider/piggieback "0.3.9"]
+                   [cider/piggieback "0.3.10"]
                    [com.bhauman/figwheel-main "0.1.9"]
-                   [day8.re-frame/re-frame-10x "0.3.3"]
+                   [day8.re-frame/re-frame-10x "0.3.5"]
                    [com.bhauman/rebel-readline-cljs "0.1.4"]
                    ;; dependencies for the reloaded workflow
                    [reloaded.repl "0.2.4"]
