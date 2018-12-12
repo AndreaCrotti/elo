@@ -36,6 +36,7 @@
                  [re-frame "0.10.6"]
                  [org.webjars/font-awesome "5.5.0"]
 
+                 [day8.re-frame/tracing-stubs "0.5.1"]
                  [cljsjs/react "16.6.0-0"]
                  [cljsjs/react-dom "16.6.0-0"]
                  ;; these below are all needed by react datepicker and
@@ -69,7 +70,6 @@
             [lein-cljsbuild "1.1.4"]
             [jonase/eastwood "0.3.3"]
             [lein-ring "0.9.7"]
-            [lein-cljfmt "0.5.7"]
             [test2junit "1.3.3"]
             [lein-garden "0.2.8"]]
 
@@ -124,13 +124,15 @@
     :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
     :plugins [[lein-doo "0.1.10"]
               [migratus-lein "0.5.0"]
-              [lein-cloverage "1.0.13"]]
+              [lein-cloverage "1.0.13"]
+              [lein-cljfmt "0.5.7"]]
 
     :dependencies [[binaryage/devtools "0.9.10"]
                    [cider/piggieback "0.3.10"]
                    [venantius/yagni "0.1.6"]
                    [com.bhauman/figwheel-main "0.1.9"]
                    [day8.re-frame/re-frame-10x "0.3.5"]
+                   [day8.re-frame/tracing "0.5.1"]
                    [com.bhauman/rebel-readline-cljs "0.1.4"]
                    ;; dependencies for the reloaded workflow
                    [reloaded.repl "0.2.4"]
@@ -140,6 +142,7 @@
    [{:id "min"
      :source-paths ["src/cljs" "src/cljc"]
      :compiler     {:main elo.core
+
                     :output-to "resources/public/cljs-out/elo-main.js"
                     :asset-path "resources/public/cljs-out/elo"
                     :optimizations :simple
