@@ -123,7 +123,8 @@
    {:ring {:stacktrace-middleware prone.middleware/wrap-exceptions}
     :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
     :plugins [[lein-doo "0.1.10"]
-              [migratus-lein "0.5.0"]]
+              [migratus-lein "0.5.0"]
+              [lein-cloverage "1.0.13"]]
 
     :dependencies [[binaryage/devtools "0.9.10"]
                    [cider/piggieback "0.3.10"]
