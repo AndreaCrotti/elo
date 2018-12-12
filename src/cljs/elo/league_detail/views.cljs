@@ -146,10 +146,10 @@
 
                   [:tr
                    [:td idx]
-                   [:td (get name-mapping p1)]
+                   [:td (get @name-mapping p1)]
                    [:td p1_using]
                    [:td p1_points]
-                   [:td (get name-mapping p2)]
+                   [:td (get @name-mapping p2)]
                    [:td p2_using]
                    [:td p2_points]
                    [:td (format-date played_at)]]))]]))))
