@@ -37,6 +37,14 @@ jobs:
       - store_test_results:
           path: target/test2junit
 
-      # - run:
-      #     name: run Clojurescript tests
-      #     command: lein test-cljs
+      - run: lein cloverage --codecov
+
+      - store_test_results:
+          path: target/test-results
+
+      - store_artifacts:
+          path: target/coverage
+
+      - run:
+          name: Upload test coverage report to Codecov
+          command: bash <(curl -s https://codecov.io/bash)
