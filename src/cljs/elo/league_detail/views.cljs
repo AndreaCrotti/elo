@@ -110,8 +110,6 @@
   [timestamp]
   (.format (js/moment timestamp) "YYYY-MM-DD"))
 
-@(rf/subscribe [::handlers/show-all?])
-
 (defn games-table
   []
   (let [games (rf/subscribe [::handlers/games-live-players])
@@ -121,9 +119,9 @@
 
     (fn []
       (let [first-games (if (some? @up-to)
-                          (take @up-to games)
+                          (take @up-to @games)
                           @games)
-            
+
             header [:tr
                     [:th "game #"]
                     [:th "player 1"]
@@ -133,21 +131,18 @@
                     [:th (translate :using)]
                     [:th (translate :points)]
                     [:th "played At"]]
-            games (reverse
-                   (enumerate
-                    (if show-all?
-                      first-games
-                      (take 10 first-games))))]
+            rev-games (-> first-games enumerate reverse)
+            filtered-games (if @show-all? rev-games (take 10 rev-games))]
 
         [:div
          [:button {:on-click #(rf/dispatch [::handlers/toggle-show-all])}
-          (if show-all? "SHOW LAST 10" "SHOW ALL")]
+          (if @show-all? "SHOW LAST 10" "SHOW ALL")]
 
          [:table.table.table-striped
           [:thead header]
           (into [:tbody]
                 (for [[idx {:keys [p1 p2 p1_using p2_using p1_points p2_points played_at]}]
-                      games]
+                      filtered-games]
 
                   [:tr
                    [:td idx]

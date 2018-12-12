@@ -390,10 +390,11 @@
                    (medley/map-vals games/highest-points-subseq)
                    (sort-by #(- (second %))))))
 
-(rf/reg-event-db ::toggle-show-all
-                 (fn [db _]
-                   (update-in db
-                              [page :show-all?]
-                              not)))
+(rf/reg-event-fx ::toggle-show-all
+                 (fn [{:keys [db]} _]
+                   {:dispatch [::load-games]
+                    :db (update-in db
+                                   [page :show-all?]
+                                   not)}))
 
 (rf/reg-sub ::show-all? (getter [:show-all?]))
