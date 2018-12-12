@@ -91,20 +91,6 @@
   (str (:p1 game) " vs " (:p2 game) ": "
        (:p1_points game) " - " (:p2_points game)))
 
-(defn game-expanded
-  "Expand the result of the game call"
-  [rankings idx game]
-  (let [norm-game (elo/normalize-game game)
-        new-rankings (elo/new-rankings rankings norm-game)
-        as-map (map (fn [[k v]] {:player k :ranking v}) new-rankings)]
-
-    [new-rankings
-     (map #(assoc %
-                  :game idx
-                  :result (result-str game)
-                  :time (:played_at game))
-          as-map)]))
-
 (defn- plays?
   [game player-id]
   (contains? (set ((juxt :p1 :p2) game)) player-id))

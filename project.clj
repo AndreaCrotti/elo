@@ -128,6 +128,7 @@
 
     :dependencies [[binaryage/devtools "0.9.10"]
                    [cider/piggieback "0.3.10"]
+                   [venantius/yagni "0.1.6"]
                    [com.bhauman/figwheel-main "0.1.9"]
                    [day8.re-frame/re-frame-10x "0.3.5"]
                    [com.bhauman/rebel-readline-cljs "0.1.4"]
