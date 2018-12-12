@@ -110,40 +110,54 @@
   [timestamp]
   (.format (js/moment timestamp) "YYYY-MM-DD"))
 
+@(rf/subscribe [::handlers/show-all?])
+
 (defn games-table
   []
-  (let [games @(rf/subscribe [::handlers/games-live-players])
-        name-mapping @(rf/subscribe [::handlers/name-mapping])
+  (let [games (rf/subscribe [::handlers/games-live-players])
+        name-mapping (rf/subscribe [::handlers/name-mapping])
         up-to (rf/subscribe [::handlers/up-to-games])
-        first-games (if (some? @up-to)
-                      (take @up-to games)
-                      games)
-        header [:tr
-                [:th "game #"]
-                [:th "player 1"]
-                [:th (translate :using)]
-                [:th (translate :points)]
-                [:th "player 2"]
-                [:th (translate :using)]
-                [:th (translate :points)]
-                [:th "played At"]]]
+        show-all? (rf/subscribe [::handlers/show-all?])]
 
-    [:div
-     [:table.table.table-striped
-      [:thead header]
-      (into [:tbody]
-            (for [[idx {:keys [p1 p2 p1_using p2_using p1_points p2_points played_at]}]
-                  (reverse (enumerate first-games))]
+    (fn []
+      (let [first-games (if (some? @up-to)
+                          (take @up-to games)
+                          @games)
+            
+            header [:tr
+                    [:th "game #"]
+                    [:th "player 1"]
+                    [:th (translate :using)]
+                    [:th (translate :points)]
+                    [:th "player 2"]
+                    [:th (translate :using)]
+                    [:th (translate :points)]
+                    [:th "played At"]]
+            games (reverse
+                   (enumerate
+                    (if show-all?
+                      first-games
+                      (take 10 first-games))))]
 
-              [:tr
-               [:td idx]
-               [:td (get name-mapping p1)]
-               [:td p1_using]
-               [:td p1_points]
-               [:td (get name-mapping p2)]
-               [:td p2_using]
-               [:td p2_points]
-               [:td (format-date played_at)]]))]]))
+        [:div
+         [:button {:on-click #(rf/dispatch [::handlers/toggle-show-all])}
+          (if show-all? "SHOW LAST 10" "SHOW ALL")]
+
+         [:table.table.table-striped
+          [:thead header]
+          (into [:tbody]
+                (for [[idx {:keys [p1 p2 p1_using p2_using p1_points p2_points played_at]}]
+                      games]
+
+                  [:tr
+                   [:td idx]
+                   [:td (get name-mapping p1)]
+                   [:td p1_using]
+                   [:td p1_points]
+                   [:td (get name-mapping p2)]
+                   [:td p2_using]
+                   [:td p2_points]
+                   [:td (format-date played_at)]]))]]))))
 
 (defn el-result
   [idx result]

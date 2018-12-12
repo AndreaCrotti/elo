@@ -39,7 +39,8 @@
    :error nil
    :up-to-games nil
    :league {}
-   :league_id nil})
+   :league_id nil
+   :show-all? false})
 
 (defn- truncate-games
   [games up-to-games]
@@ -388,3 +389,11 @@
                    (medley/map-vals #(map :ranking %))
                    (medley/map-vals games/highest-points-subseq)
                    (sort-by #(- (second %))))))
+
+(rf/reg-event-db ::toggle-show-all
+                 (fn [db _]
+                   (update-in db
+                              [page :show-all?]
+                              not)))
+
+(rf/reg-sub ::show-all? (getter [:show-all?]))
