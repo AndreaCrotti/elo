@@ -375,7 +375,7 @@
   [name-mapping vals]
   (medley/map-keys #(get name-mapping %) vals))
 
-(rf/reg-sub ::best-streaks
+(rf/reg-sub ::longest-streaks
             :<- [::results]
             :<- [::name-mapping]
 
@@ -383,7 +383,8 @@
               (->> results
                    (medley/map-vals games/longest-winning-subseq)
                    (uuid->name name-mapping)
-                   (sort-by #(- (second %))))))
+                   (sort-by #(- (second %)))
+                   (map #(zipmap [:player :streak] %)))))
 
 (rf/reg-sub ::highest-points
             :<- [::rankings-history]

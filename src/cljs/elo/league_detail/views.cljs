@@ -317,11 +317,12 @@
 
 (defn longest-streaks
   []
-  (let [longest-streaks (rf/subscribe [::handlers/best-streaks])]
+  (let [longest-streaks (rf/subscribe [::handlers/longest-streaks])]
     (fn []
       [:div.longest__streaks__block
        [:p.stats__title "Longest Winning Streaks"]
-       [stats-table ["name" "streak"]
+       [stats-table
+        [{:k :player :v "name"} {:k :streak :v "Longest Streak"}]
         (take 3 @longest-streaks)]])))
 
 (defn highest-increase

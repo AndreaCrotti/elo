@@ -69,7 +69,7 @@
 
       (is (= desired (sut/rankings-history players games))))))
 
-(deftest best-streaks-test
+(deftest longest-streaks-test
   (testing "Compute best streaks"
     (are [series streak] (= streak (sut/longest-winning-subseq series))
       [:w :w] 2
