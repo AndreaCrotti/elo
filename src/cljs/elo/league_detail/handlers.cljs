@@ -398,7 +398,7 @@
 
 (rf/reg-sub ::show-all? (getter [:show-all?]))
 
-(defn winning-percent
+(defn best-percents
   [results]
   (let [freq (frequencies results)
         cent-fn #(int (* 100 (/ (% freq) (count results))))]
@@ -409,6 +409,9 @@
             :<- [::results]
 
             (fn [results]
+              (js/console.log "Results = " results)
               (->> results
-                   (medley/map-vals winning-percent)
-                   (sort-by (comp :l :d :w second)))))
+                   (medley/map-vals best-percents)
+                   (into [])
+                   (sort-by (comp :w second))
+                   (reverse))))

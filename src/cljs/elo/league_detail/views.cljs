@@ -331,8 +331,8 @@
 
 (defn highest-percent
   []
-  (let [best (rf/subscribe [::handlers/best-percents])]
-    (js/console.log "best percents = " @best)
+  (let [best (rf/subscribe [::handlers/best-percents])
+        name-mapping (rf/subscribe [::handlers/name-mapping])]
 
     (fn []
       [:div.best__percent__block
@@ -340,8 +340,9 @@
        (into [:ul.best__percent__element]
              (for [[id {:keys [w d l]}] (take 3 @best)]
                [:li
-                [:span.percent__name id]
-                [:span.percent__streak (str w d l)]]))])))
+                [:span.percent__name (get @name-mapping id)]
+                [:span.percent__streak
+                 (clojure.string.join "/" [w d l])]]))])))
 
 (defn root
   []
