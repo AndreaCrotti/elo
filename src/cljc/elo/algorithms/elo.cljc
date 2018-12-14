@@ -12,8 +12,8 @@
   (/ 1.0 (inc (Math/pow 10 (/ diff 400)))))
 
 (defn new-rating
-  [old expected score]
-  (+ old (* k (- score expected))))
+  [old expected game]
+  (+ old (* k (- game expected))))
 
 (defn invert-score
   [score]
@@ -25,16 +25,16 @@
   [rankings [p1 p2 score]]
 
   (let [ra (get rankings p1)
-        rb (get rankings p2)]
-
+        rb (get rankings p2)
+        new-rating-ra (new-rating ra
+                                 (expected (- rb ra))
+                                 score)
+        new-rating-rb (new-rating rb
+                                  (expected (- ra rb))
+                                  (invert-score score))]
     (assoc rankings
-           p1 (new-rating ra
-                          (expected (- rb ra))
-                          score)
-
-           p2 (new-rating rb
-                          (expected (- ra rb))
-                          (invert-score score)))))
+           p1 (if (= p1 "Alex D") (+ 100 new-rating-ra) new-rating-ra)
+           p2 (if (= p2 "Alex D") (+ 100 new-rating-rb) new-rating-rb))))
 
 ;;TODO: this should return the whole history of the rankings instead
 ;;of simply the last one??
