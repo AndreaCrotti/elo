@@ -116,7 +116,7 @@
                           ["cljsbuild" "once" "min"]]
 
              :omit-source true
-             :aot :all
+             :aot [elo.api]
              :main elo.api}
 
    :dev
