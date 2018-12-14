@@ -327,11 +327,12 @@
 
 (defn highest-increase
   []
-  (let [highest (rf/subscribe [::handlers/highest-points])]
+  (let [highest (rf/subscribe [::handlers/highest-increase])]
     (fn []
       [:div.highest__increase__block
        [:p.stats__title "Biggest Point Gains"]
-       [stats-table ["name" "points gained"]
+       [stats-table
+        [{:k :player :v "name"} {:k :points :v "points gained"}]
         (take 3 @highest)]])))
 
 (defn highest-percent
@@ -341,7 +342,9 @@
     (fn []
       [:div.best__percent__block
        [:p.stats__title "Best Win %"]
-       [stats-table ["name" "W%" "D%" "L%"]
+       [stats-table
+        [{:k :player :v "name"} {:k :w :v "wins %"}
+         {:k :d :v "draws %"} {:k :l :v "loss %"}]
         (take 3 @best)]])))
 
 (defn root

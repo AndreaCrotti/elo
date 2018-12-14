@@ -141,7 +141,7 @@
   (for [idx (range (dec (count xs)))]
     [(nth xs idx) (nth xs (inc idx))]))
 
-(defn highest-points-subseq
+(defn highest-increase-subseq
   [s]
   (loop [xs (zipper s)
          curr-increase 0

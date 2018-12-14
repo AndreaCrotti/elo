@@ -386,17 +386,16 @@
                    (sort-by #(- (second %)))
                    (map #(zipmap [:player :streak] %)))))
 
-(rf/reg-sub ::highest-points
+(rf/reg-sub ::highest-increase
             :<- [::rankings-history]
-            :<- [::name-mapping]
 
-            (fn [[history name-mapping]]
+            (fn [history]
               (->> history
                    (group-by :player)
                    (medley/map-vals #(map :ranking %))
-                   (medley/map-vals games/highest-points-subseq)
-                   (uuid->name name-mapping)
-                   (sort-by #(- (second %))))))
+                   (medley/map-vals games/highest-increase-subseq)
+                   (sort-by #(- (second %)))
+                   (map #(zipmap [:player :points] %)))))
 
 (rf/reg-event-fx ::toggle-show-all
                  (fn [{:keys [db]} _]
@@ -425,4 +424,5 @@
                    (into [])
                    (sort-by (comp first second))
                    (map flatten)
+                   (map #(zipmap [:player :w :d :l] %))
                    (reverse))))
