@@ -371,22 +371,30 @@
 
                 (map #(set/rename-keys % kw->keyname) history))))
 
+(defn uuid->name
+  [name-mapping vals]
+  (medley/map-keys #(get name-mapping %) vals))
+
 (rf/reg-sub ::best-streaks
             :<- [::results]
+            :<- [::name-mapping]
 
-            (fn [results]
+            (fn [[results name-mapping]]
               (->> results
                    (medley/map-vals games/longest-winning-subseq)
+                   (uuid->name name-mapping)
                    (sort-by #(- (second %))))))
 
 (rf/reg-sub ::highest-points
             :<- [::rankings-history]
+            :<- [::name-mapping]
 
-            (fn [history]
+            (fn [[history name-mapping]]
               (->> history
                    (group-by :player)
                    (medley/map-vals #(map :ranking %))
                    (medley/map-vals games/highest-points-subseq)
+                   (uuid->name name-mapping)
                    (sort-by #(- (second %))))))
 
 (rf/reg-event-fx ::toggle-show-all
@@ -407,11 +415,13 @@
 
 (rf/reg-sub ::best-percents
             :<- [::results]
+            :<- [::name-mapping]
 
-            (fn [results]
+            (fn [[results name-mapping]]
               (js/console.log "Results = " results)
               (->> results
                    (medley/map-vals best-percents)
+                   (uuid->name name-mapping)
                    (into [])
                    (sort-by (comp :w second))
                    (reverse))))

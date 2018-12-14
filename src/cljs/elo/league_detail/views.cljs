@@ -204,6 +204,15 @@
     {:title "Revive All"
      :on-click #(rf/dispatch [::handlers/revive-all])}]])
 
+(defn- stats-table
+  [header data]
+  [:table.table
+   [:thead header]
+   (into [:tbody]
+         (for [row data]
+           (into [:tr]
+                 (map (fn [v] [:td v]) row))))])
+
 (defn rankings-table
   []
   (let [name-mapping @(rf/subscribe [::handlers/name-mapping])
@@ -295,54 +304,35 @@
     (fn []
       [:div.highest__rankings__block
        [:p.stats__title "Highest Rankings reached"]
-       (into [:ul.highest__rankings__element]
-             (for [{:keys [ranking player time]} (take 3 @highest-rankings)]
-               [:li.highest__ranking
-                [:span.highest__ranking__points (int ranking)]
-                [:span.highest__ranking__name player]
-                [:span.highest__ranking__time (format-date time)]]))])))
+       [stats-table ["name" "highest rankings" "date"]
+        (take 3 @highest-rankings)]])))
 
 (defn longest-streaks
   []
-  (let [longest-streaks (rf/subscribe [::handlers/best-streaks])
-        name-mapping (rf/subscribe [::handlers/name-mapping])]
-
+  (let [longest-streaks (rf/subscribe [::handlers/best-streaks])]
     (fn []
       [:div.longest__streaks__block
        [:p.stats__title "Longest Winning Streaks"]
-       (into [:ul.longest__winning__element]
-             (for [[id streak] (take 3 @longest-streaks)]
-               [:li
-                [:span.longest__name (get @name-mapping id)]
-                [:span.longest__streak streak]]))])))
+       [stats-table ["name" "streak"]
+        (take 3 @longest-streaks)]])))
 
 (defn highest-increase
   []
   (let [highest (rf/subscribe [::handlers/highest-points])]
-
     (fn []
       [:div.highest__increase__block
        [:p.stats__title "Biggest Point Gains"]
-       (into [:ul.highest__increase__element]
-             (for [[id streak] (take 3 @highest)]
-               [:li
-                [:span.longest__name id]
-                [:span.longest__streak (int streak)]]))])))
+       [stats-table ["name" "points gained"]
+        (take 3 @highest)]])))
 
 (defn highest-percent
   []
-  (let [best (rf/subscribe [::handlers/best-percents])
-        name-mapping (rf/subscribe [::handlers/name-mapping])]
-
+  (let [best (rf/subscribe [::handlers/best-percents])]
     (fn []
       [:div.best__percent__block
        [:p.stats__title "Best Win %"]
-       (into [:ul.best__percent__element]
-             (for [[id {:keys [w d l]}] (take 3 @best)]
-               [:li
-                [:span.percent__name (get @name-mapping id)]
-                [:span.percent__streak
-                 (clojure.string.join "/" [w d l])]]))])))
+       [stats-table ["name" "percents"]
+        (take 3 @best)]])))
 
 (defn root
   []
