@@ -210,7 +210,7 @@
 
 (defn- stats-table
   [header data]
-  [:table.table
+  [:table.table.table-striped.table__stats
    [:thead
     (into [:tr] (map (tag :th) (map :v header)))]
 
@@ -310,7 +310,6 @@
   (let [highest-rankings (rf/subscribe [::handlers/highest-rankings-best])]
     (fn []
       [:div.highest__rankings__block
-       [:p.stats__title "Highest Rankings reached"]
        [stats-table
         [{:k :player :v "name"} {:k :ranking :v "highest ranking"} {:k :time :v "time"}]
         (take 3 @highest-rankings)]])))
@@ -320,7 +319,6 @@
   (let [longest-streaks (rf/subscribe [::handlers/longest-streaks])]
     (fn []
       [:div.longest__streaks__block
-       [:p.stats__title "Longest Winning Streaks"]
        [stats-table
         [{:k :player :v "name"} {:k :streak :v "Longest Streak"}]
         (take 3 @longest-streaks)]])))
@@ -330,7 +328,6 @@
   (let [highest (rf/subscribe [::handlers/highest-increase])]
     (fn []
       [:div.highest__increase__block
-       [:p.stats__title "Biggest Point Gains"]
        [stats-table
         [{:k :player :v "name"} {:k :points :v "points gained"}]
         (take 3 @highest)]])))
@@ -341,7 +338,6 @@
   (let [best (rf/subscribe [::handlers/best-percents])]
     (fn []
       [:div.best__percent__block
-       [:p.stats__title "Best Win %"]
        [stats-table
         [{:k :player :v "name"} {:k :w :v "wins %"}
          {:k :d :v "draws %"} {:k :l :v "loss %"}]

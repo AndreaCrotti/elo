@@ -64,6 +64,7 @@
     {:background-color "red"}]
 
    [:th {:text-transform "uppercase"}]
+   [:.table__stats {:font-size "0.8em"}]
    [:.fas {:font-size "20px"
            :cursor "pointer"}]
 
