@@ -12,14 +12,16 @@
   (/ 1.0 (inc (Math/pow 10 (/ diff 400)))))
 
 (defn new-rating
-  [old expected game]
-  (+ old (* k (- game expected))))
+  [old expected score]
+  (+ old (* k (- score expected))))
 
 (defn invert-score
   [score]
   (cond (zero? score) 1
         (= 1 score) 0
         :else score))
+
+(def ANDREA_PLAYER_UUID "1c5368b1-19cb-4b25-b38b-d73c0322511e")
 
 (defn new-rankings
   [rankings [p1 p2 score]]
@@ -33,8 +35,8 @@
                                   (expected (- ra rb))
                                   (invert-score score))]
     (assoc rankings
-           p1 (if (= p1 "Alex D") (+ 100 new-rating-ra) new-rating-ra)
-           p2 (if (= p2 "Alex D") (+ 100 new-rating-rb) new-rating-rb))))
+           p1 (if (= (str p1) ANDREA_PLAYER_UUID) (+ 100 new-rating-ra) new-rating-ra)
+           p2 (if (= (str p2) ANDREA_PLAYER_UUID) (+ 100 new-rating-rb) new-rating-rb))))
 
 ;;TODO: this should return the whole history of the rankings instead
 ;;of simply the last one??
