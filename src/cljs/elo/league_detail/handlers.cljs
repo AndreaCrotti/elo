@@ -409,7 +409,7 @@
 (defn best-percents
   [results]
   (let [freq (frequencies results)
-        cent-fn #(int (* 100 (/ (% freq) (count results))))]
+        cent-fn #(* 100 (/ (% freq) (count results)))]
 
     (map cent-fn [:w :d :l])))
 

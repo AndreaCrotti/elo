@@ -206,7 +206,7 @@
 
 (defn- tag
   [t]
-  (fn [v] [t v]))
+  (fn [v] [t (if (float? v) (int v) v)]))
 
 (defn- stats-table
   [header data]
