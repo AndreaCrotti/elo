@@ -376,7 +376,6 @@
 
             (fn [results]
               (->> results
-
                    (medley/map-vals games/longest-winning-subseq)
                    (sort-by #(- (second %))))))
 
@@ -398,3 +397,21 @@
                                    not)}))
 
 (rf/reg-sub ::show-all? (getter [:show-all?]))
+
+(defn best-percents
+  [results]
+  (let [freq (frequencies results)
+        cent-fn #(int (* 100 (/ (% freq) (count results))))]
+
+    (zipmap [:w :d :l] (map cent-fn [:w :d :l]))))
+
+(rf/reg-sub ::best-percents
+            :<- [::results]
+
+            (fn [results]
+              (js/console.log "Results = " results)
+              (->> results
+                   (medley/map-vals best-percents)
+                   (into [])
+                   (sort-by (comp :w second))
+                   (reverse))))

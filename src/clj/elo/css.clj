@@ -87,6 +87,8 @@
    [:.highest__ranking__points {:padding-right "5px"}]
    [:.longest__name {:padding-right "5px"}]
 
+   [:.percent__name {:padding-right "5px"}]
+
    [:.dead__ranking__row {:background-color "#ececec"
                           :color "#b9b9b9"}]
 

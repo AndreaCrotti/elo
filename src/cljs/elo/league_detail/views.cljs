@@ -329,6 +329,21 @@
                 [:span.longest__name id]
                 [:span.longest__streak (int streak)]]))])))
 
+(defn highest-percent
+  []
+  (let [best (rf/subscribe [::handlers/best-percents])
+        name-mapping (rf/subscribe [::handlers/name-mapping])]
+
+    (fn []
+      [:div.best__percent__block
+       [:p.stats__title "Best Win %"]
+       (into [:ul.best__percent__element]
+             (for [[id {:keys [w d l]}] (take 3 @best)]
+               [:li
+                [:span.percent__name (get @name-mapping id)]
+                [:span.percent__streak
+                 (clojure.string.join "/" [w d l])]]))])))
+
 (defn root
   []
   (rf/dispatch [::handlers/load-league])
@@ -343,7 +358,8 @@
      [:div.section.players__stats
       [:div.players__highest_scores [highest-rankings]]
       [:div.players__highest_increase [highest-increase]]
-      [:div.players__longest_streak [longest-streaks]]]
+      [:div.players__longest_streak [longest-streaks]]
+      [:div.players__highest_percent [highest-percent]]]
 
      [:div.section.vega__table [vega-outer]]
      [:div.section.rankings__table [rankings-table]]
