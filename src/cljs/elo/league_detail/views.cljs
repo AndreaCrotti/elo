@@ -204,14 +204,21 @@
     {:title "Revive All"
      :on-click #(rf/dispatch [::handlers/revive-all])}]])
 
+(defn- tag
+  [t]
+  (fn [v] [t v]))
+
 (defn- stats-table
   [header data]
   [:table.table
-   [:thead header]
+   [:thead
+    (into [:tr] (map (tag :th) (map :v header)))]
+
    (into [:tbody]
          (for [row data]
            (into [:tr]
-                 (map (fn [v] [:td v]) row))))])
+                 (map (tag :td)
+                      (vals (select-keys row (map :k header)))))))])
 
 (defn rankings-table
   []
@@ -304,7 +311,8 @@
     (fn []
       [:div.highest__rankings__block
        [:p.stats__title "Highest Rankings reached"]
-       [stats-table ["name" "highest rankings" "date"]
+       [stats-table
+        [{:k :player :v "name"} {:k :ranking :v "highest ranking"} {:k :time :v "time"}]
         (take 3 @highest-rankings)]])))
 
 (defn longest-streaks
