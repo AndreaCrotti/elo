@@ -371,23 +371,31 @@
 
                 (map #(set/rename-keys % kw->keyname) history))))
 
-(rf/reg-sub ::best-streaks
-            :<- [::results]
+(defn uuid->name
+  [name-mapping vals]
+  (medley/map-keys #(get name-mapping %) vals))
 
-            (fn [results]
+(rf/reg-sub ::longest-streaks
+            :<- [::results]
+            :<- [::name-mapping]
+
+            (fn [[results name-mapping]]
               (->> results
                    (medley/map-vals games/longest-winning-subseq)
-                   (sort-by #(- (second %))))))
+                   (uuid->name name-mapping)
+                   (sort-by #(- (second %)))
+                   (map #(zipmap [:player :streak] %)))))
 
-(rf/reg-sub ::highest-points
+(rf/reg-sub ::highest-increase
             :<- [::rankings-history]
 
             (fn [history]
               (->> history
                    (group-by :player)
                    (medley/map-vals #(map :ranking %))
-                   (medley/map-vals games/highest-points-subseq)
-                   (sort-by #(- (second %))))))
+                   (medley/map-vals games/highest-increase-subseq)
+                   (sort-by #(- (second %)))
+                   (map #(zipmap [:player :points] %)))))
 
 (rf/reg-event-fx ::toggle-show-all
                  (fn [{:keys [db]} _]
@@ -401,17 +409,20 @@
 (defn best-percents
   [results]
   (let [freq (frequencies results)
-        cent-fn #(int (* 100 (/ (% freq) (count results))))]
+        cent-fn #(* 100 (/ (% freq) (count results)))]
 
-    (zipmap [:w :d :l] (map cent-fn [:w :d :l]))))
+    (map cent-fn [:w :d :l])))
 
 (rf/reg-sub ::best-percents
             :<- [::results]
+            :<- [::name-mapping]
 
-            (fn [results]
-              (js/console.log "Results = " results)
+            (fn [[results name-mapping]]
               (->> results
                    (medley/map-vals best-percents)
+                   (uuid->name name-mapping)
                    (into [])
-                   (sort-by (comp :w second))
+                   (sort-by (comp first second))
+                   (map flatten)
+                   (map #(zipmap [:player :w :d :l] %))
                    (reverse))))

@@ -69,16 +69,16 @@
 
       (is (= desired (sut/rankings-history players games))))))
 
-(deftest best-streaks-test
+(deftest longest-streaks-test
   (testing "Compute best streaks"
     (are [series streak] (= streak (sut/longest-winning-subseq series))
       [:w :w] 2
       [:l :d :w :w] 2
       [:l :w :w :d :w :w :w] 3)))
 
-(deftest highest-points-test
+(deftest highest-increase-test
   (testing "Compute highest point streaks"
-    (are [series increase] (= increase (sut/highest-points-subseq series))
+    (are [series increase] (= increase (sut/highest-increase-subseq series))
       [1 3 10] 9
       [10] 0
       [1 2 10 3 5 20] 17
