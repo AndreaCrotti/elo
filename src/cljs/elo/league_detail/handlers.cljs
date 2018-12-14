@@ -411,17 +411,17 @@
   (let [freq (frequencies results)
         cent-fn #(int (* 100 (/ (% freq) (count results))))]
 
-    (zipmap [:w :d :l] (map cent-fn [:w :d :l]))))
+    (map cent-fn [:w :d :l])))
 
 (rf/reg-sub ::best-percents
             :<- [::results]
             :<- [::name-mapping]
 
             (fn [[results name-mapping]]
-              (js/console.log "Results = " results)
               (->> results
                    (medley/map-vals best-percents)
                    (uuid->name name-mapping)
                    (into [])
-                   (sort-by (comp :w second))
+                   (sort-by (comp first second))
+                   (map flatten)
                    (reverse))))

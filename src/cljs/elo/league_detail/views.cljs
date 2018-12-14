@@ -326,12 +326,13 @@
         (take 3 @highest)]])))
 
 (defn highest-percent
+
   []
   (let [best (rf/subscribe [::handlers/best-percents])]
     (fn []
       [:div.best__percent__block
        [:p.stats__title "Best Win %"]
-       [stats-table ["name" "percents"]
+       [stats-table ["name" "W%" "D%" "L%"]
         (take 3 @best)]])))
 
 (defn root
