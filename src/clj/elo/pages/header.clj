@@ -29,7 +29,7 @@
    (google-font (:titles fonts))
    (google-font (:smaller-titles fonts))
 
-   (cljsjs-css "vega_embed.css")
+   (cljsjs-css "vega-embed/common/vega-embed.css")
    (cljsjs-css "fontawesome/all.css")
    (cljsjs-css "react-datepicker/production/react-datepicker.min.inc.css")
    (cljsjs-css "bootstrap.css")
@@ -37,6 +37,11 @@
    [:link {:href (cache-buster "/css/screen.css")
            :rel "stylesheet"
            :type "text/css"}]
+
+   [:link {:rel "stylesheet"
+           :href "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+           :integrity "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+           :crossorigin "anonymous"}]
 
    [:link {:href (cache-buster "/css/playground.css")
            :rel "stylesheet"

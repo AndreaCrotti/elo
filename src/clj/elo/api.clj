@@ -224,7 +224,9 @@
         ;; render to the SPA, letting the routing be handled by
         ;; accountant
         ;; TODO: this might be a problem for things like the ring oauth
-        true spa}])
+
+        ["league/" :league-id] spa
+        "" spa}])
 
 (def routes-handler
   (make-handler routes))
