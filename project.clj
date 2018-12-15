@@ -108,9 +108,7 @@
                           ["garden" "once"]
                           ["cljs-prod"]]
 
-             :omit-source true
-             :aot [elo.api]
-             :main elo.api}
+             :omit-source true}
 
    :dev
    {:ring {:stacktrace-middleware prone.middleware/wrap-exceptions}
