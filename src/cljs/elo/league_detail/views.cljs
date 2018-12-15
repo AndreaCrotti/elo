@@ -208,17 +208,26 @@
   [t]
   (fn [v] [t (if (float? v) (int v) v)]))
 
-(defn- stats-table
-  [header data]
-  [:table.table.table-striped.table__stats
-   [:thead
-    (into [:tr] (map (tag :th) (map :v header)))]
+(defn transform
+  [data tr]
+  (reduce-kv update data tr))
 
-   (into [:tbody]
-         (for [row data]
-           (into [:tr]
-                 (map (tag :td)
-                      (vals (select-keys row (map :k header)))))))])
+(defn- stats-table
+  ([header data tr]
+   [:table.table.table-striped.table__stats
+    [:thead
+     (into [:tr] (map (tag :th) (map :v header)))]
+
+    (into [:tbody]
+          (for [row data]
+            (into [:tr]
+                  (->> (map :k header)
+                       (select-keys (transform row tr))
+                       (vals)
+                       (map (tag :td))))))])
+
+  ([header data]
+   (stats-table header data {})))
 
 (defn rankings-table
   []
@@ -301,7 +310,6 @@
   []
   (let [history (rf/subscribe [::handlers/rankings-history-vega])
         rankings-domain (rf/subscribe [::handlers/rankings-domain])]
-
     (fn []
       [vega/vega-inner @history @rankings-domain])))
 
@@ -312,7 +320,8 @@
       [:div.highest__rankings__block
        [stats-table
         [{:k :player :v "name"} {:k :ranking :v "ranking"} {:k :time :v "time"}]
-        (take 3 @highest-rankings)]])))
+        (take 3 @highest-rankings)
+        {:time format-date}]])))
 
 (defn longest-streaks
   []
@@ -335,13 +344,16 @@
 (defn highest-percent
 
   []
-  (let [best (rf/subscribe [::handlers/best-percents])]
+  (let [best (rf/subscribe [::handlers/best-percents])
+        percent #(str (int %) " %")]
     (fn []
       [:div.best__percent__block
        [stats-table
-        [{:k :player :v "name"} {:k :w :v "wins %"}
-         {:k :d :v "draws %"} {:k :l :v "loss %"}]
-        (take 3 @best)]])))
+        [{:k :player :v "name"} {:k :w :v "win %"}
+         {:k :d :v "draw %"} {:k :l :v "loss %"}]
+        (take 3 @best)
+        ;; could probably do this with CSS as well
+        {:w percent :d percent :l percent}]])))
 
 (defn root
   []
