@@ -311,7 +311,7 @@
     (fn []
       [:div.highest__rankings__block
        [stats-table
-        [{:k :player :v "name"} {:k :ranking :v "highest ranking"} {:k :time :v "time"}]
+        [{:k :player :v "name"} {:k :ranking :v "ranking"} {:k :time :v "time"}]
         (take 3 @highest-rankings)]])))
 
 (defn longest-streaks
@@ -320,7 +320,7 @@
     (fn []
       [:div.longest__streaks__block
        [stats-table
-        [{:k :player :v "name"} {:k :streak :v "Longest Streak"}]
+        [{:k :player :v "name"} {:k :streak :v "streak"}]
         (take 3 @longest-streaks)]])))
 
 (defn highest-increase
@@ -329,7 +329,7 @@
     (fn []
       [:div.highest__increase__block
        [stats-table
-        [{:k :player :v "name"} {:k :points :v "points gained"}]
+        [{:k :player :v "name"} {:k :points :v "points"}]
         (take 3 @highest)]])))
 
 (defn highest-percent
