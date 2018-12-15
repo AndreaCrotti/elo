@@ -93,8 +93,7 @@
                                 :pretty-print? true}}]}
 
 
-  :aliases {"test-cljs" ["doo" "phantom" "test" "once"]
-            "dev" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]
+  :aliases {"dev" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]
             "cljs-prod" ["trampoline" "run" "-m" "figwheel.main" "--build-once" "prod"] }
 
   :cljfmt {:indents {for-all [[:block 1]]
