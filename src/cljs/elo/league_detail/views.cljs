@@ -56,11 +56,9 @@
         league (rf/subscribe [::handlers/league])
         game-type (or (:game_type @league) :fifa)
         points-range (map str (config/opts game-type :points))
-        ;; with two different players list we can filter out directly
-        ;; the one that was already selected
         sorted-players (sort-by :name @players)]
 
-    [:div.game__form {:on-submit (fn [] false)}
+    [:div.game__form
      [:div.form-group.player1__group
       [:label.form__label "Player 1"]
       [:div.form__row.form-control
@@ -108,40 +106,53 @@
   ;; without sorting it only works up to 30 !!
   (sort (zipmap (map inc (range (count xs))) xs)))
 
+(defn- format-date
+  [timestamp]
+  (.format (js/moment timestamp) "YYYY-MM-DD"))
+
 (defn games-table
   []
-  (let [games @(rf/subscribe [::handlers/games-live-players])
-        name-mapping @(rf/subscribe [::handlers/name-mapping])
+  (let [games (rf/subscribe [::handlers/games-live-players])
+        name-mapping (rf/subscribe [::handlers/name-mapping])
         up-to (rf/subscribe [::handlers/up-to-games])
-        first-games (if (some? @up-to)
-                      (take @up-to games)
-                      games)
-        header [:tr
-                [:th "game #"]
-                [:th "player 1"]
-                [:th (translate :using)]
-                [:th (translate :points)]
-                [:th "player 2"]
-                [:th (translate :using)]
-                [:th (translate :points)]
-                [:th "played At"]]]
+        show-all? (rf/subscribe [::handlers/show-all?])]
 
-    [:div
-     [:table.table.table-striped
-      [:thead header]
-      (into [:tbody]
-            (for [[idx {:keys [p1 p2 p1_using p2_using p1_points p2_points played_at]}]
-                  (reverse (enumerate first-games))]
+    (fn []
+      (let [first-games (if (some? @up-to)
+                          (take @up-to @games)
+                          @games)
 
-              [:tr
-               [:td idx]
-               [:td (get name-mapping p1)]
-               [:td p1_using]
-               [:td p1_points]
-               [:td (get name-mapping p2)]
-               [:td p2_using]
-               [:td p2_points]
-               [:td (.format (js/moment played_at) "YYYY-MM-DD")]]))]]))
+            header [:tr
+                    [:th "game #"]
+                    [:th "player 1"]
+                    [:th (translate :using)]
+                    [:th (translate :points)]
+                    [:th "player 2"]
+                    [:th (translate :using)]
+                    [:th (translate :points)]
+                    [:th "played At"]]
+            rev-games (-> first-games enumerate reverse)
+            filtered-games (if @show-all? rev-games (take 10 rev-games))]
+
+        [:div
+         [:button {:on-click #(rf/dispatch [::handlers/toggle-show-all])}
+          (if @show-all? "SHOW LAST 10" "SHOW ALL")]
+
+         [:table.table.table-striped
+          [:thead header]
+          (into [:tbody]
+                (for [[idx {:keys [p1 p2 p1_using p2_using p1_points p2_points played_at]}]
+                      filtered-games]
+
+                  [:tr
+                   [:td idx]
+                   [:td (get @name-mapping p1)]
+                   [:td p1_using]
+                   [:td p1_points]
+                   [:td (get @name-mapping p2)]
+                   [:td p2_using]
+                   [:td p2_points]
+                   [:td (format-date played_at)]]))]]))))
 
 (defn el-result
   [idx result]
@@ -152,27 +163,81 @@
   [results]
   (map-indexed el-result (take-last form-size results)))
 
+(defn game-slider
+  []
+  (let [games (rf/subscribe [::handlers/games-live-players])
+        up-to-games (rf/subscribe [::handlers/up-to-games])]
+
+    (fn []
+      (let [up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
+        [:div.form-group
+         [:input.form-control.up-to-range-slider
+          {:type "range"
+           :min 0
+           :max (count @games)
+           :value up-to-current
+           :class "slider"
+           :on-change (utils/set-val ::handlers/up-to-games js/parseInt)}]
+
+         [:span.rankings-chevrons.form-control
+          [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
+          [:span.up-to-current-games up-to-current]
+          [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]))))
+
+(def hide-show-all
+  [:span.hide__show__all
+   [:i.fas.fa-eye-slash
+    {:title "Hide All"
+     :on-click #(rf/dispatch [::handlers/hide-all])}]
+
+   [:i.fas.fa-eye
+    {:title "Show All"
+     :on-click #(rf/dispatch [::handlers/show-all])}]])
+
+(def kill-revive-all
+  [:span
+   [:i.fas.fa-skull
+    {:title "Kill All"
+     :on-click #(rf/dispatch [::handlers/kill-all])}]
+
+   [:i.fas.fa-life-ring
+    {:title "Revive All"
+     :on-click #(rf/dispatch [::handlers/revive-all])}]])
+
+(defn- tag
+  [t]
+  (fn [v] [t (if (float? v) (int v) v)]))
+
+(defn transform
+  [data tr]
+  (reduce-kv update data tr))
+
+(defn- stats-table
+  ([header data tr]
+   [:table.table.table-striped.table__stats
+    [:thead
+     (into [:tr] (map (tag :th) (map :v header)))]
+
+    (into [:tbody]
+          (for [row data]
+            (into [:tr]
+                  (->> (map :k header)
+                       (select-keys (transform row tr))
+                       (vals)
+                       (map (tag :td))))))])
+
+  ([header data]
+   (stats-table header data {})))
+
 (defn rankings-table
   []
   (let [name-mapping @(rf/subscribe [::handlers/name-mapping])
         results @(rf/subscribe [::handlers/results])
         stats @(rf/subscribe [::handlers/stats])
-
-        up-to-games (rf/subscribe [::handlers/up-to-games])
-        games (rf/subscribe [::handlers/games-live-players])
         sorted-rankings @(rf/subscribe [::handlers/rankings])
-        non-zero-games (filter #(pos? (:ngames %)) sorted-rankings)
-        up-to-current (if (some? @up-to-games) @up-to-games (count @games))
-        hide-show-all [:span
-                       [:i.fas.fa-eye-slash
-                        {:title "Hide All"
-                         :on-click #(rf/dispatch [::handlers/hide-all])}]
-
-                       [:i.fas.fa-eye
-                        {:title "Show All"
-                         :on-click #(rf/dispatch [::handlers/show-all])}]]
         header [:tr
                 [:th hide-show-all]
+                [:th kill-revive-all]
                 [:th "position"]
                 [:th "player"]
                 [:th "ranking"]
@@ -181,28 +246,17 @@
                 [:th "# W/L/D"]]]
 
     [:div
-     [:div.form-group
-      [:input.form-control.up-to-range-slider
-       {:type "range"
-        :min 0
-        :max (count @games)
-        :value up-to-current
-        :class "slider"
-        :on-change (utils/set-val ::handlers/up-to-games js/parseInt)}]
-
-      [:span.rankings-chevrons.form-control
-       [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
-       [:span.up-to-current-games up-to-current]
-       [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]
-
+     [game-slider]
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
-            (for [[idx {:keys [id ranking ngames]}] (enumerate non-zero-games)
+            (for [[idx {:keys [id ranking ngames]}] (enumerate sorted-rankings)
                   :let [{:keys [wins losses draws]} (get stats id)
                         player-name (get name-mapping id)
-                        hidden? @(rf/subscribe [::handlers/hidden? id])]]
-              [:tr
+                        hidden? @(rf/subscribe [::handlers/hidden? id])
+                        dead? @(rf/subscribe [::handlers/dead? id])]]
+
+              [:tr {:class (if dead? "dead__ranking__row" "alive__ranking__row")}
                [:td [:span
                      (if hidden?
                        [:i.fas.fa-eye
@@ -212,6 +266,16 @@
                        [:i.fas.fa-eye-slash
                         {:title (str "Hide " player-name)
                          :on-click #(rf/dispatch [::handlers/hide id])}])]]
+
+               [:td [:span
+                     (if dead?
+                       [:i.fas.fa-life-ring
+                        {:title (str "Revive " player-name)
+                         :on-click #(rf/dispatch [::handlers/revive id])}]
+
+                       [:i.fas.fa-skull
+                        {:title (str "Kill " player-name)
+                         :on-click #(rf/dispatch [::handlers/kill id])}])]]
 
                [:td idx]
                [:td player-name]
@@ -244,11 +308,52 @@
 
 (defn vega-outer
   []
-  (let [history (rf/subscribe [::handlers/rankings-history])
+  (let [history (rf/subscribe [::handlers/rankings-history-vega])
         rankings-domain (rf/subscribe [::handlers/rankings-domain])]
-
     (fn []
       [vega/vega-inner @history @rankings-domain])))
+
+(defn highest-rankings
+  []
+  (let [highest-rankings (rf/subscribe [::handlers/highest-rankings-best])]
+    (fn []
+      [:div.highest__rankings__block
+       [stats-table
+        [{:k :player :v "name"} {:k :ranking :v "ranking"} {:k :time :v "time"}]
+        (take 3 @highest-rankings)
+        {:time format-date}]])))
+
+(defn longest-streaks
+  []
+  (let [longest-streaks (rf/subscribe [::handlers/longest-streaks])]
+    (fn []
+      [:div.longest__streaks__block
+       [stats-table
+        [{:k :player :v "name"} {:k :streak :v "streak"}]
+        (take 3 @longest-streaks)]])))
+
+(defn highest-increase
+  []
+  (let [highest (rf/subscribe [::handlers/highest-increase])]
+    (fn []
+      [:div.highest__increase__block
+       [stats-table
+        [{:k :player :v "name"} {:k :points :v "points"}]
+        (take 3 @highest)]])))
+
+(defn highest-percent
+
+  []
+  (let [best (rf/subscribe [::handlers/best-percents])
+        percent #(str (int %) " %")]
+    (fn []
+      [:div.best__percent__block
+       [stats-table
+        [{:k :player :v "name"} {:k :w :v "win %"}
+         {:k :d :v "draw %"} {:k :l :v "loss %"}]
+        (take 3 @best)
+        ;; could probably do this with CSS as well
+        {:w percent :d percent :l percent}]])))
 
 (defn root
   []
@@ -261,6 +366,12 @@
      [navbar]
      [show-error]
      [:div.section.players__form_container [game-form]]
+     [:div.section.players__stats
+      [:div.players__highest_scores [highest-rankings]]
+      [:div.players__highest_increase [highest-increase]]
+      [:div.players__longest_streak [longest-streaks]]
+      [:div.players__highest_percent [highest-percent]]]
+
      [:div.section.vega__table [vega-outer]]
      [:div.section.rankings__table [rankings-table]]
      [:div.section.games__table [games-table]]]))

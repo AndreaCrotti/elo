@@ -36,6 +36,8 @@
   [[:.section {:max-width "1000px"
                :margin "0 auto"}]
 
+   [:.players__stats {:display "flex"
+                      :justify-content "space-between"}]
    [:.rankings__alive {:display "flex"}]
 
    [:.result__element
@@ -62,6 +64,7 @@
     {:background-color "red"}]
 
    [:th {:text-transform "uppercase"}]
+   [:.table__stats {:font-size "0.8em"}]
    [:.fas {:font-size "20px"
            :cursor "pointer"}]
 
@@ -81,9 +84,18 @@
 
    [:label {:padding-right "30px"}]
 
-   [:.section {:padding "10px"
-               ;; :box-shadow "-1px 1px 2px 2px rgba(0,0,0,0.2)"
-}]])
+   [:.highest__ranking__name {:padding-right "5px"}]
+   [:.highest__ranking__points {:padding-right "5px"}]
+   [:.longest__name {:padding-right "5px"}]
+
+   [:.percent__name {:padding-right "5px"}]
+
+   [:.dead__ranking__row {:background-color "#ececec"
+                          :color "#b9b9b9"}]
+
+   [:.section {:padding "10px"}]
+
+   [:.stats__title {:font-weight "bold"}]])
 
 (defstyles screen
   ;; could maybe even split creating multiple CSS files?

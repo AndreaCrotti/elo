@@ -91,20 +91,6 @@
   (str (:p1 game) " vs " (:p2 game) ": "
        (:p1_points game) " - " (:p2_points game)))
 
-(defn game-expanded
-  "Expand the result of the game call"
-  [rankings idx game]
-  (let [norm-game (elo/normalize-game game)
-        new-rankings (elo/new-rankings rankings norm-game)
-        as-map (map (fn [[k v]] {:player k :ranking v}) new-rankings)]
-
-    [new-rankings
-     (map #(assoc %
-                  :game idx
-                  :result (result-str game)
-                  :time (:played_at game))
-          as-map)]))
-
 (defn- plays?
   [game player-id]
   (contains? (set ((juxt :p1 :p2) game)) player-id))
@@ -125,19 +111,48 @@
   (let [current-game (nth all-games idx)
         name-mapping (player->names players)
         common-map
-        {"Game #" idx
-         "Time" (:played_at current-game)
-         "Result" (game-result current-game name-mapping)}
+        {:game-idx idx
+         :time (:played_at current-game)
+         :result (game-result current-game name-mapping)}
 
         rankings (get-rankings (take idx all-games) players)]
 
     (map #(merge % common-map)
          (for [r (filter #(plays? current-game (:id %)) rankings)]
-           {"Ranking" (:ranking r)
-            "Player" (name-mapping (:id r))}))))
+           {:ranking (:ranking r)
+            :player (name-mapping (:id r))}))))
 
 (defn rankings-history
   [players games]
   (flatten
    (for [idx (range (count games))]
      (rankings-at-idx* players idx games))))
+
+(defn longest-winning-subseq
+  [s]
+  (->> s
+       (partition-by identity)
+       (filter #(= #{:w} (set %)))
+       (map count)
+       (apply max)))
+
+(defn zipper
+  [xs]
+  (for [idx (range (dec (count xs)))]
+    [(nth xs idx) (nth xs (inc idx))]))
+
+(defn highest-increase-subseq
+  [s]
+  (loop [xs (zipper s)
+         curr-increase 0
+         max-increase 0]
+
+    (let [[prev next] (first xs)
+          rst (rest xs)
+          new-max (max curr-increase max-increase)]
+
+      (if (empty? xs)
+        new-max
+        (if (>= next prev)
+          (recur rst (+ curr-increase (- next prev)) new-max)
+          (recur rst 0 new-max))))))

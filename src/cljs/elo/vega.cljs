@@ -44,4 +44,5 @@
     (reagent/create-class
      {:reagent-render vega-view
       :component-did-update update
+      :component-did-mount update
       :display-name "Rankings Over Time Inner"})))
