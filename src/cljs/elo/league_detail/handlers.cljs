@@ -423,6 +423,7 @@
                    (uuid->name name-mapping)
                    (into [])
                    (sort-by (comp first second))
+                   ;; flatten and then zipmap seems a bit of a waste
                    (map flatten)
                    (map #(zipmap [:player :w :d :l] %))
                    (reverse))))
