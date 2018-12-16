@@ -3,6 +3,7 @@
   (:require [cljsjs.moment]
             [clojure.set :as set]
             [elo.common.handlers :as common]
+            [elo.common.sets :as sets]
             [elo.games :as games]
             [elo.shared-config :as shared]
             [medley.core :as medley]
@@ -275,67 +276,34 @@
 (rf/reg-event-fx ::add-game (common/writer page "/api/add-game"
                                            ::add-game-success game-transform))
 
-(defn clear-set
-  [key]
-  (fn [db _]
-    (common/assoc-in* db
-                      page
-                      [key]
-                      #{})))
-
-(defn fill-set
-  [key reset-fn]
-  (fn [db _]
-    (common/assoc-in* db
-                      page
-                      [key]
-                      (set (reset-fn db)))))
-
-(defn modify-set
-  [key action]
-  (fn [db [_ uuid]]
-    (let [func (case action
-                 :disj disj
-                 :conj conj)]
-
-      (common/update-in* db
-                         page
-                         [key]
-                         #(func % uuid)))))
-
-(defn in-set?
-  [key]
-  (fn [db [_ uuid]]
-    (contains? (common/get-in* db page [key]) uuid)))
-
-(rf/reg-sub ::hidden? (in-set? :hidden-players))
+(rf/reg-sub ::hidden? (sets/in? page :hidden-players))
 
 (rf/reg-sub ::hidden-players (getter [:hidden-players]))
 
-(rf/reg-event-db ::show (modify-set :hidden-players :disj))
+(rf/reg-event-db ::show (sets/modify page :hidden-players :disj))
 
-(rf/reg-event-db ::hide (modify-set :hidden-players :conj))
+(rf/reg-event-db ::hide (sets/modify :hidden-players :conj))
 
 (rf/reg-event-db ::hide-all
-                 (fill-set :hidden-players
-                           #(set (map :id (common/get-in* % page [:players])))))
+                 (sets/fill page :hidden-players
+                            #(set (map :id (common/get-in* % page [:players])))))
 
-(rf/reg-event-db ::show-all (clear-set :hidden-players))
+(rf/reg-event-db ::show-all (set/clear page :hidden-players))
 
 ;; dead players
-(rf/reg-sub ::dead? (in-set? :dead-players))
+(rf/reg-sub ::dead? (sets/in? :dead-players))
 
 (rf/reg-sub ::dead-players (getter [:dead-players]))
 
-(rf/reg-event-db ::revive (modify-set :dead-players :disj))
+(rf/reg-event-db ::revive (sets/modify :dead-players :disj))
 
-(rf/reg-event-db ::kill (modify-set :dead-players :conj))
+(rf/reg-event-db ::kill (sets/modify :dead-players :conj))
 
 (rf/reg-event-db ::kill-all
-                 (fill-set :dead-players
-                           #(set (map :id (common/get-in* % page [:players])))))
+                 (sets/fill :dead-players
+                            #(set (map :id (common/get-in* % page [:players])))))
 
-(rf/reg-event-db ::revive-all (clear-set :dead-players))
+(rf/reg-event-db ::revive-all (sets/clear :dead-players))
 
 (rf/reg-sub ::visible-players
             :<- [::players]
