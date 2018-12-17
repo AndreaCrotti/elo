@@ -313,47 +313,41 @@
     (fn []
       [vega/vega-inner @history @rankings-domain])))
 
-(defn highest-rankings
-  []
-  (let [highest-rankings (rf/subscribe [::handlers/highest-rankings-best])]
-    (fn []
-      [:div.highest__rankings__block
-       [stats-table
-        [{:k :player :v "name"} {:k :ranking :v "ranking"} {:k :time :v "time"}]
-        (take 3 @highest-rankings)
-        {:time format-date}]])))
+(defn- percent
+  [v]
+  (str (int v) " %"))
 
-(defn longest-streaks
-  []
-  (let [longest-streaks (rf/subscribe [::handlers/longest-streaks])]
-    (fn []
-      [:div.longest__streaks__block
-       [stats-table
-        [{:k :player :v "name"} {:k :streak :v "streak"}]
-        (take 3 @longest-streaks)]])))
+(def stats
+  {:highest-ranking
+   {:handler ::handlers/highest-rankings-best
+    :fields [{:k :player :v "name"} {:k :ranking :v "ranking"} {:k :time :v "time"}]
+    :transform {:time format-date}}
 
-(defn highest-increase
-  []
-  (let [highest (rf/subscribe [::handlers/highest-increase])]
-    (fn []
-      [:div.highest__increase__block
-       [stats-table
-        [{:k :player :v "name"} {:k :points :v "points"}]
-        (take 3 @highest)]])))
+   :longest-streak
+   {:handler ::handlers/longest-streaks
+    :fields [{:k :player :v "name"} {:k :streak :v "streak"}]}
 
-(defn highest-percent
+   :highest-increase
+   {:handler ::handlers/highest-increase
+    :fields [{:k :player :v "name"} {:k :points :v "points"}]}
 
-  []
-  (let [best (rf/subscribe [::handlers/best-percents])
-        percent #(str (int %) " %")]
-    (fn []
-      [:div.best__percent__block
-       [stats-table
-        [{:k :player :v "name"} {:k :w :v "win %"}
-         {:k :d :v "draw %"} {:k :l :v "loss %"}]
-        (take 3 @best)
-        ;; could probably do this with CSS as well
-        {:w percent :d percent :l percent}]])))
+   :best-percents
+   {:handler ::handlers/best-percents
+    :fields [{:k :player :v "name"} {:k :w :v "win %"}
+             {:k :d :v "draw %"} {:k :l :v "loss %"}]
+
+    :transform {:w percent :d percent :l percent}}})
+
+(defn stats-component
+  [name]
+  (let [{:keys [handler fields transform]} (name stats)]
+    (let [stats (rf/subscribe [handler])]
+      (fn []
+        [:div.stats__table__container
+         [stats-table
+          fields
+          (take 3 @stats)
+          (or transform {})]]))))
 
 (defn root
   []
@@ -367,10 +361,10 @@
      [show-error]
      [:div.section.players__form_container [game-form]]
      [:div.section.players__stats
-      [:div.players__highest_scores [highest-rankings]]
-      [:div.players__highest_increase [highest-increase]]
-      [:div.players__longest_streak [longest-streaks]]
-      [:div.players__highest_percent [highest-percent]]]
+      [stats-component :highest-ranking]
+      [stats-component :longest-streak]
+      [stats-component :highest-increase]
+      [stats-component :best-percents]]
 
      [:div.section.vega__table [vega-outer]]
      [:div.section.rankings__table [rankings-table]]
