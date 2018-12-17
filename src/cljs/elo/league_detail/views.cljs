@@ -343,10 +343,11 @@
   (let [{:keys [handler fields transform]} (name stats)]
     (let [stats (rf/subscribe [handler])]
       (fn []
-        [stats-table
-         fields
-         (take 3 @stats)
-         (or transform {})]))))
+        [:div.stats__table__container
+         [stats-table
+          fields
+          (take 3 @stats)
+          (or transform {})]]))))
 
 (defn root
   []
