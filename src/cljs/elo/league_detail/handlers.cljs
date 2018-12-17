@@ -288,7 +288,7 @@
                  (sets/fill page :hidden-players
                             #(set (map :id (common/get-in* % page [:players])))))
 
-(rf/reg-event-db ::show-all (set/clear page :hidden-players))
+(rf/reg-event-db ::show-all (sets/clear page :hidden-players))
 
 ;; dead players
 (rf/reg-sub ::dead? (sets/in? :dead-players))
