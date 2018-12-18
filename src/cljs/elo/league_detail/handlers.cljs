@@ -282,7 +282,7 @@
 
 (rf/reg-event-db ::show (sets/modify page :hidden-players :disj))
 
-(rf/reg-event-db ::hide (sets/modify :hidden-players :conj))
+(rf/reg-event-db ::hide (sets/modify page :hidden-players :conj))
 
 (rf/reg-event-db ::hide-all
                  (sets/fill page :hidden-players
@@ -291,19 +291,20 @@
 (rf/reg-event-db ::show-all (sets/clear page :hidden-players))
 
 ;; dead players
-(rf/reg-sub ::dead? (sets/in? :dead-players))
+(rf/reg-sub ::dead? (sets/in? page :dead-players))
 
 (rf/reg-sub ::dead-players (getter [:dead-players]))
 
-(rf/reg-event-db ::revive (sets/modify :dead-players :disj))
+(rf/reg-event-db ::revive (sets/modify page :dead-players :disj))
 
-(rf/reg-event-db ::kill (sets/modify :dead-players :conj))
+(rf/reg-event-db ::kill (sets/modify page :dead-players :conj))
 
 (rf/reg-event-db ::kill-all
-                 (sets/fill :dead-players
+                 (sets/fill page
+                            :dead-players
                             #(set (map :id (common/get-in* % page [:players])))))
 
-(rf/reg-event-db ::revive-all (sets/clear :dead-players))
+(rf/reg-event-db ::revive-all (sets/clear page :dead-players))
 
 (rf/reg-sub ::visible-players
             :<- [::players]
