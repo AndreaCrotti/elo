@@ -4,18 +4,12 @@
 (defn clear
   [page key]
   (fn [db _]
-    (common/assoc-in* db
-                      page
-                      [key]
-                      #{})))
+    (common/assoc-in* db page [key] #{})))
 
 (defn fill
   [page key reset-fn]
   (fn [db _]
-    (common/assoc-in* db
-                      page
-                      [key]
-                      (set (reset-fn db)))))
+    (common/assoc-in* db page [key] (set (reset-fn db)))))
 
 (defn modify
   [page key action]

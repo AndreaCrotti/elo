@@ -286,7 +286,7 @@
 
 (rf/reg-event-db ::hide-all
                  (sets/fill page :hidden-players
-                            #(set (map :id (common/get-in* % page [:players])))))
+                            #(map :id (common/get-in* % page [:players]))))
 
 (rf/reg-event-db ::show-all (sets/clear page :hidden-players))
 
@@ -302,7 +302,7 @@
 (rf/reg-event-db ::kill-all
                  (sets/fill page
                             :dead-players
-                            #(set (map :id (common/get-in* % page [:players])))))
+                            #(map :id (common/get-in* % page [:players]))))
 
 (rf/reg-event-db ::revive-all (sets/clear page :dead-players))
 
