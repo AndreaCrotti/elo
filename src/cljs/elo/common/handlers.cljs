@@ -1,7 +1,8 @@
 (ns elo.common.handlers
   (:require [ajax.core :as ajax]
             [day8.re-frame.http-fx]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [clojure.spec.alpha :as s]))
 
 (defn get-in*
   [m page-id ks]
@@ -21,9 +22,14 @@
     (get-in* db page-id ks)))
 
 (defn setter*
-  [page-id ks]
-  (fn [db [_ val]]
-    (assoc-in* db page-id ks val)))
+  ([page-id ks spec]
+   (let [new-db (setter* page-id ks)]
+     (s/assert (s/conform spec new-db) (s/explain spec new-db))
+     new-db))
+
+  ([page-id ks]
+   (fn [db [_ val]]
+     (assoc-in* db page-id ks val))))
 
 (defn get-league-id
   [db]

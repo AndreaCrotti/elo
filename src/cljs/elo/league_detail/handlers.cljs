@@ -34,7 +34,6 @@
 
 (def default-db
   {:games []
-   :players []
    :dead-players #{}
    :hidden-players #{}
    :game {}
