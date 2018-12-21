@@ -1,17 +1,18 @@
-(ns elo.specs
+(ns elo.specs.stats
   (:require [clojure.spec.alpha :as s]))
 
 (defn percent?
   [n]
-  (contains? (set (range 100)) n))
+  (and (>= n 0)
+       (<= n 100)))
 
 (s/def ::player string?)
-(s/def ::ranking int?)
+(s/def ::ranking float?)
 (s/def ::game-idx int?)
 (s/def ::result string?)
 
 (s/def ::streak int?)
-(s/def ::points int?)
+(s/def ::points float?)
 
 (s/def ::w percent?)
 (s/def ::d percent?)

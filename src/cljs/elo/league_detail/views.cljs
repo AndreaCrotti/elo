@@ -9,7 +9,7 @@
             [elo.shared-config :as config]
             [elo.utils :as utils]
             [elo.vega :as vega]
-            [elo.specs :as specs]
+            [elo.specs.stats :as stats-specs]
             [clojure.spec.alpha :as s]
             [re-frame.core :as rf]))
 
@@ -320,20 +320,20 @@
   (str (int v) " %"))
 
 (def stats
-  {::specs/highest-ranking
+  {::stats-specs/highest-ranking
    {:handler ::handlers/highest-rankings-best
     :fields [{:k :player :v "name"} {:k :ranking :v "ranking"} {:k :time :v "time"}]
     :transform {:time format-date}}
 
-   ::specs/longest-streak
+   ::stats-specs/longest-streak
    {:handler ::handlers/longest-streaks
     :fields [{:k :player :v "name"} {:k :streak :v "streak"}]}
 
-   ::specs/highest-increase
+   ::stats-specs/highest-increase
    {:handler ::handlers/highest-increase
     :fields [{:k :player :v "name"} {:k :points :v "points"}]}
 
-   ::specs/best-percents
+   ::stats-specs/best-percents
    {:handler ::handlers/best-percents
     :fields [{:k :player :v "name"} {:k :w :v "win %"}
              {:k :d :v "draw %"} {:k :l :v "loss %"}]
@@ -365,10 +365,10 @@
      [show-error]
      [:div.section.players__form_container [game-form]]
      [:div.section.players__stats
-      [stats-component ::specs/highest-ranking]
-      [stats-component ::specs/longest-streak]
-      [stats-component ::specs/highest-increase]
-      [stats-component ::specs/best-percents]]
+      [stats-component ::stats-specs/highest-ranking]
+      [stats-component ::stats-specs/longest-streak]
+      [stats-component ::stats-specs/highest-increase]
+      [stats-component ::stats-specs/best-percents]]
 
      [:div.section.vega__table [vega-outer]]
      [:div.section.rankings__table [rankings-table]]
