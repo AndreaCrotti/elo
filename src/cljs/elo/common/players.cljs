@@ -17,7 +17,6 @@
 
 ;;TODO: pass the spec
 (def setter (partial common/setter* page))
-
 (def getter (partial common/getter* page))
 
 (rf/reg-sub ::players (getter [:players]))
