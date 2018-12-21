@@ -341,10 +341,12 @@
     :transform {:w percent :d percent :l percent}}})
 
 (defn stats-component
-  [name]
-  (let [{:keys [handler fields transform]} (name stats)]
+  [kw]
+  (let [{:keys [handler fields transform]} (kw stats)]
     (let [stats (rf/subscribe [handler])]
       (fn []
+        ;; make the assertion actually blow up as well
+        (s/assert (s/conform kw @stats) (s/explain kw @stats))
         [:div.stats__table__container
          [stats-table
           fields
