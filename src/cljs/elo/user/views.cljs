@@ -13,7 +13,7 @@
 ;; - best performing team
 
 #_[drop-down-players sorted-players ::handlers/p1 (:p1 @game)
- {:caption "Name"}]
+   {:caption "Name"}]
 
 (defn head-to-head
   []

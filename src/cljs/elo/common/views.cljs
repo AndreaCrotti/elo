@@ -16,7 +16,6 @@
               (for [o opts]
                 [:option {:value (value-fn o)} (display-fn o)]))))
 
-
 (defn drop-down-players
   [opts dispatch-key value]
   [drop-down opts dispatch-key value :value-fn :id :display-fn :name])
