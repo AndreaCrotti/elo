@@ -1,6 +1,5 @@
 (ns elo.fixtures
-  (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as g]))
+  (:require [clojure.spec.alpha :as s]))
 
 (s/def ::id uuid?)
 (s/def ::name string?)

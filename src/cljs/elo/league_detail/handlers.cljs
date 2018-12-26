@@ -3,6 +3,7 @@
   (:require [cljsjs.moment]
             [clojure.set :as set]
             [elo.common.handlers :as common]
+            [elo.common.players :as players-handlers]
             [elo.common.sets :as sets]
             [elo.games :as games]
             [elo.shared-config :as shared]
@@ -33,7 +34,6 @@
 
 (def default-db
   {:games []
-   :players []
    :dead-players #{}
    :hidden-players #{}
    :game {}
@@ -51,7 +51,7 @@
 
 (rf/reg-sub ::rankings
             :<- [::games-live-players]
-            :<- [::players]
+            :<- [::players-handlers/players]
             :<- [::up-to-games]
             :<- [::dead-players]
 
@@ -81,7 +81,7 @@
 ;;TODO: overcomplicated way of computing history making sure we only
 ;;show game of shown players
 (rf/reg-sub ::rankings-history
-            :<- [::players]
+            :<- [::players-handlers/players]
             :<- [::visible-players]
             :<- [::games-live-players]
             :<- [::up-to-games]
@@ -96,7 +96,7 @@
 
 (rf/reg-sub ::rankings-domain
             :<- [::games]
-            :<- [::players]
+            :<- [::players-handlers/players]
 
             (fn [[games players]]
               (let [full-rankings-history (games/rankings-history players games)]
@@ -127,7 +127,7 @@
 (rf/reg-event-db ::next-game next-game)
 
 (rf/reg-sub ::name-mapping
-            :<- [::players]
+            :<- [::players-handlers/players]
 
             (fn [players _]
               (games/player->names players)))
@@ -135,7 +135,7 @@
 (rf/reg-sub ::rankings-data
             :<- [::games-live-players]
             :<- [::up-to-games]
-            :<- [::players]
+            :<- [::players-handlers/players]
             ;;TODO: might be nice also to have a from-games to slice even more nicely
             (fn [[games players up-to-games] _]
               (let [x-axis (range up-to-games)
@@ -217,8 +217,6 @@
 
 (rf/reg-sub ::games (getter [:games]))
 
-(rf/reg-sub ::players (getter [:players]))
-
 (rf/reg-sub ::games-live-players
             :<- [::games]
             :<- [::dead-players]
@@ -251,7 +249,7 @@
     ;;TODO: would be nice to trigger a transaction of the interested
     ;;area of the page to make it clear what was actually changed
     {:db db
-     :dispatch-n (cons extra-signal [[::load-players]
+     :dispatch-n (cons extra-signal [[::players-handlers/load-players]
                                      [::load-games]])}))
 
 (rf/reg-event-fx ::add-game-success (reload-fn-gen [::reset-game]))
@@ -259,11 +257,9 @@
 (rf/reg-event-db ::failed (common/failed page))
 
 (rf/reg-event-db ::load-games-success (setter [:games]))
-(rf/reg-event-db ::load-players-success (setter [:players]))
 (rf/reg-event-db ::load-league-success (setter [:league]))
 
 (rf/reg-event-fx ::load-games (common/loader page "/api/games" ::load-games-success))
-(rf/reg-event-fx ::load-players (common/loader page "/api/players" ::load-players-success))
 (rf/reg-event-fx ::load-league (common/loader page "/api/league" ::load-league-success))
 
 (defn game-transform
@@ -307,7 +303,7 @@
 (rf/reg-event-db ::revive-all (sets/clear page :dead-players))
 
 (rf/reg-sub ::visible-players
-            :<- [::players]
+            :<- [::players-handlers/players]
             :<- [::hidden-players]
 
             (fn [[players hidden-players]]

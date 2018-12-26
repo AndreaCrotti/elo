@@ -2,21 +2,20 @@
   (:require [accountant.core :as accountant]
             [cljsjs.moment]
             [clojure.string :as str]
-            [elo.common.views :refer [drop-down]]
+            [elo.common.views :as common-views]
             [elo.date-picker-utils :refer [date-time-picker]]
             [elo.league-detail.handlers :as handlers]
+            [elo.common.players :as players-handlers]
             [elo.routes :as routes]
             [elo.shared-config :as config]
             [elo.utils :as utils]
             [elo.vega :as vega]
+            [elo.specs.stats :as stats-specs]
+            [clojure.spec.alpha :as s]
             [re-frame.core :as rf]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 (def form-size 5)
-
-(defn drop-down-players
-  [opts dispatch-key value]
-  [drop-down opts dispatch-key value :value-fn :id :display-fn :name])
 
 (defn- translate
   [term]
@@ -50,7 +49,7 @@
 
 (defn game-form
   []
-  (let [players (rf/subscribe [::handlers/players])
+  (let [players (rf/subscribe [::players-handlers/players])
         valid-game? (rf/subscribe [::handlers/valid-game?])
         game (rf/subscribe [::handlers/game])
         league (rf/subscribe [::handlers/league])
@@ -62,10 +61,10 @@
      [:div.form-group.player1__group
       [:label.form__label "Player 1"]
       [:div.form__row.form-control
-       [drop-down-players sorted-players ::handlers/p1 (:p1 @game)
+       [common-views/drop-down-players sorted-players ::handlers/p1 (:p1 @game)
         {:caption "Name"}]
 
-       [drop-down points-range ::handlers/p1_points (:p1_points @game)
+       [common-views/drop-down points-range ::handlers/p1_points (:p1_points @game)
         {:caption (translate :points)}]
 
        [:input.form-control
@@ -77,10 +76,10 @@
      [:div.form-group.player2__group
       [:label.form__label "Player 2"]
       [:div.form__row.form-control
-       [drop-down-players sorted-players ::handlers/p2 (:p2 @game)
+       [common-views/drop-down-players sorted-players ::handlers/p2 (:p2 @game)
         {:caption "Name"}]
 
-       [drop-down points-range ::handlers/p2_points (:p2_points @game)
+       [common-views/drop-down points-range ::handlers/p2_points (:p2_points @game)
         {:caption (translate :points)}]
 
        [:input.form-control {:type "text"
@@ -318,20 +317,20 @@
   (str (int v) " %"))
 
 (def stats
-  {:highest-ranking
+  {::stats-specs/highest-ranking
    {:handler ::handlers/highest-rankings-best
     :fields [{:k :player :v "name"} {:k :ranking :v "ranking"} {:k :time :v "time"}]
     :transform {:time format-date}}
 
-   :longest-streak
+   ::stats-specs/longest-streak
    {:handler ::handlers/longest-streaks
     :fields [{:k :player :v "name"} {:k :streak :v "streak"}]}
 
-   :highest-increase
+   ::stats-specs/highest-increase
    {:handler ::handlers/highest-increase
     :fields [{:k :player :v "name"} {:k :points :v "points"}]}
 
-   :best-percents
+   ::stats-specs/best-percents
    {:handler ::handlers/best-percents
     :fields [{:k :player :v "name"} {:k :w :v "win %"}
              {:k :d :v "draw %"} {:k :l :v "loss %"}]
@@ -339,10 +338,12 @@
     :transform {:w percent :d percent :l percent}}})
 
 (defn stats-component
-  [name]
-  (let [{:keys [handler fields transform]} (name stats)]
+  [kw]
+  (let [{:keys [handler fields transform]} (kw stats)]
     (let [stats (rf/subscribe [handler])]
       (fn []
+        ;; make the assertion actually blow up as well
+        (s/assert (s/conform kw @stats) (s/explain kw @stats))
         [:div.stats__table__container
          [stats-table
           fields
@@ -353,7 +354,7 @@
   []
   (rf/dispatch [::handlers/load-league])
   (rf/dispatch [::handlers/load-games])
-  (rf/dispatch [::handlers/load-players])
+  (rf/dispatch [::players-handlers/load-players])
 
   (fn []
     [:div.league_detail__root
@@ -361,10 +362,10 @@
      [show-error]
      [:div.section.players__form_container [game-form]]
      [:div.section.players__stats
-      [stats-component :highest-ranking]
-      [stats-component :longest-streak]
-      [stats-component :highest-increase]
-      [stats-component :best-percents]]
+      [stats-component ::stats-specs/highest-ranking]
+      [stats-component ::stats-specs/longest-streak]
+      [stats-component ::stats-specs/highest-increase]
+      [stats-component ::stats-specs/best-percents]]
 
      [:div.section.vega__table [vega-outer]]
      [:div.section.rankings__table [rankings-table]]
