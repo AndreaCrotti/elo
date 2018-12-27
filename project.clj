@@ -37,6 +37,7 @@
                  [org.webjars/font-awesome "5.5.0"]
 
                  [day8.re-frame/tracing-stubs "0.5.1"]
+                 [expound "0.7.2"]
                  [cljsjs/react "16.6.0-0"]
                  [cljsjs/react-dom "16.6.0-0"]
                  ;; these below are all needed by react datepicker and
