@@ -132,18 +132,6 @@
                  json/read-str
                  (get "id")))))))
 
-(deftest games-csv-test
-  (testing "Retrieve list of games"
-    (let [response (read-api-call "/api/games-csv" {:league_id sample-league-id})]
-
-      (is (= 200 (:status response))))))
-
-(deftest rankings-csv-test
-  (testing "Retrieve list of rankings"
-    (let [response (read-api-call "/api/rankings-csv" {:league_id sample-league-id})]
-
-      (is (= 200 (:status response))))))
-
 (deftest auth-test
   (testing "Should be able to check if a user is already authenticated"
     (let [response (read-api-call "/authenticated")]

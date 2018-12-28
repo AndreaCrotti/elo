@@ -5,7 +5,6 @@
             [clojure.string :as str]
             [elo.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
             [elo.config :as config]
-            [elo.csv :as csv]
             [elo.db :as db]
             [elo.games :as games]
             [elo.notifications :as notifications]
@@ -19,7 +18,6 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.oauth2 :refer [wrap-oauth2]]
             [ring.middleware.resource :as resources]
-            [ring.util.io :as ring-io]
             [ring.util.response]
             [ring.util.http-response :as resp]
             [taoensso.timbre :as timbre :refer [log info debug]])
@@ -133,29 +131,6 @@
 
     (map #(vals (reduce-kv update % transform)) filtered-rows)))
 
-(defn csv-body
-  [response csv-header csv-rows]
-  (assoc response
-         :body
-         (ring-io/piped-input-stream
-          (csv/write-csv csv-header csv-rows))))
-
-(defn games-csv
-  [request]
-  ;; fetch all the games normalizing the player names if possible as
-  ;; part of the process
-  (let [league-id (get-league-id request)
-        games (db/load-games league-id)
-        players (db/load-players league-id)
-        names-mapping (games/player->names players)]
-
-    (-> {}
-        (csv-body games-csv-header
-                  (csv-transform games-csv-header games names-mapping))
-        (resp/status 200)
-        (resp/content-type "text/csv")
-        (resp/header "Content-Disposition" "attachment; filename=\"games.csv\""))))
-
 (defn rankings-header-rows
   "To make sure that the order is returned correctly we simply sort by
   id both the player names and the rankings returned"
@@ -168,26 +143,6 @@
                                   (take n games)
                                   players))))]
     [header csv-rows]))
-
-(defn rankings-csv
-  [request]
-  ;; return the list of all the rankings per player
-  ;; in a form like
-  ;; p1, p2, p3
-  ;; 1500, 1500, 1500
-  ;; 1512, 1488, 1500
-  ;; for all the possible games played
-
-  (let [league-id (get-league-id request)
-        games (db/load-games league-id)
-        players (db/load-players league-id)
-        [header csv-rows] (rankings-header-rows players games)]
-
-    (-> {}
-        (csv-body header csv-rows)
-        (resp/status 200)
-        (resp/content-type "text/csv")
-        (resp/header "Content-Disposition" "attachment; filename=\"rankings.csv\""))))
 
 (defn- get-github-token
   [request]
@@ -210,11 +165,7 @@
                 "leagues" get-leagues
                 "companies" get-companies
                 "players" get-players
-                "games" get-games
-
-                ;; csv stuff
-                "games-csv" games-csv
-                "rankings-csv" rankings-csv}
+                "games" get-games}
 
         "oauth2/github/callback" github-callback
         "authenticated" authenticated?
