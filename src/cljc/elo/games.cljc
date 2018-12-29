@@ -130,11 +130,13 @@
 
 (defn longest-winning-subseq
   [s]
-  (->> s
-       (partition-by identity)
-       (filter #(= #{:w} (set %)))
-       (map count)
-       (apply max)))
+  (if (empty? s)
+    0
+    (->> s
+         (partition-by identity)
+         (filter #(= #{:w} (set %)))
+         (map count)
+         (apply max))))
 
 (defn zipper
   [xs]

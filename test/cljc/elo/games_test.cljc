@@ -72,9 +72,12 @@
 (deftest longest-streaks-test
   (testing "Compute best streaks"
     (are [series streak] (= streak (sut/longest-winning-subseq series))
+      ;; there is still a bug somewhere with this implementation
+      [] 0
       [:w :w] 2
       [:l :d :w :w] 2
-      [:l :w :w :d :w :w :w] 3)))
+      [:l :w :w :d :w :w :w] 3
+      [:d :w :w :d :w :w :w :l :d] 3)))
 
 (deftest highest-increase-test
   (testing "Compute highest point streaks"
