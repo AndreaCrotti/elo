@@ -130,7 +130,7 @@
 
 (defn longest-winning-subseq
   [s]
-  (if (empty? s)
+  (if-not (contains? (set s) :w)
     0
     (->> s
          (partition-by identity)
