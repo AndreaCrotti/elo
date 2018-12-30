@@ -138,7 +138,7 @@
          (map count)
          (apply max))))
 
-(defn zipper
+(defn- zipper
   [xs]
   (for [idx (range (dec (count xs)))]
     [(nth xs idx) (nth xs (inc idx))]))
