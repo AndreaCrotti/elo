@@ -133,7 +133,7 @@
                    [venantius/yagni "0.1.6"]
                    [com.bhauman/figwheel-main "0.1.9"]
                    [day8.re-frame/re-frame-10x "0.3.5"]
-                   [day8.re-frame/tracing "0.5.1"]
+                   #_[day8.re-frame/tracing "0.5.1"]
                    [com.bhauman/rebel-readline-cljs "0.1.4"]
                    ;; dependencies for the reloaded workflow
                    [reloaded.repl "0.2.4"]
