@@ -1,9 +1,15 @@
 version: 2
 
-jobs:
-  build:
+references:
+  base_config: &base_config
+    working_directory: ~/elo
     docker:
-      - image: circleci/clojure:lein-2.7.1
+      - image: circleci/clojure:lein-2.8.1
+
+  base_docker: &base_docker
+    working_directory: ~/elo
+    docker:
+      - image: circleci/clojure:lein-2.8.1
         environment:
           DATABASE_URL: postgres://elo@localhost/elo_test
 
@@ -12,31 +18,56 @@ jobs:
           POSTGRES_USER: elo
           POSTGRES_DB: elo_test
 
-    working_directory: ~/elo
+jobs:
+  dependencies:
+    <<: *base_config
     steps:
       - checkout
-      - setup_remote_docker:
-          reusable: true
-
       - restore_cache:
-          key: elo-{{ checksum "project.clj" }}
+          keys:
+            - clj-deps-{{ checksum "project.clj" }}
 
       - run: lein deps
       - save_cache:
           paths:
             - ~/.m2/repository
             - ~/.lein
-            - ~/.cljs/.aot_cache
 
-          key: elo-{{ checksum "project.clj" }}
+          key: clj-deps-{{ checksum "project.clj" }}
+
+  lint_clj:
+    <<: *base_config
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - clj-deps-{{ checksum "project.clj" }}
 
       - run: lein cljfmt check
       - run: lein eastwood
+  
+  test_clj:
+    <<: *base_docker
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - clj-deps-{{ checksum "project.clj" }}
+
       - run: lein migratus migrate
       - run: lein test2junit
       - store_test_results:
           path: target/test2junit
 
+  coverage_clj:
+    <<: *base_docker
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - clj-deps-{{ checksum "project.clj" }}
+
+      - run: lein migratus migrate
       - run: lein cloverage --codecov
 
       - store_test_results:
@@ -48,3 +79,20 @@ jobs:
       - run:
           name: Upload test coverage report to Codecov
           command: bash <(curl -s https://codecov.io/bash)
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - dependencies
+      - test_clj:
+          requires:
+            - dependencies
+
+      - coverage_clj:
+          requires:
+            - dependencies
+
+      - lint_clj:
+          requires:
+            - dependencies
