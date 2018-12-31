@@ -5,6 +5,7 @@
             [elo.league-detail.views :as league-detail-views]
             [elo.league-list.handlers :as league-list-handlers]
             [elo.league-list.views :as league-list-views]
+            [elo.root.views :as root-views]
             [elo.admin.views :as admin-views]
             [elo.admin.handlers :as admin-handlers]
             [elo.user.views :as user-views]
@@ -51,7 +52,7 @@
 
 (defn ^:after-load reload-hook
   []
-  (mount-root (get-current-page)))
+  (mount-root root-views/root))
 
 (defn nav-handler
   [path]
@@ -77,4 +78,3 @@
 
   (reload-hook)
   #_(nav-handler (curr-path)))
-

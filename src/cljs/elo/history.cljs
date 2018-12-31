@@ -1,19 +1,15 @@
 (ns elo.history
   (:require [bidi.bidi :as bidi]
             [pushy.core :as pushy]
-            [elo.routes :refer [routes]]
+            [elo.routes :as routes]
             [re-frame.core :as rf]))
 
-(defn- match-route
+(defn- parse-url
   [url]
-  (partial bidi/match-route routes))
-
-(defn parse-url
-  [url]
-  (match-route url))
+  (bidi/match-route routes/routes url))
 
 (rf/reg-event-fx
- ::set-active-page
+ :set-active-page
  [rf/debug]
  (fn [{:keys [db]} [_ {:keys [page] :as obj}]]
    (js/console.log "Page = " page
@@ -31,15 +27,21 @@
      {:db set-page
       :dispatch-n events})))
 
+(rf/reg-sub
+ :active-page
+ (fn [{:keys [db]}]
+   (:active-page db)))
+
 (defn dispatch-route
   [matched-route]
-  (rf/dispatch [::set-active-page {:page (:handler matched-route)}]))
+  (js/console.log "matched route = " matched-route)
+  (rf/dispatch [:set-active-page {:page (:handler matched-route)}]))
 
 (defn start!
   []
   (pushy/start! (pushy/pushy dispatch-route parse-url)))
 
-(def history (pushy/pushy dispatch-route (match-route routes)))
+(def history (pushy/pushy dispatch-route parse-url))
 
 (defn set-token!
   [token]
