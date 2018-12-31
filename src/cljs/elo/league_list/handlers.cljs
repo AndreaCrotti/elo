@@ -23,9 +23,8 @@
 
 (defn loader
   [page uri on-success]
-  (fn [{:keys [db]} _]
-    {:db db
-     :http-xhrio {:method :get
+  (fn [_ _]
+    {:http-xhrio {:method :get
                   :uri uri
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
@@ -44,9 +43,8 @@
                     provider))
 
 (defn oauth2-auth
-  [{:keys [db]} [_ provider]]
-  {:db db
-   :http-xhrio {:method :post
+  [_ [_ provider]]
+  {:http-xhrio {:method :post
                 :uri (str "/oauth2/" provider)
                 :format (ajax/json-request-format)
                 :response-format (ajax/json-response-format {:keywords? true})

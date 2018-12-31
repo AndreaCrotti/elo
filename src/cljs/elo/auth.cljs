@@ -29,10 +29,8 @@
               (common/get-in* db page [:auth :authenticated])))
 
 (defn authenticated?
-  [{:keys [db]}]
-
-  {:db db
-   :http-xhrio {:method :get
+  [_]
+  {:http-xhrio {:method :get
                 :uri "/authenticated"
                 :format (ajax/json-request-format)
                 :response-format (ajax/json-response-format {:keywords? true})

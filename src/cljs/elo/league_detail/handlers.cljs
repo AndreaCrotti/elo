@@ -244,12 +244,11 @@
 
 (defn- reload-fn-gen
   [extra-signal]
-  (fn [{:keys [db]} _]
+  (fn [_ _]
     (js/alert "Thanks you, results and rankings are updated immediately")
     ;;TODO: would be nice to trigger a transaction of the interested
     ;;area of the page to make it clear what was actually changed
-    {:db db
-     :dispatch-n (cons extra-signal [[::players-handlers/load-players]
+    {:dispatch-n (cons extra-signal [[::players-handlers/load-players]
                                      [::load-games]])}))
 
 (rf/reg-event-fx ::add-game-success (reload-fn-gen [::reset-game]))
