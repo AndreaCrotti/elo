@@ -34,6 +34,7 @@
 
                  [org.clojure/clojurescript "1.10.439"]
                  [re-frame "0.10.6"]
+                 [kibu/pushy "0.3.8"]
                  [org.webjars/font-awesome "5.5.0"]
 
                  [day8.re-frame/tracing-stubs "0.5.1"]
