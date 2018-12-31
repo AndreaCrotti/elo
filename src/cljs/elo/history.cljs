@@ -14,8 +14,10 @@
 
 (rf/reg-event-fx
  ::set-active-page
- (fn [{:keys [db]} [_ {:keys [page]}]]
-   ;;TODO: add support for filters as well
+ [rf/debug]
+ (fn [{:keys [db]} [_ {:keys [page] :as obj}]]
+   (js/console.log "Page = " page
+                   "obj = " obj)
    (let [set-page (assoc db :active-page page)
          events
          (case page
@@ -35,12 +37,6 @@
 
 (defn start!
   []
-  ;; pushy is here to take care of nice looking urls. Normally we would have to
-  ;; deal with #. By using pushy we can have '/about' instead of '/#/about'.
-  ;; pushy takes three arguments:
-  ;; dispatch-fn - which dispatches when a match is found
-  ;; match-fn - which checks if a route exist
-  ;; identity-fn (optional) - extract the route from value returned by match-fn
   (pushy/start! (pushy/pushy dispatch-route parse-url)))
 
 (def history (pushy/pushy dispatch-route (match-route routes)))

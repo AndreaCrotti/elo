@@ -10,6 +10,7 @@
             [elo.user.views :as user-views]
             [elo.auth :as auth]
             [elo.routes :as routes]
+            [elo.history :as history]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
 
@@ -60,14 +61,20 @@
 
 (defn ^:export init []
   ;; this should still be done only once
+  ;; do we need to initialise everything??
+  ;; can we dispatch multiple in one go?
+  ;; TODO: we can probably just load at most once
   (re-frame/dispatch-sync [::league-list-handlers/initialize-db])
   (re-frame/dispatch-sync [::league-detail-handlers/initialize-db])
   (re-frame/dispatch-sync [::admin-handlers/initialize-db])
   (re-frame/dispatch-sync [::auth/authenticated?])
 
   (dev-setup)
-  (accountant/configure-navigation!
+  (history/start!)
+  #_(accountant/configure-navigation!
    {:nav-handler nav-handler
     :path-exists? path-exists?})
 
-  (nav-handler (curr-path)))
+  (reload-hook)
+  #_(nav-handler (curr-path)))
+

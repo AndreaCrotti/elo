@@ -296,8 +296,7 @@
   (let [league @(rf/subscribe [::handlers/league])]
     [:ul.navbar__root
      [:li.navbar__element
-      [:a {:href "#"
-           :on-click #(accountant/navigate! (routes/path-for :league-list))}
+      [:a {:href (routes/path-for :league-list)}
        "Home"]]
      [:li.navbar__element
       [:a.active {:href "#"} (:game_type league)]]

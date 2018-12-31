@@ -12,6 +12,7 @@
   "Generate a generic sign up button"
   [provider]
   [:a {:class (classes ["btn" "btn-social" "btn-block" (str "btn-" provider)])
+       ;; TODO: move this to routing as well
        :href "/oauth2/github"}
 
    [:span {:class (classes ["fa" (str "fa-" provider)])}]
@@ -33,9 +34,7 @@
               [:img.league_logo_small {:width "30px"
                                        :src (config/logo (keyword game_type))}]
 
-              [:a {:href "#"
-                   :on-click #(accountant/navigate!
-                               (routes/path-for :league-detail :league-id id))}
+              [:a {:href (routes/path-for :league-detail :league-id id)}
                name]]))]))
 
 (defn root
