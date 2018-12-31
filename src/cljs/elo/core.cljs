@@ -1,28 +1,14 @@
 (ns ^:figwheel-hooks elo.core
-  (:require [accountant.core :as accountant]
-            [cemerick.url :refer [url]]
-            [elo.league-detail.handlers :as league-detail-handlers]
-            [elo.league-detail.views :as league-detail-views]
-            [elo.league-list.handlers :as league-list-handlers]
-            [elo.league-list.views :as league-list-views]
-            [elo.root.views :as root-views]
-            [elo.admin.views :as admin-views]
+  (:require [cemerick.url :refer [url]]
             [elo.admin.handlers :as admin-handlers]
-            [elo.user.views :as user-views]
             [elo.auth :as auth]
-            [elo.routes :as routes]
             [elo.history :as history]
+            [elo.league-detail.handlers :as league-detail-handlers]
+            [elo.league-list.handlers :as league-list-handlers]
+            [elo.root.views :as root-views]
+            [elo.routes :as routes]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
-
-(def pages
-  {:league-detail league-detail-views/root
-   :league-list league-list-views/root
-   :admin admin-views/root
-   :player-detail user-views/root})
-
-(defn- path-exists? [path]
-  (boolean (routes/match-route path)))
 
 (def debug?
   ^boolean js/goog.DEBUG)
@@ -37,12 +23,6 @@
    js/window.location.href
    url
    :path))
-
-(defn get-current-page
-  []
-  (let [path (curr-path)
-        route (routes/match-route path)]
-    (get pages (:handler route))))
 
 (defn mount-root
   [page]
@@ -72,9 +52,5 @@
 
   (dev-setup)
   (history/start!)
-  #_(accountant/configure-navigation!
-   {:nav-handler nav-handler
-    :path-exists? path-exists?})
-
-  (reload-hook)
-  #_(nav-handler (curr-path)))
+  
+  (reload-hook))

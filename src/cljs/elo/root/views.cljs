@@ -11,14 +11,19 @@
   []
   [:div.footer])
 
-(def pages
-  {:league-list list-views/root
-   :league-detail detail-views/root})
+(defn get-page
+  [page]
+  (case page
+    :league-list list-views/root
+    :league-detail detail-views/root))
 
 (defn root
   []
-  (let [active-page @(rf/subscribe [:active-page])]
-    [:div
-     [header]
-     [pages active-page]
-     [footer]]))
+  (rf/dispatch-sync [:set-active-page :league-list])
+  (let [active-page (rf/subscribe [:active-page])]
+    (fn []
+      (js/console.log "active page = " @active-page)
+      [:div
+       [header]
+       [get-page @active-page]
+       [footer]])))

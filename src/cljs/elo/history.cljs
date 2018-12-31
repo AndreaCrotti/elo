@@ -29,12 +29,11 @@
 
 (rf/reg-sub
  :active-page
- (fn [{:keys [db]}]
-   (:active-page db)))
+ (fn [db _]
+   (get db :active-page)))
 
 (defn dispatch-route
   [matched-route]
-  (js/console.log "matched route = " matched-route)
   (rf/dispatch [:set-active-page {:page (:handler matched-route)}]))
 
 (defn start!
