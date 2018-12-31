@@ -13,11 +13,6 @@
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
 
-;;TODO: use this to set dynamically the title of the page you are in
-(defn- set-title!
-  [new-title]
-  (set! js/document.title new-title))
-
 (def pages
   {:league-detail league-detail-views/root
    :league-list league-list-views/root
@@ -64,6 +59,7 @@
     (reload-hook)))
 
 (defn ^:export init []
+  ;; this should still be done only once
   (re-frame/dispatch-sync [::league-list-handlers/initialize-db])
   (re-frame/dispatch-sync [::league-detail-handlers/initialize-db])
   (re-frame/dispatch-sync [::admin-handlers/initialize-db])
