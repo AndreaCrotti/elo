@@ -61,9 +61,6 @@
 (defn writer
   [page uri on-success transform-params-fn]
   (fn [{:keys [db]} _]
-    (js/console.log "Passing params = " (merge (transform-params-fn db)
-                                               {:league_id (get-league-id db)}))
-
     {:db db
      :http-xhrio {:method :post
                   :uri uri

@@ -126,12 +126,6 @@
 (rf/reg-event-db ::prev-game prev-game)
 (rf/reg-event-db ::next-game next-game)
 
-(rf/reg-sub ::name-mapping
-            :<- [::players-handlers/players]
-
-            (fn [players _]
-              (games/player->names players)))
-
 (rf/reg-sub ::rankings-data
             :<- [::games-live-players]
             :<- [::up-to-games]
@@ -342,7 +336,7 @@
 
 (rf/reg-sub ::longest-streaks
             :<- [::results]
-            :<- [::name-mapping]
+            :<- [::players-handlers/name-mapping]
 
             (fn [[results name-mapping]]
               (->> results
@@ -380,7 +374,7 @@
 
 (rf/reg-sub ::best-percents
             :<- [::results]
-            :<- [::name-mapping]
+            :<- [::players-handlers/name-mapping]
 
             (fn [[results name-mapping]]
               (->> results
