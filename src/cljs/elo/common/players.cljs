@@ -11,6 +11,16 @@
                                              ::user_id
                                              ::league_id
                                              ::player_id])))
+
+(rf/reg-sub ::active-players
+            :<- [::players]
+
+            (fn [players]
+              (->> players
+                   (filter :active)
+                   (map :id)
+                   set)))
+
 (s/def ::db (s/keys :req-un [::players]))
 
 (def page ::page-id)
