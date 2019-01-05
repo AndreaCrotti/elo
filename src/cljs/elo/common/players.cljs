@@ -1,6 +1,7 @@
 (ns elo.common.players
   (:require [elo.common.handlers :as common]
             [clojure.spec.alpha :as s]
+            [elo.games :as games]
             [re-frame.core :as rf]))
 
 ;;TODO: add more to the db?
@@ -11,6 +12,29 @@
                                              ::user_id
                                              ::league_id
                                              ::player_id])))
+
+(rf/reg-sub ::active-players
+            :<- [::players]
+
+            (fn [players]
+              (->> players
+                   (filter :active)
+                   (map :id)
+                   set)))
+
+(rf/reg-sub ::name-mapping
+            :<- [::players]
+
+            (fn [players _]
+              (games/player->names players)))
+
+(rf/reg-sub ::active-players-names
+            :<- [::active-players]
+            :<- [::name-mapping]
+
+            (fn [[active-players name-mapping]]
+              (set (map name-mapping active-players))))
+
 (s/def ::db (s/keys :req-un [::players]))
 
 (def page ::page-id)

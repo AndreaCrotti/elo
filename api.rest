@@ -1,6 +1,7 @@
-:local = http://localhost:9500
+:local = http://localhost:9502
 :staging = http://fifa-elo-staging.herokuapp.com
 :prod = http://fifa-elo.herokuapp.com
+:league_id = 2a469e1b-2830-44b2-8a5e-08906e4558b0
 
 # check if the resources work
 GET :local/css/screen.css
@@ -9,16 +10,13 @@ GET :local/css/screen.css
 GET :local/js/compiled/app.js
 
 # fetch players
-GET :local/api/players
+GET :local/api/players?league_id=:league_id
 
 # fetch all the leagues
 GET :local/api/leagues
 
 # fetch the league id page
-GET :local/league/3564ef95-b84d-420f-8c85-31c6650458ad
-
-# try again
-GET :local/favicon.ico
+GET :local/league/:league_id
 
 # Fetch the css
 GET :local/js/compiled/app.js?git_sha=1fda0a61-e581-407c-9f2e-9e51b7ce6491
@@ -32,26 +30,8 @@ GET :prod
 # Check that the github authentation works
 GET :local/oauth2/github
 
-# Fetch directly
-GET :local/api/leagues
-
-# fetch CSV data
-GET :local/api/games-csv?league_id=640246a0-3153-4ae6-963c-75a5047a9e45
-
-# fetch CSV data for the rankings
-GET :local/api/rankings-csv?league_id=640246a0-3153-4ae6-963c-75a5047a9e45
-
-# Fetch JSON data for the rankings
-GET :local/api/rankings-json?league_id=640246a0-3153-4ae6-963c-75a5047a9e45
-
 # test the oauth2 callback to see what happens
 GET :local/api/oauth2/github/callback?code=xxx&state=xxx
 
 # check if a user is authenticated already
 GET :local/authenticated
-
-# Staging rankings-csv
-GET :staging/api/rankings-json?league_id=caa8f361-f82d-4e34-8efc-c70ba53064dd
-
-# staging rankings json
-GET http://fifa-elo-staging.herokuapp.com/api/rankings-json?league_id=caa8f361-f82d-4e34-8efc-c70ba53064dd

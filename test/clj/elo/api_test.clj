@@ -103,6 +103,18 @@
                "p1_using" "p2_using"
                "played_at"]))))))
 
+(deftest get-players-test
+  (testing "Fetching all the existing players"
+    (db/add-player-full! {:name "john"
+                          :email "mail"
+                          :league_id sample-league-id})
+
+    (let [response (read-api-call "/api/players" {:league_id sample-league-id})
+          body-obj (json/read-str (:body response))]
+      (is (= 200 (:status response)))
+      (is (= 1 (count body-obj)))
+      (is (true? (-> body-obj first (get "active")))))))
+
 (deftest add-player-user-test
   (with-redefs [env (assoc env :admin-password "admin-password")]
     (testing "Add a new user without right user/password"

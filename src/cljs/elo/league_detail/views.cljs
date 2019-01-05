@@ -112,7 +112,7 @@
 (defn games-table
   []
   (let [games (rf/subscribe [::handlers/games-live-players])
-        name-mapping (rf/subscribe [::handlers/name-mapping])
+        name-mapping (rf/subscribe [::players-handlers/name-mapping])
         up-to (rf/subscribe [::handlers/up-to-games])
         show-all? (rf/subscribe [::handlers/show-all?])]
 
@@ -230,10 +230,12 @@
 
 (defn rankings-table
   []
-  (let [name-mapping @(rf/subscribe [::handlers/name-mapping])
+  (let [name-mapping @(rf/subscribe [::players-handlers/name-mapping])
         results @(rf/subscribe [::handlers/results])
         stats @(rf/subscribe [::handlers/stats])
         sorted-rankings @(rf/subscribe [::handlers/rankings])
+        active-players @(rf/subscribe [::players-handlers/active-players])
+        filtered-rankings (filter #(active-players (:id %)) sorted-rankings)
         header [:tr
                 [:th hide-show-all]
                 [:th kill-revive-all]
@@ -249,7 +251,7 @@
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
-            (for [[idx {:keys [id ranking ngames]}] (enumerate sorted-rankings)
+            (for [[idx {:keys [id ranking ngames]}] (enumerate filtered-rankings)
                   :let [{:keys [wins losses draws]} (get stats id)
                         player-name (get name-mapping id)
                         hidden? @(rf/subscribe [::handlers/hidden? id])
@@ -340,14 +342,16 @@
 (defn stats-component
   [kw]
   (let [{:keys [handler fields transform]} (kw stats)]
-    (let [stats (rf/subscribe [handler])]
+    (let [stats (rf/subscribe [handler])
+          active-player-names (rf/subscribe [::players-handlers/active-players-names])]
+
       (fn []
         ;; make the assertion actually blow up as well
         (s/assert (s/conform kw @stats) (s/explain kw @stats))
         [:div.stats__table__container
          [stats-table
           fields
-          (take 3 @stats)
+          (take 3 (filter #(@active-player-names (:player %)) @stats))
           (or transform {})]]))))
 
 (defn root
