@@ -234,6 +234,8 @@
         results @(rf/subscribe [::handlers/results])
         stats @(rf/subscribe [::handlers/stats])
         sorted-rankings @(rf/subscribe [::handlers/rankings])
+        active-players @(rf/subscribe [::players-handlers/active-players])
+        filtered-rankings (filter #(active-players (:id %)) sorted-rankings)
         header [:tr
                 [:th hide-show-all]
                 [:th kill-revive-all]
@@ -249,7 +251,7 @@
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
-            (for [[idx {:keys [id ranking ngames]}] (enumerate sorted-rankings)
+            (for [[idx {:keys [id ranking ngames]}] (enumerate filtered-rankings)
                   :let [{:keys [wins losses draws]} (get stats id)
                         player-name (get name-mapping id)
                         hidden? @(rf/subscribe [::handlers/hidden? id])
