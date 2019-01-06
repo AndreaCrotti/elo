@@ -299,9 +299,11 @@
 (rf/reg-sub ::visible-players
             :<- [::players-handlers/players]
             :<- [::hidden-players]
+            :<- [::players-handlers/active-players]
 
-            (fn [[players hidden-players]]
-              (filter #(not (contains? hidden-players (:id %)))
+            (fn [[players hidden-players active-players]]
+              (filter #(and (not (hidden-players (:id %)))
+                            (active-players (:id %)))
                       players)))
 
 (rf/reg-sub ::highest-rankings-best
