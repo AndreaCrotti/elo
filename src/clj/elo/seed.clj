@@ -19,10 +19,12 @@
                    :p2_points (rand-nth (shared/opts :fifa :points))})))
 
 (defn get-player-ids
-  []
+  [league-id]
+  ;;FIXME: bug here since it's getting all the possible players
   (map :id
        (db/query (fn [] {:select [:id]
-                         :from [:player]}))))
+                         :from [:league_players]
+                         :where [:= :league_id league-id]}))))
 
 (defn random-ts
   []
@@ -58,7 +60,7 @@
                                   :email "sample-email"
                                   :league_id league-id)))
 
-    (let [games (repeatedly n-games #(random-game (get-player-ids)))
+    (let [games (repeatedly n-games #(random-game (get-player-ids league-id)))
           games-full (map #(merge % {:league_id league-id
                                      :played_at (random-ts)})
                           games)]
