@@ -11,7 +11,7 @@
   (testing "Seeding should work with no errors on write"
 
     ;;TODO: just check that this works correctly and some rows get written to the db
-    (sut/seed)
+    (sut/seed (sut/create-league!))
     (let [games-count
           (db/wrap-db-call
            (jdbc/query (db/db-spec)
