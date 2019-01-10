@@ -51,7 +51,6 @@
                  ;; [metasoarous/oz "1.3.1"]
                  [cljsjs/vega-lite "2.6.0-1"]
                  [cljsjs/vega "4.3.0-0"]
-
                  [ns-tracker "0.3.1"]
                  [cljsjs/moment "2.22.2-2"]
                  [day8.re-frame/http-fx "0.1.6"]
@@ -64,7 +63,11 @@
                  [com.cemerick/url "0.1.1"]
                  [venantius/accountant "0.2.4"]
                  [medley "1.0.0"]
-                 [metosin/ring-http-response "0.9.1"]]
+                 [metosin/ring-http-response "0.9.1"]
+                 [metosin/spec-tools "0.8.2"]
+                 [metosin/maailma "1.1.0"]
+                 [aero "1.1.3"]
+                 [orchestra "0.3.0"]]
 
   :plugins [[environ/environ.lein "0.3.1"]
             [migratus-lein "0.5.0"]
