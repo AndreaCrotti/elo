@@ -6,7 +6,7 @@
             [elo.db :as db]))
 
 (def n-games 42)
-(def players ["John" "Charlie" "Frank" "Fitz" "Emily"])
+(def players-names ["John" "Charlie" "Frank" "Fitz" "Emily"])
 
 (defn random-game
   [player-ids]
@@ -19,10 +19,11 @@
                    :p2_points (rand-nth (shared/opts :fifa :points))})))
 
 (defn get-player-ids
-  []
+  [league-id]
   (map :id
        (db/query (fn [] {:select [:id]
-                         :from [:player]}))))
+                         :from [:league_players]
+                         :where [:= :league_id league-id]}))))
 
 (defn random-ts
   []
@@ -33,7 +34,7 @@
 
      (tc/from-epoch (+ zero (rand-int length))))))
 
-(defn seed
+(defn create-league!
   []
   (let [company-id (db/gen-uuid)
         league-id (db/gen-uuid)
@@ -47,26 +48,37 @@
 
     (db/add-company! company)
     (db/add-league! league)
+    league-id))
 
-    (let [players (map #(gen/player-gen {:name %}) players)]
-
-      (doseq [n (range (count players))]
-        (println "Creating player number" n (nth players n))
-        (db/add-player-full! (assoc (nth players n)
+(defn- add-players!
+  [league-id]
+  (let [players (map #(gen/player-gen {:name %}) players-names)]
+    (doseq [n (range (count players))]
+      (let [pl (nth players n)]
+        (println "Creating player number" n pl)
+        (db/add-player-full! (assoc pl
+                                    :id (:id pl)
                                     :email "sample-email"
-                                    :league_id league-id)))
+                                    :league_id league-id))))
+    (map :id players)))
 
-      (let [games (repeatedly n-games #(random-game (get-player-ids)))
-            games-full (map #(merge % {:league_id league-id
-                                       :played_at (random-ts)})
-                            games)]
+(defn- add-games!
+  [league-id player-ids]
+  (let [games (repeatedly n-games #(random-game player-ids))
+        games-full (map #(merge % {:league_id league-id
+                                   :played_at (random-ts)})
+                        games)]
 
-        (doseq [game games-full]
-          (println game)
-          (db/add-game! game))))))
+    (doseq [game games-full]
+      (println game)
+      (db/add-game! game))))
+
+(defn seed
+  [league-id]
+  (add-games! league-id (add-players! league-id)))
 
 (defn -main
   [& args]
-  (seed))
+  (seed (create-league!)))
 
 ;; run witn `lein run -m elo.seed`

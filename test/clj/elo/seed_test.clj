@@ -7,14 +7,16 @@
 
 (use-fixtures :each db/wrap-test-db-call)
 
+(defn- count-table
+  [t]
+  (:count
+   (first
+    (db/wrap-db-call
+     (jdbc/query (db/db-spec)
+                 (sql/format (db/count-sql t)))))))
+
 (deftest seed-test
   (testing "Seeding should work with no errors on write"
-
-    ;;TODO: just check that this works correctly and some rows get written to the db
-    (sut/seed)
-    (let [games-count
-          (db/wrap-db-call
-           (jdbc/query (db/db-spec)
-                       (sql/format (db/count-sql :game))))]
-
-      (is (= [{:count sut/n-games}] games-count)))))
+    (sut/seed (sut/create-league!))
+    (let [games-count (count-table :game)]
+      (is (= sut/n-games games-count)))))
