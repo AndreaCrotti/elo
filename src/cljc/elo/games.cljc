@@ -2,7 +2,6 @@
   (:require [elo.algorithms.elo :as elo]
             #?(:clj [taoensso.timbre :as log])
             #?(:cljs [taoensso.timbre :as log :include-macros true])
-            [clojure.core.specs.alpha :as s]
             [medley.core :as medley]))
 
 (def default-results (zipmap [:losses :wins :draws] (repeat 0)))
