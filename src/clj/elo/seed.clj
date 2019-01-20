@@ -22,8 +22,8 @@
   [league-id]
   (map :id
        (db/query (fn [] {:select [:id]
-                        :from [:league_players]
-                        :where [:= :league_id league-id]}))))
+                         :from [:league_players]
+                         :where [:= :league_id league-id]}))))
 
 (defn random-ts
   []
@@ -64,8 +64,7 @@
 
 (defn- add-games!
   [league-id player-ids]
-  (let [player-ids (add-players! league-id)
-        games (repeatedly n-games #(random-game player-ids))
+  (let [games (repeatedly n-games #(random-game player-ids))
         games-full (map #(merge % {:league_id league-id
                                    :played_at (random-ts)})
                         games)]
