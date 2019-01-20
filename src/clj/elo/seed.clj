@@ -50,23 +50,33 @@
     (db/add-league! league)
     league-id))
 
-(defn seed
+(defn- add-players!
   [league-id]
   (let [players (map #(gen/player-gen {:name %}) players-names)]
     (doseq [n (range (count players))]
-      (println "Creating player number" n (nth players n))
-      (db/add-player-full! (assoc (nth players n)
-                                  :email "sample-email"
-                                  :league_id league-id)))
+      (let [pl (nth players n)]
+        (println "Creating player number" n pl)
+        (db/add-player-full! (assoc pl
+                                    :id (:id pl)
+                                    :email "sample-email"
+                                    :league_id league-id))))
+    (map :id players)))
 
-    (let [games (repeatedly n-games #(random-game (get-player-ids league-id)))
-          games-full (map #(merge % {:league_id league-id
-                                     :played_at (random-ts)})
-                          games)]
+(defn- add-games!
+  [league-id player-ids]
+  (let [player-ids (add-players! league-id)
+        games (repeatedly n-games #(random-game player-ids))
+        games-full (map #(merge % {:league_id league-id
+                                   :played_at (random-ts)})
+                        games)]
 
-      (doseq [game games-full]
-        (println game)
-        (db/add-game! game)))))
+    (doseq [game games-full]
+      (println game)
+      (db/add-game! game))))
+
+(defn seed
+  [league-id]
+  (add-games! league-id (add-players! league-id)))
 
 (defn -main
   [& args]

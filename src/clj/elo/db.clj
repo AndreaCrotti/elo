@@ -146,12 +146,12 @@
 (def add-player! (add-row! add-player-sql))
 
 (defn add-player-full!
-  [{:keys [name email league_id]}]
+  [{:keys [name email league_id id]}]
   ;;TODO: wrap it in a db transaction and remove the NULL constraint
   ;;from the player table!
   (let [company-id (:company_id (load-league league_id))
         user-id (add-user! {:email email})
-        player-id (add-player! {:user_id user-id :name name})]
+        player-id (add-player! {:user_id user-id :name name :id (or id (gen-uuid))})]
 
     (add-user-to-company! {:user_id user-id :company_id company-id})
     (add-player-to-league! {:league_id league_id :player_id player-id})
