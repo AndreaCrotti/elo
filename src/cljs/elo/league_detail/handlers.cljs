@@ -87,16 +87,13 @@
             (fn [[gs up-to] _]
               (games/summarise (truncate-games gs up-to))))
 
-;;TODO: overcomplicated way of computing history making sure we only
-;;show game of shown players
 (rf/reg-sub ::rankings-history
             :<- [::players-handlers/players]
             :<- [::visible-players]
             :<- [::games-live-players]
             :<- [::up-to-games]
-            :<- [::game-config]
 
-            (fn [[players visible-players games up-to _] _]
+            (fn [[players visible-players games up-to] _]
               (let [visible-players-names (set (map :name visible-players))
                     full-rankings
                     (games/rankings-history players (truncate-games games up-to))]
