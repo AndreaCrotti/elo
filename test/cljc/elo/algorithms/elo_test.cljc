@@ -1,5 +1,7 @@
 (ns elo.algorithms.elo-test
   (:require [clojure.test :refer [deftest is are testing]]
+            [elo.generators :as gen]
+            [elo.shared-config :as shared]
             [elo.algorithms.elo :as sut]))
 
 ;; define a more generic game representation, that doesn't require
@@ -44,3 +46,29 @@
             :c 1516.0338330211207,
             :d 1500}
            (sut/compute-rankings games [:a :b :c :d])))))
+
+(defn- avg [xs] (/ (apply + xs) (count xs)))
+
+;;TODO: can probably use checking instead
+(deftest average-not-changing
+  (let [gs (repeatedly 100 gen/game-gen)
+        sg-norm (map sut/normalize-game gs)]
+
+    (testing "Rankings average is stable"
+      (is (== (:initial-ranking shared/default-game-config)
+              (-> sg-norm
+                  (sut/compute-rankings
+                   (sut/extract-players sg-norm)
+                   shared/default-game-config)
+                  vals
+                  avg))))
+
+    (testing "Rankings average is stable without default values"
+      (is (== 100.00
+              (-> sg-norm
+                  (sut/compute-rankings
+                   (sut/extract-players sg-norm)
+                   {:initial-ranking 100
+                    :k 5})
+                  vals
+                  avg))))))

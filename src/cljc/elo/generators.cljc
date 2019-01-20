@@ -1,5 +1,6 @@
 (ns elo.generators
   (:require [clojure.spec.alpha :as s]
+            [clojure.test.check.generators]
             [clojure.spec.gen.alpha :as g]))
 
 (def is-uuid? uuid?)
