@@ -354,6 +354,12 @@
           (take 3 (filter #(@active-player-names (:player %)) @stats))
           (or transform {})]]))))
 
+(defn game-config
+  []
+  (let [{:keys [k initial-ranking]} @(rf/subscribe [::handlers/game-config])]
+    [:div (str "K is " k)]
+    [:div (str "initial ranking is " initial-ranking)]))
+
 (defn root
   []
   (rf/dispatch [::handlers/load-league])
@@ -372,5 +378,6 @@
       [stats-component ::stats-specs/best-percents]]
 
      [:div.section.vega__table [vega-outer]]
+     [:div.section.game__config [game-config]]
      [:div.section.rankings__table [rankings-table]]
      [:div.section.games__table [games-table]]]))

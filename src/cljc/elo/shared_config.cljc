@@ -38,3 +38,12 @@
 (defn logo
   [game]
   (str "/logos/" (-> games-config game :logo)))
+
+(def default-game-config
+  { ;; valid range from 20 to 44
+   :k 32
+   ;; valid range from 100 to 2000
+   ;; should also move the k accordingly
+   :initial-ranking 1500
+   ;; should be a percent from 0 to 1
+   :points-count 0})

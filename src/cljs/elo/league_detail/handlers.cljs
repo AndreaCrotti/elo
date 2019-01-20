@@ -41,7 +41,8 @@
    :up-to-games nil
    :league {}
    :league_id nil
-   :show-all? false})
+   :show-all? false
+   :game-config shared/default-game-config})
 
 (defn- truncate-games
   [games up-to-games]
@@ -49,15 +50,26 @@
     (take up-to-games games)
     games))
 
+(rf/reg-sub ::game-config (getter [:game-config]))
+;; (rf/reg-sub ::k (getter [:game-config :k]))
+;; (rf/reg-sub ::initial-ranking (getter [:game-config :initial-ranking]))
+
+(rf/reg-event-db ::k (setter [:game-config :k]))
+(rf/reg-event-db ::initial-ranking (setter [:game-config :initial-ranking]))
+
 (rf/reg-sub ::rankings
             :<- [::games-live-players]
             :<- [::players-handlers/players]
             :<- [::up-to-games]
             :<- [::dead-players]
+            :<- [::game-config]
 
-            (fn [[games players up-to-games dead-players] _]
+            (fn [[games players up-to-games dead-players game-config] _]
               (let [rankings
-                    (games/get-rankings (truncate-games games up-to-games) players)
+                    (games/get-rankings (truncate-games games up-to-games)
+                                        players
+                                        game-config)
+
                     updated (map #(if (contains? dead-players (:id %))
                                     (assoc % :ranking 0) %)
                                  rankings)]
