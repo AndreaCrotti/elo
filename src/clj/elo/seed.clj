@@ -20,11 +20,10 @@
 
 (defn get-player-ids
   [league-id]
-  ;;FIXME: bug here since it's getting all the possible players
   (map :id
        (db/query (fn [] {:select [:id]
-                         :from [:league_players]
-                         :where [:= :league_id league-id]}))))
+                        :from [:league_players]
+                        :where [:= :league_id league-id]}))))
 
 (defn random-ts
   []
