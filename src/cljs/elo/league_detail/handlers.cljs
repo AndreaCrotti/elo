@@ -51,9 +51,6 @@
     games))
 
 (rf/reg-sub ::game-config (getter [:game-config]))
-;; (rf/reg-sub ::k (getter [:game-config :k]))
-;; (rf/reg-sub ::initial-ranking (getter [:game-config :initial-ranking]))
-
 (rf/reg-event-db ::k (setter [:game-config :k]))
 (rf/reg-event-db ::initial-ranking (setter [:game-config :initial-ranking]))
 
@@ -97,8 +94,9 @@
             :<- [::visible-players]
             :<- [::games-live-players]
             :<- [::up-to-games]
+            :<- [::game-config]
 
-            (fn [[players visible-players games up-to] _]
+            (fn [[players visible-players games up-to _] _]
               (let [visible-players-names (set (map :name visible-players))
                     full-rankings
                     (games/rankings-history players (truncate-games games up-to))]

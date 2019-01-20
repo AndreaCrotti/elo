@@ -1,23 +1,6 @@
 (ns elo.algorithms.elo
-  "Implementation of the ELO algorithm")
-
-;; these are the parameters that can be changed at runtime
-;; so that they can be set by the client directly
-(def default-config
-  { ;; valid range from 20 to 44
-   :k 32
-   ;; valid range from 100 to 2000
-   ;; should also move the k accordingly
-   :initial-ranking 1500
-   ;; should be a percent from 0 to 1
-   :points-count 0})
-
-(def k 32)
-(def initial-ranking 1500)
-
-(defn valid-rankings?
-  [rankings]
-  (== 0 (mod (apply + rankings) initial-ranking)))
+  "Implementation of the ELO algorithm"
+  (:require [elo.shared-config :as shared]))
 
 (defn expected
   [diff]
@@ -35,7 +18,7 @@
 
 (defn new-rankings
   ([rankings result]
-   (new-rankings rankings result default-config))
+   (new-rankings rankings result shared/default-game-config))
 
   ([rankings [p1 p2 score] config]
    (let [ra (get rankings p1)
@@ -64,7 +47,7 @@
 
 (defn initial-rankings
   ([players]
-   (initial-rankings players default-config))
+   (initial-rankings players shared/default-game-config))
 
   ([players {:keys [initial-ranking] :as config}]
    (zipmap players (repeat initial-ranking))))
@@ -91,12 +74,10 @@
 (defn compute-rankings
   ([games players]
    ;; this could simply have a bit more leeway to work (2/3% max)
-   #_{:post [(valid-rankings? (vals %))]}
-   (compute-rankings games players default-config))
+   (compute-rankings games players {}))
 
   ([games players config]
    ;; this could simply have a bit more leeway to work (2/3% max)
-   #_{:post [(valid-rankings? (vals %))]}
    (update-rankings (initial-rankings players config)
                     games
-                    (merge default-config config))))
+                    (merge shared/default-game-config config))))

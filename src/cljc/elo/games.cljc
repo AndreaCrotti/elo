@@ -1,5 +1,6 @@
 (ns elo.games
   (:require [elo.algorithms.elo :as elo]
+            [elo.shared-config :as shared]
             #?(:clj [taoensso.timbre :as log])
             #?(:cljs [taoensso.timbre :as log :include-macros true])
             [medley.core :as medley]))
@@ -76,7 +77,7 @@
 (defn get-rankings
   "Return all the rankings"
   ([games players]
-   (get-rankings games players elo/default-config))
+   (get-rankings games players shared/default-game-config))
 
   ([games players config]
    (let [norm-games (map elo/normalize-game games)
