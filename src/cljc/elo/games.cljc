@@ -2,7 +2,6 @@
   (:require [elo.algorithms.elo :as elo]
             #?(:clj [taoensso.timbre :as log])
             #?(:cljs [taoensso.timbre :as log :include-macros true])
-            [clojure.core.specs.alpha :as s]
             [medley.core :as medley]))
 
 (def default-results (zipmap [:losses :wins :draws] (repeat 0)))
@@ -76,15 +75,20 @@
 
 (defn get-rankings
   "Return all the rankings"
-  [games players]
-  (let [norm-games (map elo/normalize-game games)
-        rankings (elo/compute-rankings norm-games (map :id players))
-        ngames (player->ngames games)]
+  ([games players]
+   (get-rankings games players elo/default-config))
 
-    (reverse
-     (sort-by :ranking
-              (for [[k v] rankings]
-                {:id k :ranking v :ngames (get ngames k 0)})))))
+  ([games players config]
+   (let [norm-games (map elo/normalize-game games)
+         rankings (elo/compute-rankings norm-games
+                                        (map :id players)
+                                        config)
+         ngames (player->ngames games)]
+
+     (reverse
+      (sort-by :ranking
+               (for [[k v] rankings]
+                 {:id k :ranking v :ngames (get ngames k 0)}))))))
 
 (defn result-str
   [game]

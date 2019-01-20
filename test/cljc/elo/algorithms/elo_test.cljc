@@ -36,7 +36,7 @@
 (deftest compute-rankings-test
   (testing "Passing in all the games computes in the right order returns the rankings"
     (is (= {:c 1516.0338330211207, :b 1484.736306793522, :a 1499.2298601853572}
-           (sut/compute-rankings games))))
+           (sut/compute-rankings games [:a :b :c]))))
 
   (testing "passing new players sets them up with an initial ranking"
     (is (= {:a 1499.2298601853572,

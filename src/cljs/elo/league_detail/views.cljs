@@ -170,6 +170,7 @@
     (fn []
       (let [up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
         [:div.form-group
+         [:label "UP to game #"]
          [:input.form-control.up-to-range-slider
           {:type "range"
            :min 0
@@ -354,6 +355,28 @@
           (take 3 (filter #(@active-player-names (:player %)) @stats))
           (or transform {})]]))))
 
+(defn game-config
+  []
+  (let [{:keys [k initial-ranking]} @(rf/subscribe [::handlers/game-config])]
+    [:div.form-group
+     [:label (str "K=" k)]
+     [:input.form-control.up-to-range-slider
+      {:type "range"
+       :min 20
+       :max 44
+       :value k
+       :class "slider"
+       :on-change (utils/set-val ::handlers/k js/parseInt)}]
+
+     [:label (str "initial ranking=" initial-ranking)]
+     [:input.form-control.up-to-range-slider
+      {:type "range"
+       :min 100
+       :max 2000
+       :value initial-ranking
+       :class "slider"
+       :on-change (utils/set-val ::handlers/initial-ranking js/parseInt)}]]))
+
 (defn root
   []
   (rf/dispatch [::handlers/load-league])
@@ -372,5 +395,6 @@
       [stats-component ::stats-specs/best-percents]]
 
      [:div.section.vega__table [vega-outer]]
+     [:div.section.game__config [game-config]]
      [:div.section.rankings__table [rankings-table]]
      [:div.section.games__table [games-table]]]))
