@@ -76,7 +76,7 @@
 (defn get-rankings
   "Return all the rankings"
   ([games players]
-   (get-rankings games players (elo/default-config)))
+   (get-rankings games players elo/default-config))
 
   ([games players config]
    (let [norm-games (map elo/normalize-game games)

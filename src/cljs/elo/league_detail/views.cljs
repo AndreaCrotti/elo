@@ -170,6 +170,7 @@
     (fn []
       (let [up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
         [:div.form-group
+         [:label "UP to game #"]
          [:input.form-control.up-to-range-slider
           {:type "range"
            :min 0
@@ -357,8 +358,24 @@
 (defn game-config
   []
   (let [{:keys [k initial-ranking]} @(rf/subscribe [::handlers/game-config])]
-    [:div (str "K is " k)]
-    [:div (str "initial ranking is " initial-ranking)]))
+    [:div.form-group
+     [:label (str "K=" k)]
+     [:input.form-control.up-to-range-slider
+      {:type "range"
+       :min 20
+       :max 44
+       :value k
+       :class "slider"
+       :on-change (utils/set-val ::handlers/k js/parseInt)}]
+
+     [:label (str "initial ranking=" initial-ranking)]
+     [:input.form-control.up-to-range-slider
+      {:type "range"
+       :min 100
+       :max 2000
+       :value initial-ranking
+       :class "slider"
+       :on-change (utils/set-val ::handlers/initial-ranking js/parseInt)}]]))
 
 (defn root
   []
