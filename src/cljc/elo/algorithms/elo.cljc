@@ -73,11 +73,9 @@
 
 (defn compute-rankings
   ([games players]
-   ;; this could simply have a bit more leeway to work (2/3% max)
-   (compute-rankings games players {}))
+   (compute-rankings games players shared/default-game-config))
 
   ([games players config]
-   ;; this could simply have a bit more leeway to work (2/3% max)
    (update-rankings (initial-rankings players config)
                     games
                     (merge shared/default-game-config config))))
