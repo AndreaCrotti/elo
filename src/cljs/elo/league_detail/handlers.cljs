@@ -89,9 +89,10 @@
             :<- [::visible-players]
             :<- [::games-live-players]
             :<- [::up-to-games]
+            :<- [::game-config]
 
-            (fn [[players visible-players games up-to]]
-              (rankings/rankings-history players visible-players games up-to)))
+            (fn [[players visible-players games up-to game-config]]
+              (rankings/rankings-history players visible-players games up-to game-config)))
 
 (rf/reg-sub ::last-game-played-by
             :<- [::games-live-players]
@@ -310,8 +311,10 @@
 
 (rf/reg-sub ::rankings-history-vega
             :<- [::rankings-history]
+            :<- [::game-config]
 
-            (fn [history]
+            (fn [[history game-config]]
+              (js/console.log "history changed now")
               (let [kw->keyname {:player "Player"
                                  :ranking "Ranking"
                                  :game-idx "Game #"
