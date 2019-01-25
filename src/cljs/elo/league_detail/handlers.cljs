@@ -99,12 +99,13 @@
             :<- [::players-handlers/name-mapping]
 
             (fn [[games up-to-games name-mapping]]
-              (->> ((juxt :p1 :p2)
-                    ;; this should not be necessary
-                    (nth games (dec (or up-to-games
-                                        (count games)))))
-                   (map name-mapping)
-                   set)))
+              (when (seq games)
+                (->> ((juxt :p1 :p2)
+                      ;; this should not be necessary
+                      (nth games (dec (or up-to-games
+                                          (count games)))))
+                     (map name-mapping)
+                     set))))
 
 (rf/reg-sub ::last-ranking-changes-by-player
             :<- [::rankings-history]
