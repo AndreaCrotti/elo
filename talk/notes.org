@@ -115,7 +115,7 @@ And lastly the average of the points is always the same.
 - can be applied to *any* zero sum game (chess / tennis / table tennis...)
 - new rankings *only* depends on current rankings and result
 - points won or lost depend on the *ranking difference* between two players
-- average of all the points is constant
+- the average of all the rankings is constant
 
 ** Demo time
 
