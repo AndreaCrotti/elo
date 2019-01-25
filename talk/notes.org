@@ -27,9 +27,16 @@ rankings.
 
 #+END_NOTES
 
+#+ATTR_REVEAL: :frag (appear)
 - senior software developer at Funding Circle
 - API & backends for a long time
 - saw the light with Clojure & Clojurescript
+
+* Outline
+
+- the Elo algorithm
+- reagent / re-frame introduction
+- reagent/ re-frame demo
 
 * Play
 
