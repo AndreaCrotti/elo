@@ -37,9 +37,8 @@
 
 (defn loader-no-league-id
   [page uri on-success]
-  (fn [{:keys [db]} _]
-    {:db db
-     :http-xhrio {:method :get
+  (fn [_]
+    {:http-xhrio {:method :get
                   :uri uri
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
@@ -49,8 +48,7 @@
 (defn loader
   [page uri on-success]
   (fn [{:keys [db]} _]
-    {:db db
-     :http-xhrio {:method :get
+    {:http-xhrio {:method :get
                   :uri uri
                   :params {:league_id (get-league-id db)}
                   :format (ajax/json-request-format)
