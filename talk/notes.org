@@ -369,6 +369,7 @@ form.
 
 * Conclusions
 
+
 #+BEGIN_NOTES
 
 To conclude I just want to say that for me frontend development has
@@ -383,3 +384,7 @@ might find it addictive though.
 [[./happy_dog.jpg]]
 
 *Frontend development is fun*
+
+# Local Variables:
+# after-save-hook: (org-reveal-export-to-html)
+# End:
