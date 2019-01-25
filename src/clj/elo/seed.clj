@@ -3,7 +3,8 @@
             [clj-time.coerce :as tc]
             [elo.generators :as gen]
             [elo.shared-config :as shared]
-            [elo.db :as db]))
+            [elo.db :as db]
+            [taoensso.timbre :as log]))
 
 (def n-games 42)
 (def players-names ["John" "Charlie" "Frank" "Fitz" "Emily"])
@@ -55,7 +56,7 @@
   (let [players (map #(gen/player-gen {:name %}) players-names)]
     (doseq [n (range (count players))]
       (let [pl (nth players n)]
-        (println "Creating player number" n pl)
+        (log/debug "Creating player number" n pl)
         (db/add-player-full! (assoc pl
                                     :id (:id pl)
                                     :email "sample-email"
@@ -70,7 +71,7 @@
                         games)]
 
     (doseq [game games-full]
-      (println game)
+      (log/debug game)
       (db/add-game! game))))
 
 (defn seed

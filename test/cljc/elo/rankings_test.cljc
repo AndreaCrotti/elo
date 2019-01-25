@@ -24,14 +24,27 @@
    :id_2 "a05f39dc-2b7b-4aa7-95c1-bf7e79b52747"
    :active true})
 
-(deftest rankings-test
+#_(deftest rankings-test
   (testing "Simple rankings computation"
     (is (= []
-           []))))
+           (sut/rankings [sample-game]
+                         [sample-player]
+                         1
+                         #{}
+                         elo.shared-config/default-game-config)))))
 
 (deftest rankings-history-test
   (testing "Rankings history computation"
-    ))
+    (is (= [{:ranking 1500,
+             :player "John",
+             :game-idx 0,
+             :time "2017-01-24T00:31:50Z",
+             :result "John vs null: (0 - 8)"}]
+
+           (sut/rankings-history [sample-player]
+                                 [sample-player]
+                                 [sample-game]
+                                 1)))))
 
 (deftest domain-test
   (testing "Rankings domain"
