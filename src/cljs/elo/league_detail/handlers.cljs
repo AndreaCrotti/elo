@@ -6,6 +6,8 @@
             [elo.common.players :as players-handlers]
             [elo.common.sets :as sets]
             [elo.games :as games]
+            [elo.rankings :as rankings]
+            [elo.stats :as stats]
             [elo.shared-config :as shared]
             [medley.core :as medley]
             [re-frame.core :as rf]))
@@ -66,16 +68,7 @@
             :<- [::game-config]
 
             (fn [[games players up-to-games dead-players game-config] _]
-              (let [rankings
-                    (games/get-rankings (truncate-games games up-to-games)
-                                        players
-                                        game-config)
-
-                    updated (map #(if (contains? dead-players (:id %))
-                                    (assoc % :ranking 0) %)
-                                 rankings)]
-
-                (sort-by #(- (:ranking %)) updated))))
+              (rankings/rankings games players up-to-games dead-players game-config)))
 
 (rf/reg-sub ::results
             :<- [::games-live-players]
@@ -97,13 +90,8 @@
             :<- [::games-live-players]
             :<- [::up-to-games]
 
-            (fn [[players visible-players games up-to] _]
-              (let [visible-players-names (set (map :name visible-players))
-                    full-rankings
-                    (games/rankings-history players (truncate-games games up-to))]
-
-                (->> full-rankings
-                     (filter #(contains? visible-players-names (:player %)))))))
+            (fn [[players visible-players games up-to]]
+              (rankings/rankings-history players visible-players games up-to)))
 
 (rf/reg-sub ::last-game-played-by
             :<- [::games-live-players]
@@ -131,16 +119,14 @@
 
                (group-by :player rankings-history)
                #_(medley/filter-keys (or last-games-played-by #{})
-                                   (group-by :player rankings-history)))))
+                                     (group-by :player rankings-history)))))
 
 (rf/reg-sub ::rankings-domain
             :<- [::games-live-players]
             :<- [::players-handlers/players]
 
             (fn [[games players]]
-              (let [full-rankings-history (games/rankings-history players games)]
-                [(apply min (map :ranking full-rankings-history))
-                 (apply max (map :ranking full-rankings-history))])))
+              (rankings/domain games players)))
 
 (defn prev-game
   [db _]
@@ -328,21 +314,6 @@
                             (active-players (:id %)))
                       players)))
 
-(rf/reg-sub ::highest-rankings-best
-            :<- [::rankings-history]
-
-            (fn [history]
-              (map second
-                   (sort-by
-                    (fn [[_ v]]
-                      (- (:ranking v)))
-
-                    (medley/map-vals
-                     (fn [vs] (last
-                               (sort-by :ranking vs)))
-
-                     (group-by :player history))))))
-
 (rf/reg-sub ::rankings-history-vega
             :<- [::rankings-history]
 
@@ -354,27 +325,24 @@
 
                 (map #(set/rename-keys % kw->keyname) history))))
 
+(rf/reg-sub ::highest-rankings-best
+            :<- [::rankings-history]
+
+            (fn [history]
+              (stats/highest-rankings-best history)))
+
 (rf/reg-sub ::longest-streaks
             :<- [::results]
             :<- [::players-handlers/name-mapping]
 
             (fn [[results name-mapping]]
-              (->> results
-                   (medley/map-vals games/longest-winning-subseq)
-                   (uuid->name name-mapping)
-                   (sort-by #(- (second %)))
-                   (map #(zipmap [:player :streak] %)))))
+              (stats/longest-streak results name-mapping)))
 
 (rf/reg-sub ::highest-increase
             :<- [::rankings-history]
 
             (fn [history]
-              (->> history
-                   (group-by :player)
-                   (medley/map-vals #(map :ranking %))
-                   (medley/map-vals games/highest-increase-subseq)
-                   (sort-by #(- (second %)))
-                   (map #(zipmap [:player :points] %)))))
+              (stats/highest-increase history)))
 
 (rf/reg-event-fx ::toggle-show-all
                  (fn [{:keys [db]} _]

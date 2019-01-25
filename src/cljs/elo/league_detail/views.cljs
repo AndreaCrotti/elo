@@ -287,8 +287,8 @@
                [:td player-name]
                [:td (int ranking)]
                #_[:td
-                (when (contains? last-changes player-name)
-                  (int (get last-changes player-name)))]
+                  (when (contains? last-changes player-name)
+                    (int (get last-changes player-name)))]
                [:td ngames]
                [:td (results-boxes (get results id))]
                [:td (str wins "/" losses "/" draws)]]))]]))
