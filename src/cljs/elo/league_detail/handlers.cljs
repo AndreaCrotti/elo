@@ -6,6 +6,8 @@
             [elo.common.players :as players-handlers]
             [elo.common.sets :as sets]
             [elo.games :as games]
+            [elo.rankings :as rankings]
+            [elo.stats :as stats]
             [elo.shared-config :as shared]
             [medley.core :as medley]
             [re-frame.core :as rf]))
@@ -54,6 +56,10 @@
 (rf/reg-event-db ::k (setter [:game-config :k]))
 (rf/reg-event-db ::initial-ranking (setter [:game-config :initial-ranking]))
 
+(defn uuid->name
+  [name-mapping vals]
+  (medley/map-keys #(get name-mapping %) vals))
+
 (rf/reg-sub ::rankings
             :<- [::games-live-players]
             :<- [::players-handlers/players]
@@ -62,16 +68,7 @@
             :<- [::game-config]
 
             (fn [[games players up-to-games dead-players game-config] _]
-              (let [rankings
-                    (games/get-rankings (truncate-games games up-to-games)
-                                        players
-                                        game-config)
-
-                    updated (map #(if (contains? dead-players (:id %))
-                                    (assoc % :ranking 0) %)
-                                 rankings)]
-
-                (sort-by #(- (:ranking %)) updated))))
+              (rankings/rankings games players up-to-games dead-players game-config)))
 
 (rf/reg-sub ::results
             :<- [::games-live-players]
@@ -93,22 +90,44 @@
             :<- [::games-live-players]
             :<- [::up-to-games]
 
-            (fn [[players visible-players games up-to] _]
-              (let [visible-players-names (set (map :name visible-players))
-                    full-rankings
-                    (games/rankings-history players (truncate-games games up-to))]
+            (fn [[players visible-players games up-to]]
+              (rankings/rankings-history players visible-players games up-to)))
 
-                (->> full-rankings
-                     (filter #(contains? visible-players-names (:player %)))))))
+(rf/reg-sub ::last-game-played-by
+            :<- [::games-live-players]
+            :<- [::up-to-games]
+            :<- [::players-handlers/name-mapping]
+
+            (fn [[games up-to-games name-mapping]]
+              (when (seq games)
+                (->> ((juxt :p1 :p2)
+                      ;; this should not be necessary
+                      (nth games (dec (or up-to-games
+                                          (count games)))))
+                     (map name-mapping)
+                     set))))
+
+(rf/reg-sub ::last-ranking-changes-by-player
+            :<- [::rankings-history]
+            :<- [::last-game-played-by]
+
+            (fn [[rankings-history last-games-played-by]]
+              (medley/map-vals
+               ;; also needs to take into consideration up-to-games??
+               #(apply - (take 2
+                               (reverse
+                                (map :ranking (sort-by :game-idx %)))))
+
+               (group-by :player rankings-history)
+               #_(medley/filter-keys (or last-games-played-by #{})
+                                     (group-by :player rankings-history)))))
 
 (rf/reg-sub ::rankings-domain
-            :<- [::games]
+            :<- [::games-live-players]
             :<- [::players-handlers/players]
 
             (fn [[games players]]
-              (let [full-rankings-history (games/rankings-history players games)]
-                [(apply min (map :ranking full-rankings-history))
-                 (apply max (map :ranking full-rankings-history))])))
+              (rankings/domain games players)))
 
 (defn prev-game
   [db _]
@@ -132,24 +151,6 @@
 
 (rf/reg-event-db ::prev-game prev-game)
 (rf/reg-event-db ::next-game next-game)
-
-(rf/reg-sub ::rankings-data
-            :<- [::games-live-players]
-            :<- [::up-to-games]
-            :<- [::players-handlers/players]
-            ;;TODO: might be nice also to have a from-games to slice even more nicely
-            (fn [[games players up-to-games] _]
-              (let [x-axis (range up-to-games)
-                    compute-games (fn [up-to] (games/get-rankings (if (some? up-to)
-                                                                    (take up-to games)
-                                                                    games)
-                                                                  players))
-                    all-rankings (map compute-games x-axis)
-                    grouped (group-by :id (flatten all-rankings))]
-
-                (into {}
-                      (for [[k v] grouped]
-                        {k (map :ranking v)})))))
 
 (rf/reg-sub ::error (getter [:error]))
 
@@ -204,6 +205,7 @@
                                 (common/assoc-in* db page [:game] default-game)))
 
 (rf/reg-sub ::game (getter [:game]))
+;;TODO: add here the default condition
 (rf/reg-sub ::up-to-games
             (fn [db _]
               (some-> (common/get-in* db page [:up-to-games])
@@ -313,21 +315,6 @@
                             (active-players (:id %)))
                       players)))
 
-(rf/reg-sub ::highest-rankings-best
-            :<- [::rankings-history]
-
-            (fn [history]
-              (map second
-                   (sort-by
-                    (fn [[_ v]]
-                      (- (:ranking v)))
-
-                    (medley/map-vals
-                     (fn [vs] (last
-                               (sort-by :ranking vs)))
-
-                     (group-by :player history))))))
-
 (rf/reg-sub ::rankings-history-vega
             :<- [::rankings-history]
 
@@ -339,31 +326,24 @@
 
                 (map #(set/rename-keys % kw->keyname) history))))
 
-(defn uuid->name
-  [name-mapping vals]
-  (medley/map-keys #(get name-mapping %) vals))
+(rf/reg-sub ::highest-rankings-best
+            :<- [::rankings-history]
+
+            (fn [history]
+              (stats/highest-rankings-best history)))
 
 (rf/reg-sub ::longest-streaks
             :<- [::results]
             :<- [::players-handlers/name-mapping]
 
             (fn [[results name-mapping]]
-              (->> results
-                   (medley/map-vals games/longest-winning-subseq)
-                   (uuid->name name-mapping)
-                   (sort-by #(- (second %)))
-                   (map #(zipmap [:player :streak] %)))))
+              (stats/longest-streak results name-mapping)))
 
 (rf/reg-sub ::highest-increase
             :<- [::rankings-history]
 
             (fn [history]
-              (->> history
-                   (group-by :player)
-                   (medley/map-vals #(map :ranking %))
-                   (medley/map-vals games/highest-increase-subseq)
-                   (sort-by #(- (second %)))
-                   (map #(zipmap [:player :points] %)))))
+              (stats/highest-increase history)))
 
 (rf/reg-event-fx ::toggle-show-all
                  (fn [{:keys [db]} _]

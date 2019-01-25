@@ -9,21 +9,19 @@
 * Who Am I
 
 #+BEGIN_NOTES
-Just to give a very brief introduction about myself, I work here at
-Funding Circle, I have a moustache just because it's Movember and I've
-been for most of my career a backend Developer.
+Just to give a very brief introduction about myself, I work at Funding
+Circle and I've been for most of my career a backend Developer.
 
-Or well to be precise in a few jobs I was doing some frontend work as
-well, but I would have never even considered doing Angular or Knockout
-JS or CSS for fun!
+To be more precise I did some CSS and JS with Angular or other
+similarly horrible frameworks, but I never actually enjoyed the
+experience.
 
-In the last year instead I worked on 2 medium personal projects using
-Clojure and Clojurescript and I actually really enjoy it.
-Today I'm going to talk about one of the projects,
+In the last year however I worked on 2 medium personal projects using
+Clojure and Clojurescript and I realised that with the right
+technologies frontend can be a lot of fun actually.
 
-So today I'm going to talk about one of the projects I've been working
-on, a platform to create leagues with your friends and keep track of
-rankings.
+So today I'm going to talk about one of these, a platform to create
+leagues with your friends and keep track of rankings.
 
 #+END_NOTES
 
@@ -33,6 +31,16 @@ rankings.
 - saw the light with Clojure & Clojurescript
 
 * Outline
+
+#+BEGIN_NOTES
+
+In this talk we are going to introduce the Elo algorihtm, to
+understand how that's used to rank players in a league.
+
+Then I will introduce the re-frame and reagent framework, and finally
+I will use the project itself to demo the basic of re-frame.
+
+#+END_NOTES
 
 - the Elo algorithm
 - reagent / re-frame introduction
@@ -55,9 +63,6 @@ in various companies, where the tracking tool was sometimes just an
 extremely complicated spreadsheet, and since there wasn't nothing here
 at funding circle I just decided to build a new tool.
 
-In this talk I will first talk about the algorithm used to rank
-players and then introduce re-frame.
-
 #+END_NOTES
 
 [[./kittens.jpg]]
@@ -66,9 +71,9 @@ players and then introduce re-frame.
 
 #+BEGIN_NOTES
 You might have heard of Elo in relation with Chess, where every
-player, at least the good ones, have an elo score.  The name simply
-comes from Elo Arpad, the creator of the algorithm, who actually
-originally created this algorithm for chess players.
+player, at least the good ones, have an elo score.  The name comes
+from Elo Arpad, the creator of the algorithm, who originally created
+this algorithm for chess players.
 #+END_NOTES
 
 [[./chess.jpg]]
@@ -88,24 +93,17 @@ perfectly well.
 
 Another point to keep in mind is that whenever you play a game the new
 players rankings will only depend on the current rankings *and* the
-result, nothing else. This is very important for scalability reasons
-for example, you don't need to know anything about other games or the
-whole history.
+result, nothing else, which makes it extremely easy to implement.
 
-Two more thing are that the amount of points lost and won will depend
-on the players ranking difference, so it's not a fixed amount like in
-football for example, where if a team wins they get 3 points no matter
-who they play against.
-
-And lastly the average of the points is always the same.
+And lastly the average of the points is always the same, which means
+that the rankings will never eventually converge to 0 or infinite.
 #+END_NOTES
 
 #+ATTR_REVEAL: :frag (appear)
 - method for calculating the *relative* skill levels of players
 - can be applied to *any* zero sum game (chess / tennis / table tennis...)
 - new rankings *only* depends on current rankings and result
-- points won or lost depend on the *ranking difference* between two players
-- average of all the points is constant
+- the average of all the rankings is constant
 
 ** Demo time
 
@@ -136,6 +134,8 @@ $R\_A = 1500 + (K * (1 - E\_A)) = 1500 + (32 * (1 - 0.5)) = 1516$
 $R\_B = 1500 + (K * (1 - E\_B)) = 1500 + (32 * (0 - 0.5)) = 1484$
 
 *A = 1516, B = 1484*
+
+* Elo implementation
 
 ** Elo implementation (1)
 
@@ -288,20 +288,6 @@ function getGreeting(user) {
 
 #+END_SRC
 
-** Reagent rendering
-
-#+BEGIN_SRC javascript :tangle no
-  const element = <h1>Hello, world</h1>;
-  ReactDOM.render(element, document.getElementById('root'));
-#+END_SRC
-
-#+BEGIN_SRC clojure :tangle yes
-  (def element [:h1 "Hello, world"])
-
-  (reagent/render-component element
-                            (.-getElementbyid js/document "root"))
-#+END_SRC
-
 
 * Re-frame in action
 
@@ -377,8 +363,7 @@ form.
   (rf/reg-event-fx
    ::load-games
    (fn [{:keys [db]} _]
-     {:db db
-      :http-xhrio {:method :get
+     {:http-xhrio {:method :get
                    :uri "/api/games"
                    :params {:league_id (get-league-id db)}
                    :format (ajax/json-request-format)

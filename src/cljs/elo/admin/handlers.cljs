@@ -42,8 +42,7 @@
 (defn writer
   [page uri on-success]
   (fn [{:keys [db]} _]
-    {:db db
-     :http-xhrio {:method :post
+    {:http-xhrio {:method :post
                   :uri uri
                   :params (common/get-in* db page [:player])
                   :format (ajax/json-request-format)

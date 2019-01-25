@@ -231,18 +231,22 @@
 
 (defn rankings-table
   []
+  ;; more logic here should be moved into subscriptions,
+  ;; waaaay too many subscriptions in this file already
   (let [name-mapping @(rf/subscribe [::players-handlers/name-mapping])
         results @(rf/subscribe [::handlers/results])
         stats @(rf/subscribe [::handlers/stats])
         sorted-rankings @(rf/subscribe [::handlers/rankings])
         active-players @(rf/subscribe [::players-handlers/active-players])
         filtered-rankings (filter #(active-players (:id %)) sorted-rankings)
+        last-changes @(rf/subscribe [::handlers/last-ranking-changes-by-player])
         header [:tr
                 [:th hide-show-all]
                 [:th kill-revive-all]
                 [:th "position"]
                 [:th "player"]
                 [:th "ranking"]
+                #_[:th "last change"]
                 [:th "# of games"]
                 [:th "form"]
                 [:th "# W/L/D"]]]
@@ -282,6 +286,9 @@
                [:td idx]
                [:td player-name]
                [:td (int ranking)]
+               #_[:td
+                  (when (contains? last-changes player-name)
+                    (int (get last-changes player-name)))]
                [:td ngames]
                [:td (results-boxes (get results id))]
                [:td (str wins "/" losses "/" draws)]]))]]))
