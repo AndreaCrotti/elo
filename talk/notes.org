@@ -34,6 +34,16 @@ rankings.
 
 * Outline
 
+#+BEGIN_NOTES
+
+In this talk we are going to introduce the Elo algorihtm, to
+understand how that's used to rank players in a league.
+
+Then I will introduce the re-frame and reagent framework, and finally
+I will use the project itself to demo the basic of re-frame.
+
+#+END_NOTES
+
 - the Elo algorithm
 - reagent / re-frame introduction
 - reagent/ re-frame demo
