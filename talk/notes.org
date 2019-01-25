@@ -216,7 +216,7 @@ in the browser opens the door to very exciting possibilities.
   ;; => {:p1 1329.090909090909, :p2 1670.909090909091}
 #+END_SRC
 
-* Re-frame
+* Re-frame introduction
 
 #+BEGIN_NOTES
 
@@ -290,7 +290,6 @@ function getGreeting(user) {
 
 
 * Re-frame in action
-
 ** Re-frame primitives
 
 #+ATTR_REVEAL: :frag (appear)
@@ -310,9 +309,7 @@ back to the app to see and look at what happens when you fill in the
 form.
 #+END_NOTES
 
-** DB
-
-*MODEL*
+** Model
 
 #+BEGIN_SRC clojure
 
@@ -327,9 +324,7 @@ form.
 
 #+END_SRC
 
-** Subscription
-
-*CONTROLLER*
+** Controller
 
 #+BEGIN_SRC clojure
   (rf/reg-sub ::game
@@ -341,7 +336,7 @@ form.
                      (assoc-in db [::game :p1_using] val)))
 #+END_SRC
 
-*VIEW*
+** View
 
 #+BEGIN_SRC clojure
   (let [game @(rf/subscribe [::handlers/game])]
