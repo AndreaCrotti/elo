@@ -107,7 +107,8 @@ on the players ranking difference, so it's not a fixed amount like in
 football for example, where if a team wins they get 3 points no matter
 who they play against.
 
-And lastly the average of the points is always the same.
+And lastly the average of the points is always the same, which means
+that the rankings will never eventually converge to 0 or infinite.
 #+END_NOTES
 
 #+ATTR_REVEAL: :frag (appear)
