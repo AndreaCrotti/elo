@@ -54,6 +54,10 @@
 (rf/reg-event-db ::k (setter [:game-config :k]))
 (rf/reg-event-db ::initial-ranking (setter [:game-config :initial-ranking]))
 
+(defn uuid->name
+  [name-mapping vals]
+  (medley/map-keys #(get name-mapping %) vals))
+
 (rf/reg-sub ::rankings
             :<- [::games-live-players]
             :<- [::players-handlers/players]
@@ -101,13 +105,28 @@
                 (->> full-rankings
                      (filter #(contains? visible-players-names (:player %)))))))
 
+(rf/reg-sub ::last-game-played-by
+            :<- [::games-live-players]
+            :<- [::up-to-games]
+            :<- [::players-handlers/name-mapping]
+
+            (fn [[games up-to-games name-mapping]]
+              (->> ((juxt :p1 :p2)
+                    ;; this should not be necessary
+                    (nth games (dec (or up-to-games
+                                        (count games)))))
+                   (map name-mapping)
+                   set)))
+
 (rf/reg-sub ::last-ranking-changes-by-player
             :<- [::rankings-history]
+            :<- [::last-game-played-by]
 
-            (fn [rankings-history]
+            (fn [[rankings-history last-games-played-by]]
               (medley/map-vals
                #(apply - (take-last 2 (map :ranking %)))
-               (group-by :player rankings-history))))
+               (medley/filter-keys (or last-games-played-by #{})
+                                   (group-by :player rankings-history)))))
 
 (rf/reg-sub ::rankings-domain
             :<- [::games-live-players]
@@ -117,12 +136,6 @@
               (let [full-rankings-history (games/rankings-history players games)]
                 [(apply min (map :ranking full-rankings-history))
                  (apply max (map :ranking full-rankings-history))])))
-
-(rf/reg-sub ::game-by-number
-            :<- [::games-live-players]
-
-            (fn [games [_ game-idx]]
-              (nth games game-idx)))
 
 (defn prev-game
   [db _]
@@ -200,6 +213,7 @@
                                 (common/assoc-in* db page [:game] default-game)))
 
 (rf/reg-sub ::game (getter [:game]))
+;;TODO: add here the default condition
 (rf/reg-sub ::up-to-games
             (fn [db _]
               (some-> (common/get-in* db page [:up-to-games])
@@ -334,10 +348,6 @@
                                  :time "Time"}]
 
                 (map #(set/rename-keys % kw->keyname) history))))
-
-(defn uuid->name
-  [name-mapping vals]
-  (medley/map-keys #(get name-mapping %) vals))
 
 (rf/reg-sub ::longest-streaks
             :<- [::results]
