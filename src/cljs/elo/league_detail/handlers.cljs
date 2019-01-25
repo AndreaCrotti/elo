@@ -133,24 +133,6 @@
 (rf/reg-event-db ::prev-game prev-game)
 (rf/reg-event-db ::next-game next-game)
 
-(rf/reg-sub ::rankings-data
-            :<- [::games-live-players]
-            :<- [::up-to-games]
-            :<- [::players-handlers/players]
-            ;;TODO: might be nice also to have a from-games to slice even more nicely
-            (fn [[games players up-to-games] _]
-              (let [x-axis (range up-to-games)
-                    compute-games (fn [up-to] (games/get-rankings (if (some? up-to)
-                                                                    (take up-to games)
-                                                                    games)
-                                                                  players))
-                    all-rankings (map compute-games x-axis)
-                    grouped (group-by :id (flatten all-rankings))]
-
-                (into {}
-                      (for [[k v] grouped]
-                        {k (map :ranking v)})))))
-
 (rf/reg-sub ::error (getter [:error]))
 
 (rf/reg-sub ::game-type
