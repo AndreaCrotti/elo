@@ -113,7 +113,7 @@ Let's see in practice how this works with a very simple demo.
 
 #+END_NOTES
 
-** Elo example
+** Elo example 1
 
 #+BEGIN_NOTES
 
@@ -124,16 +124,25 @@ Everyone starts from 1500, and overall that will always be the average of all th
 
 *A: 1500, B: 1500*
 
-$E\_A =  \frac{1}{1 + 10 ^ \frac{RB - RA}{400}} = \frac{1}{1 + 10 ^ \frac{0}{400}}$
-$E\_A = \frac{1}{2} = 0.5$
-$E\_B = \frac{1}{2} = 0.5$
+#+ATTR_REVEAL: :frag (appear)
+- $E\_A =  \frac{1}{1 + 10 ^ \frac{RB - RA}{400}} = \frac{1}{1 + 10 ^ \frac{0}{400}}$
+- $E\_A = \frac{1}{2} = 0.5$
+- $E\_B = \frac{1}{2} = 0.5$
 
-*A vs B (3-0):*
+** Elo example 2
 
-$R\_A = 1500 + (K * (1 - E\_A)) = 1500 + (32 * (1 - 0.5)) = 1516$
-$R\_B = 1500 + (K * (1 - E\_B)) = 1500 + (32 * (0 - 0.5)) = 1484$
+*A vs B: (3-0)*
 
-*A = 1516, B = 1484*
+#+ATTR_REVEAL: :frag (appear)
+- $R\_A =>$
+- $1500 + (K * (1 - E\_A)) =>$
+- $1500 + (32 * (1 - 0.5)) = 1516$
+
+#+ATTR_REVEAL: :frag (appear)
+- $R\_B =>$
+- $1500 + (K * (1 - E\_B)) =>$
+- $1500 + (32 * (0 - 0.5)) = 1484$
+- *A = 1516, B = 1484*
 
 * Elo implementation
 
