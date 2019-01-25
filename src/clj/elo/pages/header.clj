@@ -1,7 +1,7 @@
 (ns elo.pages.header
   (:require [elo.config :as config]
             [elo.pages.utils :refer [cache-buster]]
-            [elo.pages.common :refer [adsense-js ga-js]]))
+            [elo.pages.common :refer [ga-js]]))
 
 (defn- google-font
   [font-name]
@@ -61,11 +61,4 @@
                             config/google-analytics-tag)}])
 
    (when config/google-analytics-tag
-     (ga-js))
-
-   (when config/adsense-tag
-     [:script {:async true
-               :src "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"}])
-
-   (when config/adsense-tag
-     (adsense-js))])
+     (ga-js))])
