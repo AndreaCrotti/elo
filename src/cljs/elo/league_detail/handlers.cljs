@@ -110,13 +110,19 @@
                (group-by :player rankings-history))))
 
 (rf/reg-sub ::rankings-domain
-            :<- [::games]
+            :<- [::games-live-players]
             :<- [::players-handlers/players]
 
             (fn [[games players]]
               (let [full-rankings-history (games/rankings-history players games)]
                 [(apply min (map :ranking full-rankings-history))
                  (apply max (map :ranking full-rankings-history))])))
+
+(rf/reg-sub ::game-by-number
+            :<- [::games-live-players]
+
+            (fn [games [_ game-idx]]
+              (nth games game-idx)))
 
 (defn prev-game
   [db _]

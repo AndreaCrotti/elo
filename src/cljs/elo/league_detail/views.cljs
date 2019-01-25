@@ -231,6 +231,8 @@
 
 (defn rankings-table
   []
+  ;; more logic here should be moved into subscriptions,
+  ;; waaaay too many subscriptions in this file already
   (let [name-mapping @(rf/subscribe [::players-handlers/name-mapping])
         results @(rf/subscribe [::handlers/results])
         stats @(rf/subscribe [::handlers/stats])
