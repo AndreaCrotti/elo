@@ -101,6 +101,14 @@
                 (->> full-rankings
                      (filter #(contains? visible-players-names (:player %)))))))
 
+(rf/reg-sub ::last-ranking-changes-by-player
+            :<- [::rankings-history]
+
+            (fn [rankings-history]
+              (medley/map-vals
+               #(apply - (take-last 2 (map :ranking %)))
+               (group-by :player rankings-history))))
+
 (rf/reg-sub ::rankings-domain
             :<- [::games]
             :<- [::players-handlers/players]

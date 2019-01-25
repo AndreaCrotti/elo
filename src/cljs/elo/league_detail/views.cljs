@@ -237,12 +237,14 @@
         sorted-rankings @(rf/subscribe [::handlers/rankings])
         active-players @(rf/subscribe [::players-handlers/active-players])
         filtered-rankings (filter #(active-players (:id %)) sorted-rankings)
+        last-changes @(rf/subscribe [::handlers/last-ranking-changes-by-player])
         header [:tr
                 [:th hide-show-all]
                 [:th kill-revive-all]
                 [:th "position"]
                 [:th "player"]
                 [:th "ranking"]
+                [:th "last change"]
                 [:th "# of games"]
                 [:th "form"]
                 [:th "# W/L/D"]]]
@@ -282,6 +284,7 @@
                [:td idx]
                [:td player-name]
                [:td (int ranking)]
+               [:td (int (get last-changes player-name))]
                [:td ngames]
                [:td (results-boxes (get results id))]
                [:td (str wins "/" losses "/" draws)]]))]]))
