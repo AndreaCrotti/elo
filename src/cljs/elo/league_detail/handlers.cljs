@@ -124,8 +124,13 @@
 
             (fn [[rankings-history last-games-played-by]]
               (medley/map-vals
-               #(apply - (take-last 2 (map :ranking %)))
-               (medley/filter-keys (or last-games-played-by #{})
+               ;; also needs to take into consideration up-to-games??
+               #(apply - (take 2
+                               (reverse
+                                (map :ranking (sort-by :game-idx %)))))
+
+               (group-by :player rankings-history)
+               #_(medley/filter-keys (or last-games-played-by #{})
                                    (group-by :player rankings-history)))))
 
 (rf/reg-sub ::rankings-domain

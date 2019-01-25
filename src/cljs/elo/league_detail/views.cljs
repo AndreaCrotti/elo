@@ -246,7 +246,7 @@
                 [:th "position"]
                 [:th "player"]
                 [:th "ranking"]
-                [:th "last change"]
+                #_[:th "last change"]
                 [:th "# of games"]
                 [:th "form"]
                 [:th "# W/L/D"]]]
@@ -286,7 +286,7 @@
                [:td idx]
                [:td player-name]
                [:td (int ranking)]
-               [:td
+               #_[:td
                 (when (contains? last-changes player-name)
                   (int (get last-changes player-name)))]
                [:td ngames]
