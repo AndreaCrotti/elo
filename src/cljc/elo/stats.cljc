@@ -35,3 +35,23 @@
        (medley/map-vals games/highest-increase-subseq)
        (sort-by #(- (second %)))
        (map #(zipmap [:player :points] %))))
+
+(defn- extract-percents
+  [results]
+  (let [freq (frequencies results)
+        cent-fn #(if (contains? freq %)
+                   (* 100 (/ (% freq) (count results)))
+                   0)]
+
+    (map cent-fn [:w :d :l])))
+
+(defn best-percents
+  [results name-mapping]
+  (->> results
+       (medley/map-vals extract-percents)
+       (uuid->name name-mapping)
+       (into [])
+       (sort-by (comp first second))
+       (map flatten)
+       (map #(zipmap [:player :w :d :l] %))
+       (reverse)))
