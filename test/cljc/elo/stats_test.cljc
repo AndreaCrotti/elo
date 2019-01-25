@@ -6,10 +6,10 @@
 
 (def sample-result
   {"fb6f256d-514b-479f-a70a-63987946de15"
-   [:l :w :w :l :w :w :w]
+   [:l :d :w :l :w :w :w :d]
 
    "edbebe16-dd1c-414e-b9b2-4c9e38d1928e"
-   [:l :w :w]})
+   [:l :w :w :d]})
 
 (def sample-mapping
   {"fb6f256d-514b-479f-a70a-63987946de15" "Charlie"
@@ -44,3 +44,9 @@
   (testing "longest streak"
     (is (= [{:player "Charlie", :streak 3} {:player "Fitz", :streak 2}]
            (sut/longest-streak sample-result sample-mapping)))))
+
+(deftest best-percents-test
+  (testing "best percents"
+    (is (= [{:player "Fitz", :w 50N, :d 25N, :l 25N}
+            {:player "Charlie", :w 50N, :d 25N, :l 25N}]
+           (sut/best-percents sample-result sample-mapping)))))

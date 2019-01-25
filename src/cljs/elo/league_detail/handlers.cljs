@@ -345,6 +345,13 @@
             (fn [history]
               (stats/highest-increase history)))
 
+(rf/reg-sub ::best-percents
+            :<- [::results]
+            :<- [::players-handlers/name-mapping]
+
+            (fn [[results name-mapping]]
+              (stats/best-percents results name-mapping)))
+
 (rf/reg-event-fx ::toggle-show-all
                  (fn [{:keys [db]} _]
                    {:dispatch [::load-games]
@@ -353,24 +360,3 @@
                                    not)}))
 
 (rf/reg-sub ::show-all? (getter [:show-all?]))
-
-(defn best-percents
-  [results]
-  (let [freq (frequencies results)
-        cent-fn #(* 100 (/ (% freq) (count results)))]
-
-    (map cent-fn [:w :d :l])))
-
-(rf/reg-sub ::best-percents
-            :<- [::results]
-            :<- [::players-handlers/name-mapping]
-
-            (fn [[results name-mapping]]
-              (->> results
-                   (medley/map-vals best-percents)
-                   (uuid->name name-mapping)
-                   (into [])
-                   (sort-by (comp first second))
-                   (map flatten)
-                   (map #(zipmap [:player :w :d :l] %))
-                   (reverse))))
