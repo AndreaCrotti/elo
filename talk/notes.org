@@ -363,8 +363,7 @@ form.
   (rf/reg-event-fx
    ::load-games
    (fn [{:keys [db]} _]
-     {:db db
-      :http-xhrio {:method :get
+     {:http-xhrio {:method :get
                    :uri "/api/games"
                    :params {:league_id (get-league-id db)}
                    :format (ajax/json-request-format)
