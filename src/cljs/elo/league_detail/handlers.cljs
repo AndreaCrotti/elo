@@ -325,7 +325,9 @@
                                  :game-idx "Game #"
                                  :time "Time"}]
 
-                (map #(set/rename-keys % kw->keyname) history))))
+                (->> history
+                     (map #(update % :game-idx inc))
+                     (map #(set/rename-keys % kw->keyname))))))
 
 (rf/reg-sub ::highest-rankings-best
             :<- [::rankings-history]
