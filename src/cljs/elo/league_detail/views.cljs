@@ -239,7 +239,7 @@
         sorted-rankings @(rf/subscribe [::handlers/rankings])
         active-players @(rf/subscribe [::players-handlers/active-players])
         filtered-rankings (filter #(active-players (:id %)) sorted-rankings)
-        last-changes @(rf/subscribe [::handlers/last-ranking-changes-by-player])
+        ;; last-changes @(rf/subscribe [::handlers/last-ranking-changes-by-player])
         header [:tr
                 [:th hide-show-all]
                 [:th kill-revive-all]
