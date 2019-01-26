@@ -55,13 +55,13 @@
   (testing "Rankings history returned correctly"
     (let [games [{:p1 1 :p2 2 :p1_points 0 :p2_points 0 :played_at "2018-10-18T14:15:03.889Z"}]
           players [{:id 1 :name "P1"} {:id 2 :name "P2"} {:id 3 :name "P3"}]
-          desired [{:ranking 1500,
+          desired [{:ranking 1500.0,
                     :player "P2",
                     :game-idx 0,
                     :time "2018-10-18T14:15:03.889Z"
                     :result "P1 vs P2: (0 - 0)"}
 
-                   {:ranking 1500,
+                   {:ranking 1500.0,
                     :player "P1",
                     :game-idx 0,
                     :time "2018-10-18T14:15:03.889Z"
