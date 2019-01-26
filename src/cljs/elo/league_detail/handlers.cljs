@@ -113,15 +113,7 @@
             :<- [::last-game-played-by]
 
             (fn [[rankings-history last-games-played-by]]
-              (medley/map-vals
-               ;; also needs to take into consideration up-to-games??
-               #(apply - (take 2
-                               (reverse
-                                (map :ranking (sort-by :game-idx %)))))
-
-               (group-by :player rankings-history)
-               #_(medley/filter-keys (or last-games-played-by #{})
-                                     (group-by :player rankings-history)))))
+              (rankings/last-ranking-changes rankings-history last-games-played-by)))
 
 (rf/reg-sub ::rankings-domain
             :<- [::games-live-players]

@@ -1,7 +1,8 @@
 (ns elo.rankings
   "Functions to compute the rankings from the
   list of games"
-  (:require [elo.games :as games]))
+  (:require [elo.games :as games]
+            [medley.core :as medley]))
 
 (defn- truncate-games
   [games up-to-games]
@@ -36,3 +37,14 @@
                      rankings)]
 
     (sort-by #(- (:ranking %)) updated)))
+
+(defn last-ranking-changes
+  [rankings-history last-games-played-by]
+  (medley/map-vals
+   ;; also needs to take into consideration up-to-games??
+   #(apply - (take 2
+                   (reverse
+                    (map :ranking (sort-by :game-idx %)))))
+
+   (medley/filter-keys (or last-games-played-by #{})
+                       (group-by :player rankings-history))))

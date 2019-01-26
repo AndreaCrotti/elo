@@ -52,3 +52,14 @@
     (is (= [1500 1500]
            (sut/domain [sample-game]
                        [sample-player])))))
+
+
+(deftest last-ranking-changes-test
+  (testing "Simple last ranking changes"
+    (let [history (sut/rankings-history [sample-player]
+                                        [sample-player]
+                                        [sample-game]
+                                        1)]
+
+      ;;XXX: this kind of resul doesn't help much but just to have one test
+      (is (= {"John" -1500} (sut/last-ranking-changes history #{(:name sample-player)}))))))
