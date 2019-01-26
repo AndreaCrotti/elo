@@ -366,6 +366,25 @@ function getGreeting(user) {
                    :on-failure [:failed]}}))
 #+END_SRC
 
+** Integration with JS libraries
+
+#+BEGIN_SRC clojure
+  (defn vega-update
+    [comp]
+    (let [[history domain] (rest (reagent/argv comp))]
+      (js/vegaEmbed (str "#" vega-div-id)
+                    (clj->js (rankings-vega-definition history domain)))))
+
+  (defn vega-inner
+    []
+    (reagent/create-class
+     {:reagent-render vega-view
+      :component-did-update vega-update
+      :component-did-mount vega-update
+      :display-name "Rankings Over Time Inner"}))
+
+#+END_SRC
+
 ** Demo time
 
 #+BEGIN_NOTES

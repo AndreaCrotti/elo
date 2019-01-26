@@ -34,15 +34,16 @@
    [:div {:id vega-div-id
           :class vega-div-id}]])
 
+(defn vega-update
+  [comp]
+  (let [[history domain] (rest (reagent/argv comp))]
+    (js/vegaEmbed (str "#" vega-div-id)
+                  (clj->js (rankings-vega-definition history domain)))))
+
 (defn vega-inner
   []
-  (let [update (fn [comp]
-                 (let [[history domain] (rest (reagent/argv comp))]
-                   (js/vegaEmbed (str "#" vega-div-id)
-                                 (clj->js (rankings-vega-definition history domain)))))]
-
-    (reagent/create-class
-     {:reagent-render vega-view
-      :component-did-update update
-      :component-did-mount update
-      :display-name "Rankings Over Time Inner"})))
+  (reagent/create-class
+   {:reagent-render vega-view
+    :component-did-update vega-update
+    :component-did-mount vega-update
+    :display-name "Rankings Over Time Inner"}))
