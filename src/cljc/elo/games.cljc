@@ -120,7 +120,7 @@
          :time (:played_at current-game)
          :result (game-result current-game name-mapping)}
 
-        rankings (get-rankings (take idx all-games) players)]
+        rankings (get-rankings (take (inc idx) all-games) players)]
 
     (map #(merge % common-map)
          (for [r (filter #(plays? current-game (:id %)) rankings)]
