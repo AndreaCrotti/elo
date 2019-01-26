@@ -1,4 +1,4 @@
-#+AUTHOR: Andrea Crotti (@andreacrotti)
+#+AUTHOR: (@andreacrotti / https://github.com/AndreaCrotti/elo)
 #+TITLE: Build an ELO platform with Re-Frame
 #+OPTIONS: num:nil toc:nil ^:nil tex:t reveal_progress:t reveal_control:t reveal_overview:t
 #+REVEAL_TRANS: none
@@ -361,7 +361,7 @@ function getGreeting(user) {
                    :uri "/api/games"
                    :params {:league_id (get-league-id db)}
                    :format (ajax/json-request-format)
-                   :response-format (ajax/json-response-format {:keywords? true})
+                   :response-format (ajax/json-response-format)
                    :on-success [::on-success]
                    :on-failure [:failed]}}))
 #+END_SRC

@@ -29,8 +29,8 @@
 (defn random-ts
   []
   (tc/to-sql-time
-   (let [zero (tc/to-epoch (t/date-time 2017 1 1))
-         end (tc/to-epoch (t/date-time 2018 10 1))
+   (let [zero (tc/to-epoch (t/date-time 2018 1 1))
+         end (tc/to-epoch (t/date-time 2019 1 1))
          length (- end zero)]
 
      (tc/from-epoch (+ zero (rand-int length))))))
