@@ -306,9 +306,6 @@ function getGreeting(user) {
 - event handler: *reg-event-db*
 - effect handler: *reg-event-fx*
 
-** Form
-
-[[./form.png]]
 
 ** Demo time
 
