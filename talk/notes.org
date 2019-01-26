@@ -387,9 +387,10 @@ might find it addictive though.
 
 #+END_NOTES
 
-[[./happy_dog.jpg]]
+Frontend is actually *fun*
 
-*Frontend development is fun*
+- @andreacrotti
+- https://github.com/AndreaCrotti/elo
 
 # Local Variables:
 # after-save-hook: (org-reveal-export-to-html)
