@@ -60,14 +60,14 @@
     [:div.game__form
      [:div.form-group.player1__group
       [:label.form__label "Player 1"]
-      [:div.form__row.form-control
+      [:div.form__row
        [common-views/drop-down-players sorted-players ::handlers/p1 (:p1 @game)
         {:caption "Name"}]
 
        [common-views/drop-down points-range ::handlers/p1_points (:p1_points @game)
         {:caption (translate :points)}]
 
-       [:input.form-control
+       [:input
         {:type "text"
          :placeholder (str (translate :using) " Name")
          :value (:p1_using @game)
@@ -75,19 +75,19 @@
 
      [:div.form-group.player2__group
       [:label.form__label "Player 2"]
-      [:div.form__row.form-control
+      [:div.form__row
        [common-views/drop-down-players sorted-players ::handlers/p2 (:p2 @game)
         {:caption "Name"}]
 
        [common-views/drop-down points-range ::handlers/p2_points (:p2_points @game)
         {:caption (translate :points)}]
 
-       [:input.form-control {:type "text"
-                             :placeholder (str (translate :using) " Name")
-                             :value (:p2_using @game)
-                             :on-change (utils/set-val ::handlers/p2_using)}]]]
+       [:input {:type "text"
+                :placeholder (str (translate :using) " Name")
+                :value (:p2_using @game)
+                :on-change (utils/set-val ::handlers/p2_using)}]]]
 
-     [:div.form__row.form-group
+     [:div.form-group
       [:label.form__label {:for "played_at"} "Played at"]
       [:div.form-control {:id "played_at"} [date-range-picker]]]
 

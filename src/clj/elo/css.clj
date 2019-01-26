@@ -84,6 +84,8 @@
 
    [:label {:padding-right "30px"}]
 
+   [:#played_at {:border "none"}]
+
    [:.players__stats
     {:display "flex"
      :justify-content "space-between"}]
