@@ -59,6 +59,19 @@ jobs:
       - store_test_results:
           path: target/test2junit
 
+  test_cljs:
+    docker:
+      - image: circleci/clojure:lein-2.8.1
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - clj-deps-{{ checksum "project.clj" }}
+
+      - run: sudo apt update && sudo apt install chromium sassc
+      - run: lein test-cljs
+
   coverage_clj:
     <<: *base_docker
     steps:
@@ -85,6 +98,10 @@ workflows:
   build:
     jobs:
       - dependencies
+      - test_cljs:
+          requires:
+            - dependencies
+
       - test_clj:
           requires:
             - dependencies
