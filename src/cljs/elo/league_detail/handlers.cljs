@@ -104,7 +104,6 @@
 
                 (when (pos? up-to-games)
                   (->> ((juxt :p1 :p2)
-                        ;; this should not be necessary
                         (nth games (dec up-to)))
                        (map name-mapping)
                        set)))))
