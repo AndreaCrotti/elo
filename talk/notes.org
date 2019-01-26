@@ -1,4 +1,4 @@
-#+AUTHOR: (@andreacrotti / https://github.com/AndreaCrotti/elo)
+#+AUTHOR: github.com/AndreaCrotti/elo
 #+TITLE: Build an ELO platform with Re-Frame
 #+OPTIONS: num:nil toc:nil ^:nil tex:t reveal_progress:t reveal_control:t reveal_overview:t
 #+REVEAL_TRANS: none
@@ -232,6 +232,7 @@ in the browser opens the door to very exciting possibilities.
 - Immutable
 - Lisp
 - One language to rule them all
+- live reloading everything
 - re-frame = FRP
 
 * Re-frame introduction
