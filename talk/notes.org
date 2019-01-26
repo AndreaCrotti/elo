@@ -299,13 +299,6 @@ function getGreeting(user) {
 
 
 * Re-frame in action
-** Re-frame primitives
-
-#+ATTR_REVEAL: :frag (appear)
-- subscriptions: *reg-sub*
-- event handler: *reg-event-db*
-- effect handler: *reg-event-fx*
-
 
 ** Demo time
 
@@ -313,6 +306,9 @@ function getGreeting(user) {
 To give a better understanding of what the code refers to let's go
 back to the app to see and look at what happens when you fill in the
 form.
+
+Show how to use re-frame 10x while while adding a new thing, checking
+for validation and go back and forth in the history.
 #+END_NOTES
 
 ** Model
