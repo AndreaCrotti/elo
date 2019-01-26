@@ -3,6 +3,7 @@
 #+OPTIONS: num:nil toc:nil ^:nil tex:t reveal_progress:t reveal_control:t reveal_overview:t
 #+REVEAL_TRANS: none
 #+REVEAL_SPEED: fast
+#+REVEAL_THEME: beige
 #+REVEAL_HLEVEL: 1
 #+TOC: listings
 
