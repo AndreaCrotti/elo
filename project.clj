@@ -143,7 +143,7 @@
    [{:id "test"
      :source-paths ["src/cljs" "src/cljc" "test/cljc"]
      :compiler {:output-to "resources/public/js/testable.js"
-                :main your-project.runner
+                :main doo.test-runner
                 :optimizations :none}}
 
     {:id "min"
