@@ -225,6 +225,15 @@ in the browser opens the door to very exciting possibilities.
   ;; => {:p1 1329.090909090909, :p2 1670.909090909091}
 #+END_SRC
 
+* Why Clojure and re-frame
+
+#+ATTR_REVEAL: :frag (appear)
+- Functional
+- Immutable
+- Lisp
+- One language to rule them all
+- re-frame = FRP
+
 * Re-frame introduction
 
 #+BEGIN_NOTES
@@ -296,7 +305,6 @@ function getGreeting(user) {
       [:h1 "Hello, Stranger"]))
 
 #+END_SRC
-
 
 * Re-frame in action
 
