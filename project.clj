@@ -140,10 +140,15 @@
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
   {:builds
-   [{:id "min"
+   [{:id "test"
+     :source-paths ["src/cljs" "src/cljc" "test/cljc"]
+     :compiler {:output-to "resources/public/js/testable.js"
+                :main doo.test-runner
+                :optimizations :none}}
+
+    {:id "min"
      :source-paths ["src/cljs" "src/cljc"]
      :compiler     {:main elo.core
-
                     :output-to "resources/public/cljs-out/elo-main.js"
                     :asset-path "resources/public/cljs-out/elo"
                     :optimizations :simple
