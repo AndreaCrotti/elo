@@ -4,7 +4,7 @@
   (:require [elo.games :as games]
             [medley.core :as medley]))
 
-(defn- truncate-games
+(defn truncate-games
   [games up-to-games]
   (if (some? up-to-games)
     (take up-to-games games)

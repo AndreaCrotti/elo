@@ -1,7 +1,6 @@
 ;;TODO: migrate to always use namespaced keywords
 (ns elo.league-detail.handlers
   (:require [cljsjs.moment]
-            [clojure.set :as set]
             [elo.common.handlers :as common]
             [elo.common.players :as players-handlers]
             [elo.common.sets :as sets]
@@ -9,6 +8,7 @@
             [elo.rankings :as rankings]
             [elo.stats :as stats]
             [elo.shared-config :as shared]
+            [elo.vega :as vega]
             [medley.core :as medley]
             [re-frame.core :as rf]))
 
@@ -46,12 +46,6 @@
    :show-all? false
    :game-config shared/default-game-config})
 
-(defn- truncate-games
-  [games up-to-games]
-  (if (some? up-to-games)
-    (take up-to-games games)
-    games))
-
 (rf/reg-sub ::game-config (getter [:game-config]))
 (rf/reg-event-db ::k (setter [:game-config :k]))
 (rf/reg-event-db ::initial-ranking (setter [:game-config :initial-ranking]))
@@ -75,14 +69,14 @@
             :<- [::up-to-games]
 
             (fn [[gs up-to] _]
-              (games/results (truncate-games gs up-to))))
+              (games/results (rankings/truncate-games gs up-to))))
 
 (rf/reg-sub ::stats
             :<- [::games-live-players]
             :<- [::up-to-games]
 
             (fn [[gs up-to] _]
-              (games/summarise (truncate-games gs up-to))))
+              (games/summarise (rankings/truncate-games gs up-to))))
 
 (rf/reg-sub ::rankings-history
             :<- [::players-handlers/players]
@@ -135,6 +129,7 @@
 
 (defn next-game
   [db _]
+  ;; this might not be the right way to do it
   (let [up-to @(rf/subscribe [::up-to-games])
         games @(rf/subscribe [::games-live-players])]
 
@@ -142,8 +137,14 @@
       (common/update-in* db page [:up-to-games] inc)
       db)))
 
+(defn goto-game
+  [db [_ game-idx]]
+  (common/update-in* db page [:up-to-games] game-idx))
+
 (rf/reg-event-db ::prev-game prev-game)
 (rf/reg-event-db ::next-game next-game)
+
+(rf/reg-event-db ::goto-game goto-game)
 
 (rf/reg-sub ::error (getter [:error]))
 
@@ -312,14 +313,7 @@
             :<- [::rankings-history]
 
             (fn [history]
-              (let [kw->keyname {:player "Player"
-                                 :ranking "Ranking"
-                                 :game-idx "Game #"
-                                 :time "Time"}]
-
-                (->> history
-                     (map #(update % :game-idx inc))
-                     (map #(set/rename-keys % kw->keyname))))))
+              (vega/history-vega history)))
 
 (rf/reg-sub ::highest-rankings-best
             :<- [::rankings-history]

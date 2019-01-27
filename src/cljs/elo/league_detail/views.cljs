@@ -180,9 +180,20 @@
            :on-change (utils/set-val ::handlers/up-to-games js/parseInt)}]
 
          [:span.rankings-chevrons.form-control
-          [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
+          [:i.fas.fa-chevron-left
+           {:on-click #(rf/dispatch [::handlers/goto-game 0])}]
+
+          [:i.fas.fa-chevron-left
+           {:on-click #(rf/dispatch [::handlers/prev-game])}]
+
           [:span.up-to-current-games up-to-current]
-          [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]))))
+
+          [:i.fas.fa-chevron-right
+           {:on-click #(rf/dispatch [::handlers/next-game])}]
+
+          [:i.fas.fa-chevron-right
+           {:on-click #(rf/dispatch [::handlers/goto-game
+                                     (dec (count games))])}]]]))))
 
 (def hide-show-all
   [:span.hide__show__all
