@@ -1,4 +1,6 @@
-^{:ring-server-options {:port 9502}}
+^{:ring-server-options {:port 9502}
+  :auto-testing true
+  :log-level :debug}
 
 {:main elo.core
  :preloads [figwheel.core figwheel.main figwheel.repl.preload day8.re-frame-10x.preload]
