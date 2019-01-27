@@ -1,4 +1,5 @@
 (ns elo.specs.stats
+  "List of specs for stats generated"
   (:require [clojure.spec.alpha :as s]))
 
 (defn percent?

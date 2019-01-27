@@ -223,6 +223,18 @@
   [data tr]
   (reduce-kv update data tr))
 
+(defn- html-table
+  [header data]
+  [:table
+   [:thead
+    (into [:tr] (map (tag :th) header))]
+
+   (into [:tbody]
+         (for [row data]
+           (into [:tr]
+                 (for [r row]
+                   [:td r]))))])
+
 (defn- stats-table
   ([header data tr]
    [:table.table.table-striped.table__stats
@@ -362,7 +374,8 @@
   [kw]
   (let [{:keys [handler fields transform]} (kw stats)]
     (let [stats (rf/subscribe [handler])
-          active-player-names (rf/subscribe [::players-handlers/active-players-names])]
+          active-player-names
+          (rf/subscribe [::players-handlers/active-players-names])]
 
       (fn []
         ;; make the assertion actually blow up as well
