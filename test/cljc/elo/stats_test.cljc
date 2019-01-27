@@ -33,8 +33,6 @@
     (is (= [{:player "Emily", :points 16}]
            (sut/highest-increase history)))))
 
-
-
 (deftest highest-rankings-best
   (testing "highest rankings best"
     (is (= [(last history)]
