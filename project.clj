@@ -11,6 +11,7 @@
 
                  ;; server side libs
                  [org.clojure/data.csv "0.1.4"]
+                 [aero "1.1.3"]
                  [ring "1.7.0"]
                  [org.clojure/java.jdbc "0.7.8"]
                  [org.postgresql/postgresql "42.2.5"]
@@ -66,7 +67,7 @@
                  [medley "1.0.0"]
                  [metosin/ring-http-response "0.9.1"]]
 
-  :plugins [[environ/environ.lein "0.3.1"]
+  :plugins [[lein-environ "1.1.0"]
             [migratus-lein "0.5.0"]
             [lein-cljsbuild "1.1.4"]
             [jonase/eastwood "0.3.3"]
@@ -109,16 +110,17 @@
                      checking [[:inner 0]]}}
 
   :profiles
-  {:production {:env {:production true}}
-   :uberjar {:hooks []
+  {:uberjar {:hooks []
              :source-paths ["src/clj" "src/cljc"]
              :prep-tasks [["compile"]
                           ["garden" "once"]
                           ["cljsbuild" "once" "min"]]
-
              :omit-source true
              :aot [elo.api]
              :main elo.api}
+
+   :test
+   {:env {:environment :test}}
 
    :dev
    {:ring {:stacktrace-middleware prone.middleware/wrap-exceptions}
@@ -127,6 +129,8 @@
               [migratus-lein "0.5.0"]
               [lein-cloverage "1.0.13"]
               [lein-cljfmt "0.5.7"]]
+
+    :env {:environment :dev}
 
     :dependencies [[binaryage/devtools "0.9.10"]
                    [cider/piggieback "0.3.10"]

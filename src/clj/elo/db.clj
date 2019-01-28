@@ -1,5 +1,6 @@
 (ns elo.db
   (:require [clojure.java.jdbc :as jdbc]
+            [elo.config :refer [config]]
             [environ.core :refer [env]]
             [honeysql-postgres.helpers :as ph]
             [honeysql.core :as sql]
@@ -7,14 +8,12 @@
 
   (:import (java.util UUID)))
 
-(def local-db "postgres://elo@localhost:5445/elo")
-(def test-db "postgres://elo@localhost:5445/elo_test")
-
 (def timestamp-format "YYYY-MM-ddZHH:mm:SS")
+(def test-db "postgres://elo@localhost:5445/elo_test")
 
 (defn db-spec
   []
-  (or (env :database-url) local-db))
+  (:database-url @config))
 
 (defmacro wrap-db-call
   [callback]

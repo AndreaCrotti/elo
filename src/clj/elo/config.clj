@@ -1,10 +1,17 @@
 (ns elo.config
-  (:require [environ.core :refer [env]]))
+  (:require [environ.core :refer [env]]
+            [taoensso.timbre :as log]
+            [aero.core :as aero]))
 
-(def adsense-tag (:adsense-tag env))
-(def google-analytics-tag (:google-analytics-tag env))
+(def config (atom {}))
 
-(def github-client-id (:github-client-id env))
-(def github-client-secret (:github-client-secret env))
+(defn load-config
+  []
+  (let [profile (:environment env)]
+    ;; failling on uberjar otherwise
+    #_(assert (some? profile) "Could not detect profile")
+    (log/info "loading configuration for profile " profile)
+    (let [cfg (aero/read-config "config.edn" {:profile profile})]
+      (reset! config cfg))))
 
-(def auth-enabled (:auth-enabled env))
+(load-config)

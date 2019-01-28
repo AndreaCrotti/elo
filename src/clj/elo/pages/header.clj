@@ -1,7 +1,7 @@
 (ns elo.pages.header
-  (:require [elo.config :as config]
+  (:require [elo.config :refer [config]]
             [elo.pages.utils :refer [cache-buster]]
-            [elo.pages.common :refer [adsense-js ga-js]]))
+            [elo.pages.common :refer [ga-js]]))
 
 (defn- google-font
   [font-name]
@@ -55,17 +55,11 @@
            :href "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
            :integrity "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
            :crossorigin "anonymous"}]
-   (when config/google-analytics-tag
+
+   (when (:google-analytics-tag @config)
      [:script {:async true
                :src (format "https://www.googletagmanager.com/gtag/js?id=%s"
-                            config/google-analytics-tag)}])
+                            (:google-analytics-tag @config))}])
 
-   (when config/google-analytics-tag
-     (ga-js))
-
-   (when config/adsense-tag
-     [:script {:async true
-               :src "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"}])
-
-   (when config/adsense-tag
-     (adsense-js))])
+   (when (:google-analytics-tag @config)
+     (ga-js))])
