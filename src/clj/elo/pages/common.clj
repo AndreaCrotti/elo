@@ -8,4 +8,4 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', '%s');" (:google-analytics-tag @config))])
+  gtag('config', '%s');" (:google-analytics-tag config))])

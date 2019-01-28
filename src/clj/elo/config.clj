@@ -3,15 +3,12 @@
             [taoensso.timbre :as log]
             [aero.core :as aero]))
 
-(def config (atom {}))
-
 (defn load-config
   []
   (let [profile (:environment env)]
     ;; failling on uberjar otherwise
     #_(assert (some? profile) "Could not detect profile")
     (log/info "loading configuration for profile " profile)
-    (let [cfg (aero/read-config "config.edn" {:profile profile})]
-      (reset! config cfg))))
+    (aero/read-config "config.edn" {:profile profile})))
 
-(load-config)
+(def config (load-config))

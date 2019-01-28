@@ -152,7 +152,7 @@
   [request]
   (let [github-token (get-github-token request)]
     (resp/ok
-     {:authenticated (or (not (:auth-enabled @config))
+     {:authenticated (or (not (:auth-enabled config))
                          (some? github-token))
       :token github-token})))
 
@@ -185,7 +185,7 @@
   (fn [request]
     (if (or (not (str/starts-with? (:uri request) "/api"))
             (some? (get-github-token request))
-            (not (:auth-enabled @config)))
+            (not (:auth-enabled config)))
 
       (handler request)
       (resp/unauthorized "Can not access the given request"))))

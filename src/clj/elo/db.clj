@@ -13,7 +13,7 @@
 
 (defn db-spec
   []
-  (:database-url @config))
+  (:database-url config))
 
 (defmacro wrap-db-call
   [callback]

@@ -56,10 +56,10 @@
            :integrity "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
            :crossorigin "anonymous"}]
 
-   (when (:google-analytics-tag @config)
+   (when (:google-analytics-tag config)
      [:script {:async true
                :src (format "https://www.googletagmanager.com/gtag/js?id=%s"
-                            (:google-analytics-tag @config))}])
+                            (:google-analytics-tag config))}])
 
-   (when (:google-analytics-tag @config)
+   (when (:google-analytics-tag config)
      (ga-js))])
