@@ -11,6 +11,7 @@
 
                  ;; server side libs
                  [org.clojure/data.csv "0.1.4"]
+                 [aero "1.1.3"]
                  [ring "1.7.0"]
                  [org.clojure/java.jdbc "0.7.8"]
                  [org.postgresql/postgresql "42.2.5"]

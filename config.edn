@@ -11,4 +11,5 @@
  :admin-password #or [#env ADMIN_PASSWORD "secret"]
  ;; this is only defined when running on Heroku
  :git-commit #env HEROKU_SLUG_COMMIT
+ :auth-enabled #boolean #or [#env AUTH_ENABLED "false"]
  }
