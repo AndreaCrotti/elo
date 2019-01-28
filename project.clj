@@ -110,15 +110,11 @@
                      checking [[:inner 0]]}}
 
   :profiles
-  {:production
-   {:env {:environment :prod}}
-
-   :uberjar {:hooks []
+  {:uberjar {:hooks []
              :source-paths ["src/clj" "src/cljc"]
              :prep-tasks [["compile"]
                           ["garden" "once"]
                           ["cljsbuild" "once" "min"]]
-
              :omit-source true
              :aot [elo.api]
              :main elo.api}

@@ -7,10 +7,11 @@
 
 (defn load-config
   []
-  (log/info "loading configuration for profile "
-            (:environment env))
-
-  (let [cfg (aero/read-config "config.edn" {:profile (:environment env)})]
-    (reset! config cfg)))
+  (let [profile (:environment env)]
+    ;; failling on uberjar otherwise
+    #_(assert (some? profile) "Could not detect profile")
+    (log/info "loading configuration for profile " profile)
+    (let [cfg (aero/read-config "config.edn" {:profile profile})]
+      (reset! config cfg))))
 
 (load-config)

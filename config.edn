@@ -4,7 +4,7 @@
                          ;; I should still be able to override the
                          ;; dev DATABASE_URL in dev if I wanted to?
                          :dev "postgres://elo@localhost:5445/elo"
-                         :prod #env DATABASE_URL}
+                         :default #env DATABASE_URL}
 
  :slack-hook #env SLACK_HOOK
  :google-analytics-tag #env GOOGLE_ANALYTICS_TAG
