@@ -67,7 +67,7 @@
                  [medley "1.0.0"]
                  [metosin/ring-http-response "0.9.1"]]
 
-  :plugins [[environ/environ.lein "0.3.1"]
+  :plugins [[lein-environ "1.1.0"]
             [migratus-lein "0.5.0"]
             [lein-cljsbuild "1.1.4"]
             [jonase/eastwood "0.3.3"]
@@ -110,7 +110,9 @@
                      checking [[:inner 0]]}}
 
   :profiles
-  {:production {:env {:production true}}
+  {:production
+   {:env {:environment :production}}
+
    :uberjar {:hooks []
              :source-paths ["src/clj" "src/cljc"]
              :prep-tasks [["compile"]
@@ -121,6 +123,9 @@
              :aot [elo.api]
              :main elo.api}
 
+   :test
+   {:env {:environment :test}}
+
    :dev
    {:ring {:stacktrace-middleware prone.middleware/wrap-exceptions}
     :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
@@ -128,6 +133,8 @@
               [migratus-lein "0.5.0"]
               [lein-cloverage "1.0.13"]
               [lein-cljfmt "0.5.7"]]
+
+    :env {:environment :dev}
 
     :dependencies [[binaryage/devtools "0.9.10"]
                    [cider/piggieback "0.3.10"]
