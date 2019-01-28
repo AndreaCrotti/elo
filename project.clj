@@ -111,7 +111,7 @@
 
   :profiles
   {:production
-   {:env {:environment :production}}
+   {:env {:environment :prod}}
 
    :uberjar {:hooks []
              :source-paths ["src/clj" "src/cljc"]
