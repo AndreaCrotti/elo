@@ -15,7 +15,7 @@
             [re-frame.core :as rf]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
-(def form-size 5)
+(def form-size 7)
 
 (defn- translate
   [term]
