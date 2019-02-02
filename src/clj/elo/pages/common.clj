@@ -1,5 +1,5 @@
 (ns elo.pages.common
-  (:require [elo.config :refer [config]]))
+  (:require [elo.config :refer [value]]))
 
 (defn ga-js
   []
@@ -8,4 +8,4 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', '%s');" (:google-analytics-tag config))])
+  gtag('config', '%s');" (value :google-analytics-tag))])

@@ -1,6 +1,6 @@
 (ns elo.db
   (:require [clojure.java.jdbc :as jdbc]
-            [elo.config :refer [config]]
+            [elo.config :refer [value]]
             [environ.core :refer [env]]
             [honeysql-postgres.helpers :as ph]
             [honeysql.core :as sql]
@@ -13,7 +13,7 @@
 
 (defn db-spec
   []
-  (:database-url config))
+  (value :database-url))
 
 (defmacro wrap-db-call
   [callback]

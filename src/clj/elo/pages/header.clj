@@ -1,5 +1,5 @@
 (ns elo.pages.header
-  (:require [elo.config :refer [config]]
+  (:require [elo.config :refer [value]]
             [elo.pages.utils :refer [cache-buster]]
             [elo.pages.common :refer [ga-js]]))
 
@@ -14,52 +14,52 @@
 
 (defn gen-header
   [title]
-  [:head [:meta {:charset "utf-8"
-                 :description "FIFA championship little helper"}]
+  (let [ga-tag (value :google-analytics-tag)]
+    [:head [:meta {:charset "utf-8"
+                   :description "FIFA championship little helper"}]
 
-   [:title title]
+     [:title title]
 
-   (google-font (:titles fonts))
-   (google-font (:smaller-titles fonts))
+     (google-font (:titles fonts))
+     (google-font (:smaller-titles fonts))
 
-   ;; should we get different packages?
-   [:link {:rel "stylesheet"
-           :href "https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-           :integrity "sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-           :crossorigin "anonymous"}]
+     ;; should we get different packages?
+     [:link {:rel "stylesheet"
+             :href "https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+             :integrity "sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+             :crossorigin "anonymous"}]
 
-   [:script {:src "https://cdn.jsdelivr.net/npm/vega@4.2.0"}]
-   [:script {:src "https://cdn.jsdelivr.net/npm/vega-lite@3.0.0-rc6"}]
-   [:script {:src "https://cdn.jsdelivr.net/npm/vega-embed@3.19.2"}]
+     [:script {:src "https://cdn.jsdelivr.net/npm/vega@4.2.0"}]
+     [:script {:src "https://cdn.jsdelivr.net/npm/vega-lite@3.0.0-rc6"}]
+     [:script {:src "https://cdn.jsdelivr.net/npm/vega-embed@3.19.2"}]
 
-   [:link {:href (cache-buster "/css/vega_embed.css")
-           :rel "stylesheet"
-           :type "text/css"}]
+     [:link {:href (cache-buster "/css/vega_embed.css")
+             :rel "stylesheet"
+             :type "text/css"}]
 
-   [:link {:href (cache-buster "/css/react-datepicker.css")
-           :rel "stylesheet"
-           :type "text/css"}]
-   [:link {:href (cache-buster "/css/bootstrap-social.css")
-           :rel "stylesheet"
-           :type "text/css"}]
+     [:link {:href (cache-buster "/css/react-datepicker.css")
+             :rel "stylesheet"
+             :type "text/css"}]
+     [:link {:href (cache-buster "/css/bootstrap-social.css")
+             :rel "stylesheet"
+             :type "text/css"}]
 
-   [:link {:href (cache-buster "/css/screen.css")
-           :rel "stylesheet"
-           :type "text/css"}]
+     [:link {:href (cache-buster "/css/screen.css")
+             :rel "stylesheet"
+             :type "text/css"}]
 
-   [:link {:href (cache-buster "/css/playground.css")
-           :rel "stylesheet"
-           :type "text/css"}]
+     [:link {:href (cache-buster "/css/playground.css")
+             :rel "stylesheet"
+             :type "text/css"}]
 
-   [:link {:rel "stylesheet"
-           :href "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-           :integrity "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-           :crossorigin "anonymous"}]
+     [:link {:rel "stylesheet"
+             :href "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+             :integrity "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+             :crossorigin "anonymous"}]
 
-   (when (:google-analytics-tag config)
-     [:script {:async true
-               :src (format "https://www.googletagmanager.com/gtag/js?id=%s"
-                            (:google-analytics-tag config))}])
+     (when ga-tag
+       [:script {:async true
+                 :src (format "https://www.googletagmanager.com/gtag/js?id=%s" ga-tag)}])
 
-   (when (:google-analytics-tag config)
-     (ga-js))])
+     (when ga-tag
+       (ga-js))]))
