@@ -103,7 +103,7 @@
 
   :aliases {"test-cljs" ["doo" "phantom" "test" "once"]
             "fig" ["trampoline" "run" "-m" "figwheel.main"]
-            "build" ["trampoline" "run" "-m" "figwheel.main" "-b" "elo"]}
+            "build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]}
 
   :cljfmt {:indents {for-all [[:block 1]]
                      fdef [[:block 1]]
