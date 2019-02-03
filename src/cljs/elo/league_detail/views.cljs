@@ -403,6 +403,6 @@
       [stats-component ::stats-specs/best-percents]]
 
      [:div.section.vega__table [vega-outer]]
-     [:div.section.game__config [game-config]]
+     #_[:div.section.game__config [game-config]]
      [:div.section.rankings__table [rankings-table]]
      [:div.section.games__table [games-table]]]))
