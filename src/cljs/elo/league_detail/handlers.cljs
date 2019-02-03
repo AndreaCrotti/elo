@@ -314,7 +314,6 @@
             :<- [::game-config]
 
             (fn [[history game-config]]
-              (js/console.log "history changed now")
               (let [kw->keyname {:player "Player"
                                  :ranking "Ranking"
                                  :game-idx "Game #"

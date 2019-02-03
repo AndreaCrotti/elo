@@ -80,7 +80,6 @@
    (get-rankings games players shared/default-game-config))
 
   ([games players config]
-   (println "config =" config)
    (let [norm-games (map elo/normalize-game games)
          rankings (elo/compute-rankings norm-games
                                         (map :id players)
@@ -136,7 +135,6 @@
    (rankings-history players games shared/default-game-config))
 
   ([players games game-config]
-   (println "rankings history:" "config = " game-config)
    (flatten
     (for [idx (range (count games))]
       (rankings-at-idx* players idx games game-config)))))

@@ -320,7 +320,6 @@
   (let [history (rf/subscribe [::handlers/rankings-history-vega])
         rankings-domain (rf/subscribe [::handlers/rankings-domain])]
     (fn []
-      (js/console.log "Recomputing the history and the rankings domain")
       [vega/vega-inner @history @rankings-domain])))
 
 (defn- percent
