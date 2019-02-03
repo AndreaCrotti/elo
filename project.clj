@@ -87,7 +87,7 @@
   :source-paths ["src/cljc" "src/clj" "src/cljs"]
   :test-paths ["test/clj" "test/cljc"]
   :ring {:handler elo.api/app}
-  :resource-paths ["config" "resources"]
+  :resource-paths ["resources"]
 
   :migratus {:store :database
              :migration-dir "migrations"
