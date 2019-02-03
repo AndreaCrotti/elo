@@ -112,26 +112,32 @@
        (:p2_points game)))
 
 (defn rankings-at-idx*
-  [players idx all-games]
-  (let [current-game (nth all-games idx)
-        name-mapping (player->names players)
-        common-map
-        {:game-idx idx
-         :time (:played_at current-game)
-         :result (game-result current-game name-mapping)}
+  ([players idx all-games]
+   (rankings-at-idx* players idx all-games shared/default-game-config))
 
-        rankings (get-rankings (take (inc idx) all-games) players)]
+  ([players idx all-games game-config]
+   (let [current-game (nth all-games idx)
+         name-mapping (player->names players)
+         common-map
+         {:game-idx idx
+          :time (:played_at current-game)
+          :result (game-result current-game name-mapping)}
 
-    (map #(merge % common-map)
-         (for [r (filter #(plays? current-game (:id %)) rankings)]
-           {:ranking (:ranking r)
-            :player (name-mapping (:id r))}))))
+         rankings (get-rankings (take idx all-games) players)]
+
+     (map #(merge % common-map)
+          (for [r (filter #(plays? current-game (:id %)) rankings)]
+            {:ranking (:ranking r)
+             :player (name-mapping (:id r))})))))
 
 (defn rankings-history
-  [players games]
-  (flatten
-   (for [idx (range (count games))]
-     (rankings-at-idx* players idx games))))
+  ([players games]
+   (rankings-history players games shared/default-game-config))
+
+  ([players games game-config]
+   (flatten
+    (for [idx (range (count games))]
+      (rankings-at-idx* players idx games game-config)))))
 
 (defn longest-winning-subseq
   [s]
