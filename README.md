@@ -10,7 +10,7 @@ Compute the Elo ranking from Fifa games.
 
 Get it running locally:
 
-- run `lein build` in one terminal (or `cider-in` with Cider)
+- run `lein fig:build` in one terminal (or `cider-in` with Cider)
 - in another terminal run `lein garden auto` (this will compile
   automatically all the CSS)
 - run `docker-compose up -d` to fire up your local db
