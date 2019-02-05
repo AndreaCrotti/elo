@@ -1,13 +1,7 @@
-^{:watch-dirs ["src/cljs" "src/cljc"]
-  :css-dirs ["resources/public/css"]
-  :open-url false
+^{:ring-server-options {:port 9502}
   :auto-testing true
-  :log-level :debug
-  :target-dir "resources"
-  :mode :serve
-  :ring-server-options {:join? false}}
+  :log-level :debug}
 
 {:main elo.core
- :preloads [day8.re-frame-10x.preload]
- :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}
- :aot-cache true}
+ :preloads [figwheel.core figwheel.main figwheel.repl.preload day8.re-frame-10x.preload]
+ :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}}

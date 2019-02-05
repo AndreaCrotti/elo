@@ -1,0 +1,5 @@
+{:watch-dirs ["src/cljs" "src/cljc"]
+ :css-dirs ["resources/public/css"]
+ :open-url false
+ :target-dir "resources"
+ :ring-handler elo.api/app}
