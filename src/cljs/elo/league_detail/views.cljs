@@ -149,7 +149,7 @@
          [:button {:on-click #(rf/dispatch [::handlers/toggle-show-all])}
           (if @show-all? "SHOW LAST 10" "SHOW ALL")]
 
-         [:table.table
+         [:table.table.is-striped
           [:thead header]
           (into [:tbody]
                 (for [[idx {:keys [p1 p2 p1_using p2_using p1_points p2_points played_at]}]
@@ -226,7 +226,7 @@
 
 (defn- stats-table
   ([header data tr]
-   [:table.table
+   [:table.table.is-striped
     [:thead.thead
      (into [:tr.tr] (map (tag :th) (map :v header)))]
 
@@ -264,7 +264,7 @@
 
     [:div
      [game-slider]
-     [:table.table
+     [:table.table.is-fullwidth.is-striped
       [:thead header]
       (into [:tbody]
             (for [[idx {:keys [id ranking]}] (enumerate filtered-rankings)
@@ -366,7 +366,7 @@
       (fn []
         ;; make the assertion actually blow up as well
         (s/assert (s/conform kw @stats) (s/explain kw @stats))
-        [:div.stats__table__container
+        [:div
          [stats-table
           fields
           (take 3 (filter #(@active-player-names (:player %)) @stats))
