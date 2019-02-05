@@ -149,7 +149,7 @@
    [{:id "min"
      :source-paths ["src/cljs" "src/cljc"]
      :compiler     {:main elo.core
-                    :output-to "resources/public/cljs-out/elo-main.js"
+                    :output-to "resources/public/cljs-out/dev-main.js"
                     :asset-path "resources/public/cljs-out/elo"
                     :optimizations :simple
                     :closure-defines {goog.DEBUG true}
