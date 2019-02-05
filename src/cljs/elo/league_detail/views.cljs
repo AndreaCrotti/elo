@@ -65,8 +65,7 @@
        [common-views/drop-down points-range ::handlers/p1_points (:p1_points @game)
         {:caption (translate :points)}]
 
-       [:input
-
+       [:input.input
         {:type "text"
          :placeholder (str (translate :using) " Name")
          :value (:p1_using @game)
@@ -81,10 +80,11 @@
        [common-views/drop-down points-range ::handlers/p2_points (:p2_points @game)
         {:caption (translate :points)}]
 
-       [:input {:type "text"
-                :placeholder (str (translate :using) " Name")
-                :value (:p2_using @game)
-                :on-change (utils/set-val ::handlers/p2_using)}]]]
+       [:input.input
+        {:type "text"
+         :placeholder (str (translate :using) " Name")
+         :value (:p2_using @game)
+         :on-change (utils/set-val ::handlers/p2_using)}]]]
 
      [:div
       [:label {:for "played_at"} "Played at"]
@@ -136,7 +136,7 @@
          [:button {:on-click #(rf/dispatch [::handlers/toggle-show-all])}
           (if @show-all? "SHOW LAST 10" "SHOW ALL")]
 
-         [:table.table.table-striped
+         [:table.table
           [:thead header]
           (into [:tbody]
                 (for [[idx {:keys [p1 p2 p1_using p2_using p1_points p2_points played_at]}]
@@ -213,13 +213,13 @@
 
 (defn- stats-table
   ([header data tr]
-   [:table.table.table-striped.table__stats
-    [:thead
-     (into [:tr] (map (tag :th) (map :v header)))]
+   [:table.table
+    [:thead.thead
+     (into [:tr.tr] (map (tag :th) (map :v header)))]
 
-    (into [:tbody]
+    (into [:tbody.tbody]
           (for [row data]
-            (into [:tr]
+            (into [:tr.tr]
                   (->> (map :k header)
                        (select-keys (transform row tr))
                        (vals)
@@ -251,50 +251,53 @@
 
     [:div
      [game-slider]
-     [:table.table.table-striped
+     [:table.table
       [:thead header]
       (into [:tbody]
             (for [[idx {:keys [id ranking]}] (enumerate filtered-rankings)
+
                   :let [{:keys [wins losses draws]} (get stats id)
                         player-name (get name-mapping id)
                         hidden? @(rf/subscribe [::handlers/hidden? id])
                         dead? @(rf/subscribe [::handlers/dead? id])]]
 
-              [:tr {:class (if dead? "dead__ranking__row" "alive__ranking__row")}
-               [:td [:span
-                     (if hidden?
-                       [:i.fas.fa-eye
-                        {:title (str "Show " player-name)
-                         :on-click #(rf/dispatch [::handlers/show id])}]
+              [:tr.tr {:class (if dead? "dead__ranking__row" "alive__ranking__row")}
+               [:td.td
+                [:span
+                 (if hidden?
+                   [:i.fas.fa-eye
+                    {:title (str "Show " player-name)
+                     :on-click #(rf/dispatch [::handlers/show id])}]
+                          
+                   [:i.fas.fa-eye-slash
+                    {:title (str "Hide " player-name)
+                     :on-click #(rf/dispatch [::handlers/hide id])}])]]
 
-                       [:i.fas.fa-eye-slash
-                        {:title (str "Hide " player-name)
-                         :on-click #(rf/dispatch [::handlers/hide id])}])]]
+               [:td.td
+                [:span
+                 (if dead?
+                   [:i.fas.fa-life-ring
+                    {:title (str "Revive " player-name)
+                     :on-click #(rf/dispatch [::handlers/revive id])}]
 
-               [:td [:span
-                     (if dead?
-                       [:i.fas.fa-life-ring
-                        {:title (str "Revive " player-name)
-                         :on-click #(rf/dispatch [::handlers/revive id])}]
+                   [:i.fas.fa-skull
+                    {:title (str "Kill " player-name)
+                     :on-click #(rf/dispatch [::handlers/kill id])}])]]
 
-                       [:i.fas.fa-skull
-                        {:title (str "Kill " player-name)
-                         :on-click #(rf/dispatch [::handlers/kill id])}])]]
-
-               [:td idx]
-               [:td player-name]
-               [:td (int ranking)]
+               [:td.td idx]
+               [:td.td player-name]
+               [:td.td (int ranking)]
                #_[:td
                   (when (contains? last-changes player-name)
                     (int (get last-changes player-name)))]
-               [:td (results-boxes (get results id))]
-               [:td (str wins "/" losses "/" draws)]]))]]))
+               [:td.td (results-boxes (get results id))]
+               [:td.td (str wins "/" losses "/" draws)]]))]]))
 
 (defn show-error
   []
   (let [error @(rf/subscribe [::handlers/error])]
     (when error
-      [:div.section.alert.alert-danger
+      [:div
        [:pre (:status-text error)]
        [:pre (:original-text error)]])))
 
