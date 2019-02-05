@@ -77,27 +77,34 @@
          :value (:p1_using @game)
          :on-change (utils/set-val ::handlers/p1_using)}]]]
 
-     [:div
-      [:label "Player 2"]
-      [:div
+     [:div.field
+      [:label.label "Player 2"]
+      [:div.control
        [common-views/drop-down-players sorted-players ::handlers/p2 (:p2 @game)
-        {:caption "Name"}]
+        {:caption "Name"}]]]
 
+     [:div.field
+      [:label.label "Score"]
+      [:div.control
        [common-views/drop-down points-range ::handlers/p2_points (:p2_points @game)
-        {:caption (translate :points)}]
+        {:caption (translate :points)}]]]
 
+     [:div.field
+      :label.label "Team"
+      [:div.control
        [:input.input
         {:type "text"
          :placeholder (str (translate :using) " Name")
          :value (:p2_using @game)
          :on-change (utils/set-val ::handlers/p2_using)}]]]
 
-     [:div
-      [:label {:for "played_at"} "Played at"]
-      [:div {:id "played_at"} [date-range-picker]]]
+     [:div.field
+      [:label.label "Played at"]
+      [:div.control {:id "played_at"}
+       [date-range-picker]]]
 
-     [:div
-      [:button
+     [:div.field
+      [:button.button.is-primary
        (enable-button @valid-game?
                       {:on-click (if @valid-game?
                                    #(rf/dispatch [::handlers/add-game])
@@ -176,7 +183,7 @@
       (let [up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
         [:div
          [:label "UP to game #"]
-         [:input.slider
+         [:input.slider.is-fullwidth
           {:type "range"
            :min 0
            :max (count @games)
@@ -370,21 +377,19 @@
   (let [{:keys [k initial-ranking]} @(rf/subscribe [::handlers/game-config])]
     [:div
      [:label (str "K=" k)]
-     [:input
+     [:input.slider.is-fullwidth
       {:type "range"
        :min 20
        :max 44
        :value k
-       :class "slider"
        :on-change (utils/set-val ::handlers/k js/parseInt)}]
 
      [:label (str "initial ranking=" initial-ranking)]
-     [:input
+     [:input.slider.is-fullwidth
       {:type "range"
        :min 100
        :max 2000
        :value initial-ranking
-       :class "slider"
        :on-change (utils/set-val ::handlers/initial-ranking js/parseInt)}]]))
 
 (defn root
