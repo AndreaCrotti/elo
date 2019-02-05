@@ -1,12 +1,10 @@
 (ns elo.league-detail.views
-  (:require [accountant.core :as accountant]
-            [cljsjs.moment]
+  (:require [cljsjs.moment]
             [clojure.string :as str]
             [elo.common.views :as common-views]
             [elo.date-picker-utils :refer [date-time-picker]]
             [elo.league-detail.handlers :as handlers]
             [elo.common.players :as players-handlers]
-            [elo.routes :as routes]
             [elo.shared-config :as config]
             [elo.utils :as utils]
             [elo.vega :as vega]
@@ -30,7 +28,7 @@
 (defn date-range-picker
   []
   (let [game (rf/subscribe [::handlers/game])]
-    [:div.filter-panel--range__inputs.date-range__inputs
+    [:div
      [date-time-picker {:name "datetime-widget"
                         :selected (:played_at @game)
                         :react-key "date-picker"
@@ -57,10 +55,10 @@
         points-range (map str (config/opts game-type :points))
         sorted-players (sort-by :name @players)]
 
-    [:div.game__form
-     [:div.form-group.player1__group
-      [:label.form__label "Player 1"]
-      [:div.form__row
+    [:div
+     [:div
+      [:label "Player 1"]
+      [:div
        [common-views/drop-down-players sorted-players ::handlers/p1 (:p1 @game)
         {:caption "Name"}]
 
@@ -68,14 +66,15 @@
         {:caption (translate :points)}]
 
        [:input
+
         {:type "text"
          :placeholder (str (translate :using) " Name")
          :value (:p1_using @game)
          :on-change (utils/set-val ::handlers/p1_using)}]]]
 
-     [:div.form-group.player2__group
-      [:label.form__label "Player 2"]
-      [:div.form__row
+     [:div
+      [:label "Player 2"]
+      [:div
        [common-views/drop-down-players sorted-players ::handlers/p2 (:p2 @game)
         {:caption "Name"}]
 
@@ -87,12 +86,12 @@
                 :value (:p2_using @game)
                 :on-change (utils/set-val ::handlers/p2_using)}]]]
 
-     [:div.form-group
-      [:label.form__label {:for "played_at"} "Played at"]
-      [:div.form-control {:id "played_at"} [date-range-picker]]]
+     [:div
+      [:label {:for "played_at"} "Played at"]
+      [:div {:id "played_at"} [date-range-picker]]]
 
-     [:div.form__row.form-group
-      [:button.submit__game
+     [:div
+      [:button
        (enable-button @valid-game?
                       {:on-click (if @valid-game?
                                    #(rf/dispatch [::handlers/add-game])
@@ -169,9 +168,9 @@
 
     (fn []
       (let [up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
-        [:div.form-group
+        [:div
          [:label "UP to game #"]
-         [:input.form-control.up-to-range-slider
+         [:input
           {:type "range"
            :min 0
            :max (count @games)
@@ -179,9 +178,9 @@
            :class "slider"
            :on-change (utils/set-val ::handlers/up-to-games js/parseInt)}]
 
-         [:span.rankings-chevrons.form-control
+         [:span
           [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
-          [:span.up-to-current-games up-to-current]
+          [:span up-to-current]
           [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]))))
 
 (def hide-show-all
@@ -360,9 +359,9 @@
 (defn game-config
   []
   (let [{:keys [k initial-ranking]} @(rf/subscribe [::handlers/game-config])]
-    [:div.form-group
+    [:div
      [:label (str "K=" k)]
-     [:input.form-control.up-to-range-slider
+     [:input
       {:type "range"
        :min 20
        :max 44
@@ -371,7 +370,7 @@
        :on-change (utils/set-val ::handlers/k js/parseInt)}]
 
      [:label (str "initial ranking=" initial-ranking)]
-     [:input.form-control.up-to-range-slider
+     [:input
       {:type "range"
        :min 100
        :max 2000
@@ -386,17 +385,17 @@
   (rf/dispatch [::players-handlers/load-players])
 
   (fn []
-    [:div.league_detail__root
+    [:div
      [navbar]
      [show-error]
-     [:div.section.players__form_container [game-form]]
-     [:div.section.players__stats
+     [:div [game-form]]
+     [:div
       [stats-component ::stats-specs/highest-ranking]
       [stats-component ::stats-specs/longest-streak]
       [stats-component ::stats-specs/highest-increase]
       [stats-component ::stats-specs/best-percents]]
 
-     [:div.section.vega__table [vega-outer]]
-     #_[:div.section.game__config [game-config]]
-     [:div.section.rankings__table [rankings-table]]
-     [:div.section.games__table [games-table]]]))
+     [:div [vega-outer]]
+     #_[:div [game-config]]
+     [:div [rankings-table]]
+     [:div [games-table]]]))
