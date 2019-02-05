@@ -302,14 +302,11 @@
 (defn navbar
   []
   (let [league @(rf/subscribe [::handlers/league])]
-    [:ul.navbar__root
-     [:li.navbar__element
-      [:a {:href "#"
-           :on-click #(accountant/navigate! (routes/path-for :league-list))}
-       "Home"]]
-     [:li.navbar__element
+    [:ul.navbar {:role "navigation"}
+     [:li.navbar-brand
       [:a.active {:href "#"} (:game_type league)]]
-     [:li.navbar__element.fork_me
+
+     [:li.navbar-burger.burger
       [:a {:href "http://github.com/AndreaCrotti/elo"}
        "Fork Me"]]]))
 
