@@ -56,15 +56,21 @@
         sorted-players (sort-by :name @players)]
 
     [:div
-     [:div
-      [:label "Player 1"]
-      [:div
+     [:div.field
+      [:label.label "Player 1"]
+      [:div.control
        [common-views/drop-down-players sorted-players ::handlers/p1 (:p1 @game)
-        {:caption "Name"}]
+        {:caption "Name"}]]]
 
+     [:div.field
+      [:label.label "Goals"]
+      [:div.control
        [common-views/drop-down points-range ::handlers/p1_points (:p1_points @game)
-        {:caption (translate :points)}]
+        {:caption (translate :points)}]]]
 
+     [:div.field
+      [:label.label "Team"]
+      [:div.control
        [:input.input
         {:type "text"
          :placeholder (str (translate :using) " Name")
@@ -170,7 +176,7 @@
       (let [up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
         [:div
          [:label "UP to game #"]
-         [:input
+         [:input.slider
           {:type "range"
            :min 0
            :max (count @games)
@@ -239,15 +245,15 @@
         active-players @(rf/subscribe [::players-handlers/active-players])
         filtered-rankings (filter #(active-players (:id %)) sorted-rankings)
         ;; last-changes @(rf/subscribe [::handlers/last-ranking-changes-by-player])
-        header [:tr
-                [:th hide-show-all]
-                [:th kill-revive-all]
-                [:th "position"]
-                [:th "player"]
-                [:th "ranking"]
-                #_[:th "last change"]
-                [:th "form"]
-                [:th "# W/L/D"]]]
+        header [:tr.tr
+                [:th.th hide-show-all]
+                [:th.th kill-revive-all]
+                [:th.th "position"]
+                [:th.th "player"]
+                [:th.th "ranking"]
+                #_[:th.th "last change"]
+                [:th.th "form"]
+                [:th.th "# W/L/D"]]]
 
     [:div
      [game-slider]
