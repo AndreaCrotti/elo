@@ -7,7 +7,7 @@
                                    caption ""
                                    display-fn identity}}]
 
-  (into [:select.select.is-focused
+  (into [:select.select.is-focused.is-fullwidth
          {:on-change (utils/set-val dispatch-key) :value (or value "")}]
 
         (cons [:option {:disabled true

@@ -84,7 +84,7 @@
         {:caption "Name"}]]]
 
      [:div.field
-      [:label.label "Score"]
+      [:label.label "Goals"]
       [:div.control
        [common-views/drop-down points-range ::handlers/p2_points (:p2_points @game)
         {:caption (translate :points)}]]]
@@ -104,7 +104,7 @@
        [date-range-picker]]]
 
      [:div.field
-      [:button.button.is-primary
+      [:button.button.is-primary.is-fullwidth
        (enable-button @valid-game?
                       {:on-click (if @valid-game?
                                    #(rf/dispatch [::handlers/add-game])
