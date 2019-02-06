@@ -31,7 +31,7 @@
   (log/info "Starting Nrepl"))
 
 (def config
-  {:server/figwheel {:build "elo"}
+  {:server/figwheel {:build "dev"}
    :server/jetty {:port 3335}
    :server/nrepl {}})
 
