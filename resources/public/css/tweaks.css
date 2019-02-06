@@ -1,3 +1,8 @@
 .vega-embed {
   padding-right: 200px;
 }
+
+th {
+  text-transform: uppercase;
+  font-weight: bold;
+}
