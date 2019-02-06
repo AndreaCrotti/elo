@@ -182,7 +182,7 @@
 
     (fn []
       (let [up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
-        [:div
+        [:div.section
          [:label.label "UP to game #"]
          [:div.columns
           [:input.slider.column
