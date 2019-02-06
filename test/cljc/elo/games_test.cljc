@@ -25,12 +25,10 @@
           rankings (sut/get-rankings [g1] [p1 p2])]
 
       (is (= [{:id (:id p1)
-               :ranking 1516.0
-               :ngames 1}
+               :ranking 1516.0}
 
               {:id (:id p2)
-               :ranking 1484.0
-               :ngames 1}]
+               :ranking 1484.0}]
 
              rankings)))))
 

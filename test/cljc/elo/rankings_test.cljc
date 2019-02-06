@@ -40,11 +40,9 @@
 (deftest rankings-test
   (testing "Simple rankings computation"
     (is (= [{:id "edbebe16-dd1c-414e-b9b2-4c9e38d1928e"
-             :ranking 1516.0
-             :ngames 1}
+             :ranking 1516.0}
             {:id "fb6f256d-514b-479f-a70a-63987946de15"
-             :ranking 1484.0
-             :ngames 1}]
+             :ranking 1484.0}]
 
            (sut/rankings games players
                          1
