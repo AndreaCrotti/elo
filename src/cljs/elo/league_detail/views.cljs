@@ -283,7 +283,7 @@
                    [:i.fas.fa-eye
                     {:title (str "Show " player-name)
                      :on-click #(rf/dispatch [::handlers/show id])}]
-                          
+
                    [:i.fas.fa-eye-slash
                     {:title (str "Hide " player-name)
                      :on-click #(rf/dispatch [::handlers/hide id])}])]]
