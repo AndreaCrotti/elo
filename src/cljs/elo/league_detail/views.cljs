@@ -247,7 +247,6 @@
                 [:th "player"]
                 [:th "ranking"]
                 #_[:th "last change"]
-                [:th "# of games"]
                 [:th "form"]
                 [:th "# W/L/D"]]]
 
@@ -256,7 +255,7 @@
      [:table.table.table-striped
       [:thead header]
       (into [:tbody]
-            (for [[idx {:keys [id ranking ngames]}] (enumerate filtered-rankings)
+            (for [[idx {:keys [id ranking]}] (enumerate filtered-rankings)
                   :let [{:keys [wins losses draws]} (get stats id)
                         player-name (get name-mapping id)
                         hidden? @(rf/subscribe [::handlers/hidden? id])
@@ -289,7 +288,6 @@
                #_[:td
                   (when (contains? last-changes player-name)
                     (int (get last-changes player-name)))]
-               [:td ngames]
                [:td (results-boxes (get results id))]
                [:td (str wins "/" losses "/" draws)]]))]]))
 
