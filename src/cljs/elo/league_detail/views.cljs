@@ -402,7 +402,7 @@
 
   (fn []
     [:div
-     [navbar]
+     #_[navbar]
      [:div.section [game-form]]
      [:div.columns.section
       [stats-component ::stats-specs/highest-ranking]
