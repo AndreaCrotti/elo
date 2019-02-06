@@ -81,7 +81,6 @@
 
   :test2junit-output-dir ~(or (System/getenv "CIRCLE_TEST_REPORTS") "target/test2junit")
 
-  :main elo.api
   :aot [elo.api]
 
   :uberjar-name "elo.jar"
