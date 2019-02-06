@@ -1,4 +1,4 @@
-:local = http://localhost:9502
+:local = http://localhost:3335
 :staging = http://fifa-elo-staging.herokuapp.com
 :prod = http://fifa-elo.herokuapp.com
 :league_id = 2a469e1b-2830-44b2-8a5e-08906e4558b0
