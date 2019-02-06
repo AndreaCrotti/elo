@@ -1,17 +1,31 @@
 (ns user
-  (:require [integrant.repl :as ig]
+  (:require [clojure.spec.alpha :as s]
             [expound.alpha :as e]
-            [clojure.spec.alpha :as s]
-            [elo.dev :as dev]))
+            [integrant.repl :as ir]
+            [integrant.core :as ig]
+            [ring.adapter.jetty :as jetty]
+            [elo.api :as api]
+            [ring.middleware.reload :refer [wrap-reload]]
+            [taoensso.timbre :as log]))
 
 (def printer
   (e/custom-printer {:show-valid-values? true
                      :print-specs? true
                      :theme :figwheel-theme}))
 
+(defmethod ig/halt-key! :server/jetty
+  [_ server]
+  (.stop server))
+
+(defmethod ig/init-key :server/jetty
+  [_ {:keys [port]}]
+  (log/info "Starting Jetty")
+  (jetty/run-jetty (wrap-reload #'api/app)
+                   {:join? false
+                    :port port}))
+
 (alter-var-root #'s/*explain-out* (constantly printer))
 
 (s/check-asserts true)
 
-(ig/set-prep! (constantly (select-keys dev/config
-                                       [:server/jetty])))
+(ir/set-prep! (constantly {:server/figwheel {:build "dev"}}))

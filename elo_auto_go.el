@@ -12,7 +12,7 @@
        (fa-clojure-repl?)
        (equal (projectile-project-name) "elo"))
 
-    (insert "(ig/go)")
+    (insert "(ir/go)")
     (cider-repl-return)))
 
 (add-hook 'cider-connected-hook 'fa-start-finops-admin)
