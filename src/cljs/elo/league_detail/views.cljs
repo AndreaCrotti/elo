@@ -146,7 +146,8 @@
             filtered-games (if @show-all? rev-games (take 10 rev-games))]
 
         [:div
-         [:button {:on-click #(rf/dispatch [::handlers/toggle-show-all])}
+         [:button.button
+          {:on-click #(rf/dispatch [::handlers/toggle-show-all])}
           (if @show-all? "SHOW LAST 10" "SHOW ALL")]
 
          [:table.table.is-striped
@@ -182,19 +183,20 @@
     (fn []
       (let [up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
         [:div
-         [:label "UP to game #"]
-         [:input.slider.is-fullwidth
-          {:type "range"
-           :min 0
-           :max (count @games)
-           :value up-to-current
-           :class "slider"
-           :on-change (utils/set-val ::handlers/up-to-games js/parseInt)}]
+         [:label.label "UP to game #"]
+         [:div.columns
+          [:input.slider.column
+           {:type "range"
+            :min 0
+            :max (count @games)
+            :value up-to-current
+            :class "slider"
+            :on-change (utils/set-val ::handlers/up-to-games js/parseInt)}]
 
-         [:span
-          [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
-          [:span up-to-current]
-          [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]))))
+          [:span.column
+           [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
+           [:span up-to-current]
+           [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]]))))
 
 (def hide-show-all
   [:span.hide__show__all
@@ -366,7 +368,7 @@
       (fn []
         ;; make the assertion actually blow up as well
         (s/assert (s/conform kw @stats) (s/explain kw @stats))
-        [:div
+        [:div.column
          [stats-table
           fields
           (take 3 (filter #(@active-player-names (:player %)) @stats))
@@ -401,15 +403,14 @@
   (fn []
     [:div
      [navbar]
-     [show-error]
-     [:div [game-form]]
-     [:div
+     [:div.section [game-form]]
+     [:div.columns.section
       [stats-component ::stats-specs/highest-ranking]
       [stats-component ::stats-specs/longest-streak]
       [stats-component ::stats-specs/highest-increase]
       [stats-component ::stats-specs/best-percents]]
 
-     [:div [vega-outer]]
+     [:div.section [vega-outer]]
      #_[:div [game-config]]
-     [:div [rankings-table]]
-     [:div [games-table]]]))
+     [:div.section [rankings-table]]
+     [:div.section [games-table]]]))
