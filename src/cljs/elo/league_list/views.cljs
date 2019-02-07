@@ -11,27 +11,24 @@
 (defn sign-up-button
   "Generate a generic sign up button"
   [provider]
-  [:a {:class (classes ["btn" "btn-social" "btn-block" (str "btn-" provider)])
-       :href "/oauth2/github"}
-
+  [:a {:href "/oauth2/github"}
    [:span {:class (classes ["fa" (str "fa-" provider)])}]
    (str "Sign in with " (string/capitalize provider))])
 
 (defn sign-in-block
   []
-  [:div.sign-up__block
+  [:div
    [sign-up-button "github"]])
 
 (defn league-picker
   []
   (let [leagues (rf/subscribe [::handlers/leagues])]
-    [:div.league__content
-     [:div.language_pick "Pick your League"]
-     (into [:ul.list-group]
+    [:div
+     (into [:ol]
            (for [{:keys [id name game_type]} @leagues]
-             [:li.list-group-item
-              [:img.league_logo_small {:width "30px"
-                                       :src (config/logo (keyword game_type))}]
+             [:li.league__name
+              [:img {:width "70px"
+                     :src (config/logo (keyword game_type))}]
 
               [:a {:href "#"
                    :on-click #(accountant/navigate!
@@ -44,8 +41,8 @@
     (fn []
       (if @authenticated?
         (do (rf/dispatch [::handlers/load-leagues])
-            [:div.league_list__root
+            [:div.section
              [league-picker]])
 
-        [:div.auth__root
+        [:div
          [sign-in-block]]))))

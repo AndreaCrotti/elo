@@ -44,7 +44,8 @@
    :league {}
    :league_id nil
    :show-all? false
-   :game-config shared/default-game-config})
+   :game-config shared/default-game-config
+   :show-graph false})
 
 (defn- truncate-games
   [games up-to-games]
@@ -59,6 +60,12 @@
 (defn uuid->name
   [name-mapping vals]
   (medley/map-keys #(get name-mapping %) vals))
+
+(rf/reg-sub ::show-graph (getter [:show-graph]))
+
+(rf/reg-event-db ::toggle-graph
+                 (fn [db _]
+                   (common/update-in* db page [:show-graph] not)))
 
 (rf/reg-sub ::rankings
             :<- [::games-live-players]

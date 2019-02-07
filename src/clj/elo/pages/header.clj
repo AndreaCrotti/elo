@@ -39,6 +39,11 @@
            :integrity "sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
            :crossorigin "anonymous"}]
 
+   [:link {:rel "stylesheet"
+           :href "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.css"
+           :integrity "sha256-dMQYvN6BU9M4mHK94P22cZ4dPGTSGOVP41yVXvXatws="
+           :crossorigin "anonymous"}]
+
    [:script {:src "https://cdn.jsdelivr.net/npm/vega@4.2.0"}]
    [:script {:src "https://cdn.jsdelivr.net/npm/vega-lite@3.0.0-rc6"}]
    [:script {:src "https://cdn.jsdelivr.net/npm/vega-embed@3.19.2"}]
@@ -50,22 +55,10 @@
    [:link {:href (cache-buster "/css/react-datepicker.css")
            :rel "stylesheet"
            :type "text/css"}]
-   [:link {:href (cache-buster "/css/bootstrap-social.css")
+
+   [:link {:href (cache-buster "/css/tweaks.css")
            :rel "stylesheet"
            :type "text/css"}]
-
-   [:link {:href (cache-buster "/css/screen.css")
-           :rel "stylesheet"
-           :type "text/css"}]
-
-   [:link {:href (cache-buster "/css/playground.css")
-           :rel "stylesheet"
-           :type "text/css"}]
-
-   [:link {:rel "stylesheet"
-           :href "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-           :integrity "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-           :crossorigin "anonymous"}]
 
    (when (value :google-analytics-tag)
      [:script {:async true

@@ -28,7 +28,6 @@
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-mock "0.3.2"]
 
-                 [garden "1.3.6"]
                  [buddy "2.0.0"]
                  [buddy/buddy-auth "2.1.0"]
                  [migratus "1.0.9"]
@@ -75,8 +74,7 @@
             [lein-cljsbuild "1.1.4"]
             [jonase/eastwood "0.3.3"]
             [lein-ring "0.9.7"]
-            [test2junit "1.3.3"]
-            [lein-garden "0.2.8"]]
+            [test2junit "1.3.3"]]
 
   ;; :pedantic? :warn
 
@@ -94,13 +92,6 @@
              ;; can use environ here??
              :db ~(get (System/getenv) "DATABASE_URL")}
 
-  :garden {:builds [{:id "screen"
-                     :source-paths ["src/clj" "src/cljc"]
-                     :stylesheet elo.css/screen
-                     :compiler {:output-to "resources/public/css/screen.css"
-                                :pretty-print? true}}]}
-
-
   :aliases {"test-cljs" ["doo" "phantom" "test" "once"]
             "fig" ["trampoline" "run" "-m" "figwheel.main"]
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]}
@@ -113,7 +104,6 @@
   {:uberjar {:hooks []
              :source-paths ["src/clj" "src/cljc"]
              :prep-tasks [["compile"]
-                          ["garden" "once"]
                           ["cljsbuild" "once" "min"]]
              :omit-source true
              :aot [elo.api]

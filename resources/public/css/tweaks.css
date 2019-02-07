@@ -1,0 +1,34 @@
+.vega-embed {
+  padding-right: 200px;
+}
+
+th {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.result__element {
+  color: white;
+  margin: 2px;
+  font-weight: bolder;
+}
+
+.result__w {
+  background-color: green;
+}
+
+.result__d {
+  background-color: black;
+}
+
+.result__l {
+  background-color: red;
+}
+
+.league__name {
+  font-size: 2rem;
+}
+
+.add_game_button {
+  font-size: 1.2rem;
+}
