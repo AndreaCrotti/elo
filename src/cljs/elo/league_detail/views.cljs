@@ -338,8 +338,8 @@
        [:button.button
         {:on-click #(rf/dispatch [::handlers/toggle-graph])}
         (if @show-graph
-          "Hide graph"
-          "Show graph")]
+          "HIDE GRAPH"
+          "SHOW GRAPH")]
 
        (if @show-graph
          [vega/vega-inner @history @rankings-domain])])))
