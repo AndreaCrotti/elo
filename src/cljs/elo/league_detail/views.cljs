@@ -104,7 +104,7 @@
        [date-range-picker]]]
 
      [:div.field
-      [:button.button.is-primary.is-fullwidth
+      [:button.button.is-danger.is-fullwidth.add_game_button
        (enable-button @valid-game?
                       {:on-click (if @valid-game?
                                    #(rf/dispatch [::handlers/add-game])
