@@ -56,7 +56,7 @@
   (let [players (map #(gen/player-gen {:name %}) players-names)]
     (doseq [n (range (count players))]
       (let [pl (nth players n)]
-        (log/debug "Creating player number" n pl)
+        #_(log/debug "Creating player number" n pl)
         (db/add-player-full! (assoc pl
                                     :id (:id pl)
                                     :email "sample-email"
@@ -71,7 +71,7 @@
                         games)]
 
     (doseq [game games-full]
-      (log/debug game)
+      #_(log/debug game)
       (db/add-game! game))))
 
 (defn seed
