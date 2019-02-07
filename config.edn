@@ -6,7 +6,6 @@
                          :default #env DATABASE_URL}
 
  :slack-hook #env SLACK_HOOK
- :google-analytics-tag #env GOOGLE_ANALYTICS_TAG
  :admin-password #or [#env ADMIN_PASSWORD "secret"]
  ;; this is only defined when running on Heroku
  :git-commit #env HEROKU_SLUG_COMMIT
@@ -14,4 +13,9 @@
  ;; auth related config
  :auth-enabled #boolean #or [#env AUTH_ENABLED "false"]
  :github-client-id #env GITHUB_CLIENT_ID
- :github-client-secret #env GITHUB_CLIENT_SECRET}
+ :github-client-secret #env GITHUB_CLIENT_SECRET
+
+ ;; monitoring 
+ :google-analytics-tag #env GOOGLE_ANALYTICS_TAG
+ :newrelic-license-key #env NEWRELIC_LICENSE_KEY
+ :newrelic-application-id #env NEWRELIC_APPLICATION_ID}
