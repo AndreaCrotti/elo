@@ -24,11 +24,10 @@
   []
   (let [leagues (rf/subscribe [::handlers/leagues])]
     [:div
-     [:div "Pick your League"]
-     (into [:ul]
+     (into [:ol]
            (for [{:keys [id name game_type]} @leagues]
-             [:li
-              [:img {:width "30px"
+             [:li.league__name
+              [:img {:width "70px"
                      :src (config/logo (keyword game_type))}]
 
               [:a {:href "#"
@@ -42,7 +41,7 @@
     (fn []
       (if @authenticated?
         (do (rf/dispatch [::handlers/load-leagues])
-            [:div
+            [:div.section
              [league-picker]])
 
         [:div

@@ -24,3 +24,7 @@ th {
 .result__l {
   background-color: red;
 }
+
+.league__name {
+  font-size: 2rem;
+}
