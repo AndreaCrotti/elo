@@ -1,6 +1,6 @@
 (ns elo.pages.header
   (:require [clojure.data.json :as json]
-            [elo.config :refer [value config]]
+            [elo.config :refer [value load-config]]
             [elo.pages.utils :refer [cache-buster]]
             [elo.pages.common :refer [ga-js]]))
 
@@ -15,7 +15,7 @@
 
 (defn global-client-side-config
   []
-  (-> config
+  (-> (load-config)
       (select-keys [:newrelic-license-key :newrelic-application-id])
       (json/write-str)))
 
