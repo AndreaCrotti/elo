@@ -1,5 +1,5 @@
 (ns elo.pages.header
-  (:require [elo.config :refer [config]]
+  (:require [elo.config :refer [value]]
             [elo.pages.utils :refer [cache-buster]]
             [elo.pages.common :refer [ga-js]]))
 
@@ -56,10 +56,10 @@
            :integrity "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
            :crossorigin "anonymous"}]
 
-   (when (:google-analytics-tag config)
+   (when (value :google-analytics-tag)
      [:script {:async true
                :src (format "https://www.googletagmanager.com/gtag/js?id=%s"
-                            (:google-analytics-tag config))}])
+                            (value :google-analytics-tag))}])
 
-   (when (:google-analytics-tag config)
+   (when (value :google-analytics-tag)
      (ga-js))])

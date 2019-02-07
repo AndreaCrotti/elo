@@ -4,7 +4,7 @@
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [clojure.string :as str]
             [elo.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
-            [elo.config :refer [config]]
+            [elo.config :refer [value]]
             [elo.db :as db]
             [elo.games :as games]
             [elo.notifications :as notifications]
@@ -152,7 +152,7 @@
   [request]
   (let [github-token (get-github-token request)]
     (resp/ok
-     {:authenticated (or (not (:auth-enabled config))
+     {:authenticated (or (not (value :auth-enabled))
                          (some? github-token))
       :token github-token})))
 
@@ -185,7 +185,7 @@
   (fn [request]
     (if (or (not (str/starts-with? (:uri request) "/api"))
             (some? (get-github-token request))
-            (not (:auth-enabled config)))
+            (not (value :auth-enabled)))
 
       (handler request)
       (resp/unauthorized "Can not access the given request"))))

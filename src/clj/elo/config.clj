@@ -12,3 +12,8 @@
     (aero/read-config "config.edn" {:profile profile})))
 
 (def config (load-config))
+
+(defn value
+  [k]
+  {:pre [(contains? config k)]}
+  (get config k))

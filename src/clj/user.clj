@@ -5,6 +5,7 @@
             [integrant.core :as ig]
             [ring.adapter.jetty :as jetty]
             [elo.api :as api]
+            [elo.config :as c]
             [ring.middleware.reload :refer [wrap-reload]]
             [taoensso.timbre :as log]))
 
@@ -28,4 +29,4 @@
 
 (s/check-asserts true)
 
-(ir/set-prep! (constantly {:server/figwheel {:build "dev"}}))
+(ir/set-prep! (constantly {:server/jetty {:port (c/value :port)}}))
