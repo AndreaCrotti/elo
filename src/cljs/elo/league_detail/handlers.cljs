@@ -32,8 +32,7 @@
    :p2_points ""
    :p1_using ""
    :p2_using ""
-   :played_at (js/moment)
-   :show-graph false})
+   :played_at (js/moment)})
 
 (def default-db
   {:games []
@@ -45,7 +44,8 @@
    :league {}
    :league_id nil
    :show-all? false
-   :game-config shared/default-game-config})
+   :game-config shared/default-game-config
+   :show-graph false})
 
 (defn- truncate-games
   [games up-to-games]
