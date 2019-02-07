@@ -82,8 +82,6 @@
 
   :test2junit-output-dir ~(or (System/getenv "CIRCLE_TEST_REPORTS") "target/test2junit")
 
-  :aot [elo.api]
-
   :uberjar-name "elo.jar"
   :min-lein-version "2.7.1"
   :source-paths ["src/cljc" "src/clj" "src/cljs"]
@@ -127,6 +125,7 @@
    :dev
    {:ring {:stacktrace-middleware prone.middleware/wrap-exceptions}
     :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
+    :source-paths ["src/cljc" "src/clj" "src/cljs" "dev"]
     :plugins [[lein-doo "0.1.10"]
               [migratus-lein "0.5.0"]
               [lein-cloverage "1.0.13"]
