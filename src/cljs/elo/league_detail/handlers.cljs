@@ -32,7 +32,8 @@
    :p2_points ""
    :p1_using ""
    :p2_using ""
-   :played_at (js/moment)})
+   :played_at (js/moment)
+   :show-graph false})
 
 (def default-db
   {:games []
@@ -59,6 +60,12 @@
 (defn uuid->name
   [name-mapping vals]
   (medley/map-keys #(get name-mapping %) vals))
+
+(rf/reg-sub ::show-graph (getter [:show-graph]))
+
+(rf/reg-event-db ::toggle-graph
+                 (fn [db _]
+                   (common/update-in* db page [:show-graph] not)))
 
 (rf/reg-sub ::rankings
             :<- [::games-live-players]

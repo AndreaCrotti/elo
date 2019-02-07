@@ -330,9 +330,19 @@
 (defn vega-outer
   []
   (let [history (rf/subscribe [::handlers/rankings-history-vega])
-        rankings-domain (rf/subscribe [::handlers/rankings-domain])]
+        rankings-domain (rf/subscribe [::handlers/rankings-domain])
+        show-graph (rf/subscribe [::handlers/show-graph])]
+
     (fn []
-      [vega/vega-inner @history @rankings-domain])))
+      [:div
+       [:button.button
+        {:on-click #(rf/dispatch [::handlers/toggle-graph])}
+        (if @show-graph
+          "Hide graph"
+          "Show graph")]
+
+       (if @show-graph
+         [vega/vega-inner @history @rankings-domain])])))
 
 (defn- percent
   [v]
