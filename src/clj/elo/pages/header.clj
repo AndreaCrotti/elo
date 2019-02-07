@@ -1,5 +1,6 @@
 (ns elo.pages.header
-  (:require [elo.config :refer [value]]
+  (:require [clojure.data.json :as json]
+            [elo.config :refer [value load-config]]
             [elo.pages.utils :refer [cache-buster]]
             [elo.pages.common :refer [ga-js]]))
 
@@ -12,10 +13,20 @@
   {:titles "Monoton"
    :smaller-titles "Lilita+One"})
 
+(defn global-client-side-config
+  []
+  (-> (load-config)
+      (select-keys [:newrelic-license-key :newrelic-application-id])
+      (json/write-str)))
+
 (defn gen-header
   [title]
   [:head [:meta {:charset "utf-8"
                  :description "FIFA championship little helper"}]
+
+   [:script (format "window['cfg']=%s" (global-client-side-config))]
+
+   [:script {:src "/js/newrelic.js"}]
 
    [:title title]
 
