@@ -90,7 +90,7 @@
         {:caption (translate :points)}]]]
 
      [:div.field
-      :label.label "Team"
+      [:label.label "Team"]
       [:div.control
        [:input.input
         {:type "text"
