@@ -23,14 +23,13 @@
                        {:cause e#
                         :get-next-exception (.getNextException e#)})))))
 
-(defn wrap-test-db-call
-  [test-fn]
-  (jdbc/with-db-transaction [tx
-                             (or (env :database-url) test-db)
-                             {:isolation :repeatable-read}]
-    (jdbc/db-set-rollback-only! tx)
-    (with-redefs [db-spec (fn [] tx)]
-      (test-fn))))
+(defmacro with-rollback
+  [& body]
+  `(jdbc/with-db-transaction [tx# test-db
+                              {:isolation :repeatable-read}]
+    (jdbc/db-set-rollback-only! tx#)
+    (with-redefs [db-spec (fn [] tx#)]
+      ~@body)))
 
 (defn- load-games-sql
   [league-id]

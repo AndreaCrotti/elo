@@ -5,8 +5,6 @@
             [clojure.test :refer [deftest testing is use-fixtures]]
             [byf.db :as db]))
 
-(use-fixtures :each db/wrap-test-db-call)
-
 (defn- count-table
   [t]
   (:count
@@ -17,6 +15,7 @@
 
 (deftest seed-test
   (testing "Seeding should work with no errors on write"
-    (sut/seed (sut/create-league!))
-    (let [games-count (count-table :game)]
-      (is (= sut/n-games games-count)))))
+    (db/with-rollback
+      (sut/seed (sut/create-league!))
+      (let [games-count (count-table :game)]
+        (is (= sut/n-games games-count))))))

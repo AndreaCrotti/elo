@@ -23,13 +23,10 @@
                     :name "Sample League"})
 
 (defn- setup-league-fixture
-  [test-fn]
+  []
   (db/add-company! {:id sample-company-id
                     :name "Sample Company"})
-  (db/add-league! sample-league)
-  (test-fn))
-
-(use-fixtures :each (join-fixtures [db/wrap-test-db-call setup-league-fixture]))
+  (db/add-league! sample-league))
 
 (defn- make-admin-header
   []
@@ -72,77 +69,86 @@
 
 (deftest store-results-test
   (testing "Should be able to store results"
-    (let [[p1-id p2-id] (store-users!)
-          sample {:p1 (:player-id p1-id)
-                  :p2 (:player-id p2-id)
-                  :league_id sample-league-id
-                  :p1_using "RM"
-                  :p2_using "Juv"
-                  :p1_points 3
-                  :p2_points 0
-                  :played_at "2018-08-29+01:0021:50:32"}
+    (db/with-rollback
+      (setup-league-fixture)
+      (let [[p1-id p2-id] (store-users!)
+            sample {:p1 (:player-id p1-id)
+                    :p2 (:player-id p2-id)
+                    :league_id sample-league-id
+                    :p1_using "RM"
+                    :p2_using "Juv"
+                    :p1_points 3
+                    :p2_points 0
+                    :played_at "2018-08-29+01:0021:50:32"}
 
-          _ (write-api-call "/add-game" sample)
-          games (read-api-call "/api/games" {:league_id sample-league-id})
+            _ (write-api-call "/add-game" sample)
+            games (read-api-call "/api/games" {:league_id sample-league-id})
 
-          desired {"p1" (str (:player-id p1-id))
-                   "p1_points" 3,
-                   "p1_using" "RM",
-                   "p2" (str (:player-id p2-id)),
-                   "p2_points" 0,
-                   "p2_using" "Juv"
-                   "played_at" "2018-08-29T20:50:00Z"}]
+            desired {"p1" (str (:player-id p1-id))
+                     "p1_points" 3,
+                     "p1_using" "RM",
+                     "p2" (str (:player-id p2-id)),
+                     "p2_points" 0,
+                     "p2_using" "Juv"
+                     "played_at" "2018-08-29T20:50:00Z"}]
 
-      (is (= 200 (:status games)))
+        (is (= 200 (:status games)))
 
-      (is (= desired
-             (select-keys
-              (first (json/read-str (:body games)))
-              ["p1_points" "p2_points"
-               "p1" "p2"
-               "p1_using" "p2_using"
-               "played_at"]))))))
+        (is (= desired
+               (select-keys
+                (first (json/read-str (:body games)))
+                ["p1_points" "p2_points"
+                 "p1" "p2"
+                 "p1_using" "p2_using"
+                 "played_at"])))))))
 
 (deftest get-players-test
   (testing "Fetching all the existing players"
-    (db/add-player-full! {:name "john"
-                          :email "mail"
-                          :league_id sample-league-id})
+    (db/with-rollback
+      (setup-league-fixture)
+      (db/add-player-full! {:name "john"
+                            :email "mail"
+                            :league_id sample-league-id})
 
-    (let [response (read-api-call "/api/players" {:league_id sample-league-id})
-          body-obj (json/read-str (:body response))]
-      (is (= 200 (:status response)))
-      (is (= 1 (count body-obj)))
-      (is (true? (-> body-obj first (get "active")))))))
+      (let [response (read-api-call "/api/players" {:league_id sample-league-id})
+            body-obj (json/read-str (:body response))]
+        (is (= 200 (:status response)))
+        (is (= 1 (count body-obj)))
+        (is (true? (-> body-obj first (get "active"))))))))
 
 (deftest add-player-user-test
   (with-redefs [env (assoc env :admin-password "admin-password")]
     (testing "Add a new user without right user/password"
-      (let [user {:name "name" :email "email" :league_id sample-league-id}
-            response (write-api-call "/add-player" user)]
+      (db/with-rollback
+        (setup-league-fixture)
+        (let [user {:name "name" :email "email" :league_id sample-league-id}
+              response (write-api-call "/add-player" user)]
 
-        (is (= 401 (:status response)))
-        (is (empty? (db/load-players sample-league-id)))))
+          (is (= 401 (:status response)))
+          (is (empty? (db/load-players sample-league-id))))))
 
     (testing "Adds a new user with the right user/password"
       (with-redefs [authenticated? (fn [r] true)]
-        (let [params {:name "name" :email "email" :league_id sample-league-id}
-              ;;TODO: use the write helper also here
-              response (sut/app (mock/header
-                                 (authenticated-req (mock/request :post "/api/add-player" params))
-                                 "Authorization" (make-admin-header)))]
+        (db/with-rollback
+          (setup-league-fixture)
+          (let [params {:name "name" :email "email" :league_id sample-league-id}
+                ;;TODO: use the write helper also here
+                response (sut/app (mock/header
+                                   (authenticated-req (mock/request :post "/api/add-player" params))
+                                   "Authorization" (make-admin-header)))]
 
-          (is (= 201 (:status response))))))))
+            (is (= 201 (:status response)))))))))
 
 (deftest get-league-test
   (testing "Get a league by the id"
-    (let [response (read-api-call "/api/league" {:league_id sample-league-id})]
-
-      (is (= 200 (:status response)))
-      (is (= (str sample-league-id)
-             (-> (:body response)
-                 json/read-str
-                 (get "id")))))))
+    (db/with-rollback
+      (setup-league-fixture)
+      (let [response (read-api-call "/api/league" {:league_id sample-league-id})]
+        (is (= 200 (:status response)))
+        (is (= (str sample-league-id)
+               (-> (:body response)
+                   json/read-str
+                   (get "id"))))))))
 
 (deftest auth-test
   (testing "Should be able to check if a user is already authenticated"
