@@ -14,6 +14,7 @@
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 (def form-size 7)
+(def vega-last-n-games 20)
 
 (defn- translate
   [term]
@@ -331,18 +332,18 @@
   []
   (let [history (rf/subscribe [::handlers/rankings-history-vega])
         rankings-domain (rf/subscribe [::handlers/rankings-domain])
-        show-graph (rf/subscribe [::handlers/show-graph])]
+        vega-show-all (rf/subscribe [::handlers/vega-show-all])]
 
     (fn []
-      [:div
-       [:button.button
-        {:on-click #(rf/dispatch [::handlers/toggle-graph])}
-        (if @show-graph
-          "HIDE GRAPH"
-          "SHOW GRAPH")]
+      (let [hs (if @vega-show-all @history (take-last vega-last-n-games @history))]
+        [:div
+         [:button.button
+          {:on-click #(rf/dispatch [::handlers/toggle-vega-show-all])}
+          (if @vega-show-all
+            "SHOW LAST 10"
+            "SHOW ALL")]
 
-       (if @show-graph
-         [vega/vega-inner @history @rankings-domain])])))
+         [vega/vega-inner hs @rankings-domain]]))))
 
 (defn- percent
   [v]
