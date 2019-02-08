@@ -322,18 +322,18 @@
   []
   (let [history (rf/subscribe [::handlers/rankings-history-vega])
         rankings-domain (rf/subscribe [::handlers/rankings-domain])
-        vega-show-all (rf/subscribe [::handlers/vega-show-all])]
+        show-graph (rf/subscribe [::handlers/show-graph])]
 
     (fn []
-      (let [hs (if @vega-show-all @history (take-last vega-last-n-games @history))]
-        [:div
-         [:button.button
-          {:on-click #(rf/dispatch [::handlers/toggle-vega-show-all])}
-          (if @vega-show-all
-            "show last 10"
-            "show all")]
+      [:div
+       [:button.button
+        {:on-click #(rf/dispatch [::handlers/toggle-graph])}
+        (if @show-graph
+          "hide graph"
+          "show graph")]
 
-         [vega/vega-inner hs @rankings-domain]]))))
+       (when @show-graph
+         [vega/vega-inner @history @rankings-domain])])))
 
 (defn- percent
   [v]
