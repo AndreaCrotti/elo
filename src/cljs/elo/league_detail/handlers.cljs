@@ -67,6 +67,11 @@
                  (fn [db _]
                    (common/update-in* db page [:show-graph] not)))
 
+(rf/reg-sub ::vega-show-all (getter [:vega-show-all]))
+(rf/reg-event-db ::toggle-vega-show-all
+                 (fn [db _]
+                   (common/update-in* db page [:vega-show-all] not)))
+
 (rf/reg-sub ::rankings
             :<- [::games-live-players]
             :<- [::players-handlers/players]
