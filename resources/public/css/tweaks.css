@@ -36,3 +36,8 @@ th {
 button {
   text-transform: uppercase;
 }
+
+.chevrons {
+  font-weight: bolder;
+  font-size: 1.6em;
+}

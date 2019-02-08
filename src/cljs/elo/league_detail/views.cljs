@@ -192,7 +192,7 @@
             :class "slider"
             :on-change (utils/set-val ::handlers/up-to-games js/parseInt)}]
 
-          [:span.column
+          [:span.column.chevrons
            [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
            [:span up-to-current]
            [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]]))))
