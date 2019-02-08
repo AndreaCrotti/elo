@@ -92,7 +92,8 @@
              :db ~(get (System/getenv) "DATABASE_URL")}
 
   :aliases {"fig" ["trampoline" "run" "-m" "figwheel.main"]
-            "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]}
+            "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]
+            "cljs-prod" ["run" "-m" "figwheel.main" "--build-once" "prod"]}
 
   :cljfmt {:indents {for-all [[:block 1]]
                      fdef [[:block 1]]
