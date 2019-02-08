@@ -62,7 +62,6 @@
                  [cljs-ajax "0.8.0"]
                  [cljs-http "0.1.45"]
                  [com.taoensso/timbre "4.10.0"]
-                 [re-com "2.3.0"]
                  [bidi "2.1.4"]
                  [com.cemerick/url "0.1.1"]
                  [venantius/accountant "0.2.4"]
@@ -81,7 +80,7 @@
   :test2junit-output-dir ~(or (System/getenv "CIRCLE_TEST_REPORTS") "target/test2junit")
 
   :uberjar-name "byf.jar"
-  :min-lein-version "2.7.1"
+  :min-lein-version "2.8.3"
   :source-paths ["src/cljc" "src/clj" "src/cljs"]
   :test-paths ["test/clj" "test/cljc"]
   :ring {:handler byf.api/app}
@@ -92,8 +91,7 @@
              ;; can use environ here??
              :db ~(get (System/getenv) "DATABASE_URL")}
 
-  :aliases {"test-cljs" ["doo" "phantom" "test" "once"]
-            "fig" ["trampoline" "run" "-m" "figwheel.main"]
+  :aliases {"fig" ["trampoline" "run" "-m" "figwheel.main"]
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]}
 
   :cljfmt {:indents {for-all [[:block 1]]
@@ -116,8 +114,7 @@
    {:ring {:stacktrace-middleware prone.middleware/wrap-exceptions}
     :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
     :source-paths ["src/cljc" "src/clj" "src/cljs" "dev"]
-    :plugins [[lein-doo "0.1.10"]
-              [migratus-lein "0.5.0"]
+    :plugins [[migratus-lein "0.5.0"]
               [lein-cloverage "1.0.13"]
               [lein-cljfmt "0.5.7"]]
 
@@ -127,7 +124,6 @@
                    [cider/piggieback "0.3.10"]
                    [venantius/yagni "0.1.6"]
                    [day8.re-frame/re-frame-10x "0.3.6"]
-                   #_[day8.re-frame/tracing "0.5.1"]
                    [com.bhauman/rebel-readline-cljs "0.1.4"]
                    ;; dependencies for the reloaded workflow
                    [reloaded.repl "0.2.4"]
