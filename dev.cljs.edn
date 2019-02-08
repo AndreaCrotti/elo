@@ -2,6 +2,6 @@
   :auto-testing true
   :log-level :debug}
 
-{:main elo.core
+{:main byf.core
  :preloads [figwheel.core figwheel.main figwheel.repl.preload day8.re-frame-10x.preload]
  :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}}

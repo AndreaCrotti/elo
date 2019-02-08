@@ -1,2 +1,2 @@
-web: java $JVM_OPTS -cp target/elo.jar clojure.main -m elo.api
+web: java $JVM_OPTS -cp target/byf.jar clojure.main -m byf.api
 # release: lein migratus migrate

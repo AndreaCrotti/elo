@@ -1,9 +1,9 @@
 (ns data-migrations.migrate-users
-  (:require [elo.db :as db]
+  (:require [byf.db :as db]
             [honeysql.core :as sql]
             [honeysql.helpers :as h]
             [clojure.java.jdbc :as jdbc]
-            [elo.generators :as gen])
+            [byf.generators :as gen])
 
   (:import (java.util UUID)))
 
