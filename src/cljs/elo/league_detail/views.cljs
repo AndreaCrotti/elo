@@ -107,9 +107,7 @@
      [:div.field
       [:button.button.is-danger.is-fullwidth.add_game_button
        (enable-button @valid-game?
-                      {:on-click (if @valid-game?
-                                   #(rf/dispatch [::handlers/add-game])
-                                   #(rf/dispatch [::handlers/show-notification]))})
+                      {:on-click #(rf/dispatch [::handlers/add-game])})
 
        "Add Game"]]]))
 
@@ -412,7 +410,7 @@
   (rf/dispatch [::handlers/load-league])
   (rf/dispatch [::handlers/load-games])
   (rf/dispatch [::players-handlers/load-players])
-  
+
   (fn []
     [:div
      [:div.section [game-form]]

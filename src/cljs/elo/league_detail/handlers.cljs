@@ -264,7 +264,8 @@
   [extra-signal]
   (fn [{:keys [db]} _]
     {:db db
-     :dispatch-n (cons extra-signal [[::players-handlers/load-players]
+     :dispatch-n (cons extra-signal [[::show-notification]
+                                     [::players-handlers/load-players]
                                      [::load-games]])}))
 
 (rf/reg-event-fx ::add-game-success (reload-fn-gen [::reset-game]))
