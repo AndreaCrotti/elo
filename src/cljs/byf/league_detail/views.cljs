@@ -407,6 +407,7 @@
 
 (defn root
   []
+  ;; this is kind of an antipattern for reframe
   (rf/dispatch [::handlers/load-league])
   (rf/dispatch [::handlers/load-games])
   (rf/dispatch [::players-handlers/load-players])
