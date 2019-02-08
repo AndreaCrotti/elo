@@ -55,9 +55,9 @@ jobs:
             - clj-deps-{{ checksum "project.clj" }}
 
       - run: lein migratus migrate
-      - run: lein test2junit
+      - run: lein eftest
       - store_test_results:
-          path: target/test2junit
+          path: target/junit.xml
 
   coverage_clj:
     <<: *base_docker

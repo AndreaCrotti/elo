@@ -72,12 +72,7 @@
             [migratus-lein "0.5.0"]
             [lein-cljsbuild "1.1.4"]
             [jonase/eastwood "0.3.3"]
-            [lein-ring "0.9.7"]
-            [test2junit "1.3.3"]]
-
-  ;; :pedantic? :warn
-
-  :test2junit-output-dir ~(or (System/getenv "CIRCLE_TEST_REPORTS") "target/test2junit")
+            [lein-ring "0.9.7"]]
 
   :uberjar-name "byf.jar"
   :min-lein-version "2.8.3"
@@ -94,6 +89,10 @@
   :aliases {"fig" ["trampoline" "run" "-m" "figwheel.main"]
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]
             "cljs-prod" ["run" "-m" "figwheel.main" "--build-once" "prod"]}
+
+  :eftest {:multithread? false
+           :report eftest.report.junit/report
+           :report-to-file "target/junit.xml"}
 
   :cljfmt {:indents {for-all [[:block 1]]
                      fdef [[:block 1]]
@@ -117,6 +116,7 @@
     :source-paths ["src/cljc" "src/clj" "src/cljs" "dev"]
     :plugins [[migratus-lein "0.5.0"]
               [lein-cloverage "1.0.13"]
+              [lein-eftest "0.5.4"]
               [lein-cljfmt "0.5.7"]]
 
     :env {:environment :dev}
