@@ -1,5 +1,5 @@
 (defproject byf "0.1.0-SNAPSHOT"
-  :description "Compute Fifa players Elo score"
+  :description "Manage leagues of players uisng the Elo algorithm"
   :url "http://github.com/AndreaCrotti/elo"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
