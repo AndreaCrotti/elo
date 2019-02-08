@@ -45,6 +45,7 @@
    :league_id nil
    :show-all? false
    :game-config shared/default-game-config
+   :show-notification false
    :show-graph false})
 
 (defn- truncate-games
@@ -60,6 +61,15 @@
 (defn uuid->name
   [name-mapping vals]
   (medley/map-keys #(get name-mapping %) vals))
+
+(rf/reg-sub ::show-notification (getter [:show-notification]))
+(rf/reg-event-db ::show-notification
+                 (fn [db _]
+                   (common/assoc-in* db page [:show-notification] true)))
+
+(rf/reg-event-db ::clear-notification
+                 (fn [db _]
+                   (common/assoc-in* db page [:show-notification] false)))
 
 (rf/reg-sub ::show-graph (getter [:show-graph]))
 
@@ -253,11 +263,9 @@
 (defn- reload-fn-gen
   [extra-signal]
   (fn [{:keys [db]} _]
-    (js/alert "Thanks you, results and rankings are updated immediately")
-    ;;TODO: would be nice to trigger a transaction of the interested
-    ;;area of the page to make it clear what was actually changed
     {:db db
-     :dispatch-n (cons extra-signal [[::players-handlers/load-players]
+     :dispatch-n (cons extra-signal [[::show-notification]
+                                     [::players-handlers/load-players]
                                      [::load-games]])}))
 
 (rf/reg-event-fx ::add-game-success (reload-fn-gen [::reset-game]))

@@ -107,9 +107,7 @@
      [:div.field
       [:button.button.is-danger.is-fullwidth.add_game_button
        (enable-button @valid-game?
-                      {:on-click (if @valid-game?
-                                   #(rf/dispatch [::handlers/add-game])
-                                   #(js/alert "Invalid results or incomplete form"))})
+                      {:on-click #(rf/dispatch [::handlers/add-game])})
 
        "Add Game"]]]))
 
@@ -149,7 +147,7 @@
         [:div
          [:button.button
           {:on-click #(rf/dispatch [::handlers/toggle-show-all])}
-          (if @show-all? "SHOW LAST 10" "SHOW ALL")]
+          (if @show-all? "show last 10" "show all")]
 
          [:table.table.is-striped
           [:thead header]
@@ -309,14 +307,6 @@
                [:td.td (results-boxes (get results id))]
                [:td.td (str wins "/" losses "/" draws)]]))]]))
 
-(defn show-error
-  []
-  (let [error @(rf/subscribe [::handlers/error])]
-    (when error
-      [:div
-       [:pre (:status-text error)]
-       [:pre (:original-text error)]])))
-
 (defn navbar
   []
   (let [league @(rf/subscribe [::handlers/league])]
@@ -340,8 +330,8 @@
          [:button.button
           {:on-click #(rf/dispatch [::handlers/toggle-vega-show-all])}
           (if @vega-show-all
-            "SHOW LAST 10"
-            "SHOW ALL")]
+            "show last 10"
+            "show all")]
 
          [vega/vega-inner hs @rankings-domain]]))))
 
@@ -405,6 +395,16 @@
        :value initial-ranking
        :on-change (utils/set-val ::handlers/initial-ranking js/parseInt)}]]))
 
+(defn notifications
+  []
+  (let [show-notification (rf/subscribe [::handlers/show-notification])]
+    (fn []
+      (when @show-notification
+        [:div.notification.is-success
+         [:button.delete
+          {:on-click #(rf/dispatch [::handlers/clear-notification])}]
+         "Thank you, your game has been recorded"]))))
+
 (defn root
   []
   (rf/dispatch [::handlers/load-league])
@@ -413,8 +413,8 @@
 
   (fn []
     [:div
-     #_[navbar]
      [:div.section [game-form]]
+     [notifications]
      [:div.columns.section
       [stats-component ::stats-specs/highest-ranking]
       [stats-component ::stats-specs/longest-streak]
