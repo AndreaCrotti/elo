@@ -193,9 +193,19 @@
             :on-change (utils/set-val ::handlers/up-to-games js/parseInt)}]
 
           [:span.column.chevrons
-           [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
+           [:i.fas.fa-chevron-double-left
+            {:on-click #(rf/dispatch [::handlers/first-game])}]
+
+           [:i.fas.fa-chevron-left
+            {:on-click #(rf/dispatch [::handlers/prev-game])}]
+
            [:span up-to-current]
-           [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]]))))
+
+           [:i.fas.fa-chevron-right
+            {:on-click #(rf/dispatch [::handlers/next-game])}]
+
+           [:i.fas.fa-chevron-double-right
+            {:on-click #(rf/dispatch [::handlers/last-game])}]]]]))))
 
 (def hide-show-all
   [:span.hide__show__all

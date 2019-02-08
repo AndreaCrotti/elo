@@ -167,6 +167,15 @@
 (rf/reg-event-db ::prev-game prev-game)
 (rf/reg-event-db ::next-game next-game)
 
+(rf/reg-event-db ::first-game
+                 (fn [db _]
+                   (common/update-in* db page [:up-to-games] 0)))
+
+(rf/reg-event-db ::last-game
+                 (fn [db _]
+                   (let [games @(rf/subscribe [::games-live-players])]
+                     (common/update-in* db page [:up-to-games] (count games)))))
+
 (rf/reg-sub ::error (getter [:error]))
 
 (rf/reg-sub ::game-type
