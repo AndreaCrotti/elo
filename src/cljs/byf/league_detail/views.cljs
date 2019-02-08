@@ -15,6 +15,7 @@
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 (def form-size 7)
 (def vega-last-n-games 20)
+(def stats-length 3)
 
 (defn- translate
   [term]
@@ -372,7 +373,9 @@
         [:div.column
          [stats-table
           fields
-          (take 3 (filter #(@active-player-names (:player %)) @stats))
+          (take stats-length
+                (filter #(@active-player-names (:player %)) @stats))
+
           (or transform {})]]))))
 
 (defn game-config
