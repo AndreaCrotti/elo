@@ -1,8 +1,8 @@
 {:port #or [#env PORT 3335]
- :database-url #profile {:test "postgres://elo@localhost:5445/elo_test"
+ :database-url #profile {:test "postgres://byf@localhost:5445/byf_test"
                          ;; I should still be able to override the
                          ;; dev DATABASE_URL in dev if I wanted to?
-                         :dev "postgres://elo@localhost:5445/elo"
+                         :dev "postgres://byf@localhost:5445/byf"
                          :default #env DATABASE_URL}
 
  :slack-hook #env SLACK_HOOK

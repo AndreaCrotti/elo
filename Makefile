@@ -8,22 +8,22 @@ prod:
 	git push -v --force heroku-prod HEAD:master
 
 pg:
-	pgcli postgres://elo@localhost:5445/elo
+	pgcli postgres://byf@localhost:5445/byf
 
 pg-test:
-	pgcli postgres://elo@localhost:5445/elo_test
+	pgcli postgres://byf@localhost:5445/byf_test
 
 backup:
 	heroku pg:backups:capture -a fifa-elo
 
 migrate-local:
-	DATABASE_URL=postgres://elo@localhost:5445/elo lein migratus migrate
+	DATABASE_URL=postgres://byf@localhost:5445/byf lein migratus migrate
 
 migrate-test:
-	DATABASE_URL=postgres://elo@localhost:5445/elo_test lein migratus migrate
+	DATABASE_URL=postgres://byf@localhost:5445/byf_test lein migratus migrate
 
 db-graph:
-	eralchemy -i postgres://elo@localhost:5445/elo -o elo_db.png
+	eralchemy -i postgres://byf@localhost:5445/byf -o byf_db.png
 
 
 test:

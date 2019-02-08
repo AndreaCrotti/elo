@@ -1,3 +1,3 @@
-# Introduction to elo
+# Introduction to byf
 
 TODO: write [great documentation](http://jacobian.org/writing/what-to-write/)

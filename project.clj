@@ -1,4 +1,4 @@
-(defproject elo "0.1.0-SNAPSHOT"
+(defproject byf "0.1.0-SNAPSHOT"
   :description "Compute Fifa players Elo score"
   :url "http://github.com/AndreaCrotti/elo"
   :license {:name "Eclipse Public License"
@@ -80,11 +80,11 @@
 
   :test2junit-output-dir ~(or (System/getenv "CIRCLE_TEST_REPORTS") "target/test2junit")
 
-  :uberjar-name "elo.jar"
+  :uberjar-name "byf.jar"
   :min-lein-version "2.7.1"
   :source-paths ["src/cljc" "src/clj" "src/cljs"]
   :test-paths ["test/clj" "test/cljc"]
-  :ring {:handler elo.api/app}
+  :ring {:handler byf.api/app}
   :resource-paths ["config" "resources"]
 
   :migratus {:store :database
@@ -106,8 +106,8 @@
              :prep-tasks [["compile"]
                           ["cljsbuild" "once" "min"]]
              :omit-source true
-             :aot [elo.api]
-             :main elo.api}
+             :aot [byf.api]
+             :main byf.api}
 
    :test
    {:env {:environment :test}}
@@ -136,9 +136,9 @@
   {:builds
    [{:id "min"
      :source-paths ["src/cljs" "src/cljc"]
-     :compiler     {:main elo.core
+     :compiler     {:main byf.core
                     :output-to "resources/public/cljs-out/dev-main.js"
-                    :asset-path "resources/public/cljs-out/elo"
+                    :asset-path "resources/public/cljs-out/byf"
                     :optimizations :simple
                     :closure-defines {goog.DEBUG true}
                     :pretty-print true}}]})

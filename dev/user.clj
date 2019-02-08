@@ -4,8 +4,8 @@
             [integrant.repl :as ir]
             [integrant.core :as ig]
             [ring.adapter.jetty :as jetty]
-            [elo.api :as api]
-            [elo.config :as c]
+            [byf.api :as api]
+            [byf.config :as c]
             [ring.middleware.reload :refer [wrap-reload]]
             [taoensso.timbre :as log]))
 

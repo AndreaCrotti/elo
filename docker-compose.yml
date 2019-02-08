@@ -7,5 +7,5 @@ services:
 
     environment:
       - POSTGRES_PASSWORD=
-      - POSTGRES_DB=elo
-      - POSTGRES_USER=elo
+      - POSTGRES_DB=byf
+      - POSTGRES_USER=byf
