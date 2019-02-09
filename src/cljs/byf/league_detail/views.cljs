@@ -400,7 +400,8 @@
 
 (defn notifications
   []
-  (let [show-notification (rf/subscribe [::handlers/show-notification])]
+  (let [show-notification (rf/subscribe [::handlers/show-notification])
+        loading? (rf/subscribe [::handlers/loading?])]
     (fn []
       (when @show-notification
         [:div.notification.is-success
@@ -415,22 +416,20 @@
   (rf/dispatch [::handlers/load-games])
   (rf/dispatch [::players-handlers/load-players])
 
-  
-  (fn []
-    (let [is-loaded? (rf/subscribe [::handlers/is-loaded?])]
-      [:div
-       [:div.section [game-form]]
-       [notifications]
+  (let [loading? (rf/subscribe [::handlers/loading?])]
+    (fn []
+      (if (not @loading?)
+        [:div.is-loading "Loading..."]
+        [:div.content
+         [:div.section [game-form]]
+         [notifications]
+         [:div.inner
+          [:div.columns.section
+           [stats-component ::stats-specs/highest-ranking]
+           [stats-component ::stats-specs/longest-streak]
+           [stats-component ::stats-specs/highest-increase]
+           [stats-component ::stats-specs/best-percents]]
 
-       (if (not @is-loaded?)
-           [:div "Loading..."]
-           [:div.inner
-            [:div.columns.section
-             [stats-component ::stats-specs/highest-ranking]
-             [stats-component ::stats-specs/longest-streak]
-             [stats-component ::stats-specs/highest-increase]
-             [stats-component ::stats-specs/best-percents]]
-
-            [:div.section [vega-outer]]
-            [:div.section [rankings-table]]
-            [:div.section [games-table]]])])))
+          [:div.section [vega-outer]]
+          [:div.section [rankings-table]]
+          [:div.section [games-table]]]]))))
