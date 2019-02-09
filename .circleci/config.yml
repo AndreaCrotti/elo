@@ -55,7 +55,7 @@ jobs:
             - clj-deps-{{ checksum "project.clj" }}
 
       - run: lein migratus migrate
-      - run: lein eftest
+      - run: lein with-profile circleci eftest
       - store_test_results:
           path: target/junit.xml
 

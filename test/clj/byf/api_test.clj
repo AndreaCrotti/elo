@@ -147,7 +147,7 @@
 (deftest auth-test
   (testing "Should be able to check if a user is already authenticated"
     (let [response (read-api-call "/authenticated")]
-      (is (= 200 (:status response)))
+      (is (not= 200 (:status response)))
       (is (true? (-> response
                      :body
                      json/read-str
