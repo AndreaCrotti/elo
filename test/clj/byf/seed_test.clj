@@ -2,7 +2,7 @@
   (:require [byf.seed :as sut]
             [honeysql.core :as sql]
             [clojure.java.jdbc :as jdbc]
-            [clojure.test :refer [deftest testing is use-fixtures]]
+            [clojure.test :refer [deftest testing is]]
             [byf.db :as db]))
 
 (defn- count-table

@@ -22,16 +22,19 @@
   `(try
      ~callback
      (catch java.sql.BatchUpdateException e#
-       (throw (ex-info (str "BatchUpdateException: " (.getMessage (.getNextException e#)))
-                       {:cause e#
-                        :get-next-exception (.getNextException e#)})))))
+       (throw (ex-info
+               (str "BatchUpdateException: "
+                    (.getMessage (.getNextException e#)))
+
+               {:cause e#
+                :get-next-exception (.getNextException e#)})))))
 
 (defmacro with-rollback
   [& body]
   `(jdbc/with-db-transaction [tx# test-db
                               {:isolation :repeatable-read}]
      (jdbc/db-set-rollback-only! tx#)
-     (with-redefs [db-spec (fn [] tx#)]
+     (with-redefs [db-spec (constantly tx#)]
        ~@body)))
 
 (defn- load-games-sql
