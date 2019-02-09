@@ -46,6 +46,7 @@
    :show-all? false
    :game-config shared/default-game-config
    :show-notification false
+   :loading? false
    :show-graph false})
 
 (defn- truncate-games
@@ -72,6 +73,7 @@
                    (common/assoc-in* db page [:show-notification] false)))
 
 (rf/reg-sub ::show-graph (getter [:show-graph]))
+(rf/reg-sub ::loading? (getter [:loading?]))
 
 (rf/reg-event-db ::toggle-graph
                  (fn [db _]
@@ -267,7 +269,12 @@
 
 (rf/reg-event-db ::failed (common/failed page))
 
-(rf/reg-event-db ::load-games-success (setter [:games]))
+(rf/reg-event-db ::load-games-success
+                 (fn [db [_ games]]
+                   (-> db
+                       (common/assoc-in* page [:games] games)
+                       (common/assoc-in* page [:loading?] true))))
+
 (rf/reg-event-db ::load-league-success (setter [:league]))
 
 (rf/reg-event-fx ::load-games (common/loader page "/api/games" ::load-games-success))
@@ -280,8 +287,9 @@
    :played_at
    #(.format % shared/timestamp-format)))
 
-(rf/reg-event-fx ::add-game (common/writer page "/api/add-game"
-                                           ::add-game-success game-transform))
+(rf/reg-event-fx ::add-game
+                 (common/writer page "/api/add-game"
+                                ::add-game-success game-transform))
 
 (rf/reg-sub ::hidden? (sets/in? page :hidden-players))
 

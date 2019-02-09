@@ -15,6 +15,7 @@
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 (def form-size 7)
 (def vega-last-n-games 20)
+(def stats-length 3)
 
 (defn- translate
   [term]
@@ -372,7 +373,9 @@
         [:div.column
          [stats-table
           fields
-          (take 3 (filter #(@active-player-names (:player %)) @stats))
+          (take stats-length
+                (filter #(@active-player-names (:player %)) @stats))
+
           (or transform {})]]))))
 
 (defn game-config
@@ -397,7 +400,8 @@
 
 (defn notifications
   []
-  (let [show-notification (rf/subscribe [::handlers/show-notification])]
+  (let [show-notification (rf/subscribe [::handlers/show-notification])
+        loading? (rf/subscribe [::handlers/loading?])]
     (fn []
       (when @show-notification
         [:div.notification.is-success
@@ -407,21 +411,25 @@
 
 (defn root
   []
+  ;; this is kind of an antipattern for reframe
   (rf/dispatch [::handlers/load-league])
   (rf/dispatch [::handlers/load-games])
   (rf/dispatch [::players-handlers/load-players])
 
-  (fn []
-    [:div
-     [:div.section [game-form]]
-     [notifications]
-     [:div.columns.section
-      [stats-component ::stats-specs/highest-ranking]
-      [stats-component ::stats-specs/longest-streak]
-      [stats-component ::stats-specs/highest-increase]
-      [stats-component ::stats-specs/best-percents]]
+  (let [loading? (rf/subscribe [::handlers/loading?])]
+    (fn []
+      (if (not @loading?)
+        [:div.is-loading "Loading..."]
+        [:div.content
+         [:div.section [game-form]]
+         [notifications]
+         [:div.inner
+          [:div.columns.section
+           [stats-component ::stats-specs/highest-ranking]
+           [stats-component ::stats-specs/longest-streak]
+           [stats-component ::stats-specs/highest-increase]
+           [stats-component ::stats-specs/best-percents]]
 
-     [:div.section [vega-outer]]
-     #_[:div [game-config]]
-     [:div.section [rankings-table]]
-     [:div.section [games-table]]]))
+          [:div.section [vega-outer]]
+          [:div.section [rankings-table]]
+          [:div.section [games-table]]]]))))
