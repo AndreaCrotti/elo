@@ -60,6 +60,10 @@
            :rel "stylesheet"
            :type "text/css"}]
 
+   [:link {:href (cache-buster "/css/spinner.css")
+           :rel "stylesheet"
+           :type "text/css"}]
+
    (when (value :google-analytics-tag)
      [:script {:async true
                :src (format "https://www.googletagmanager.com/gtag/js?id=%s"

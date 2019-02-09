@@ -419,7 +419,7 @@
   (let [loading? (rf/subscribe [::handlers/loading?])]
     (fn []
       (if (not @loading?)
-        [:div.is-loading "Loading..."]
+        [:div.loading]
         [:div.content
          [:div.section [game-form]]
          [notifications]
