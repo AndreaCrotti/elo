@@ -46,7 +46,7 @@
    :show-all? false
    :game-config shared/default-game-config
    :show-notification false
-   :is-loading? true
+   :is-loaded? false
    :show-graph false})
 
 (defn- truncate-games
@@ -55,8 +55,7 @@
     (take up-to-games games)
     games))
 
-(rf/reg-sub ::is-loading? (getter [:is-loading?]))
-
+(rf/reg-sub ::is-loaded? (getter [:is-loaded?]))
 (rf/reg-sub ::game-config (getter [:game-config]))
 (rf/reg-event-db ::k (setter [:game-config :k]))
 (rf/reg-event-db ::initial-ranking (setter [:game-config :initial-ranking]))
@@ -274,7 +273,7 @@
                  (fn [db [_ games]]
                    (-> db
                        (common/assoc-in* page [:games] games)
-                       (common/assoc-in* page [:is-loading?] false))))
+                       (common/assoc-in* page [:is-loaded?] true))))
 
 (rf/reg-event-db ::load-league-success (setter [:league]))
 

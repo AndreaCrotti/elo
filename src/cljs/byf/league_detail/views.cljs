@@ -408,7 +408,6 @@
           {:on-click #(rf/dispatch [::handlers/clear-notification])}]
          "Thank you, your game has been recorded"]))))
 
-
 (defn root
   []
   ;; this is kind of an antipattern for reframe
@@ -416,20 +415,22 @@
   (rf/dispatch [::handlers/load-games])
   (rf/dispatch [::players-handlers/load-players])
 
-  (let [is-loading? (rf/subscribe [::handlers/is-loading?])]
-    (fn []
+  
+  (fn []
+    (let [is-loaded? (rf/subscribe [::handlers/is-loaded?])]
       [:div
        [:div.section [game-form]]
        [notifications]
-       (if @is-loading?
-         [:div "Loading..."]
-         [:div.inner
-          [:div.columns.section
-           [stats-component ::stats-specs/highest-ranking]
-           [stats-component ::stats-specs/longest-streak]
-           [stats-component ::stats-specs/highest-increase]
-           [stats-component ::stats-specs/best-percents]]
 
-          [:div.section [vega-outer]]
-          [:div.section [rankings-table]]
-          [:div.section [games-table]]])])))
+       (if (not @is-loaded?)
+           [:div "Loading..."]
+           [:div.inner
+            [:div.columns.section
+             [stats-component ::stats-specs/highest-ranking]
+             [stats-component ::stats-specs/longest-streak]
+             [stats-component ::stats-specs/highest-increase]
+             [stats-component ::stats-specs/best-percents]]
+
+            [:div.section [vega-outer]]
+            [:div.section [rankings-table]]
+            [:div.section [games-table]]])])))
