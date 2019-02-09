@@ -3,7 +3,7 @@
             [buddy.core.codecs :refer [bytes->str]]
             [buddy.core.codecs.base64 :as b64]
             [clojure.data.json :as json]
-            [clojure.test :refer [deftest is testing use-fixtures join-fixtures]]
+            [clojure.test :refer [deftest is testing use-fixtures]]
             [byf.api :as sut]
             [byf.db :as db]
             [environ.core :refer [env]]
@@ -27,6 +27,10 @@
   (db/add-company! {:id sample-company-id
                     :name "Sample Company"})
   (db/add-league! sample-league))
+
+(use-fixtures :once (fn [t]
+                      (setup-league-fixture)
+                      (t)))
 
 (defn- make-admin-header
   []
@@ -70,7 +74,6 @@
 (deftest store-results-test
   (testing "Should be able to store results"
     (db/with-rollback
-      (setup-league-fixture)
       (let [[p1-id p2-id] (store-users!)
             sample {:p1 (:player-id p1-id)
                     :p2 (:player-id p2-id)
@@ -105,7 +108,6 @@
 (deftest get-players-test
   (testing "Fetching all the existing players"
     (db/with-rollback
-      (setup-league-fixture)
       (db/add-player-full! {:name "john"
                             :email "mail"
                             :league_id sample-league-id})
@@ -120,7 +122,6 @@
   (with-redefs [env (assoc env :admin-password "admin-password")]
     (testing "Add a new user without right user/password"
       (db/with-rollback
-        (setup-league-fixture)
         (let [user {:name "name" :email "email" :league_id sample-league-id}
               response (write-api-call "/add-player" user)]
 
@@ -130,7 +131,6 @@
     (testing "Adds a new user with the right user/password"
       (with-redefs [authenticated? (fn [r] true)]
         (db/with-rollback
-          (setup-league-fixture)
           (let [params {:name "name" :email "email" :league_id sample-league-id}
                 ;;TODO: use the write helper also here
                 response (sut/app (mock/header
@@ -142,7 +142,6 @@
 (deftest get-league-test
   (testing "Get a league by the id"
     (db/with-rollback
-      (setup-league-fixture)
       (let [response (read-api-call "/api/league" {:league_id sample-league-id})]
         (is (= 200 (:status response)))
         (is (= (str sample-league-id)
