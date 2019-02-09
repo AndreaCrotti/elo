@@ -15,7 +15,7 @@
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 (def form-size 7)
 (def vega-last-n-games 20)
-(def stats-length 3)
+(def stats-length 5)
 
 (defn- translate
   [term]
