@@ -1,0 +1,19 @@
+^{:auto-testing false}
+
+{:main byf.core
+ :asset-path "/env/prod"
+ :output-to "resources/public/env/prod.js"
+ :output-dir "resources/public/env/prod"
+ :optimizations :advanced
+ :compiler-stats true
+ :parallel-build true
+ ;; File is moved to target/prod.js.map during uberjar
+ ;; until such a time as we can secure it as resource file
+ :source-map "resources/public/env/prod.js.map"
+ :pretty-print false
+ :verbose false
+ :closure-defines {goog.DEBUG false}
+ :infer-externs true
+ :aot-cache true
+ :elide-asserts true
+ :warnings {:fn-deprecated false}}
