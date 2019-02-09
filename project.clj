@@ -87,6 +87,7 @@
              :db ~(get (System/getenv) "DATABASE_URL")}
 
   :aliases {"fig" ["trampoline" "run" "-m" "figwheel.main"]
+            "kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]
             "cljs-prod" ["run" "-m" "figwheel.main" "--build-once" "prod"]}
 
@@ -96,8 +97,10 @@
 
   :eftest {:multithread? false}
 
+  
   :profiles
-  {:circleci
+  {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-389"]]}
+   :circleci
    {:eftest {:multithread? false
              :report eftest.report.junit/report
              :report-to-file "target/junit"}}
