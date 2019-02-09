@@ -11,12 +11,12 @@ references:
     docker:
       - image: circleci/clojure:lein-2.8.1
         environment:
-          DATABASE_URL: postgres://elo@localhost/elo_test
+          DATABASE_URL: postgres://byf@localhost/byf_test
 
       - image: postgres:10.4
         environment:
-          POSTGRES_USER: elo
-          POSTGRES_DB: elo_test
+          POSTGRES_USER: byf
+          POSTGRES_DB: byf_test
 
 jobs:
   dependencies:
@@ -48,6 +48,9 @@ jobs:
   
   test_clj:
     <<: *base_docker
+    environment:
+      TEST_DB_URL: postgres://byf@localhost/byf_test
+
     steps:
       - checkout
       - restore_cache:

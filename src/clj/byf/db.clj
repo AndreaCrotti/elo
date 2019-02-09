@@ -8,7 +8,10 @@
 
   (:import (java.util UUID)))
 
-(def test-db "postgres://byf@localhost:5445/byf_test")
+(def test-db
+  (:or
+   (:test-db-url env)
+   "postgres://byf@localhost:5445/byf_test"))
 
 (defn db-spec
   []
@@ -27,9 +30,9 @@
   [& body]
   `(jdbc/with-db-transaction [tx# test-db
                               {:isolation :repeatable-read}]
-    (jdbc/db-set-rollback-only! tx#)
-    (with-redefs [db-spec (fn [] tx#)]
-      ~@body)))
+     (jdbc/db-set-rollback-only! tx#)
+     (with-redefs [db-spec (fn [] tx#)]
+       ~@body)))
 
 (defn- load-games-sql
   [league-id]
