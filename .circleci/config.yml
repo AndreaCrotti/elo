@@ -12,6 +12,7 @@ references:
       - image: circleci/clojure:lein-2.8.1
         environment:
           DATABASE_URL: postgres://byf@localhost/byf_test
+          TEST_DB_URL: postgres://byf@localhost/byf_test
 
       - image: postgres:10.4
         environment:
@@ -48,8 +49,6 @@ jobs:
   
   test_clj:
     <<: *base_docker
-    environment:
-      TEST_DB_URL: postgres://byf@localhost/byf_test
 
     steps:
       - checkout
