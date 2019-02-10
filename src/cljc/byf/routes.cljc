@@ -6,6 +6,7 @@
         ;;TODO: could redirect to "/leagues" instead ideally here
         "" :league-list
         "admin" :admin
+        "login" :login
         ["user/" :player-id] :player-detail}])
 
 (def path-for (partial bidi/path-for routes))

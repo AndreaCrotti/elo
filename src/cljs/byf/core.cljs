@@ -5,10 +5,11 @@
             [byf.league-detail.views :as league-detail-views]
             [byf.league-list.handlers :as league-list-handlers]
             [byf.league-list.views :as league-list-views]
+            [byf.auth.views :as auth-views]
             [byf.admin.views :as admin-views]
             [byf.admin.handlers :as admin-handlers]
             [byf.user.views :as user-views]
-            [byf.auth :as auth]
+            [byf.auth.handlers :as auth]
             [byf.routes :as routes]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
@@ -22,7 +23,8 @@
   {:league-detail league-detail-views/root
    :league-list league-list-views/root
    :admin admin-views/root
-   :player-detail user-views/root})
+   :player-detail user-views/root
+   :login auth-views/root})
 
 (defn- path-exists? [path]
   (boolean (routes/match-route path)))
