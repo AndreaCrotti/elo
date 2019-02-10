@@ -65,7 +65,9 @@
 
    "text/html"))
 
-(defn spa [request] (render-page (home/body request)))
+(defn spa
+  [request]
+  (render-page (home/body request)))
 
 (defn- get-league-id
   [request]
@@ -183,9 +185,9 @@
   [handler]
   ;; return 401 if the request is not authenticated properly
   (fn [request]
-    (if (or (not (str/starts-with? (:uri request) "/api"))
-            (some? (get-github-token request))
-            (not (value :auth-enabled)))
+    (if (or (not (value :auth-enabled))
+            (not (str/starts-with? (:uri request) "/api"))
+            (some? (get-github-token request)))
 
       (handler request)
       (resp/unauthorized "Can not access the given request"))))
