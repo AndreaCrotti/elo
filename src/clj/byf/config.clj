@@ -11,7 +11,6 @@
     (if (or (= :dev profile)
             (nil? @config))
       (reset! config (aero/read-config "config.edn" {:profile profile})))
-
     ;; if there is a `user.edn` file load that as well and merge it
     (if (.exists (java.io.File. "user.edn"))
       (merge @config (aero/read-config "user.edn"))
