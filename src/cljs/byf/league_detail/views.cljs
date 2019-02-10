@@ -146,7 +146,7 @@
             filtered-games (if @show-all? rev-games (take 10 rev-games))]
 
         [:div
-         [:button.button
+         [:button.button.is-fullwidth
           {:on-click #(rf/dispatch [::handlers/toggle-show-all])}
           (if @show-all? "show last 10" "show all")]
 
@@ -183,7 +183,6 @@
     (fn []
       (let [up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
         [:div.section
-         [:label.label "UP to game #"]
          [:div.columns
           [:input.slider.column
            {:type "range"
@@ -327,7 +326,7 @@
 
     (fn []
       [:div
-       [:button.button
+       [:button.button.is-fullwidth
         {:on-click #(rf/dispatch [::handlers/toggle-graph])}
         (if @show-graph
           "hide graph"
