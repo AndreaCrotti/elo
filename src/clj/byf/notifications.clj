@@ -1,9 +1,9 @@
 (ns byf.notifications
   (:require [clj-http.client :as http]
             [clojure.data.json :as json]
-            [environ.core :refer [env]]))
+            [byf.config :refer [value]]))
 
-(def slack-hook-url (:slack-hook env))
+(def slack-hook-url (value :slack-hook))
 
 (defn notify-slack
   [msg]

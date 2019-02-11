@@ -399,8 +399,7 @@
 
 (defn notifications
   []
-  (let [show-notification (rf/subscribe [::handlers/show-notification])
-        loading? (rf/subscribe [::handlers/loading?])]
+  (let [show-notification (rf/subscribe [::handlers/show-notification])]
     (fn []
       (when @show-notification
         [:div.notification.is-success

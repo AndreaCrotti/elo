@@ -1,15 +1,21 @@
 (ns byf.config
   (:require [environ.core :refer [env]]
-            [taoensso.timbre :as log]
             [aero.core :as aero]))
+
+(defonce config (atom nil))
 
 (defn load-config
   []
   (let [profile (:environment env)]
-    ;; failling on uberjar otherwise
-    #_(assert (some? profile) "Could not detect profile")
-    (log/info "loading configuration for profile " profile)
-    (aero/read-config "config.edn" {:profile profile})))
+    ;; the dev profile always reloads even `config.edn`
+    (if (or (= :dev profile)
+            (nil? @config))
+      (reset! config (aero/read-config "config.edn" {:profile profile})))
+
+    ;; if there is a `user.edn` file load that as well and merge it
+    (if (.exists (java.io.File. "user.edn"))
+      (merge @config (aero/read-config "user.edn"))
+      @config)))
 
 (defn value
   [k]

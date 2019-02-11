@@ -10,7 +10,6 @@
             [byf.notifications :as notifications]
             [byf.pages.home :as home]
             [byf.validate :as validate]
-            [environ.core :refer [env]]
             [hiccup.core :as hiccup]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :as r-def]
@@ -23,13 +22,7 @@
             [taoensso.timbre :as timbre :refer [log info debug]])
   (:import (java.util UUID)))
 
-(def ^:private default-port 3000)
-
 (def github-token-path [:oauth2/access-tokens :github :token])
-
-(defn- get-port
-  []
-  (Integer. (or (env :port) default-port)))
 
 (defn- as-json
   [response]
@@ -65,7 +58,9 @@
 
    "text/html"))
 
-(defn spa [request] (render-page (home/body request)))
+(defn spa
+  [request]
+  (render-page (home/body request)))
 
 (defn- get-league-id
   [request]
@@ -183,9 +178,9 @@
   [handler]
   ;; return 401 if the request is not authenticated properly
   (fn [request]
-    (if (or (not (str/starts-with? (:uri request) "/api"))
-            (some? (get-github-token request))
-            (not (value :auth-enabled)))
+    (if (or (not (value :auth-enabled))
+            (not (str/starts-with? (:uri request) "/api"))
+            (some? (get-github-token request)))
 
       (handler request)
       (resp/unauthorized "Can not access the given request"))))
@@ -217,4 +212,6 @@
       (wrap-oauth2 oauth2-config)))
 
 (defn -main [& args]
-  (jetty/run-jetty app {:port (get-port)}))
+  (jetty/run-jetty app {:port (-> :port
+                                  value
+                                  Integer/parseInt)}))
