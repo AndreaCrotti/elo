@@ -1,4 +1,4 @@
-(ns byf.html
+(ns byf.html-test
   (:require [clojure.test :refer [deftest testing is]]
             [byf.pages.home :as home]))
 
