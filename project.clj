@@ -123,11 +123,8 @@
 
     :dependencies [[binaryage/devtools "0.9.10"]
                    [cider/piggieback "0.3.10"]
-                   [venantius/yagni "0.1.6"]
                    [day8.re-frame/re-frame-10x "0.3.6"]
                    [com.bhauman/rebel-readline-cljs "0.1.4"]
-                   ;; dependencies for the reloaded workflow
-                   [reloaded.repl "0.2.4"]
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
   {:builds
