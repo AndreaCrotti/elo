@@ -137,7 +137,6 @@
 (deftest get-league-test
   (testing "Get a league by the id"
     (let [response (read-api-call "/api/league" {:league_id sample-league-id})]
-
       (is (= 200 (:status response)))
       (is (= (str sample-league-id)
              (-> (:body response)

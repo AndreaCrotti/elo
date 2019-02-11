@@ -174,16 +174,23 @@
 (def routes-handler
   (make-handler routes))
 
+
 (defn check-token
   [handler]
   ;; return 401 if the request is not authenticated properly
   (fn [request]
-    (if (or (not (value :auth-enabled))
-            (not (str/starts-with? (:uri request) "/api"))
-            (some? (get-github-token request)))
+    (let [token (get-github-token request)]
+      (if (or (not (value :auth-enabled))
+              (not (str/starts-with? (:uri request) "/api"))
+              (some? token))
 
-      (handler request)
-      (resp/unauthorized "Can not access the given request"))))
+        (let [response (handler request)]
+          (if (some? token)
+            (assoc response
+                   :cookies
+                   {"token" {:value token}})
+            response))
+        (resp/unauthorized "Can not access the given request")))))
 
 (defn log-request
   "Simple middleware to log all the requests"
