@@ -1,12 +1,11 @@
 (ns byf.auth
-  (:require [environ.core :refer [env]]
-            [byf.config :refer [value]]
+  (:require [byf.config :refer [value]]
             [buddy.auth :refer [authenticated? throw-unauthorized]]
             [buddy.auth.backends.httpbasic :refer [http-basic-backend]]))
 
 (defn admin-password
   []
-  (:admin-password env))
+  (value :admin-password))
 
 (defn authdata
   "All possible authenticated users"

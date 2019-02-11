@@ -1,5 +1,5 @@
 (ns byf.pages.utils
-  (:require [environ.core :refer [env]])
+  (:require [byf.config :refer [value]])
 
   (:import (java.util UUID)))
 
@@ -8,4 +8,4 @@
   ;; fallback to a random git sha when nothing is found
   (format "%s?git_sha=%s"
           path
-          (:heroku-slug-commit env (str (UUID/randomUUID)))))
+          (or (value :git-commit) (str (UUID/randomUUID)))))
