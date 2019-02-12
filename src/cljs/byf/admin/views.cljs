@@ -24,6 +24,7 @@
           :placeholder "John Smith"
           :on-change (utils/set-val ::handlers/name)}]
 
+
         [:input.input.is-fullwidth
          {:type "text"
           :value (:email @player)

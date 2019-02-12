@@ -1,13 +1,19 @@
 (ns byf.admin.handlers
   (:require [re-frame.core :as rf]
             [ajax.core :as ajax]
-            [byf.common.handlers :as common]))
+            [expound.alpha :as expound]
+            [byf.common.handlers :as common]
+            [clojure.spec.alpha :as s]))
 
 (def page ::page-id)
 
 (def getter (partial common/getter* page))
 
 (def setter (partial common/setter* page))
+
+(set! s/*explain-out* expound/printer)
+(s/check-asserts true)
+
 
 (def default-player
   {:name ""
@@ -18,9 +24,35 @@
   {:player default-player
    :leagues []})
 
-(rf/reg-event-db ::name (setter [:player :name]))
-(rf/reg-event-db ::email (setter [:player :email]))
-(rf/reg-event-db ::league (setter [:player :league_id]))
+(s/def ::name string?)
+(s/def ::email string?)
+(s/def ::league_id uuid?)
+
+;; a better spec for this??
+(s/def ::leagues seq?)
+(s/def ::player (s/keys :req-un [::name ::email ::league_id]))
+(s/def ::db (s/keys ::player ::leagues))
+
+(def check-spec-2
+  (rf/->interceptor
+   :id :validate
+   :after (fn [context]
+            (let [local-db (-> context :effects :db page)]
+              (js/console.log "Local db =" local-db
+                              (s/valid? ::db local-db))
+              (if (s/valid? ::db local-db)
+                context
+                (throw (ex-info (str "spec check failed: " (s/explain-str ::db local-db)) {})))))))
+
+(rf/reg-event-db ::name
+                 [check-spec-2]
+                 (setter [:player :name]))
+
+(rf/reg-event-db ::email
+                 (setter [:player :email]))
+
+(rf/reg-event-db ::league
+                 (setter [:player :league_id]))
 
 (rf/reg-sub ::league (getter [:league]))
 (rf/reg-sub ::leagues (getter [:leagues]))
