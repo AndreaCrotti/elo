@@ -10,8 +10,9 @@
             [byf.notifications :as notifications]
             [byf.pages.home :as home]
             [byf.validate :as validate]
+            [byf.system :as system]
             [hiccup.core :as hiccup]
-            [ring.adapter.jetty :as jetty]
+            [integrant.repl :as ir]
             [ring.middleware.defaults :as r-def]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
@@ -211,7 +212,9 @@
       log-request
       (wrap-oauth2 oauth2-config)))
 
+(def base-config
+  {:server/jetty {:port (value :port)
+                  :handler app}})
+
 (defn -main [& args]
-  (jetty/run-jetty app {:port (-> :port
-                                  value
-                                  Integer/parseInt)}))
+  (ir/set-prep! (constantly base-config)))
