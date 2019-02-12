@@ -11,31 +11,34 @@
         leagues (rf/subscribe [::handlers/leagues])]
 
     (fn []
-      [:div.add-player_form
+      [:div.section
        [:div
         [drop-down @leagues ::handlers/league (:league_id @player)
          :value-fn :id
          :display-fn :name]
 
-        [:input {:type "text"
-                 :value (:name @player)
-                 :name "name"
-                 :placeholder "John Smith"
-                 :on-change (utils/set-val ::handlers/name)}]
+        [:input.input.is-fullwidth
+         {:type "text"
+          :value (:name @player)
+          :name "name"
+          :placeholder "John Smith"
+          :on-change (utils/set-val ::handlers/name)}]
 
-        [:input {:type "text"
-                 :value (:email @player)
-                 :name "email"
-                 :placeholder "john.smith@email.com"
-                 :on-change (utils/set-val ::handlers/email)}]]
+        [:input.input.is-fullwidth
+         {:type "text"
+          :value (:email @player)
+          :name "email"
+          :placeholder "john.smith@email.com"
+          :on-change (utils/set-val ::handlers/email)}]]
 
        [:div
-        [:button {:type "button"
-                  :name "submit-game"
-                  :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-player? "disabled")])
-                  :on-click (if @valid-player?
-                              #(rf/dispatch [::handlers/add-player])
-                              #(js/alert "Fill up the form first"))}
+        [:button.button.is-primary.is-fullwidth
+         {:type "button"
+          :name "submit-game"
+          :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-player? "disabled")])
+          :on-click (if @valid-player?
+                      #(rf/dispatch [::handlers/add-player])
+                      #(js/alert "Fill up the form first"))}
 
          "Register New Player"]]])))
 
