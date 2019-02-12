@@ -14,7 +14,6 @@
 (set! s/*explain-out* expound/printer)
 (s/check-asserts true)
 
-
 (def default-player
   {:name ""
    :email ""
@@ -49,9 +48,11 @@
                  (setter [:player :name]))
 
 (rf/reg-event-db ::email
+                 [check-spec-2]
                  (setter [:player :email]))
 
 (rf/reg-event-db ::league
+                 [check-spec-2]
                  (setter [:player :league_id]))
 
 (rf/reg-sub ::league (getter [:league]))
