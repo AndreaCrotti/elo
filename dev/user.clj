@@ -29,4 +29,4 @@
 
 (s/check-asserts true)
 
-(ir/set-prep! (constantly {:server/jetty {:port (c/value :port)}}))
+(ir/set-prep! (constantly {:server/jetty {:port (-> :port c/value Integer/parseInt)}}))
