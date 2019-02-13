@@ -22,7 +22,7 @@
 
 (def basic-auth-backend
   ;; change the realm depending on the environment
-  (http-basic-backend {:realm "fifa-byf.herokuapp.com"
+  (http-basic-backend {:realm (value :realm)
                        :authfn authenticate}))
 
 (defmacro with-basic-auth

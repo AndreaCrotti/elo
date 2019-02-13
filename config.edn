@@ -6,6 +6,8 @@
                          :dev "postgres://byf@localhost:5445/byf"
                          :default #env DATABASE_URL}
 
+ :realm #or [#env REALM "localhost"]
+
  :slack-hook #env SLACK_HOOK
  :admin-password #or [#env ADMIN_PASSWORD "secret"]
  ;; this is only defined when running on Heroku
@@ -16,7 +18,7 @@
  :github-client-id #env GITHUB_CLIENT_ID
  :github-client-secret #env GITHUB_CLIENT_SECRET
 
- ;; monitoring 
+ ;; monitoring
  :google-analytics-tag #env GOOGLE_ANALYTICS_TAG
  :newrelic-license-key #env NEWRELIC_LICENSE_KEY
  :newrelic-application-id #env NEWRELIC_APPLICATION_ID}

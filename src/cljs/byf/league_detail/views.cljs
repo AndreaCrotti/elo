@@ -368,7 +368,7 @@
 
       (fn []
         ;; make the assertion actually blow up as well
-        (s/assert (s/conform kw @stats) (s/explain kw @stats))
+        (s/assert kw @stats)
         [:div.column
          [stats-table
           fields
