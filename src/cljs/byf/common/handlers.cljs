@@ -82,3 +82,21 @@
 (rf/reg-event-db :set-route-params
                  (fn [db [_ route-params]]
                    (assoc db :route-params route-params)))
+
+(defn ->interceptor
+  [page db-spec]
+  (rf/->interceptor
+   :id :validate
+   :after (fn [context]
+            (let [local-db (-> context :effects :db page)]
+              (if (s/valid? db-spec local-db)
+                context
+                (throw (ex-info (str "spec check failed: " (s/explain-str db-spec local-db)) {})))))))
+
+(defn ->safe-event-db
+  [page db-spec]
+  (fn [id handler]
+    (rf/reg-event-db
+     id
+     [(->interceptor page db-spec)]
+     handler)))

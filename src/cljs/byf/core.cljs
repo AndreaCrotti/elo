@@ -1,6 +1,8 @@
 (ns ^:figwheel-hooks byf.core
   (:require [accountant.core :as accountant]
             [cemerick.url :refer [url]]
+            [clojure.spec.alpha :as s]
+            [expound.alpha :as expound]
             [byf.league-detail.handlers :as league-detail-handlers]
             [byf.league-detail.views :as league-detail-views]
             [byf.league-list.handlers :as league-list-handlers]
@@ -12,11 +14,6 @@
             [byf.routes :as routes]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
-
-;;TODO: use this to set dynamically the title of the page you are in
-(defn- set-title!
-  [new-title]
-  (set! js/document.title new-title))
 
 (def pages
   {:league-detail league-detail-views/root
@@ -32,6 +29,8 @@
 
 (defn dev-setup []
   (when debug?
+    (set! s/*explain-out* expound/printer)
+    (s/check-asserts true)
     (enable-console-print!)))
 
 (defn curr-path
