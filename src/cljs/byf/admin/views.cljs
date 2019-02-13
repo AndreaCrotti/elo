@@ -46,5 +46,5 @@
   []
   (rf/dispatch [::handlers/load-leagues])
   (fn []
-    [:div.admin__page
+    [:div
      [add-player-form]]))

@@ -1,7 +1,8 @@
 (ns byf.admin.handlers
   (:require [re-frame.core :as rf]
             [ajax.core :as ajax]
-            [byf.common.handlers :as common]))
+            [byf.common.handlers :as common]
+            [clojure.spec.alpha :as s]))
 
 (def page ::page-id)
 
@@ -18,9 +19,26 @@
   {:player default-player
    :leagues []})
 
-(rf/reg-event-db ::name (setter [:player :name]))
-(rf/reg-event-db ::email (setter [:player :email]))
-(rf/reg-event-db ::league (setter [:player :league_id]))
+(s/def ::name string?)
+(s/def ::email string?)
+;; actually a UUID check would be better
+(s/def ::league_id (s/nilable string?))
+
+;; a better spec for this??
+(s/def ::leagues sequential?)
+(s/def ::player (s/keys :req-un [::name ::email ::league_id]))
+(s/def ::db (s/keys :req-un [::player ::leagues]))
+
+(def safe-event-db (common/->safe-event-db page ::db))
+
+(safe-event-db ::name
+               (setter [:player :name]))
+
+(safe-event-db ::email
+               (setter [:player :email]))
+
+(safe-event-db ::league
+               (setter [:player :league_id]))
 
 (rf/reg-sub ::league (getter [:league]))
 (rf/reg-sub ::leagues (getter [:leagues]))
@@ -35,9 +53,9 @@
                  (fn [{:keys [db]} _]
                    (js/alert "Thanks")))
 
-(rf/reg-event-db ::reset-player
-                 (fn [db _]
-                   (common/assoc-in* db page [:player] default-player)))
+(safe-event-db ::reset-player
+               (fn [db _]
+                 (common/assoc-in* db page [:player] default-player)))
 
 (defn writer
   [page uri on-success]
@@ -54,8 +72,8 @@
                                       "/api/add-player"
                                       ::add-player-success))
 
-(rf/reg-event-db ::load-leagues-success
-                 (setter [:leagues]))
+(safe-event-db ::load-leagues-success
+               (setter [:leagues]))
 
 (rf/reg-event-fx ::load-leagues
                  (common/loader-no-league-id
@@ -63,6 +81,6 @@
                   "/api/leagues"
                   ::load-leagues-success))
 
-(rf/reg-event-db ::initialize-db
-                 (fn [db _]
-                   (assoc db page default-db)))
+(safe-event-db ::initialize-db
+               (fn [db _]
+                 (assoc db page default-db)))
