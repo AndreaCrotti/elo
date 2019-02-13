@@ -2,6 +2,7 @@
   (:require [ajax.core :as ajax]
             [day8.re-frame.http-fx]
             [re-frame.core :as rf]
+            [clojure.test.check.generators :as gen]
             [clojure.spec.alpha :as s]))
 
 (defn get-in*
@@ -83,7 +84,7 @@
                  (fn [db [_ route-params]]
                    (assoc db :route-params route-params)))
 
-(defn ->interceptor
+(defn- ->check-db-interceptor
   [page db-spec]
   (rf/->interceptor
    :id :validate
@@ -98,5 +99,12 @@
   (fn [id handler]
     (rf/reg-event-db
      id
-     [(->interceptor page db-spec)]
+     [(->check-db-interceptor page db-spec)]
      handler)))
+
+(defn set-random-db
+  "Handler capable of simply setting a random intial db.
+  This can be used instead of initialise-db for example."
+  [db-spec]
+  (fn [db _]
+    (gen/generate db-spec)))
