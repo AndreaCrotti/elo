@@ -109,36 +109,6 @@
   (as-json
    (resp/ok {:result "Correctly Went throught the whole process"})))
 
-(def games-csv-header
-  [:p1
-   :p1_using
-   :p2
-   :p2_using
-   :played_at])
-
-(defn csv-transform
-  [fields rows name-mapping]
-  (let [filtered-rows (map #(select-keys % fields) rows)
-        to-name #(get name-mapping %)
-        transform {:played_at str
-                   :p1 to-name
-                   :p2 to-name}]
-
-    (map #(vals (reduce-kv update % transform)) filtered-rows)))
-
-(defn rankings-header-rows
-  "To make sure that the order is returned correctly we simply sort by
-  id both the player names and the rankings returned"
-  [players games]
-  (let [header (map :name (sort-by :id players))
-        csv-rows (for [n (range (inc (count games)))]
-                   (map (comp str :ranking)
-                        (sort-by :id
-                                 (games/get-rankings
-                                  (take n games)
-                                  players))))]
-    [header csv-rows]))
-
 (defn- get-github-token
   [request]
   (get-in request github-token-path))
