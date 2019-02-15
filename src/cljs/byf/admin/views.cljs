@@ -2,6 +2,7 @@
   (:require [re-frame.core :as rf]
             [byf.admin.handlers :as handlers]
             [byf.common.views :refer [drop-down]]
+            [byf.elements :as el]
             [byf.utils :as utils]))
 
 (defn add-player-form
@@ -17,14 +18,16 @@
          :value-fn :id
          :display-fn :name]
 
-        [:input.input.is-fullwidth
+        [el/input
+         [:is-fullwidth]
          {:type "text"
           :value (:name @player)
           :name "name"
           :placeholder "John Smith"
           :on-change (utils/set-val ::handlers/name)}]
 
-        [:input.input.is-fullwidth
+        [el/input
+         [:is-fullwidth]
          {:type "text"
           :value (:email @player)
           :name "email"
@@ -32,10 +35,10 @@
           :on-change (utils/set-val ::handlers/email)}]]
 
        [:div
-        [:button.button.is-primary.is-fullwidth
+        [el/button
+         [:is-primary :is-fullwidth (when-not @valid-player? "disabled")]
          {:type "button"
           :name "submit-game"
-          :class (utils/classes ["submit__game" "btn" "btn-primary" (when-not @valid-player? "disabled")])
           :on-click (if @valid-player?
                       #(rf/dispatch [::handlers/add-player])
                       #(js/alert "Fill up the form first"))}
