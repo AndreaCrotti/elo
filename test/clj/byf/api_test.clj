@@ -48,7 +48,7 @@
   ([endpoint args]
    (-> (mock/request :get endpoint args)
        authenticated-req
-       (sut/app))))
+       sut/app)))
 
 (defn- write-api-call
   [endpoint content]
@@ -56,7 +56,7 @@
         {:keys [status] :as response}
         (-> (mock/request :post full-api-path content)
             authenticated-req
-            (sut/app))]
+            sut/app)]
 
     (assert (contains? #{201 401} status), "Invalid status code")
     response))
@@ -128,7 +128,7 @@
       (with-redefs [authenticated? (fn [r] true)]
         (let [params {:name "name" :email "email" :league_id sample-league-id}
               ;;TODO: use the write helper also here
-              response ((sut/app) (mock/header
+              response (sut/app (mock/header
                                  (authenticated-req (mock/request :post "/api/add-player" params))
                                  "Authorization" (make-admin-header)))]
 

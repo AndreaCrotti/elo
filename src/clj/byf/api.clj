@@ -145,9 +145,6 @@
     (zipmap (keys routes/sub-routes) (repeat spa))
     {true not-found})])
 
-(def routes-handler
-  (make-handler routes))
-
 (defn check-token
   [handler]
   ;; return 401 if the request is not authenticated properly
@@ -170,23 +167,23 @@
   [params]
   (assoc-in params [:session :cookie-attrs :same-site] :lax))
 
-(defn app
-  []
-  (-> routes-handler
+(def app
+  (-> (make-handler routes)
       (wrap-authorization basic-auth-backend)
       (wrap-authentication basic-auth-backend)
       wrap-keyword-params
       wrap-json-params
       wrap-json-response
-      (resources/wrap-resource "public")
       wrap-cljsjs
+      (resources/wrap-resource "public")
       check-token
       (r-def/wrap-defaults
        (enable-cookies r-def/api-defaults))
       log-request
+
       (wrap-oauth2 oauth2-config)))
 
 (defn -main [& args]
-  (jetty/run-jetty (app) {:port (-> :port
+  (jetty/run-jetty app {:port (-> :port
                                   value
                                   Integer/parseInt)}))

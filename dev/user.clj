@@ -21,7 +21,7 @@
 (defmethod ig/init-key :server/jetty
   [_ {:keys [port]}]
   (log/info "Starting Jetty")
-  (jetty/run-jetty (wrap-reload (#'api/app))
+  (jetty/run-jetty (wrap-reload #'api/app)
                    {:join? false
                     :port port}))
 

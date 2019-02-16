@@ -34,3 +34,7 @@ GET :local/authenticated
 
 # fetch the dateapicker
 GET :local/cljsjs/react-datepicker/production/react-datepicker.min.inc.css
+
+
+# fetch the dateapicker
+GET :local/css/tweaks.css
