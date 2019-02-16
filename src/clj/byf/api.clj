@@ -122,6 +122,11 @@
                          (some? github-token))
       :token github-token})))
 
+
+(defn- not-found
+  [req]
+  (resp/not-found))
+
 ;;TODO: add a not found page for everything else?
 (def routes
   ["/"
@@ -137,7 +142,8 @@
 
      "oauth2/github/callback" github-callback
      "authenticated" authenticated?}
-    (zipmap (keys routes/sub-routes) (repeat spa)))])
+    (zipmap (keys routes/sub-routes) (repeat spa))
+    {true not-found})])
 
 (def routes-handler
   (make-handler routes))
@@ -164,11 +170,9 @@
   [params]
   (assoc-in params [:session :cookie-attrs :same-site] :lax))
 
-(def app
+(defn app
+  []
   (-> routes-handler
-      (r-def/wrap-defaults
-       (enable-cookies r-def/api-defaults))
-
       (wrap-authorization basic-auth-backend)
       (wrap-authentication basic-auth-backend)
       wrap-keyword-params
@@ -177,10 +181,12 @@
       (resources/wrap-resource "public")
       wrap-cljsjs
       check-token
+      (r-def/wrap-defaults
+       (enable-cookies r-def/api-defaults))
       log-request
       (wrap-oauth2 oauth2-config)))
 
 (defn -main [& args]
-  (jetty/run-jetty app {:port (-> :port
+  (jetty/run-jetty (app) {:port (-> :port
                                   value
                                   Integer/parseInt)}))
