@@ -166,7 +166,6 @@
 
 (def app
   (-> routes-handler
-      (resources/wrap-resource "public")
       (r-def/wrap-defaults
        (enable-cookies r-def/api-defaults))
 
@@ -175,6 +174,7 @@
       wrap-keyword-params
       wrap-json-params
       wrap-json-response
+      (resources/wrap-resource "public")
       wrap-cljsjs
       check-token
       log-request

@@ -31,3 +31,6 @@ GET :local/api/oauth2/github/callback?code=xxx&state=xxx
 
 # check if a user is authenticated already
 GET :local/authenticated
+
+# fetch the dateapicker
+GET :local/cljsjs/react-datepicker/production/react-datepicker.min.inc.css

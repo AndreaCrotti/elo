@@ -52,10 +52,6 @@
            :rel "stylesheet"
            :type "text/css"}]
 
-   [:link {:href (cache-buster "/css/react-datepicker.css")
-           :rel "stylesheet"
-           :type "text/css"}]
-
    [:link {:href "/cljsjs/react-datepicker/production/react-datepicker.min.inc.css"
            :rel "stylesheet"
            :type "text/css"}]
