@@ -27,6 +27,7 @@
                  [ring-oauth2 "0.1.4"]
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-mock "0.3.2"]
+                 [ring-cljsjs "0.1.0"]
 
                  [buddy "2.0.0"]
                  [buddy/buddy-auth "2.1.0"]

@@ -6,9 +6,9 @@
             [byf.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
             [byf.config :refer [value]]
             [byf.db :as db]
-            [byf.games :as games]
             [byf.notifications :as notifications]
             [byf.pages.home :as home]
+            [byf.routes :as routes]
             [byf.validate :as validate]
             [hiccup.core :as hiccup]
             [ring.adapter.jetty :as jetty]
@@ -17,6 +17,7 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.oauth2 :refer [wrap-oauth2]]
             [ring.middleware.resource :as resources]
+            [ring.middleware.cljsjs :refer [wrap-cljsjs]]
             [ring.util.response]
             [ring.util.http-response :as resp]
             [taoensso.timbre :as timbre :refer [log info debug]])
@@ -123,23 +124,20 @@
 
 ;;TODO: add a not found page for everything else?
 (def routes
-  ["/" {"api/" {"add-player" add-player!
-                "add-game" add-game!
+  ["/"
+   (merge
+    {"api/" {"add-player" add-player!
+             "add-game" add-game!
 
-                "league" get-league
-                "leagues" get-leagues
-                "companies" get-companies
-                "players" get-players
-                "games" get-games}
+             "league" get-league
+             "leagues" get-leagues
+             "companies" get-companies
+             "players" get-players
+             "games" get-games}
 
-        "oauth2/github/callback" github-callback
-        "authenticated" authenticated?
-
-        ;; quite a crude way to make sure all the other urls actually
-        ;; render to the SPA, letting the routing be handled by
-        ;; accountant
-        ;; TODO: this might be a problem for things like the ring oauth
-        true spa}])
+     "oauth2/github/callback" github-callback
+     "authenticated" authenticated?}
+    (zipmap (keys routes/sub-routes) (repeat spa)))])
 
 (def routes-handler
   (make-handler routes))
@@ -177,6 +175,7 @@
       wrap-keyword-params
       wrap-json-params
       wrap-json-response
+      wrap-cljsjs
       check-token
       log-request
       (wrap-oauth2 oauth2-config)))

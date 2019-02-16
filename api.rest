@@ -1,16 +1,12 @@
 :local = http://localhost:3335
 :staging = http://fifa-elo-staging.herokuapp.com
 :prod = http://fifa-elo.herokuapp.com
-:league_id = 2a469e1b-2830-44b2-8a5e-08906e4558b0
 
 # check if the resources work
-GET :local/css/screen.css
+GET :local/css/tweaks.css
 
 # check if the resources work
 GET :local/js/compiled/app.js
-
-# fetch players
-GET :local/api/players?league_id=:league_id
 
 # fetch all the leagues
 GET :local/api/leagues
