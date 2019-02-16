@@ -168,12 +168,15 @@
 
 (defn el-result
   [idx result]
-  [:span {:key idx :class (str "result__element result__" (name result))}
+  [:span
+   {:key idx
+    :class (str "result__element result__" (name result))}
    (-> result name str/capitalize)])
 
 (defn results-boxes
   [results]
-  (map-indexed el-result (take-last form-size results)))
+  [:div.result__container
+   (map-indexed el-result (take-last form-size results))])
 
 (defn game-slider
   []

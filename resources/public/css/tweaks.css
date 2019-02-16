@@ -11,6 +11,14 @@ th {
   color: white;
   margin: 2px;
   font-weight: bolder;
+  width: 20px;
+  text-align: center;
+}
+
+.result__container {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
 }
 
 .result__w {
