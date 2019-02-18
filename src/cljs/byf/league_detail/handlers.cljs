@@ -378,3 +378,9 @@
                                    not)}))
 
 (rf/reg-sub ::show-all? (getter [:show-all?]))
+
+(rf/reg-sub ::from-game (getter [::from-game]))
+(rf/reg-sub ::to-game (getter [::to-game]))
+
+(rf/reg-event-db ::from-game (setter [::from-game]))
+(rf/reg-event-db ::to-game (setter [::to-game]))

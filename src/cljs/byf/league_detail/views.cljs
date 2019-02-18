@@ -318,22 +318,44 @@
       [:a {:href "http://github.com/AndreaCrotti/elo"}
        "Fork Me"]]]))
 
+(defn from-to
+  [s f t]
+  (take (- t f) (drop f s)))
+
 (defn vega-outer
   []
   (let [history (rf/subscribe [::handlers/rankings-history-vega])
         rankings-domain (rf/subscribe [::handlers/rankings-domain])
-        show-graph (rf/subscribe [::handlers/show-graph])]
-
+        show-graph (rf/subscribe [::handlers/show-graph])
+        from-game (rf/subscribe [::handlers/from-game])
+        to-game (rf/subscribe [::handlers/to-game])]
     (fn []
-      [:div
-       [:button.button.is-fullwidth
-        {:on-click #(rf/dispatch [::handlers/toggle-graph])}
-        (if @show-graph
-          "hide graph"
-          "show graph")]
+      (let [filtered-history (from-to @history @from-game @to-game)]
+        [:div
+         [:button.button.is-fullwidth
+          {:on-click #(rf/dispatch [::handlers/toggle-graph])}
+          (if @show-graph
+            "hide graph"
+            "show graph")]
 
-       (when @show-graph
-         [vega/vega-inner @history @rankings-domain])])))
+         (when @show-graph
+           [:div.container
+            [vega/vega-inner @filtered-history @rankings-domain]
+            [:label.label "From game"]
+            [:input.slider.is-fullwidth
+             {:type "range"
+              :min 0
+              :max 10
+              :value @from-game
+              :on-change (utils/set-val ::handlers/from-game js/parseInt)}]
+
+            [:label.label "To Game"]
+            [:input.slider.is-fullwidth
+             {:type "range"
+              :min @from-game
+              :max 100
+              :value @to-game
+              :on-change (utils/set-val ::handlers/to-game js/parseInt)}]])]))))
 
 (defn- percent
   [v]
