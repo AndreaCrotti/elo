@@ -329,8 +329,12 @@
         show-graph (rf/subscribe [::handlers/show-graph])
         from-game (rf/subscribe [::handlers/from-game])
         to-game (rf/subscribe [::handlers/to-game])]
+
     (fn []
-      (let [filtered-history (from-to @history @from-game @to-game)]
+      (let [norm-from (or @from-game 0)
+            norm-to (or @to-game (count @history))
+            filtered-history (from-to @history norm-from norm-to)]
+
         [:div
          [:button.button.is-fullwidth
           {:on-click #(rf/dispatch [::handlers/toggle-graph])}
@@ -340,21 +344,21 @@
 
          (when @show-graph
            [:div.container
-            [vega/vega-inner @filtered-history @rankings-domain]
-            [:label.label "From game"]
+            [vega/vega-inner filtered-history @rankings-domain]
+            [:label.label (str "From game " norm-from)]
             [:input.slider.is-fullwidth
              {:type "range"
               :min 0
-              :max 10
-              :value @from-game
+              :max norm-to
+              :value norm-from
               :on-change (utils/set-val ::handlers/from-game js/parseInt)}]
 
-            [:label.label "To Game"]
+            [:label.label "To Game " norm-to]
             [:input.slider.is-fullwidth
              {:type "range"
-              :min @from-game
-              :max 100
-              :value @to-game
+              :min norm-from
+              :max (count @history)
+              :value norm-to
               :on-change (utils/set-val ::handlers/to-game js/parseInt)}]])]))))
 
 (defn- percent
