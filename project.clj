@@ -101,6 +101,8 @@
                      fdef [[:block 1]]
                      checking [[:inner 0]]}}
 
+  :doo {:paths {:rhino "lein run -m org.mozilla.javascript.tools.shell.Main"}}
+
   :profiles
   {:uberjar {:hooks []
              :source-paths ["src/clj" "src/cljc"]
