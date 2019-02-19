@@ -63,6 +63,7 @@ jobs:
     <<: *base_docker
     steps:
       - checkout
+      - run: sudo apt install rhino
       - restore_cache:
           keys:
             - clj-deps-{{ checksum "project.clj" }}
