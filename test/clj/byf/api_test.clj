@@ -6,6 +6,7 @@
             [clojure.test :refer [deftest is testing use-fixtures join-fixtures]]
             [byf.api :as sut]
             [byf.db :as db]
+            [byf.games :refer [invert-game]]
             [environ.core :refer [env]]
             [ring.mock.request :as mock])
   (:import (java.util UUID)))
@@ -58,7 +59,7 @@
             authenticated-req
             sut/app)]
 
-    (assert (contains? #{201 401} status), "Invalid status code")
+    (assert (contains? #{201 401 400} status), "Invalid status code")
     response))
 
 (defn- store-users!
@@ -69,16 +70,6 @@
         p2-id (db/add-player-full! p2)]
 
     [p1-id p2-id]))
-
-(defn- invert-game
-  [game]
-  (-> game
-      (assoc :p1 (:p2 game))
-      (assoc :p2 (:p1 game))
-      (assoc :p1_points (:p2_points game))
-      (assoc :p2_points (:p1_points game))
-      (assoc :p1_using (:p2_using game))
-      (assoc :p2_using (:p1_using game))))
 
 (deftest store-results-invariants-test
   (testing "Can't add two equal games"

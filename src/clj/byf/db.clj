@@ -70,6 +70,13 @@
       (h/from :league)
       (h/where [:= :id league-id])))
 
+(defn last-game-sql
+  []
+  (-> (h/select :*)
+      (h/from :game)
+      (h/order-by [:played_at :desc])
+      (h/limit 1)))
+
 (defn query
   [func & args]
   (jdbc/query (db-spec)

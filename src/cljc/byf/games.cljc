@@ -155,3 +155,23 @@
         (if (>= next prev)
           (recur rst (+ curr-increase (- next prev)) new-max)
           (recur rst 0 new-max))))))
+
+(defn invert-game
+  [game]
+  (-> game
+      (assoc :p1 (:p2 game))
+      (assoc :p2 (:p1 game))
+      (assoc :p1_points (:p2_points game))
+      (assoc :p2_points (:p1_points game))
+      (assoc :p1_using (:p2_using game))
+      (assoc :p2_using (:p1_using game))))
+
+(defn equal?
+  [g1 g2]
+  (let [useful #(select-keys % [:p1 :p2 :p1_points :p2_points :p1_using :p2_using])
+        g1_ (useful g1)
+        g2_ (useful g2)
+        g2_inv (invert-game g2_)]
+
+    (or (= g1_ g2_)
+        (= g1_ g2_inv))))
