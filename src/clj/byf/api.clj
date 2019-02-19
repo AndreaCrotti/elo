@@ -1,6 +1,7 @@
 (ns byf.api
   (:gen-class)
-  (:require [bidi.ring :refer [make-handler]]
+  (:require [clojure.java.jdbc :as jdbc]
+            [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [clojure.string :as str]
             [byf.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
@@ -23,6 +24,13 @@
   (:import (java.util UUID)))
 
 (def github-token-path [:oauth2/access-tokens :github :token])
+
+(defn transaction-middleware
+  [handler]
+  (fn [request]
+    (db/wrap-db-call
+     (jdbc/with-db-transaction [tx (db/db-spec)]
+       (handler request)))))
 
 (defn- as-json
   [response]
@@ -179,6 +187,7 @@
       wrap-json-response
       check-token
       log-request
+      transaction-middleware
       (wrap-oauth2 oauth2-config)))
 
 (defn -main [& args]
