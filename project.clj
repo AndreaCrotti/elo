@@ -101,8 +101,6 @@
                      fdef [[:block 1]]
                      checking [[:inner 0]]}}
 
-  :doo {:paths {:rhino "lein run -m org.mozilla.javascript.tools.shell.Main"}}
-
   :profiles
   {:uberjar {:hooks []
              :source-paths ["src/clj" "src/cljc"]
@@ -133,15 +131,17 @@
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
   {:builds
-   {:test {:source-paths ["src/cljs" "src/cljc" "test/cljs" "test/cljc"]
-           :compiler {:output-to "target/unit-test.js"
-                      :main 'byf.runner
-                      :optimizations :whitespace}}
+   [{:id "test"
+     :source-paths ["src/cljs" "src/cljc" "test/cljs" "test/cljc"]
+     :compiler {:output-to "target/unit-test.js"
+                :main 'byf.runner
+                :optimizations :whitespace}}
 
-    :min {:source-paths ["src/cljs" "src/cljc"]
-          :compiler     {:main byf.core
-                         :output-to "resources/public/cljs-out/dev-main.js"
-                         :asset-path "resources/public/cljs-out/byf"
-                         :optimizations :simple
-                         :closure-defines {goog.DEBUG true}
-                         :pretty-print true}}}})
+    {:id "min"
+     :source-paths ["src/cljs" "src/cljc"]
+     :compiler     {:main byf.core
+                    :output-to "resources/public/cljs-out/dev-main.js"
+                    :asset-path "resources/public/cljs-out/byf"
+                    :optimizations :simple
+                    :closure-defines {goog.DEBUG true}
+                    :pretty-print true}}]})
