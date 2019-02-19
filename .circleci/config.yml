@@ -45,7 +45,7 @@ jobs:
 
       - run: lein cljfmt check
       - run: lein eastwood
-  
+
   test_clj:
     <<: *base_docker
     steps:
@@ -58,6 +58,16 @@ jobs:
       - run: lein test2junit
       - store_test_results:
           path: target/test2junit
+
+  test_cljs:
+    <<: *base_docker
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - clj-deps-{{ checksum "project.clj" }}
+
+      - run: lein test-cljs
 
   coverage_clj:
     <<: *base_docker
@@ -85,6 +95,9 @@ workflows:
   build:
     jobs:
       - dependencies
+      - test_cljs:
+          requires:
+            - dependencies
       - test_clj:
           requires:
             - dependencies

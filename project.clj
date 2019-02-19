@@ -70,6 +70,7 @@
 
   :plugins [[lein-environ "1.1.0"]
             [migratus-lein "0.5.0"]
+            [lein-doo "0.1.6"]
             [lein-cljsbuild "1.1.4"]
             [jonase/eastwood "0.3.3"]
             [lein-ring "0.9.7"]
@@ -93,7 +94,8 @@
 
   :aliases {"fig" ["trampoline" "run" "-m" "figwheel.main"]
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]
-            "cljs-prod" ["run" "-m" "figwheel.main" "--build-once" "prod"]}
+            "cljs-prod" ["run" "-m" "figwheel.main" "--build-once" "prod"]
+            "test-cljs" ["doo" "rhino" "test" "once"]}
 
   :cljfmt {:indents {for-all [[:block 1]]
                      fdef [[:block 1]]
@@ -123,16 +125,21 @@
 
     :dependencies [[binaryage/devtools "0.9.10"]
                    [cider/piggieback "0.3.10"]
+                   [org.mozilla/rhino "1.7.7.1"]
                    [day8.re-frame/re-frame-10x "0.3.6"]
                    [com.bhauman/rebel-readline-cljs "0.1.4"]
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
   {:builds
-   [{:id "min"
-     :source-paths ["src/cljs" "src/cljc"]
-     :compiler     {:main byf.core
-                    :output-to "resources/public/cljs-out/dev-main.js"
-                    :asset-path "resources/public/cljs-out/byf"
-                    :optimizations :simple
-                    :closure-defines {goog.DEBUG true}
-                    :pretty-print true}}]})
+   {:test {:source-paths ["src/cljs" "src/cljc" "test/cljs" "test/cljc"]
+           :compiler {:output-to "target/unit-test.js"
+                      :main 'byf.runner
+                      :optimizations :whitespace}}
+
+    :min {:source-paths ["src/cljs" "src/cljc"]
+          :compiler     {:main byf.core
+                         :output-to "resources/public/cljs-out/dev-main.js"
+                         :asset-path "resources/public/cljs-out/byf"
+                         :optimizations :simple
+                         :closure-defines {goog.DEBUG true}
+                         :pretty-print true}}}})
