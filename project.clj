@@ -81,7 +81,7 @@
   :test2junit-output-dir ~(or (System/getenv "CIRCLE_TEST_REPORTS") "target/test2junit")
 
   :uberjar-name "byf.jar"
-  :min-lein-version "2.8.3"
+  :min-lein-version "2.8.1"
   :source-paths ["src/cljc" "src/clj" "src/cljs"]
   :test-paths ["test/clj" "test/cljc"]
   :ring {:handler byf.api/app}
