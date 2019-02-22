@@ -259,7 +259,8 @@
 
 (defn- reload-fn-gen
   [extra-signal]
-  (fn [{:keys [db]} _]
+  (fn [{:keys [db] :as full} other]
+    (js/console.log "Other = " other ", full = " full)
     {:db db
      :dispatch-n (cons extra-signal [[::show-notification]
                                      [::players-handlers/load-players]
