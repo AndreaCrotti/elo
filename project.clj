@@ -95,14 +95,16 @@
   :aliases {"fig" ["trampoline" "run" "-m" "figwheel.main"]
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]
             "cljs-prod" ["run" "-m" "figwheel.main" "--build-once" "prod"]
-            "test-cljs" ["doo" "rhino" "test" "once"]}
+            "test-cljs" ["doo" "rhino" "test" "once"]
+            "kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]}
 
   :cljfmt {:indents {for-all [[:block 1]]
                      fdef [[:block 1]]
                      checking [[:inner 0]]}}
 
   :profiles
-  {:uberjar {:hooks []
+  {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-389"]]}
+   :uberjar {:hooks []
              :source-paths ["src/clj" "src/cljc"]
              :prep-tasks [["compile"]
                           ["cljsbuild" "once" "min"]]
