@@ -122,7 +122,6 @@
     :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
     :source-paths ["src/cljc" "src/clj" "src/cljs" "dev"]
     :plugins [[migratus-lein "0.5.0"]
-              [lein-cloverage "1.0.13"]
               [lein-cljfmt "0.5.7"]]
 
     :env {:environment :dev}
