@@ -1,4 +1,8 @@
 #kaocha/v1
-{:plugins [:kaocha.plugin/profiling]
+{:tests [{:id :unit-cljs
+          :type :kaocha.type/cljs
+          :test-paths ["test/cljc"]}]
+
+ :plugins [:kaocha.plugin/profiling]
  :capture-output? true
  :color? true}

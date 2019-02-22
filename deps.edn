@@ -1,0 +1,2 @@
+{:deps {lambdaisland/kaocha {:mvn/version "0.0-389"}
+        lambdaisland/kaocha-cljs {:mvn/version "0.0-16"}}}
