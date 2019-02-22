@@ -55,9 +55,9 @@ jobs:
             - clj-deps-{{ checksum "project.clj" }}
 
       - run: lein migratus migrate
-      - run: lein kaocha
-      # - store_test_results:
-      #     path: target/test2junit
+      - run: bin/kaocha --plugin kaocha.plugin/junit-xml --junit-xml-file test-results/kaocha/results.xml
+      - store_test_results:
+          path: test-results
 
   test_cljs:
     <<: *base_docker

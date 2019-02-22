@@ -103,7 +103,8 @@
                      checking [[:inner 0]]}}
 
   :profiles
-  {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-389"]]}
+  {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-389"]
+                           [lambdaisland/kaocha-junit-xml "0.0-63"]]}
    :uberjar {:hooks []
              :source-paths ["src/clj" "src/cljc"]
              :prep-tasks [["compile"]
