@@ -19,22 +19,6 @@ references:
           POSTGRES_DB: elo_test
 
 jobs:
-  dependencies:
-    <<: *base_config
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - clj-deps-{{ checksum "project.clj" }}
-
-      - run: lein deps
-      - save_cache:
-          paths:
-            - ~/.m2/repository
-            - ~/.lein
-
-          key: clj-deps-{{ checksum "project.clj" }}
-
   lint_clj:
     <<: *base_config
     steps:
@@ -55,9 +39,16 @@ jobs:
             - clj-deps-{{ checksum "project.clj" }}
 
       - run: lein migratus migrate
-      - run: lein test2junit
+      - run: bin/kaocha --plugin kaocha.plugin/junit-xml --junit-xml-file test-results/kaocha/results.xml
       - store_test_results:
-          path: target/test2junit
+          path: test-results
+
+      - save_cache:
+          paths:
+            - ~/.m2/repository
+            - ~/.lein
+
+          key: clj-deps-{{ checksum "project.clj" }}
 
   test_cljs:
     <<: *base_docker
@@ -79,10 +70,7 @@ jobs:
             - clj-deps-{{ checksum "project.clj" }}
 
       - run: lein migratus migrate
-      - run: lein cloverage --codecov
-
-      - store_test_results:
-          path: target/test-results
+      - run: bin/kaocha --plugin cloverage
 
       - store_artifacts:
           path: target/coverage
@@ -95,18 +83,7 @@ workflows:
   version: 2
   build:
     jobs:
-      - dependencies
-      - test_cljs:
-          requires:
-            - dependencies
-      - test_clj:
-          requires:
-            - dependencies
-
-      - coverage_clj:
-          requires:
-            - dependencies
-
-      - lint_clj:
-          requires:
-            - dependencies
+      - test_cljs
+      - test_clj
+      - coverage_clj
+      - lint_clj

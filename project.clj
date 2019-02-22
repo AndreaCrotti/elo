@@ -95,14 +95,18 @@
   :aliases {"fig" ["trampoline" "run" "-m" "figwheel.main"]
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]
             "cljs-prod" ["run" "-m" "figwheel.main" "--build-once" "prod"]
-            "test-cljs" ["doo" "rhino" "test" "once"]}
+            "test-cljs" ["doo" "rhino" "test" "once"]
+            "kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]}
 
   :cljfmt {:indents {for-all [[:block 1]]
                      fdef [[:block 1]]
                      checking [[:inner 0]]}}
 
   :profiles
-  {:uberjar {:hooks []
+  {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-389"]
+                           [lambdaisland/kaocha-cloverage "0.0-22"]
+                           [lambdaisland/kaocha-junit-xml "0.0-63"]]}
+   :uberjar {:hooks []
              :source-paths ["src/clj" "src/cljc"]
              :prep-tasks [["compile"]
                           ["cljsbuild" "once" "min"]]
@@ -118,7 +122,6 @@
     :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
     :source-paths ["src/cljc" "src/clj" "src/cljs" "dev"]
     :plugins [[migratus-lein "0.5.0"]
-              [lein-cloverage "1.0.13"]
               [lein-cljfmt "0.5.7"]]
 
     :env {:environment :dev}
