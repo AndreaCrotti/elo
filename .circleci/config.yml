@@ -19,22 +19,6 @@ references:
           POSTGRES_DB: elo_test
 
 jobs:
-  dependencies:
-    <<: *base_config
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - clj-deps-{{ checksum "project.clj" }}
-
-      - run: lein deps
-      - save_cache:
-          paths:
-            - ~/.m2/repository
-            - ~/.lein
-
-          key: clj-deps-{{ checksum "project.clj" }}
-
   lint_clj:
     <<: *base_config
     steps:
@@ -58,6 +42,13 @@ jobs:
       - run: bin/kaocha --plugin kaocha.plugin/junit-xml --junit-xml-file test-results/kaocha/results.xml
       - store_test_results:
           path: test-results
+
+      - save_cache:
+          paths:
+            - ~/.m2/repository
+            - ~/.lein
+
+          key: clj-deps-{{ checksum "project.clj" }}
 
   test_cljs:
     <<: *base_docker
@@ -95,18 +86,7 @@ workflows:
   version: 2
   build:
     jobs:
-      - dependencies
-      - test_cljs:
-          requires:
-            - dependencies
-      - test_clj:
-          requires:
-            - dependencies
-
-      - coverage_clj:
-          requires:
-            - dependencies
-
-      - lint_clj:
-          requires:
-            - dependencies
+      - test_cljs
+      - test_clj
+      - coverage_clj
+      - lint_clj
