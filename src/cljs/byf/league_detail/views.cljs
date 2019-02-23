@@ -428,13 +428,18 @@
 
 (defn notifications
   []
-  (let [show-notification (rf/subscribe [::handlers/show-notification])]
+  (let [notification (rf/subscribe [::handlers/notification])]
     (fn []
-      (when @show-notification
-        [:div.notification.is-success
+      (when @notification
+        [:div.notification
+         {:class (case (:type @notification)
+                   :success "is-success"
+                   :failure "is-failure")}
+
+
          [:button.delete
           {:on-click #(rf/dispatch [::handlers/clear-notification])}]
-         "Thank you, your game has been recorded"]))))
+         (:msg @notification)]))))
 
 (defn root
   []

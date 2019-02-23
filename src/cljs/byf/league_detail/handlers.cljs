@@ -45,7 +45,7 @@
    :league_id nil
    :show-all? false
    :game-config shared/default-game-config
-   :show-notification false
+   :notification nil
    :loading? false
    :show-graph false})
 
@@ -63,14 +63,18 @@
   [name-mapping vals]
   (medley/map-keys #(get name-mapping %) vals))
 
-(rf/reg-sub ::show-notification (getter [:show-notification]))
-(rf/reg-event-db ::show-notification
-                 (fn [db _]
-                   (common/assoc-in* db page [:show-notification] true)))
+(rf/reg-sub ::notification (getter [:notification]))
+(rf/reg-event-db ::notification
+                 (fn [db [_ type msg]]
+                   (common/assoc-in* db
+                                     page
+                                     [:notification]
+                                     {:type type
+                                      :msg msg})))
 
 (rf/reg-event-db ::clear-notification
                  (fn [db _]
-                   (common/assoc-in* db page [:show-notification] false)))
+                   (common/assoc-in* db page [:notification] false)))
 
 (rf/reg-sub ::show-graph (getter [:show-graph]))
 (rf/reg-sub ::loading? (getter [:loading?]))
@@ -258,15 +262,20 @@
 (rf/reg-event-db ::played_at (setter [:game :played_at]))
 
 (defn- reload-fn-gen
-  [extra-signal]
-  (fn [{:keys [db] :as full} other]
-    (js/console.log "Other = " other ", full = " full)
-    {:db db
-     :dispatch-n (cons extra-signal [[::show-notification]
-                                     [::players-handlers/load-players]
-                                     [::load-games]])}))
+  [{:keys [db] :as full} other]
+  (js/console.log "Other = " other ", full = " full)
+  {:db db
+   :dispatch-n [[::notification :success "Game added successfully"]
+                [::reset-game]
+                [::players-handlers/load-players]
+                [::load-games]]})
 
-(rf/reg-event-fx ::add-game-success (reload-fn-gen [::reset-game]))
+(rf/reg-event-fx ::add-game-success reload-fn-gen)
+
+(rf/reg-event-fx ::add-game-failed
+                 (fn [{:keys [db]}]
+                   (js/console.log "inside game failed")
+                   {:dispatch [::notification :failure "Duplicate game"]}))
 
 (rf/reg-event-db ::failed (common/failed page))
 
@@ -290,7 +299,9 @@
 
 (rf/reg-event-fx ::add-game
                  (common/writer page "/api/add-game"
-                                ::add-game-success game-transform))
+                                ::add-game-success
+                                game-transform
+                                ::add-game-failed))
 
 (rf/reg-sub ::hidden? (sets/in? page :hidden-players))
 
