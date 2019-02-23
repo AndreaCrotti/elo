@@ -60,8 +60,7 @@
 (defn writer
   [page uri on-success transform-params-fn]
   (fn [{:keys [db]} _]
-    {:db db
-     :http-xhrio {:method :post
+    {:http-xhrio {:method :post
                   :uri uri
                   :params (merge (transform-params-fn db)
                                  {:league_id (get-league-id db)})
