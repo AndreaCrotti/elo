@@ -1,6 +1,7 @@
 #kaocha/v1
 {:capture-output? true
  :color? true
+ :plugins [:kaocha.plugin/cloverage]
  :cloverage-opts {:ns-exclude-regex [],
                   :text? false,
                   :lcov? false,
