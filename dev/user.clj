@@ -6,6 +6,7 @@
             [ring.adapter.jetty :as jetty]
             [byf.api :as api]
             [byf.config :as c]
+            [speculative.instrument :as i]
             [ring.middleware.reload :refer [wrap-reload]]
             [taoensso.timbre :as log]))
 
@@ -30,3 +31,5 @@
 (s/check-asserts true)
 
 (ir/set-prep! (constantly {:server/jetty {:port (-> :port c/value Integer/parseInt)}}))
+
+(i/instrument)

@@ -1,3 +1,4 @@
 #kaocha/v1
 {:capture-output? true
- :color? true}
+ :color? true
+ :plugins [:speculative-kaocha.plugin/instrument]}

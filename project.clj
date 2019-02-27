@@ -66,7 +66,8 @@
                  [com.cemerick/url "0.1.1"]
                  [venantius/accountant "0.2.4"]
                  [medley "1.0.0"]
-                 [metosin/ring-http-response "0.9.1"]]
+                 [metosin/ring-http-response "0.9.1"]
+                 [speculative "0.0.3"]]
 
   :plugins [[lein-environ "1.1.0"]
             [migratus-lein "0.5.0"]
@@ -104,6 +105,7 @@
 
   :profiles
   {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-389"]
+                           [speculative/kaocha-plugin "0.0.1"]
                            [lambdaisland/kaocha-cloverage "0.0-22"]
                            [lambdaisland/kaocha-junit-xml "0.0-63"]]}
    :uberjar {:hooks []
