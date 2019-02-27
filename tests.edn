@@ -1,18 +1,3 @@
 #kaocha/v1
 {:capture-output? true
- :color? true
- :plugins [:kaocha.plugin/cloverage]
- :cloverage-opts {:ns-exclude-regex [],
-                  :text? false,
-                  :lcov? false,
-                  :high-watermark 80,
-                  :fail-threshold 0,
-                  :output "target/coverage",
-                  :low-watermark 50,
-                  :ns-regex [],
-                  :summary? true,
-                  :coveralls? false,
-                  :emma-xml? false,
-                  :html? true,
-                  :nop? false,
-                  :codecov? true}}
+ :color? true}
