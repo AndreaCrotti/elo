@@ -1,10 +1,13 @@
 # elo
 
 [![CircleCI](https://circleci.com/gh/AndreaCrotti/elo/tree/master.svg?style=svg)](https://circleci.com/gh/AndreaCrotti/elo/tree/master)
+[![codecov](https://codecov.io/gh/AndreaCrotti/elo/branch/master/graph/badge.svg)](https://codecov.io/gh/AndreaCrotti/elo)
 
-Compute the Elo ranking from Fifa games.
+Platform to keep track of internal leagues.
 
-## Usage
+Currently supported games:
+- table tennis
+- Fifa
 
 ### Local development
 
