@@ -70,7 +70,7 @@ jobs:
             - clj-deps-{{ checksum "project.clj" }}
 
       - run: lein migratus migrate
-      - run: bin/kaocha --plugin cloverage
+      - run: bin/kaocha --plugin cloverage --codecov
 
       - store_artifacts:
           path: target/coverage
