@@ -6,6 +6,7 @@
             [clojure.test :refer [deftest is testing use-fixtures join-fixtures]]
             [byf.api :as sut]
             [byf.db :as db]
+            [byf.games :refer [invert-game]]
             [environ.core :refer [env]]
             [ring.mock.request :as mock])
   (:import (java.util UUID)))
@@ -58,7 +59,7 @@
             authenticated-req
             sut/app)]
 
-    (assert (contains? #{201 401} status), "Invalid status code")
+    (assert (contains? #{201 401 400} status), "Invalid status code")
     response))
 
 (defn- store-users!
@@ -70,6 +71,28 @@
 
     [p1-id p2-id]))
 
+(deftest store-results-invariants-test
+  (testing "Can't add two equal games"
+    (let [[p1-id p2-id] (store-users!)
+          game1 {:p1 (:player-id p1-id)
+                 :p2 (:player-id p2-id)
+                 :league_id sample-league-id
+                 :p1_using "RM"
+                 :p2_using "Juv"
+                 :p1_points 3
+                 :p2_points 0
+                 :played_at "2018-08-29+01:0021:50:32"}
+          game2 (invert-game game1)
+          game3 (assoc game2 :force true)]
+
+      (let [first-call (write-api-call "/add-game" game1)
+            second-call (write-api-call "/add-game" game2)
+            third-call (write-api-call "/add-game" game3)]
+
+        (is (= 201 (:status first-call)))
+        (is (= 400 (:status second-call)))
+        (is (= 201 (:status third-call)))))))
+
 (deftest store-results-test
   (testing "Should be able to store results"
     (let [[p1-id p2-id] (store-users!)
@@ -80,28 +103,26 @@
                   :p2_using "Juv"
                   :p1_points 3
                   :p2_points 0
-                  :played_at "2018-08-29+01:0021:50:32"}
+                  :played_at "2018-08-29+01:0021:50:32"}]
+      (write-api-call "/add-game" sample)
+      (let [games (read-api-call "/api/games" {:league_id sample-league-id})
+            desired {"p1" (str (:player-id p1-id))
+                     "p1_points" 3,
+                     "p1_using" "RM",
+                     "p2" (str (:player-id p2-id)),
+                     "p2_points" 0,
+                     "p2_using" "Juv"
+                     "played_at" "2018-08-29T20:50:00Z"}]
 
-          _ (write-api-call "/add-game" sample)
-          games (read-api-call "/api/games" {:league_id sample-league-id})
+        (is (= 200 (:status games)))
 
-          desired {"p1" (str (:player-id p1-id))
-                   "p1_points" 3,
-                   "p1_using" "RM",
-                   "p2" (str (:player-id p2-id)),
-                   "p2_points" 0,
-                   "p2_using" "Juv"
-                   "played_at" "2018-08-29T20:50:00Z"}]
-
-      (is (= 200 (:status games)))
-
-      (is (= desired
-             (select-keys
-              (first (json/read-str (:body games)))
-              ["p1_points" "p2_points"
-               "p1" "p2"
-               "p1_using" "p2_using"
-               "played_at"]))))))
+        (is (= desired
+               (select-keys
+                (first (json/read-str (:body games)))
+                ["p1_points" "p2_points"
+                 "p1" "p2"
+                 "p1_using" "p2_using"
+                 "played_at"])))))))
 
 (deftest get-players-test
   (testing "Fetching all the existing players"

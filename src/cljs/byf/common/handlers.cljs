@@ -58,18 +58,19 @@
                   :on-failure [:failed]}}))
 
 (defn writer
-  [page uri on-success transform-params-fn]
-  (fn [{:keys [db]} _]
-    {:db db
-     :http-xhrio {:method :post
-                  :uri uri
-                  :params (merge (transform-params-fn db)
-                                 {:league_id (get-league-id db)})
+  ([page uri on-success transform-params-fn]
+   (writer page uri on-success transform-params-fn :failed))
+  ([page uri on-success transform-params-fn on-failure]
+   (fn [{:keys [db]} _]
+     {:http-xhrio {:method :post
+                   :uri uri
+                   :params (merge (transform-params-fn db)
+                                  {:league_id (get-league-id db)})
 
-                  :format (ajax/json-request-format)
-                  :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success [on-success]
-                  :on-failure [:failed]}}))
+                   :format (ajax/json-request-format)
+                   :response-format (ajax/json-response-format {:keywords? true})
+                   :on-success [on-success]
+                   :on-failure [on-failure]}})))
 
 (defn failed
   [page]

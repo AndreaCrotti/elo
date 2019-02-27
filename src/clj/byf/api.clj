@@ -40,11 +40,16 @@
   [{:keys [params]}]
   (notifications/notify-slack "A new game was added!")
   (let [validated (validate/conform-data :game params)
-        game-id (db/add-game! validated)]
+        last-game (-> (db/query db/last-game-sql)
+                      first)]
+    (if (or
+         (:force validated)
+         (not (games/equal? validated last-game)))
 
-    (as-json
-     (resp/created "/api/games"
-                   {:id game-id}))))
+      (as-json
+       (resp/created "/api/games"
+                     {:id  (db/add-game! (dissoc validated :force))}))
+      (resp/bad-request "Duplicate game"))))
 
 (defn add-player!
   "Adds a new user to the platform, authenticated with basic Auth"
