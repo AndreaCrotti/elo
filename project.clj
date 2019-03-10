@@ -67,7 +67,10 @@
                  [com.cemerick/url "0.1.1"]
                  [venantius/accountant "0.2.4"]
                  [medley "1.0.0"]
-                 [metosin/ring-http-response "0.9.1"]]
+                 [metosin/ring-http-response "0.9.1"]
+                 [datascript "0.18.1"]
+                 [aysylu/loom "1.0.2"]
+                 [reifyhealth/specmonstah "2.0.0-alpha-1"]]
 
   :plugins [[lein-environ "1.1.0"]
             [migratus-lein "0.5.0"]
