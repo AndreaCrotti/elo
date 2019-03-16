@@ -70,7 +70,8 @@
                  [metosin/ring-http-response "0.9.1"]
                  [datascript "0.18.1"]
                  [aysylu/loom "1.0.2"]
-                 [reifyhealth/specmonstah "2.0.0-alpha-1"]]
+                 [reifyhealth/specmonstah "2.0.0-alpha-1"]
+                 [com.datomic/datomic-free "0.9.5697"]]
 
   :plugins [[lein-environ "1.1.0"]
             [migratus-lein "0.5.0"]
@@ -91,6 +92,7 @@
   :ring {:handler byf.api/app}
   :resource-paths ["config" "resources"]
 
+  :main ^:skip-aot datomic-app.core
   :migratus {:store :database
              :migration-dir "migrations"
              ;; can use environ here??
