@@ -10,7 +10,7 @@
   (when
       (and
        (byf-clojure-repl?)
-       (equal (projectile-project-name) "byf"))
+       (equal (projectile-project-name) "elo"))
 
     (insert "(ir/go)")
     (cider-repl-return)))
