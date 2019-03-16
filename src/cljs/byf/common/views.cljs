@@ -8,7 +8,7 @@
                                    display-fn identity}}]
 
   [:div.select.is-fullwidth
-   (into [:select
+   (into [:select.select.is-large
           {:on-change (utils/set-val dispatch-key) :value (or value "")}]
 
          (cons [:option {:disabled true

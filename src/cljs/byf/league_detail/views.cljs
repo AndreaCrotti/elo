@@ -73,7 +73,7 @@
      [:div.field
       [:label.label "Team"]
       [:div.control
-       [:input.input
+       [:input.input.is-large
         {:type "text"
          :placeholder (str (translate :using) " Name")
          :value (:p1_using @game)
@@ -94,7 +94,7 @@
      [:div.field
       [:label.label "Team"]
       [:div.control
-       [:input.input
+       [:input.input.is-large
         {:type "text"
          :placeholder (str (translate :using) " Name")
          :value (:p2_using @game)
@@ -106,7 +106,7 @@
        [date-range-picker]]]
 
      [:div.field
-      [:button.button.is-danger.is-fullwidth.add_game_button
+      [:button.button.is-danger.is-fullwidth.is-large.add_game_button
        (enable-button @valid-game?
                       {:on-click #(rf/dispatch [::handlers/add-game])})
 
@@ -146,7 +146,7 @@
             filtered-games (if @show-all? rev-games (take 10 rev-games))]
 
         [:div
-         [:button.button.is-fullwidth
+         [:button.button.is-fullwidth.is-large
           {:on-click #(rf/dispatch [::handlers/toggle-show-all])}
           (if @show-all? "show last 10" "show all")]
 
@@ -268,7 +268,7 @@
 
     [:div
      [game-slider]
-     [:table.table.is-fullwidth.is-striped
+     [:table.table.is-fullwidth.is-large.is-striped
       [:thead header]
       (into [:tbody]
             (for [[idx {:keys [id ranking]}] (enumerate filtered-rankings)
@@ -339,7 +339,7 @@
             filtered-history (from-to @history norm-from norm-to)]
 
         [:div
-         [:button.button.is-fullwidth
+         [:button.button.is-fullwidth.is-large
           {:on-click #(rf/dispatch [::handlers/toggle-graph])}
           (if @show-graph
             "hide graph"
@@ -349,7 +349,7 @@
            [:div.container
             [vega/vega-inner filtered-history @rankings-domain]
             [:label.label (str "From game " norm-from)]
-            [:input.slider.is-fullwidth
+            [:input.slider.is-fullwidth.is-large
              {:type "range"
               :min 0
               :max norm-to
@@ -357,7 +357,7 @@
               :on-change (utils/set-val ::handlers/from-game js/parseInt)}]
 
             [:label.label "To Game " norm-to]
-            [:input.slider.is-fullwidth
+            [:input.slider.is-fullwidth.is-large
              {:type "range"
               :min norm-from
               :max (count @history)
@@ -411,7 +411,7 @@
   (let [{:keys [k initial-ranking]} @(rf/subscribe [::handlers/game-config])]
     [:div
      [:label (str "K=" k)]
-     [:input.slider.is-fullwidth
+     [:input.slider.is-fullwidth.is-large
       {:type "range"
        :min 20
        :max 44
@@ -419,7 +419,7 @@
        :on-change (utils/set-val ::handlers/k js/parseInt)}]
 
      [:label (str "initial ranking=" initial-ranking)]
-     [:input.slider.is-fullwidth
+     [:input.slider.is-fullwidth.is-large
       {:type "range"
        :min 100
        :max 2000
@@ -436,6 +436,30 @@
           {:on-click #(rf/dispatch [::handlers/clear-notification])}]
          "Thank you, your game has been recorded"]))))
 
+(defn results
+  []
+  (let [show-results (rf/subscribe [::handlers/show-results])]
+    (fn []
+      [:div.inner
+       (when (utils/mobile?)
+         [:button.button.is-fullwidth.is-large
+          {:on-click #(rf/dispatch [::handlers/toggle-results])}
+          (if @show-results
+            "Hide Results"
+            "Show Results")])
+
+       (when (or (not (utils/mobile?)) @show-results)
+         [:div.results-content
+          [:div.columns.section
+           [stats-component ::stats-specs/highest-ranking]
+           [stats-component ::stats-specs/longest-streak]
+           [stats-component ::stats-specs/highest-increase]
+           [stats-component ::stats-specs/best-percents]]
+
+          [:div.section [vega-outer]]
+          [:div.section [rankings-table]]
+          [:div.section [games-table]]])])))
+
 (defn root
   []
   ;; this is kind of an antipattern for reframe
@@ -450,13 +474,4 @@
         [:div.content
          [:div.section [game-form]]
          [notifications]
-         [:div.inner
-          [:div.columns.section
-           [stats-component ::stats-specs/highest-ranking]
-           [stats-component ::stats-specs/longest-streak]
-           [stats-component ::stats-specs/highest-increase]
-           [stats-component ::stats-specs/best-percents]]
-
-          [:div.section [vega-outer]]
-          [:div.section [rankings-table]]
-          [:div.section [games-table]]]]))))
+         [results]]))))

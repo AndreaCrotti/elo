@@ -47,7 +47,8 @@
    :game-config shared/default-game-config
    :show-notification false
    :loading? false
-   :show-graph false})
+   :show-graph false
+   :show-results false})
 
 (defn- truncate-games
   [games up-to-games]
@@ -73,11 +74,16 @@
                    (common/assoc-in* db page [:show-notification] false)))
 
 (rf/reg-sub ::show-graph (getter [:show-graph]))
+(rf/reg-sub ::show-results (getter [:show-results]))
 (rf/reg-sub ::loading? (getter [:loading?]))
 
 (rf/reg-event-db ::toggle-graph
                  (fn [db _]
                    (common/update-in* db page [:show-graph] not)))
+
+(rf/reg-event-db ::toggle-results
+                 (fn [db _]
+                   (common/update-in* db page [:show-results] not)))
 
 (rf/reg-sub ::rankings
             :<- [::games-live-players]
