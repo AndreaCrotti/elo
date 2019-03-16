@@ -73,7 +73,7 @@
      [:div.field
       [:label.label "Team"]
       [:div.control
-       [:input.input
+       [:input.input.is-large
         {:type "text"
          :placeholder (str (translate :using) " Name")
          :value (:p1_using @game)
@@ -94,7 +94,7 @@
      [:div.field
       [:label.label "Team"]
       [:div.control
-       [:input.input
+       [:input.input.is-large
         {:type "text"
          :placeholder (str (translate :using) " Name")
          :value (:p2_using @game)
