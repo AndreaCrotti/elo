@@ -258,24 +258,26 @@
               (let [inner (fn [field v] (not (contains? dead-players (field v))))]
                 (filter #(and (inner :p1 %) (inner :p2 %)) games))))
 
-;; at db initialisation time we can set a few things related to the user
-
 (defn current-user-transform
   [db]
   (let [current-user (ck/get :user)]
     (if (some? current-user)
       ;;TODO: need to set the current user as well
       ;;and maybe have a cascade effect there
-      (common/assoc-in* db page [:game :p1] current-user)
+      (-> db
+          (assoc-in [:game :p1] current-user)
+          (assoc-in [:current-user] current-user))
       db)))
 
+;;TODO: improve this structure a bit
 (rf/reg-event-db ::initialize-db
                  (fn [db _]
                    (assoc db
                           page
-                          (assoc (current-user-transform default-db)
-                                 :game
-                                 default-game))))
+                          (current-user-transform
+                           (assoc default-db
+                                  :game
+                                  default-game)))))
 
 (rf/reg-event-db ::p1 (setter [:game :p1]))
 (rf/reg-event-db ::p1_points (setter [:game :p1_points]))

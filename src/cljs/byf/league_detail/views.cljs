@@ -475,9 +475,14 @@
         ::handlers/set-current-user current-user
         {:caption "Name"}]]]
 
-     [:button.button
+     [:button.button.is-large.is-primary
       {:on-click #(rf/dispatch [::handlers/store-current-user current-user])}
-      "Remember Me"]]))
+      "Remember Me"]
+
+     ;; need to do the extra dispatch for this to be useful
+     #_[:button.button.is-large.is-danger
+      {:on-click #(rf/dispatch [::handlers/store-current-user nil])}
+      "Forget Me"]]))
 
 (defn root
   []
