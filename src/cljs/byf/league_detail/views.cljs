@@ -436,6 +436,30 @@
           {:on-click #(rf/dispatch [::handlers/clear-notification])}]
          "Thank you, your game has been recorded"]))))
 
+(defn results
+  []
+  (let [show-results (rf/subscribe [::handlers/show-results])]
+    (fn []
+      [:div.inner
+       (when (utils/mobile?)
+         [:button.button.is-fullwidth
+          {:on-click #(rf/dispatch [::handlers/toggle-results])}
+          (if @show-results
+            "Show Results"
+            "Hide Results")])
+
+       (when (or (not (utils/mobile?)) @show-results)
+         [:div.results-content
+          [:div.columns.section
+           [stats-component ::stats-specs/highest-ranking]
+           [stats-component ::stats-specs/longest-streak]
+           [stats-component ::stats-specs/highest-increase]
+           [stats-component ::stats-specs/best-percents]]
+
+          [:div.section [vega-outer]]
+          [:div.section [rankings-table]]
+          [:div.section [games-table]]])])))
+
 (defn root
   []
   ;; this is kind of an antipattern for reframe
@@ -450,13 +474,4 @@
         [:div.content
          [:div.section [game-form]]
          [notifications]
-         [:div.inner
-          [:div.columns.section
-           [stats-component ::stats-specs/highest-ranking]
-           [stats-component ::stats-specs/longest-streak]
-           [stats-component ::stats-specs/highest-increase]
-           [stats-component ::stats-specs/best-percents]]
-
-          [:div.section [vega-outer]]
-          [:div.section [rankings-table]]
-          [:div.section [games-table]]]]))))
+         [results]]))))
