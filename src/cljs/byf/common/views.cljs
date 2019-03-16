@@ -2,6 +2,8 @@
   (:require [byf.utils :as utils]))
 
 (defn drop-down
+  "Wrapper around a select, which allows to pass the dispatch key and
+  the value the select should be set to"
   [opts dispatch-key value & {:keys [value-fn display-fn caption]
                               :or {value-fn identity
                                    caption ""

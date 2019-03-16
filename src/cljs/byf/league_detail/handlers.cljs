@@ -9,6 +9,7 @@
             [byf.rankings :as rankings]
             [byf.stats :as stats]
             [byf.shared-config :as shared]
+            [reagent.cookies :as ck]
             [medley.core :as medley]
             [re-frame.core :as rf]))
 
@@ -48,13 +49,23 @@
    :show-notification false
    :loading? false
    :show-graph false
-   :show-results false})
+   :show-results false
+   :current-user nil})
 
 (defn- truncate-games
   [games up-to-games]
   (if (some? up-to-games)
     (take up-to-games games)
     games))
+
+(rf/reg-sub ::current-user (getter [:current-user]))
+(rf/reg-event-db ::set-current-user (setter [:current-user]))
+
+;; can use the re-frame library to handle this more nicely
+(rf/reg-event-fx ::store-current-user
+                 (fn [{:keys [db]}]
+                   (let [current-user (common/get-in* db page [:current-user])]
+                     (ck/set! :user current-user))))
 
 (rf/reg-sub ::game-config (getter [:game-config]))
 (rf/reg-event-db ::k (setter [:game-config :k]))
@@ -219,8 +230,9 @@
                    filled-game?
                    valid-players?)))
 
-(rf/reg-event-db ::reset-game (fn [db _]
-                                (common/assoc-in* db page [:game] default-game)))
+(rf/reg-event-db ::reset-game
+                 (fn [db _]
+                   (common/assoc-in* db page [:game] default-game)))
 
 (rf/reg-sub ::game (getter [:game]))
 ;;TODO: add here the default condition
@@ -246,11 +258,26 @@
               (let [inner (fn [field v] (not (contains? dead-players (field v))))]
                 (filter #(and (inner :p1 %) (inner :p2 %)) games))))
 
+(defn current-user-transform
+  [db]
+  (let [current-user (ck/get :user)]
+    (if (some? current-user)
+      ;;TODO: need to set the current user as well
+      ;;and maybe have a cascade effect there
+      (-> db
+          (assoc-in [:game :p1] current-user)
+          (assoc-in [:current-user] current-user))
+      db)))
+
+;;TODO: improve this structure a bit
 (rf/reg-event-db ::initialize-db
                  (fn [db _]
                    (assoc db
                           page
-                          (assoc default-db :game default-game))))
+                          (current-user-transform
+                           (assoc default-db
+                                  :game
+                                  default-game)))))
 
 (rf/reg-event-db ::p1 (setter [:game :p1]))
 (rf/reg-event-db ::p1_points (setter [:game :p1_points]))
