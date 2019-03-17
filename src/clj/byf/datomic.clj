@@ -1,4 +1,5 @@
 (ns byf.datomic
+  "Playing around with datomic free"
   (:require [datomic.api :as d]))
 
 (def uri "datomic:free://localhost:4334/hello")

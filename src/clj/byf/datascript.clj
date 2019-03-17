@@ -1,4 +1,5 @@
 (ns byf.datascript
+  "Possible use of datascript"
   (:require [datascript.core :as d]
             [clj-time.core :as t])
   (:import (java.util UUID)))
