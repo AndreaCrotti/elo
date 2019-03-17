@@ -8,7 +8,6 @@
             [clojure.spec.gen.alpha :as g]
             [loom.io :as lio]))
 
-
 (def schema
   {:player {:prefix :p
             :spec ::gen/player

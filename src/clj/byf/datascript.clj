@@ -47,7 +47,6 @@
 
 (d/transact! conn datoms)
 
-
 ;; instead of :game/t1 we could do :game/t1.team for example
 
 ;; find all the teams that a given player used
