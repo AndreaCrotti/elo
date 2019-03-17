@@ -73,7 +73,7 @@
      [:div.field
       [:label.label "Team"]
       [:div.control
-       [:input.input.is-large
+       [:input.input
         {:type "text"
          :placeholder (str (translate :using) " Name")
          :value (:p1_using @game)
@@ -94,7 +94,7 @@
      [:div.field
       [:label.label "Team"]
       [:div.control
-       [:input.input.is-large
+       [:input.input
         {:type "text"
          :placeholder (str (translate :using) " Name")
          :value (:p2_using @game)
@@ -106,7 +106,7 @@
        [date-range-picker]]]
 
      [:div.field
-      [:button.button.is-danger.is-fullwidth.is-large.add_game_button
+      [:button.button.is-danger.is-fullwidth.add_game_button
        (enable-button @valid-game?
                       {:on-click #(rf/dispatch [::handlers/add-game])})
 
@@ -146,7 +146,7 @@
             filtered-games (if @show-all? rev-games (take 10 rev-games))]
 
         [:div
-         [:button.button.is-fullwidth.is-large
+         [:button.button.is-fullwidth
           {:on-click #(rf/dispatch [::handlers/toggle-show-all])}
           (if @show-all? "show last 10" "show all")]
 
@@ -268,7 +268,7 @@
 
     [:div
      [game-slider]
-     [:table.table.is-fullwidth.is-large.is-striped
+     [:table.table.is-fullwidth.is-striped
       [:thead header]
       (into [:tbody]
             (for [[idx {:keys [id ranking]}] (enumerate filtered-rankings)
@@ -339,7 +339,7 @@
             filtered-history (from-to @history norm-from norm-to)]
 
         [:div
-         [:button.button.is-fullwidth.is-large
+         [:button.button.is-fullwidth
           {:on-click #(rf/dispatch [::handlers/toggle-graph])}
           (if @show-graph
             "hide graph"
@@ -349,7 +349,7 @@
            [:div.container
             [vega/vega-inner filtered-history @rankings-domain]
             [:label.label (str "From game " norm-from)]
-            [:input.slider.is-fullwidth.is-large
+            [:input.slider.is-fullwidth
              {:type "range"
               :min 0
               :max norm-to
@@ -357,7 +357,7 @@
               :on-change (utils/set-val ::handlers/from-game js/parseInt)}]
 
             [:label.label "To Game " norm-to]
-            [:input.slider.is-fullwidth.is-large
+            [:input.slider.is-fullwidth
              {:type "range"
               :min norm-from
               :max (count @history)
@@ -411,7 +411,7 @@
   (let [{:keys [k initial-ranking]} @(rf/subscribe [::handlers/game-config])]
     [:div
      [:label (str "K=" k)]
-     [:input.slider.is-fullwidth.is-large
+     [:input.slider.is-fullwidth
       {:type "range"
        :min 20
        :max 44
@@ -419,7 +419,7 @@
        :on-change (utils/set-val ::handlers/k js/parseInt)}]
 
      [:label (str "initial ranking=" initial-ranking)]
-     [:input.slider.is-fullwidth.is-large
+     [:input.slider.is-fullwidth
       {:type "range"
        :min 100
        :max 2000
@@ -442,7 +442,7 @@
     (fn []
       [:div.inner
        (when (utils/mobile?)
-         [:button.button.is-fullwidth.is-large
+         [:button.button.is-fullwidth
           {:on-click #(rf/dispatch [::handlers/toggle-results])}
           (if @show-results
             "Hide Results"
@@ -475,12 +475,12 @@
         ::handlers/set-current-user current-user
         {:caption "Name"}]]]
 
-     [:button.button.is-large.is-primary
+     [:button.button.is-primary
       {:on-click #(rf/dispatch [::handlers/store-current-user current-user])}
       "Remember Me"]
 
      ;; need to do the extra dispatch for this to be useful
-     #_[:button.button.is-large.is-danger
+     #_[:button.button.is-danger
         {:on-click #(rf/dispatch [::handlers/store-current-user nil])}
         "Forget Me"]]))
 
