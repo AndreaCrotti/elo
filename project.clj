@@ -8,17 +8,18 @@
                  [org.clojure/spec.alpha "0.2.176"]
                  [clj-http "3.9.1"]
                  [prone "1.6.1"]
-                 [integrant "0.6.3"]
+                 [integrant "0.7.0"]
                  [integrant/repl "0.3.1"]
-                 [com.bhauman/figwheel-main "0.1.9"]
+                 [com.bhauman/figwheel-main "0.2.0"]
+                 ;; [com.bhauman/figwheel-main "0.1.9"]
 
                  ;; server side libs
                  [org.clojure/data.csv "0.1.4"]
                  [aero "1.1.3"]
                  [ring "1.7.0"]
-                 [org.clojure/java.jdbc "0.7.8"]
+                 [org.clojure/java.jdbc "0.7.9"]
                  [org.postgresql/postgresql "42.2.5"]
-                 [nilenso/honeysql-postgres "0.2.4"]
+                 [nilenso/honeysql-postgres "0.2.5"]
                  [honeysql "0.9.4"]
 
                  [environ/environ.core "0.3.1"]
@@ -35,10 +36,11 @@
                  [org.clojure/test.check "0.9.0"]
                  [junit/junit "4.12"]
 
-                 [org.clojure/clojurescript "1.10.439"]
+                 ;; [org.clojure/clojurescript "1.10.439"]
+                 [org.clojure/clojurescript "1.10.520"]
                  [re-frame "0.10.6"]
                  [reagent-utils "0.3.2"]
-                 [org.webjars/font-awesome "5.5.0"]
+                 [org.webjars/font-awesome "5.7.2"]
 
                  [day8.re-frame/tracing-stubs "0.5.1"]
                  [expound "0.7.2"]
@@ -63,15 +65,15 @@
                  [cljs-ajax "0.8.0"]
                  [cljs-http "0.1.45"]
                  [com.taoensso/timbre "4.10.0"]
-                 [bidi "2.1.4"]
+                 [bidi "2.1.5"]
                  [com.cemerick/url "0.1.1"]
                  [venantius/accountant "0.2.4"]
-                 [medley "1.0.0"]
+                 [medley "1.1.0"]
                  [metosin/ring-http-response "0.9.1"]
-                 [datascript "0.18.1"]
+                 [datascript "0.18.2"]
                  [aysylu/loom "1.0.2"]
                  [reifyhealth/specmonstah "2.0.0-alpha-1"]
-                 [com.datomic/datomic-free "0.9.5697"]]
+                 #_[com.datomic/datomic-free "0.9.5697"]]
 
   :plugins [[lein-environ "1.1.0"]
             [migratus-lein "0.5.0"]
@@ -92,7 +94,7 @@
   :ring {:handler byf.api/app}
   :resource-paths ["config" "resources"]
 
-  :main ^:skip-aot datomic-app.core
+  ;; :main ^:skip-aot datomic-app.core
   :migratus {:store :database
              :migration-dir "migrations"
              ;; can use environ here??
@@ -133,9 +135,9 @@
     :env {:environment :dev}
 
     :dependencies [[binaryage/devtools "0.9.10"]
-                   [cider/piggieback "0.3.10"]
+                   [cider/piggieback "0.4.0"]
                    [org.mozilla/rhino "1.7.7.1"]
-                   [day8.re-frame/re-frame-10x "0.3.6"]
+                   [day8.re-frame/re-frame-10x "0.3.7"]
                    [com.bhauman/rebel-readline-cljs "0.1.4"]
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild
