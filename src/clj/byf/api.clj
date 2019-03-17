@@ -67,6 +67,8 @@
 
 (defn spa
   [request]
+  ;;TODO: find a way to redirect automatically to the league page here
+  ;;or simply enrich the cookies with information about the user leagues
   (render-page (home/body request)))
 
 (defn- get-league-id
