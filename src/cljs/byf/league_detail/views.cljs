@@ -102,7 +102,10 @@
 
      [:div.field
       [:label.label "Played at"]
-      [:div.control {:id "played_at"}
+      [:div.control "Just Played"]
+      [:div.control "15 minutes ago"]
+      [:div.control "Custom Date"]
+      [:div.control
        [date-range-picker]]]
 
      [:div.field
