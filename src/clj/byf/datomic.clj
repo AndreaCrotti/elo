@@ -1,3 +1,5 @@
+(ns byf.datomic)
+
 ;; (ns byf.datomic
 ;;   "Playing around with datomic free"
 ;;   (:require [datomic.api :as d]))
