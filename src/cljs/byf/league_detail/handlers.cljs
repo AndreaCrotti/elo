@@ -63,14 +63,14 @@
 (rf/reg-event-fx ::set-current-user
                  (fn [{:keys [db]} [_ value]]
                    {:db (common/assoc-in* db page [:current-user] value)
-                    :dispatch-n [[::p1 value]
-                                 [::add-user-notification]]}))
+                    :dispatch [::p1 value]}))
 
 ;; can use the re-frame library to handle this more nicely
 (rf/reg-event-fx ::store-current-user
                  (fn [{:keys [db]}]
                    (let [current-user (common/get-in* db page [:current-user])]
-                     (ck/set! :user current-user))))
+                     (ck/set! :user current-user)
+                     {:dispatch [::current-user-notification true]})))
 
 (rf/reg-sub ::game-config (getter [:game-config]))
 (rf/reg-event-db ::k (setter [:game-config :k]))

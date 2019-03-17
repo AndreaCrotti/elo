@@ -429,21 +429,26 @@
 (defn notification
   [flag content clear-event]
   (when flag
-    [:div.notification.is-success
-     [:button.delete
-      {:on-click #(rf/dispatch [clear-event])}]
-     content]))
+    [:div.section
+     [:div.notification.is-success
+      [:button.delete
+       {:on-click #(rf/dispatch [clear-event])}]
+      content]]))
 
 ;; make this more generic to allow different position and different content
 (defn add-user-notification
   []
   (let [show-notification (rf/subscribe [::handlers/add-user-notification])]
-    (notification @show-notification "Thank you, your game has been recorded" ::handlers/clear-notification)))
+    (notification @show-notification
+                  "Thank you, your game has been recorded"
+                  ::handlers/clear-notification)))
 
 (defn current-user-notification
   []
   (let [current-user-set (rf/subscribe [::handlers/current-user-notification])]
-    (notification @current-user-set "Thanks, I'll remember it's you next time" ::handlers/clear-set-user-notification)))
+    (notification @current-user-set
+                  "Thanks, I'll remember it's you next time"
+                  ::handlers/clear-set-user-notification)))
 
 (defn results
   []
