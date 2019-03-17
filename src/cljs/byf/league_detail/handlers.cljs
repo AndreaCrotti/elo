@@ -59,7 +59,10 @@
     games))
 
 (rf/reg-sub ::current-user (getter [:current-user]))
-(rf/reg-event-db ::set-current-user (setter [:current-user]))
+(rf/reg-event-fx ::set-current-user
+                 (fn [{:keys [db]} [_ value]]
+                   {:db (common/assoc-in* db page [:current-user] value)
+                    :dispatch [::p1 value]}))
 
 ;; can use the re-frame library to handle this more nicely
 (rf/reg-event-fx ::store-current-user
