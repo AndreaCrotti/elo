@@ -73,7 +73,8 @@
                  [datascript "0.18.2"]
                  [aysylu/loom "1.0.2"]
                  [reifyhealth/specmonstah "2.0.0-alpha-1"]
-                 #_[com.datomic/datomic-free "0.9.5697"]]
+                 [metosin/ring-http-response "0.9.1"]
+                 [com.taoensso/sente "1.14.0-RC2"]]
 
   :plugins [[lein-environ "1.1.0"]
             [migratus-lein "0.5.0"]
