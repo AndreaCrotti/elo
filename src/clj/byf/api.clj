@@ -7,7 +7,6 @@
             [byf.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
             [byf.config :refer [value]]
             [byf.db :as db]
-            [byf.games :as games]
             [byf.notifications :as notifications]
             [byf.pages.home :as home]
             [byf.validate :as validate]
