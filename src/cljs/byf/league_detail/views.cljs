@@ -426,15 +426,29 @@
        :value initial-ranking
        :on-change (utils/set-val ::handlers/initial-ranking js/parseInt)}]]))
 
-(defn notifications
+(defn notification
+  [flag content clear-event]
+  (when flag
+    [:div.section
+     [:div.notification.is-success
+      [:button.delete
+       {:on-click #(rf/dispatch [clear-event])}]
+      content]]))
+
+;; make this more generic to allow different position and different content
+(defn add-user-notification
   []
-  (let [show-notification (rf/subscribe [::handlers/show-notification])]
-    (fn []
-      (when @show-notification
-        [:div.notification.is-success
-         [:button.delete
-          {:on-click #(rf/dispatch [::handlers/clear-notification])}]
-         "Thank you, your game has been recorded"]))))
+  (let [show-notification (rf/subscribe [::handlers/add-user-notification])]
+    (notification @show-notification
+                  "Thank you, your game has been recorded"
+                  ::handlers/clear-notification)))
+
+(defn current-user-notification
+  []
+  (let [current-user-set (rf/subscribe [::handlers/current-user-notification])]
+    (notification @current-user-set
+                  "Thanks, I'll remember it's you next time"
+                  ::handlers/clear-set-user-notification)))
 
 (defn results
   []
@@ -497,6 +511,7 @@
         [:div.loading]
         [:div.content
          [set-current-user]
+         [current-user-notification]
          [game-form]
-         [notifications]
+         [add-user-notification]
          [results]]))))
