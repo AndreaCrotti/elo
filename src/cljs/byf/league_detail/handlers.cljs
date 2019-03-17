@@ -46,7 +46,8 @@
    :league_id nil
    :show-all? false
    :game-config shared/default-game-config
-   :show-notification false
+   :add-user-notification false
+   :current-user-notification false
    :loading? false
    :show-graph false
    :show-results false
@@ -62,7 +63,8 @@
 (rf/reg-event-fx ::set-current-user
                  (fn [{:keys [db]} [_ value]]
                    {:db (common/assoc-in* db page [:current-user] value)
-                    :dispatch [::p1 value]}))
+                    :dispatch-n [[::p1 value]
+                                 [::add-user-notification]]}))
 
 ;; can use the re-frame library to handle this more nicely
 (rf/reg-event-fx ::store-current-user
@@ -78,14 +80,23 @@
   [name-mapping vals]
   (medley/map-keys #(get name-mapping %) vals))
 
-(rf/reg-sub ::show-notification (getter [:show-notification]))
-(rf/reg-event-db ::show-notification
+(rf/reg-sub ::add-user-notification (getter [:add-user-notification]))
+(rf/reg-event-db ::add-user-notification
                  (fn [db _]
-                   (common/assoc-in* db page [:show-notification] true)))
+                   (common/assoc-in* db page [:add-user-notification] true)))
 
 (rf/reg-event-db ::clear-notification
                  (fn [db _]
-                   (common/assoc-in* db page [:show-notification] false)))
+                   (common/assoc-in* db page [:add-user-notification] false)))
+
+(rf/reg-sub ::current-user-notification (getter [:current-user-notification]))
+(rf/reg-event-db ::current-user-notification
+                 (fn [db _]
+                   (common/assoc-in* db page [:current-user-notification] true)))
+
+(rf/reg-event-db ::clear-notification
+                 (fn [db _]
+                   (common/assoc-in* db page [:current-user-notification] false)))
 
 (rf/reg-sub ::show-graph (getter [:show-graph]))
 (rf/reg-sub ::show-results (getter [:show-results]))
@@ -297,7 +308,7 @@
   [extra-signal]
   (fn [{:keys [db]} _]
     {:db db
-     :dispatch-n (cons extra-signal [[::show-notification]
+     :dispatch-n (cons extra-signal [[::add-user-notification]
                                      [::players-handlers/load-players]
                                      [::load-games]])}))
 
