@@ -94,7 +94,7 @@
                  (fn [db _]
                    (common/assoc-in* db page [:current-user-notification] true)))
 
-(rf/reg-event-db ::clear-notification
+(rf/reg-event-db ::clear-set-user-notification
                  (fn [db _]
                    (common/assoc-in* db page [:current-user-notification] false)))
 
