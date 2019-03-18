@@ -19,8 +19,13 @@
             [ring.middleware.resource :as resources]
             [ring.util.response]
             [ring.util.http-response :as resp]
+            [taoensso.sente :as sente]
+            [org.httpkit.server :as http-kit]
+            [taoensso.sente.server-adapters.http-kit]
             [taoensso.timbre :as timbre :refer [log info debug]])
   (:import (java.util UUID)))
+
+(reset! sente/debug-mode?_ true)
 
 (def github-token-path [:oauth2/access-tokens :github :token])
 

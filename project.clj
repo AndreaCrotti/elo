@@ -64,7 +64,7 @@
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [cljs-ajax "0.8.0"]
                  [cljs-http "0.1.45"]
-                 [com.taoensso/timbre "4.10.0"]
+
                  [bidi "2.1.5"]
                  [com.cemerick/url "0.1.1"]
                  [venantius/accountant "0.2.4"]
@@ -73,7 +73,9 @@
                  [datascript "0.18.2"]
                  [aysylu/loom "1.0.2"]
                  [reifyhealth/specmonstah "2.0.0-alpha-1"]
-                 #_[com.datomic/datomic-free "0.9.5697"]]
+                 [com.taoensso/timbre "4.10.0" :exclusions [com.taoensso/encore]]
+                 [http-kit "2.3.0"]
+                 [com.taoensso/sente "1.14.0-RC2"]]
 
   :plugins [[lein-environ "1.1.0"]
             [migratus-lein "0.5.0"]
