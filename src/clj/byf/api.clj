@@ -21,11 +21,36 @@
             [ring.util.http-response :as resp]
             [taoensso.sente :as sente]
             [org.httpkit.server :as http-kit]
-            [taoensso.sente.server-adapters.http-kit]
-            [taoensso.timbre :as timbre :refer [log info debug]])
+            [taoensso.sente.server-adapters.http-kit :refer (get-sch-adapter)]
+            [taoensso.timbre :as timbre :refer [log info infof debug]])
   (:import (java.util UUID)))
 
 (reset! sente/debug-mode?_ true)
+
+
+(let [;; Serializtion format, must use same val for client + server:
+      packer :edn ; Default packer, a good choice in most cases
+      ;; (sente-transit/get-transit-packer) ; Needs Transit dep
+
+      chsk-server
+      (sente/make-channel-socket-server!
+       (get-sch-adapter) {:packer packer})
+
+      {:keys [ch-recv send-fn connected-uids
+              ajax-post-fn ajax-get-or-ws-handshake-fn]}
+      chsk-server]
+
+  (def ring-ajax-post                ajax-post-fn)
+  (def ring-ajax-get-or-ws-handshake ajax-get-or-ws-handshake-fn)
+  (def ch-chsk                       ch-recv) ; ChannelSocket's receive channel
+  (def chsk-send!                    send-fn) ; ChannelSocket's send API fn
+  (def connected-uids                connected-uids) ; Watchable, read-only atom
+  )
+
+(add-watch connected-uids :connected-uids
+           (fn [_ _ old new]
+             (when (not= old new)
+               (infof "Connected uids change: %s" new))))
 
 (def github-token-path [:oauth2/access-tokens :github :token])
 
@@ -147,6 +172,8 @@
         "oauth2/github/callback" github-callback
         "authenticated" authenticated?
 
+        "chsk" {:get ring-ajax-get-or-ws-handshake
+                :post ring-ajax-post}
         ;; quite a crude way to make sure all the other urls actually
         ;; render to the SPA, letting the routing be handled by
         ;; accountant

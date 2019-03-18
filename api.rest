@@ -35,3 +35,6 @@ GET :local/api/oauth2/github/callback?code=xxx&state=xxx
 
 # check if a user is authenticated already
 GET :local/authenticated
+
+# connect ot the local websocket
+GET :local/chsk
