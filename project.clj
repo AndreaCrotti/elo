@@ -156,5 +156,6 @@
                     :output-to "resources/public/cljs-out/dev-main.js"
                     :asset-path "resources/public/cljs-out/byf"
                     :optimizations :simple
+                    :parallel-build true
                     :closure-defines {goog.DEBUG true}
                     :pretty-print true}}]})
