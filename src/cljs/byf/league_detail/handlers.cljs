@@ -13,6 +13,8 @@
             [medley.core :as medley]
             [re-frame.core :as rf]))
 
+(def cookie-validity (* 365 24 60 60))
+
 (def page ::page-id)
 
 (def setter (partial common/setter* page))
@@ -69,7 +71,7 @@
 (rf/reg-event-fx ::store-current-user
                  (fn [{:keys [db]}]
                    (let [current-user (common/get-in* db page [:current-user])]
-                     (ck/set! :user current-user)
+                     (ck/set! :user current-user :max-age cookie-validity)
                      {:dispatch [::current-user-notification true]})))
 
 (rf/reg-sub ::game-config (getter [:game-config]))
