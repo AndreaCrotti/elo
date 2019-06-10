@@ -1,6 +1,7 @@
 (ns byf.games
   (:require [byf.algorithms.elo :as byf]
             [byf.shared-config :as shared]
+            [clojure.set :as s]
             #?(:clj [taoensso.timbre :as log])
             #?(:cljs [taoensso.timbre :as log :include-macros true])
             [medley.core :as medley]))
@@ -125,15 +126,19 @@
    (for [idx (range (count games))]
      (rankings-at-idx* players idx games))))
 
-(defn longest-winning-subseq
-  [s]
-  (if-not (contains? (set s) :w)
-    0
-    (->> s
-         (partition-by identity)
-         (filter #(= #{:w} (set %)))
-         (map count)
-         (apply max))))
+(defn longest-seq
+  [res-set]
+  (fn [s]
+    (if-not (contains? (set s) :w)
+      0
+      (->> s
+           (partition-by identity)
+           (filter #(s/subset? (set %) res-set))
+           (map count)
+           (apply max)))))
+
+(def longest-winning-subseq (longest-seq #{:w}))
+(def longest-unbeaten-subseq (longest-seq #{:w :d}))
 
 (defn- zipper
   [xs]

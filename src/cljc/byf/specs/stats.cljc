@@ -24,7 +24,11 @@
                               ::game-idx
                               ::time
                               ::result])))
-(s/def ::longest-streak
+(s/def ::longest-winning-streak
+  (s/coll-of (s/keys :req-un [::player
+                              ::streak])))
+
+(s/def ::longest-unbeaten-streak
   (s/coll-of (s/keys :req-un [::player
                               ::streak])))
 

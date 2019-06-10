@@ -45,6 +45,11 @@
     (is (= [{:player "Charlie", :streak 3} {:player "Fitz", :streak 2}]
            (sut/longest-streak sample-result sample-mapping)))))
 
+(deftest longest-unbeaten-streak-test
+  (testing "unbeaten for games"
+    (is (= [{:player "Charlie", :streak 3} {:player "Fitz", :streak 2}]
+           (sut/longest-unbeaten sample-result sample-mapping)))))
+
 (deftest best-percents-test
   (testing "best percents"
     (is (= [{:player "Fitz", :w 50N, :d 25N, :l 25N}

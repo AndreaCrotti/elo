@@ -371,19 +371,28 @@
 (def stats
   {::stats-specs/highest-ranking
    {:handler ::handlers/highest-rankings-best
+    :title "Highest Score"
     :fields [{:k :player :v "name"} {:k :ranking :v "ranking"} {:k :time :v "time"}]
     :transform {:time format-date}}
 
-   ::stats-specs/longest-streak
+   ::stats-specs/longest-winning-streak
    {:handler ::handlers/longest-streaks
+    :title "Longest Winning Streak"
+    :fields [{:k :player :v "name"} {:k :streak :v "streak"}]}
+
+   ::stats-specs/longest-unbeaten-streak
+   {:handler ::handlers/longest-streaks
+    :title "Longest Unbeaten Streak"
     :fields [{:k :player :v "name"} {:k :streak :v "streak"}]}
 
    ::stats-specs/highest-increase
    {:handler ::handlers/highest-increase
+    :title "Highest Points increase"
     :fields [{:k :player :v "name"} {:k :points :v "points"}]}
 
    ::stats-specs/best-percents
    {:handler ::handlers/best-percents
+    :title "Best Winning %"
     :fields [{:k :player :v "name"} {:k :w :v "win %"}
              {:k :d :v "draw %"} {:k :l :v "loss %"}]
 
@@ -391,7 +400,7 @@
 
 (defn stats-component
   [kw]
-  (let [{:keys [handler fields transform]} (kw stats)]
+  (let [{:keys [handler fields transform title]} (kw stats)]
     (let [stats (rf/subscribe [handler])
           active-player-names (rf/subscribe [::players-handlers/active-players-names])]
 
@@ -399,6 +408,7 @@
         ;; make the assertion actually blow up as well
         (s/assert kw @stats)
         [:div.column
+         [:label.label title]
          [stats-table
           fields
           (take stats-length
@@ -461,12 +471,12 @@
           (if @show-results
             "Hide Results"
             "Show Results")])
-
        (when (or (not (utils/mobile?)) @show-results)
          [:div.results-content
           [:div.columns.section
            [stats-component ::stats-specs/highest-ranking]
-           [stats-component ::stats-specs/longest-streak]
+           [stats-component ::stats-specs/longest-winning-streak]
+           [stats-component ::stats-specs/longest-unbeaten-streak]
            [stats-component ::stats-specs/highest-increase]
            [stats-component ::stats-specs/best-percents]]
 
