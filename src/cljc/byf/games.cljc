@@ -1,6 +1,7 @@
 (ns byf.games
   (:require [byf.algorithms.elo :as byf]
             [byf.shared-config :as shared]
+            [clojure.set :as s]
             #?(:clj [taoensso.timbre :as log])
             #?(:cljs [taoensso.timbre :as log :include-macros true])
             [medley.core :as medley]))
@@ -132,7 +133,7 @@
       0
       (->> s
            (partition-by identity)
-           (filter #(clojure.set/subset? (set %) res-set))
+           (filter #(s/subset? (set %) res-set))
            (map count)
            (apply max)))))
 
