@@ -399,12 +399,19 @@
             (fn [history]
               (stats/highest-rankings-best history)))
 
-(rf/reg-sub ::longest-streaks
+(rf/reg-sub ::longest-winning-streaks
             :<- [::results]
             :<- [::players-handlers/name-mapping]
 
             (fn [[results name-mapping]]
               (stats/longest-streak results name-mapping)))
+
+(rf/reg-sub ::longest-unbeaten-streaks
+            :<- [::results]
+            :<- [::players-handlers/name-mapping]
+
+            (fn [[results name-mapping]]
+              (stats/longest-unbeaten results name-mapping)))
 
 (rf/reg-sub ::highest-increase
             :<- [::rankings-history]

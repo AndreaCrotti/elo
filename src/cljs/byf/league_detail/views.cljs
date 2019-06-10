@@ -381,7 +381,7 @@
     :fields [{:k :player :v "name"} {:k :streak :v "streak"}]}
 
    ::stats-specs/longest-unbeaten-streak
-   {:handler ::handlers/longest-streaks
+   {:handler ::handlers/longest-unbeaten-streaks
     :title "Longest Unbeaten Streak"
     :fields [{:k :player :v "name"} {:k :streak :v "streak"}]}
 
