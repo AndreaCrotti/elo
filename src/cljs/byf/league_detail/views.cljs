@@ -376,7 +376,7 @@
     :transform {:time format-date}}
 
    ::stats-specs/longest-winning-streak
-   {:handler ::handlers/longest-streaks
+   {:handler ::handlers/longest-winning-streaks
     :title "Longest Winning Streak"
     :fields [{:k :player :v "name"} {:k :streak :v "streak"}]}
 
