@@ -125,15 +125,19 @@
    (for [idx (range (count games))]
      (rankings-at-idx* players idx games))))
 
-(defn longest-winning-subseq
-  [s]
-  (if-not (contains? (set s) :w)
-    0
-    (->> s
-         (partition-by identity)
-         (filter #(= #{:w} (set %)))
-         (map count)
-         (apply max))))
+(defn longest-seq
+  [res-set]
+  (fn [s]
+    (if-not (contains? (set s) :w)
+      0
+      (->> s
+           (partition-by identity)
+           (filter #(clojure.set/subset? (set %) res-set))
+           (map count)
+           (apply max)))))
+
+(def longest-winning-subseq (longest-seq #{:w}))
+(def longest-unbeaten-subseq (longest-seq #{:w :d}))
 
 (defn- zipper
   [xs]

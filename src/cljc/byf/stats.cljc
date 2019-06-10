@@ -6,13 +6,18 @@
   [name-mapping vals]
   (medley/map-keys #(get name-mapping %) vals))
 
-(defn longest-streak
-  [results name-mapping]
-  (->> results
-       (medley/map-vals games/longest-winning-subseq)
-       (uuid->name name-mapping)
-       (sort-by #(- (second %)))
-       (map #(zipmap [:player :streak] %))))
+(defn longest-by
+  [longest-fn]
+  (fn [results name-mapping]
+    (->> results
+         (medley/map-vals longest-fn)
+         (uuid->name name-mapping)
+         (sort-by #(- (second %)))
+         (map #(zipmap [:player :streak] %)))))
+
+(def longest-streak (longest-by games/longest-winning-subseq))
+
+(def longest-unbeaten (longest-by games/longest-unbeaten-subseq))
 
 (defn highest-rankings-best
   [history]
