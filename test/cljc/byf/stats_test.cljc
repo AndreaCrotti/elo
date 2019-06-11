@@ -45,7 +45,7 @@
     (is (= [{:player "Charlie", :streak 3} {:player "Fitz", :streak 2}]
            (sut/longest-streak sample-result sample-mapping)))))
 
-#_(deftest longest-unbeaten-streak-test
+(deftest longest-unbeaten-streak-test
   (testing "unbeaten for games"
     (is (= [{:player "Charlie", :streak 4} {:player "Fitz", :streak 3}]
            (sut/longest-unbeaten sample-result sample-mapping)))))

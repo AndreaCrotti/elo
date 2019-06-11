@@ -476,7 +476,7 @@
           [:div.columns.section
            [stats-component ::stats-specs/highest-ranking]
            [stats-component ::stats-specs/longest-winning-streak]
-           #_[stats-component ::stats-specs/longest-unbeaten-streak]
+           [stats-component ::stats-specs/longest-unbeaten-streak]
            [stats-component ::stats-specs/highest-increase]
            [stats-component ::stats-specs/best-percents]]
 

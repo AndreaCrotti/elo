@@ -132,7 +132,7 @@
     (if-not (contains? (set s) :w)
       0
       (->> s
-           (partition-by identity)
+           (partition-by #(contains? res-set %))
            (filter #(s/subset? (set %) res-set))
            (map count)
            (apply max)))))
