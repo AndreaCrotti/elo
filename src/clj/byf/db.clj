@@ -37,7 +37,8 @@
   (-> (h/select :*)
       (h/from :game)
       (h/where [:= :league_id league-id])
-      (h/order-by [:played_at :asc])))
+      (h/order-by [:played_at :asc]
+                  [:recorded_at :asc])))
 
 (defn load-players-sql
   [league-id]
