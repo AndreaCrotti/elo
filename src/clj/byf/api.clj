@@ -20,8 +20,6 @@
             [ring.util.response]
             [ring.util.http-response :as resp]
             [taoensso.sente :as sente]
-            [org.httpkit.server :as http-kit]
-            [taoensso.sente.server-adapters.http-kit]
             [taoensso.timbre :as timbre :refer [log info debug]])
   (:import (java.util UUID)))
 
@@ -40,9 +38,21 @@
   [response]
   (resp/content-type response "application/json"))
 
+(defn format-game
+  [params]
+  (let [get-name #(:name (db/get-single db/player-name (UUID/fromString %)))]
+    (format "%s (%s), %s - %s, (%s) %s"
+            ;; convert :p1 and :p2 to the username
+            (get-name (:p1 params))
+            (:p1_using params)
+            (:p1_points params)
+            (:p2_points params)
+            (:p2_using params)
+            (get-name (:p2 params)))))
+
 (defn add-game!
   [{:keys [params]}]
-  (notifications/notify-slack "A new game was added!")
+  (notifications/notify-slack (format-game params))
   (let [validated (validate/conform-data :game params)
         game-id (db/add-game! validated)]
 
