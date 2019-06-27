@@ -76,7 +76,7 @@
   (jdbc/query (db-spec)
               (sql/format (apply func args))))
 
-(defn- get-single
+(defn get-single
   [func & args]
   (first (apply query func args)))
 
@@ -161,3 +161,9 @@
 (defn count-sql [table]
   (-> (h/select :%count.*)
       (h/from table)))
+
+(defn player-name
+  [player-id]
+  (-> (h/select :name)
+      (h/from :player)
+      (h/where [:= :id player-id])))
