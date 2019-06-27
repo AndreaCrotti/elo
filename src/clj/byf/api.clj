@@ -40,9 +40,21 @@
   [response]
   (resp/content-type response "application/json"))
 
+(defn format-game
+  [params]
+  (format "%s (%s), %s - %s, (%s) %s"
+          ;; convert :p1 and :p2 to the username
+          (:p1 params)
+          (:p1_using params)
+          (:p1_points params)
+          (:p2_points params)
+          (:p2_using params)
+          (:p2 params)))
+
 (defn add-game!
   [{:keys [params]}]
-  (notifications/notify-slack "A new game was added!")
+  (println "formatted "(format-game params))
+  (notifications/notify-slack (format-game params))
   (let [validated (validate/conform-data :game params)
         game-id (db/add-game! validated)]
 
