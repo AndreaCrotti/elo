@@ -155,7 +155,7 @@
      :compiler     {:main byf.core
                     :output-to "resources/public/cljs-out/dev-main.js"
                     :asset-path "resources/public/cljs-out/byf"
-                    :optimizations :simple
+                    :optimizations :advanced
                     :parallel-build true
                     :closure-defines {goog.DEBUG true}
                     :pretty-print true}}]})
