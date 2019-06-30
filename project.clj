@@ -25,6 +25,7 @@
                  [environ/environ.core "0.3.1"]
                  [hiccup "1.0.5"]
                  [ring/ring-json "0.4.0"]
+                 [bk/ring-gzip "0.3.0"]
                  [ring-oauth2 "0.1.4"]
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-mock "0.3.2"]

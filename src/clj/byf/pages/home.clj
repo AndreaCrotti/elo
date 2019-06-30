@@ -18,7 +18,7 @@
 
 (defn body
   [request]
-  [:html
+  [:html {:lang "en"}
    (gen-header "League page")
    [:body
     [:div {:id "app"}]

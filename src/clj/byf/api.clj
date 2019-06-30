@@ -18,6 +18,7 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.oauth2 :refer [wrap-oauth2]]
             [ring.middleware.resource :as resources]
+            [ring.middleware.gzip :refer [wrap-gzip]]
             [ring.util.response]
             [ring.util.http-response :as resp]
             [taoensso.sente :as sente]
@@ -193,6 +194,7 @@
   (-> routes-handler
       (resources/wrap-resource "public")
       wrap-not-modified
+      wrap-gzip
       (r-def/wrap-defaults
        (enable-cookies r-def/api-defaults))
 
