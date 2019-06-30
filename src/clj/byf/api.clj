@@ -13,6 +13,7 @@
             [hiccup.core :as hiccup]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :as r-def]
+            [ring.middleware.not-modified :refer [wrap-not-modified]]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.oauth2 :refer [wrap-oauth2]]
@@ -191,6 +192,7 @@
 (def app
   (-> routes-handler
       (resources/wrap-resource "public")
+      wrap-not-modified
       (r-def/wrap-defaults
        (enable-cookies r-def/api-defaults))
 
