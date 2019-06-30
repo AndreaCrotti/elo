@@ -3,6 +3,7 @@
 [![CircleCI](https://circleci.com/gh/AndreaCrotti/elo/tree/master.svg?style=svg)](https://circleci.com/gh/AndreaCrotti/elo/tree/master)
 [![codecov](https://codecov.io/gh/AndreaCrotti/elo/branch/master/graph/badge.svg)](https://codecov.io/gh/AndreaCrotti/elo)
 [![](https://codescene.io/projects/4745/status.svg) Get more details at **codescene.io**.](https://codescene.io/projects/4745/jobs/latest-successful/results)
+[![Dependencies Status](https://versions.deps.co/AndreaCrotti/elo/status.svg)](https://versions.deps.co/AndreaCrotti/elo)
 
 Platform to keep track of internal leagues.
 
