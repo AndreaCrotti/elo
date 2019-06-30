@@ -26,6 +26,7 @@
   (:import (java.util UUID)))
 
 (reset! sente/debug-mode?_ true)
+(def max-age (* 60 60 24 10))
 
 (def github-token-path [:oauth2/access-tokens :github :token])
 
@@ -190,6 +191,13 @@
   [params]
   (assoc-in params [:session :cookie-attrs :same-site] :lax))
 
+(defn add-cache-control
+  [handler]
+  (fn [request]
+    (ring.util.response/header
+     (handler request)
+     "Cache-Control" (format "max-age=%s" max-age))))
+
 (def app
   (-> routes-handler
       (resources/wrap-resource "public")
@@ -200,6 +208,7 @@
 
       (wrap-authorization basic-auth-backend)
       (wrap-authentication basic-auth-backend)
+      add-cache-control
       wrap-keyword-params
       wrap-json-params
       wrap-json-response
