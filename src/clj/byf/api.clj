@@ -208,7 +208,7 @@
 
       (wrap-authorization basic-auth-backend)
       (wrap-authentication basic-auth-backend)
-      add-cache-control
+      #_add-cache-control
       wrap-keyword-params
       wrap-json-params
       wrap-json-response
