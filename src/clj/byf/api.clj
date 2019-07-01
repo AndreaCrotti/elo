@@ -201,7 +201,7 @@
 (def app
   (-> routes-handler
       (resources/wrap-resource "public")
-      wrap-not-modified
+      #_wrap-not-modified
       wrap-gzip
       (r-def/wrap-defaults
        (enable-cookies r-def/api-defaults))
