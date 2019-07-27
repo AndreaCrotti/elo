@@ -60,11 +60,6 @@
   (-> (h/select :*)
       (h/from :company)))
 
-(defn load-users-sql
-  []
-  (-> (h/select :*)
-      (h/from [:users])))
-
 (defn load-league-sql
   [league-id]
   (-> (h/select :*)
@@ -90,8 +85,6 @@
 
 (defn load-companies [] (query load-companies-sql))
 
-(defn load-users [] (query load-users-sql))
-
 (defn- store-sql
   [params]
   (-> (h/insert-into :game)
@@ -105,8 +98,6 @@
     (-> (h/insert-into table)
         (h/values [params])
         (ph/returning :id))))
-
-(def add-user-sql (add-row-sql :users))
 
 (def add-player-sql (add-row-sql :player))
 
@@ -140,8 +131,6 @@
   {:pre [(not= (:p1 params) (:p2 params))]}
   ((add-row! store-sql) params))
 
-(def add-user! (add-row! add-user-sql))
-
 (def add-player! (add-row! add-player-sql))
 
 (defn add-player-full!
@@ -149,14 +138,9 @@
   ;;TODO: wrap it in a db transaction and remove the NULL constraint
   ;;from the player table!
   (let [company-id (:company_id (load-league league_id))
-        user-id (add-user! {:email email})
-        player-id (add-player! {:user_id user-id :name name :id (or id (gen-uuid))})]
+        player-id (add-player! {name name :id (or id (gen-uuid))})]
 
-    (add-user-to-company! {:user_id user-id :company_id company-id})
-    (add-player-to-league! {:league_id league_id :player_id player-id})
-
-    {:user-id user-id
-     :player-id player-id}))
+    (add-player-to-league! {:league_id league_id :player_id player-id})))
 
 (defn count-sql [table]
   (-> (h/select :%count.*)

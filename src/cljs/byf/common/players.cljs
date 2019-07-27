@@ -9,7 +9,6 @@
   {:players []})
 
 (s/def ::players (s/coll-of (s/keys :req-un [::name
-                                             ::user_id
                                              ::league_id
                                              ::player_id])))
 

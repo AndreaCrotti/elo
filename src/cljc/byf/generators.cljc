@@ -9,8 +9,11 @@
 (s/def ::name string?)
 (s/def ::email string?)
 (s/def ::user_id uuid?)
+(s/def ::active boolean?)
 
 (s/def ::player (s/keys :req-un [::id
+                                 ::email
+                                 ::active
                                  ::name
                                  ::user_id]))
 
@@ -54,12 +57,3 @@
 (def player-gen (gen ::player))
 
 (def league-gen (gen ::league))
-
-;; can make it more specialized?
-(s/def ::oauth2_token string?)
-
-(s/def ::user (s/keys :req-un [::id
-                               ::oauth2_token
-                               ::email]))
-
-(def user-gen (gen ::user))
