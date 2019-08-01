@@ -400,21 +400,21 @@
 
 (defn stats-component
   [kw]
-  (let [{:keys [handler fields transform title]} (kw stats)]
-    (let [stats (rf/subscribe [handler])
-          active-player-names (rf/subscribe [::players-handlers/active-players-names])]
+  (let [{:keys [handler fields transform title]} (kw stats)
+        stats (rf/subscribe [handler])
+        active-player-names (rf/subscribe [::players-handlers/active-players-names])]
 
-      (fn []
-        ;; make the assertion actually blow up as well
-        (s/assert kw @stats)
-        [:div.column
-         [:label.label title]
-         [stats-table
-          fields
-          (take stats-length
-                (filter #(@active-player-names (:player %)) @stats))
+    (fn []
+      ;; make the assertion actually blow up as well
+      (s/assert kw @stats)
+      [:div.column
+       [:label.label title]
+       [stats-table
+        fields
+        (take stats-length
+              (filter #(@active-player-names (:player %)) @stats))
 
-          (or transform {})]]))))
+        (or transform {})]])))
 
 (defn game-config
   []
