@@ -43,53 +43,39 @@
         points-range (map str (config/opts game-type :points))
         sorted-players (sort-by :name @players)]
 
-    [:div
-     [:div.field
-      [:label "Player 1"]
-      [:div.control
-       [common-views/drop-down-players sorted-players ::handlers/p1 (:p1 @game)
-        {:caption "Name"}]]]
+    [ant/form {:layout "vertical"}
+     [ant/form-item {:label "Player 1"}
+      [common-views/drop-down-players sorted-players ::handlers/p1 (:p1 @game)
+       {:caption "Name"}]]
 
-     [:div.field
-      [:label "Goals"]
-      [:div.control
-       [common-views/drop-down points-range ::handlers/p1_points (:p1_points @game)
-        {:caption (translate :points)}]]]
+     [ant/form-item {:label "Goals"}
+      [common-views/drop-down points-range ::handlers/p1_points (:p1_points @game)
+       {:caption (translate :points)}]]
 
-     [:div.field
-      [:label "Team"]
-      [:div
-       [ant/input-text-area
-        {:value (:p1_using @game)
-         :on-change (utils/set-val ::handlers/p1_using)}]]]
+     [ant/form-item {:label "Team 1"}
+      [ant/input-text-area
+       {:value (:p1_using @game)
+        :on-change (utils/set-val ::handlers/p1_using)}]]
 
-     [:div.field
-      [:label "Player 2"]
-      [:div
-       [common-views/drop-down-players sorted-players ::handlers/p2 (:p2 @game)
-        {:caption "Name"}]]]
+     [ant/form-item {:label "Player 2"}
+      [common-views/drop-down-players sorted-players ::handlers/p2 (:p2 @game)
+       {:caption "Name"}]]
 
-     [:div.field
-      [:label "Goals"]
-      [:div
-       [common-views/drop-down points-range ::handlers/p2_points (:p2_points @game)
-        {:caption (translate :points)}]]]
+     [ant/form-item {:label "Goals"}
+      [common-views/drop-down points-range ::handlers/p2_points (:p2_points @game)
+       {:caption (translate :points)}]]
 
-     [:div.field
-      [:label "Team"]
-      [:div
-       [ant/input-text-area
-        {:default-value (str (translate :using) " Name")
-         :value (:p2_using @game)
-         :on-change (utils/set-val ::handlers/p2_using)}]]]
+     [ant/form-item {:label "Team 2"}
+      [ant/input-text-area
+       {:default-value (str (translate :using) " Name")
+        :value (:p2_using @game)
+        :on-change (utils/set-val ::handlers/p2_using)}]]
 
-     [:div.field
-      [:label "Played at"]
-      [:div.control {:id "played_at"}
-       [ant/date-picker {:show-time true
-                         :format "YYYY-MM-DD HH:mm"}]]]
+     [ant/form-item {:label "Played At"}
+      [ant/date-picker {:show-time true
+                        :format "YYYY-MM-DD HH:mm"}]]
 
-     [:div.field
+     [ant/form-item
       [ant/button
        (enable-button @valid-game?
                       {:on-click #(rf/dispatch [::handlers/add-game])})
