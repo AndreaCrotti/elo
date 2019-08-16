@@ -40,6 +40,7 @@
                  [re-frame "0.10.6"]
                  [reagent-utils "0.3.2"]
                  [org.webjars/font-awesome "5.7.2"]
+                 [antizer "0.3.1"]
 
                  [day8.re-frame/tracing-stubs "0.5.1"]
                  [expound "0.7.2"]
@@ -63,6 +64,7 @@
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [cljs-ajax "0.8.0"]
                  [cljs-http "0.1.45"]
+                 [ring-cljsjs "0.1.0"]
 
                  [bidi "2.1.5"]
                  [com.cemerick/url "0.1.1"]
