@@ -3,7 +3,6 @@
             [antizer.reagent :as ant]
             [clojure.string :as str]
             [byf.common.views :as common-views]
-            [byf.date-picker-utils :refer [date-time-picker]]
             [byf.league-detail.handlers :as handlers]
             [byf.common.players :as players-handlers]
             [byf.shared-config :as config]
@@ -101,7 +100,8 @@
      [:div.field
       [:label "Played at"]
       [:div.control {:id "played_at"}
-       [ant/date-picker {:show-time true}]]]
+       [ant/date-picker {:show-time true
+                         :format "YYYY-MM-DD HH:mm"}]]]
 
      [:div.field
       [ant/button
