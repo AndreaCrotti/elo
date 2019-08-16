@@ -471,22 +471,16 @@
         sorted-players (sort-by :name @players)
         current-user @(rf/subscribe [::handlers/current-user])]
 
-    [:div
-     [:div.field
-      [:label "Current user"]
-      [:div.control
-       [common-views/drop-down-players sorted-players
-        ::handlers/set-current-user current-user
-        {:caption "Name"}]]]
+    [ant/form {:layout "inline"}
+     [ant/form-item
+      [common-views/drop-down-players sorted-players
+       ::handlers/set-current-user current-user
+       {:caption "Name"}]]
 
-     [ant/button
-      {:on-click #(rf/dispatch [::handlers/store-current-user current-user])}
-      "Remember Me"]
-
-     ;; need to do the extra dispatch for this to be useful
-     #_[:button.button.is-danger
-        {:on-click #(rf/dispatch [::handlers/store-current-user nil])}
-        "Forget Me"]]))
+     [ant/form-item
+      [ant/button
+       {:on-click #(rf/dispatch [::handlers/store-current-user current-user])}
+       "Remember Me"]]]))
 
 (defn root
   []
