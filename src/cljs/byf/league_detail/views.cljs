@@ -27,20 +27,6 @@
   []
   (.format (js/moment) timestamp-format))
 
-(defn date-range-picker
-  []
-  (let [game (rf/subscribe [::handlers/game])]
-    [:div
-     [date-time-picker {:name "datetime-widget"
-                        :selected (:played_at @game)
-                        :react-key "date-picker"
-                        :date (js/moment)
-                        :min-date "2018-08-01"
-                        :max-date (js/moment)
-                        :placeholder "When was it played"
-                        :on-change #(rf/dispatch [::handlers/played_at %])
-                        :class "date-picker-class"}]]))
-
 (defn- enable-button
   [valid-game? opts]
   (if valid-game?
