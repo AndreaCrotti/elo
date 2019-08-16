@@ -4,18 +4,17 @@
             [clojure.string :as str]
             [byf.common.views :as common-views]
             [byf.league-detail.handlers :as handlers]
+            [byf.league-detail.stats :refer [stats-component]]
             [byf.common.players :as players-handlers]
             [byf.shared-config :as config]
             [byf.utils :as utils]
             [byf.vega :as vega]
             [byf.specs.stats :as stats-specs]
-            [clojure.spec.alpha :as s]
             [re-frame.core :as rf]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 (def form-size 7)
 (def vega-last-n-games 20)
-(def stats-length 5)
 
 (defn- translate
   [term]
@@ -190,31 +189,6 @@
     {:title "Revive All"
      :on-click #(rf/dispatch [::handlers/revive-all])}]])
 
-(defn- tag
-  [t]
-  (fn [v] [t (if (float? v) (int v) v)]))
-
-(defn transform
-  [data tr]
-  (reduce-kv update data tr))
-
-(defn- stats-table
-  ([header data tr]
-   [:table.table.is-striped
-    [:thead.thead
-     (into [:tr.tr] (map (tag :th) (map :v header)))]
-
-    (into [:tbody.tbody]
-          (for [row data]
-            (into [:tr.tr]
-                  (->> (map :k header)
-                       (select-keys (transform row tr))
-                       (vals)
-                       (map (tag :td))))))])
-
-  ([header data]
-   (stats-table header data {})))
-
 (defn rankings-table
   []
   ;; more logic here should be moved into subscriptions,
@@ -333,58 +307,6 @@
               :max (count @history)
               :value norm-to
               :on-change (utils/set-val ::handlers/to-game js/parseInt)}]])]))))
-
-(defn- percent
-  [v]
-  (str (int v) " %"))
-
-(def stats
-  {::stats-specs/highest-ranking
-   {:handler ::handlers/highest-rankings-best
-    :title "Highest Score"
-    :fields [{:k :player :v "name"} {:k :ranking :v "ranking"} {:k :time :v "time"}]
-    :transform {:time format-date}}
-
-   ::stats-specs/longest-winning-streak
-   {:handler ::handlers/longest-winning-streaks
-    :title "Longest Winning Streak"
-    :fields [{:k :player :v "name"} {:k :streak :v "streak"}]}
-
-   ::stats-specs/longest-unbeaten-streak
-   {:handler ::handlers/longest-unbeaten-streaks
-    :title "Longest Unbeaten Streak"
-    :fields [{:k :player :v "name"} {:k :streak :v "streak"}]}
-
-   ::stats-specs/highest-increase
-   {:handler ::handlers/highest-increase
-    :title "Highest Points increase"
-    :fields [{:k :player :v "name"} {:k :points :v "points"}]}
-
-   ::stats-specs/best-percents
-   {:handler ::handlers/best-percents
-    :title "Best Winning %"
-    :fields [{:k :player :v "name"} {:k :w :v "win %"}
-             {:k :d :v "draw %"} {:k :l :v "loss %"}]
-
-    :transform {:w percent :d percent :l percent}}})
-
-(defn stats-component
-  [kw]
-  (let [{:keys [handler fields transform title]} (kw stats)]
-    (let [stats (rf/subscribe [handler])
-          active-player-names (rf/subscribe [::players-handlers/active-players-names])]
-
-      (fn []
-        ;; make the assertion actually blow up as well
-        (s/assert kw @stats)
-        [:div
-         [:label title]
-         [stats-table
-          fields
-          (take stats-length
-                (filter #(@active-player-names (:player %)) @stats))
-
-          (or transform {})]]))))
 
 (defn game-config
   []
