@@ -1,19 +1,19 @@
 (ns byf.league-detail.views
-  (:require [cljsjs.moment]
-            [antizer.reagent :as ant]
-            [clojure.string :as str]
+  (:require [antizer.reagent :as ant]
+            [byf.common.players :as players-handlers]
             [byf.common.views :as common-views]
             [byf.league-detail.handlers :as handlers]
+            [byf.league-detail.rankings :refer [rankings-table]]
             [byf.league-detail.stats :refer [stats-component]]
-            [byf.common.players :as players-handlers]
+            [byf.league-detail.utils :refer [enumerate format-date]]
             [byf.shared-config :as config]
+            [byf.specs.stats :as stats-specs]
             [byf.utils :as utils]
             [byf.vega :as vega]
-            [byf.specs.stats :as stats-specs]
+            [cljsjs.moment]
             [re-frame.core :as rf]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
-(def form-size 7)
 (def vega-last-n-games 20)
 
 (defn- translate
@@ -81,15 +81,6 @@
 
        "Add Game"]]]))
 
-(defn- enumerate
-  [xs]
-  ;; without sorting it only works up to 30 !!
-  (sort (zipmap (map inc (range (count xs))) xs)))
-
-(defn- format-date
-  [timestamp]
-  (.format (js/moment timestamp) "YYYY-MM-DD"))
-
 (defn games-table
   []
   (let [games (rf/subscribe [::handlers/games-live-players])
@@ -135,136 +126,6 @@
                    [:td p2_points]
                    [:td (format-date played_at)]]))]]))))
 
-(defn el-result
-  [idx result]
-  [:span
-   {:key idx
-    :class (str "result__element result__" (name result))}
-   (-> result name str/capitalize)])
-
-(defn results-boxes
-  [results]
-  [:div.result__container
-   (map-indexed el-result (take-last form-size results))])
-
-(defn game-slider
-  []
-  (let [games (rf/subscribe [::handlers/games-live-players])
-        up-to-games (rf/subscribe [::handlers/up-to-games])]
-
-    (fn []
-      (let [up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
-        [:div
-         [:divs
-          [ant/slider
-           {:type "range"
-            :min 0
-            :max (count @games)
-            :value up-to-current
-            :class "slider"
-            :on-change (utils/set-val ::handlers/up-to-games js/parseInt)}]
-
-          [:span.chevrons
-           [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
-           [:span up-to-current]
-           [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]]))))
-
-(def hide-show-all
-  [:span.hide__show__all
-   [:i.fas.fa-eye-slash
-    {:title "Hide All"
-     :on-click #(rf/dispatch [::handlers/hide-all])}]
-
-   [:i.fas.fa-eye
-    {:title "Show All"
-     :on-click #(rf/dispatch [::handlers/show-all])}]])
-
-(def kill-revive-all
-  [:span
-   [:i.fas.fa-skull
-    {:title "Kill All"
-     :on-click #(rf/dispatch [::handlers/kill-all])}]
-
-   [:i.fas.fa-life-ring
-    {:title "Revive All"
-     :on-click #(rf/dispatch [::handlers/revive-all])}]])
-
-(defn rankings-table
-  []
-  ;; more logic here should be moved into subscriptions,
-  ;; waaaay too many subscriptions in this file already
-  (let [name-mapping @(rf/subscribe [::players-handlers/name-mapping])
-        results @(rf/subscribe [::handlers/results])
-        stats @(rf/subscribe [::handlers/stats])
-        sorted-rankings @(rf/subscribe [::handlers/rankings])
-        active-players @(rf/subscribe [::players-handlers/active-players])
-        filtered-rankings (filter #(active-players (:id %)) sorted-rankings)
-        ;; last-changes @(rf/subscribe [::handlers/last-ranking-changes-by-player])
-        header [:tr.tr
-                [:th.th hide-show-all]
-                [:th.th kill-revive-all]
-                [:th.th "position"]
-                [:th.th "player"]
-                [:th.th "ranking"]
-                #_[:th.th "last change"]
-                [:th.th "form"]
-                [:th.th "# W/L/D"]]]
-
-    [:div
-     [game-slider]
-     [:table.table.is-fullwidth.is-striped
-      [:thead header]
-      (into [:tbody]
-            (for [[idx {:keys [id ranking]}] (enumerate filtered-rankings)
-
-                  :let [{:keys [wins losses draws]} (get stats id)
-                        player-name (get name-mapping id)
-                        hidden? @(rf/subscribe [::handlers/hidden? id])
-                        dead? @(rf/subscribe [::handlers/dead? id])]]
-
-              [:tr.tr {:class (if dead? "dead__ranking__row" "alive__ranking__row")}
-               [:td.td
-                [:span
-                 (if hidden?
-                   [:i.fas.fa-eye
-                    {:title (str "Show " player-name)
-                     :on-click #(rf/dispatch [::handlers/show id])}]
-
-                   [:i.fas.fa-eye-slash
-                    {:title (str "Hide " player-name)
-                     :on-click #(rf/dispatch [::handlers/hide id])}])]]
-
-               [:td.td
-                [:span
-                 (if dead?
-                   [:i.fas.fa-life-ring
-                    {:title (str "Revive " player-name)
-                     :on-click #(rf/dispatch [::handlers/revive id])}]
-
-                   [:i.fas.fa-skull
-                    {:title (str "Kill " player-name)
-                     :on-click #(rf/dispatch [::handlers/kill id])}])]]
-
-               [:td.td idx]
-               [:td.td player-name]
-               [:td.td (int ranking)]
-               #_[:td
-                  (when (contains? last-changes player-name)
-                    (int (get last-changes player-name)))]
-               [:td.td (results-boxes (get results id))]
-               [:td.td (str wins "/" losses "/" draws)]]))]]))
-
-(defn navbar
-  []
-  (let [league @(rf/subscribe [::handlers/league])]
-    [:ul.navbar {:role "navigation"}
-     [:li.navbar-brand
-      [:a.active {:href "#"} (:game_type league)]]
-
-     [:li.navbar-burger.burger
-      [:a {:href "http://github.com/AndreaCrotti/elo"}
-       "Fork Me"]]]))
-
 (defn from-to
   [s f t]
   (take (- t f) (drop f s)))
@@ -283,7 +144,7 @@
             filtered-history (from-to @history norm-from norm-to)]
 
         [:div
-         [:button.button.is-fullwidth
+         [ant/button
           {:on-click #(rf/dispatch [::handlers/toggle-graph])}
           (if @show-graph
             "hide graph"
@@ -293,7 +154,7 @@
            [:div.container
             [vega/vega-inner filtered-history @rankings-domain]
             [:label (str "From game " norm-from)]
-            [:input.slider.is-fullwidth
+            [ant/slider
              {:type "range"
               :min 0
               :max norm-to
@@ -301,32 +162,12 @@
               :on-change (utils/set-val ::handlers/from-game js/parseInt)}]
 
             [:label "To Game " norm-to]
-            [:input.slider.is-fullwidth
+            [ant/slider
              {:type "range"
               :min norm-from
               :max (count @history)
               :value norm-to
               :on-change (utils/set-val ::handlers/to-game js/parseInt)}]])]))))
-
-(defn game-config
-  []
-  (let [{:keys [k initial-ranking]} @(rf/subscribe [::handlers/game-config])]
-    [:div
-     [:label (str "K=" k)]
-     [:input.slider.is-fullwidth
-      {:type "range"
-       :min 20
-       :max 44
-       :value k
-       :on-change (utils/set-val ::handlers/k js/parseInt)}]
-
-     [:label (str "initial ranking=" initial-ranking)]
-     [:input.slider.is-fullwidth
-      {:type "range"
-       :min 100
-       :max 2000
-       :value initial-ranking
-       :on-change (utils/set-val ::handlers/initial-ranking js/parseInt)}]]))
 
 (defn notification
   [flag content]

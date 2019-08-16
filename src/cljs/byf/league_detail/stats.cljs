@@ -25,7 +25,7 @@
     :fields [{:k :player :v "name"} {:k :ranking :v "ranking"} {:k :time :v "time"}]
     :transform {:time format-date :ranking truncate-float}}
 
-    ::stats-specs/longest-winning-streak
+   ::stats-specs/longest-winning-streak
    {:handler ::handlers/longest-winning-streaks
     :title "Longest Winning Streak"
     :fields [{:k :player :v "name"} {:k :streak :v "streak"}]}
@@ -52,9 +52,9 @@
 (defn to-column-defs
   [stats-key]
   (->> stats-config
-      stats-key
-      :fields
-      (map #(rename-keys % {:k :dataIndex :v :title}))))
+       stats-key
+       :fields
+       (map #(rename-keys % {:k :dataIndex :v :title}))))
 
 (defn- transform-row
   [data tr]
