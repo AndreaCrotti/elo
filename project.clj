@@ -107,7 +107,8 @@
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]
             "cljs-prod" ["run" "-m" "figwheel.main" "--build-once" "prod"]
             "test-cljs" ["doo" "rhino" "test" "once"]
-            "kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]}
+            "kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]
+            "seed" ["run" "-m" "byf.seed"]}
 
   :cljfmt {:indents {for-all [[:block 1]]
                      fdef [[:block 1]]

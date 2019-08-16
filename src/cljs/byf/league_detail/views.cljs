@@ -1,5 +1,6 @@
 (ns byf.league-detail.views
   (:require [cljsjs.moment]
+            [antizer.reagent :as ant]
             [clojure.string :as str]
             [byf.common.views :as common-views]
             [byf.date-picker-utils :refer [date-time-picker]]
@@ -57,56 +58,53 @@
         points-range (map str (config/opts game-type :points))
         sorted-players (sort-by :name @players)]
 
-    [:div.section
+    [:div
      [:div.field
-      [:label.label "Player 1"]
+      [:label "Player 1"]
       [:div.control
        [common-views/drop-down-players sorted-players ::handlers/p1 (:p1 @game)
         {:caption "Name"}]]]
 
      [:div.field
-      [:label.label "Goals"]
+      [:label "Goals"]
       [:div.control
        [common-views/drop-down points-range ::handlers/p1_points (:p1_points @game)
         {:caption (translate :points)}]]]
 
      [:div.field
-      [:label.label "Team"]
-      [:div.control
-       [:input.input
-        {:type "text"
-         :placeholder (str (translate :using) " Name")
-         :value (:p1_using @game)
+      [:label "Team"]
+      [:div
+       [ant/input-text-area
+        {:value (:p1_using @game)
          :on-change (utils/set-val ::handlers/p1_using)}]]]
 
      [:div.field
-      [:label.label "Player 2"]
-      [:div.control
+      [:label "Player 2"]
+      [:div
        [common-views/drop-down-players sorted-players ::handlers/p2 (:p2 @game)
         {:caption "Name"}]]]
 
      [:div.field
-      [:label.label "Goals"]
-      [:div.control
+      [:label "Goals"]
+      [:div
        [common-views/drop-down points-range ::handlers/p2_points (:p2_points @game)
         {:caption (translate :points)}]]]
 
      [:div.field
-      [:label.label "Team"]
-      [:div.control
-       [:input.input
-        {:type "text"
-         :placeholder (str (translate :using) " Name")
+      [:label "Team"]
+      [:div
+       [ant/input-text-area
+        {:default-value (str (translate :using) " Name")
          :value (:p2_using @game)
          :on-change (utils/set-val ::handlers/p2_using)}]]]
 
      [:div.field
-      [:label.label "Played at"]
+      [:label "Played at"]
       [:div.control {:id "played_at"}
-       [date-range-picker]]]
+       [ant/date-picker {:show-time true}]]]
 
      [:div.field
-      [:button.button.is-danger.is-fullwidth.add_game_button
+      [ant/button
        (enable-button @valid-game?
                       {:on-click #(rf/dispatch [::handlers/add-game])})
 
@@ -146,11 +144,11 @@
             filtered-games (if @show-all? rev-games (take 10 rev-games))]
 
         [:div
-         [:button.button.is-fullwidth
+         [ant/button
           {:on-click #(rf/dispatch [::handlers/toggle-show-all])}
           (if @show-all? "show last 10" "show all")]
 
-         [:table.table.is-striped
+         [:table
           [:thead header]
           (into [:tbody]
                 (for [[idx {:keys [p1 p2 p1_using p2_using p1_points p2_points played_at]}]
@@ -185,9 +183,9 @@
 
     (fn []
       (let [up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
-        [:div.section
-         [:div.columns
-          [:input.slider.column
+        [:div
+         [:divs
+          [ant/slider
            {:type "range"
             :min 0
             :max (count @games)
@@ -195,7 +193,7 @@
             :class "slider"
             :on-change (utils/set-val ::handlers/up-to-games js/parseInt)}]
 
-          [:span.column.chevrons
+          [:span.chevrons
            [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
            [:span up-to-current]
            [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]]))))
@@ -348,7 +346,7 @@
          (when @show-graph
            [:div.container
             [vega/vega-inner filtered-history @rankings-domain]
-            [:label.label (str "From game " norm-from)]
+            [:label (str "From game " norm-from)]
             [:input.slider.is-fullwidth
              {:type "range"
               :min 0
@@ -356,7 +354,7 @@
               :value norm-from
               :on-change (utils/set-val ::handlers/from-game js/parseInt)}]
 
-            [:label.label "To Game " norm-to]
+            [:label "To Game " norm-to]
             [:input.slider.is-fullwidth
              {:type "range"
               :min norm-from
@@ -407,8 +405,8 @@
       (fn []
         ;; make the assertion actually blow up as well
         (s/assert kw @stats)
-        [:div.column
-         [:label.label title]
+        [:div
+         [:label title]
          [stats-table
           fields
           (take stats-length
@@ -437,28 +435,24 @@
        :on-change (utils/set-val ::handlers/initial-ranking js/parseInt)}]]))
 
 (defn notification
-  [flag content clear-event]
+  [flag content]
   (when flag
-    [:div.section
-     [:div.notification.is-success
-      [:button.delete
-       {:on-click #(rf/dispatch [clear-event])}]
-      content]]))
+    [:div
+     [ant/alert {:type "info"
+                 :message content}]]))
 
 ;; make this more generic to allow different position and different content
 (defn add-user-notification
   []
   (let [show-notification (rf/subscribe [::handlers/add-user-notification])]
     (notification @show-notification
-                  "Thank you, your game has been recorded"
-                  ::handlers/clear-notification)))
+                  "Thank you, your game has been recorded")))
 
 (defn current-user-notification
   []
   (let [current-user-set (rf/subscribe [::handlers/current-user-notification])]
     (notification @current-user-set
-                  "Thanks, I'll remember it's you next time"
-                  ::handlers/clear-set-user-notification)))
+                  "Thanks, I'll remember it's you next time")))
 
 (defn results
   []
@@ -473,16 +467,16 @@
             "Show Results")])
        (when (or (not (utils/mobile?)) @show-results)
          [:div.results-content
-          [:div.columns.section
+          [:div.columns
            [stats-component ::stats-specs/highest-ranking]
            [stats-component ::stats-specs/longest-winning-streak]
            [stats-component ::stats-specs/longest-unbeaten-streak]
            [stats-component ::stats-specs/highest-increase]
            [stats-component ::stats-specs/best-percents]]
 
-          [:div.section [vega-outer]]
-          [:div.section [rankings-table]]
-          [:div.section [games-table]]])])))
+          [:div [vega-outer]]
+          [:div [rankings-table]]
+          [:div [games-table]]])])))
 
 (defn set-current-user
   "Set the current user to something, defaulting to the already set user?"
@@ -491,15 +485,15 @@
         sorted-players (sort-by :name @players)
         current-user @(rf/subscribe [::handlers/current-user])]
 
-    [:div.section
+    [:div
      [:div.field
-      [:label.label "Current user"]
+      [:label "Current user"]
       [:div.control
        [common-views/drop-down-players sorted-players
         ::handlers/set-current-user current-user
         {:caption "Name"}]]]
 
-     [:button.button.is-primary
+     [ant/button
       {:on-click #(rf/dispatch [::handlers/store-current-user current-user])}
       "Remember Me"]
 
@@ -527,4 +521,4 @@
           [current-user-notification]
           [game-form]
           [add-user-notification]
-          [results]]))]))
+          #_[results]]))]))
