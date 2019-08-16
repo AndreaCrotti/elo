@@ -1,5 +1,7 @@
 (ns byf.league-detail.stats
   (:require [re-frame.core :as rf]
+            [antizer.reagent :as ant]
+            [clojure.set :refer [rename-keys]]
             [byf.specs.stats :as stats-specs]
             [byf.common.players :as players-handlers]
             [byf.league-detail.handlers :as handlers]
@@ -12,7 +14,7 @@
   [v]
   (str (int v) " %"))
 
-(def stats
+(def stats-config
   {::stats-specs/highest-ranking
    {:handler ::handlers/highest-rankings-best
     :title "Highest Score"
@@ -42,6 +44,15 @@
 
     :transform {:w percent :d percent :l percent}}})
 
+(defn to-column-defs
+  [stats-key]
+  (->> stats-config
+      stats-key
+      :fields
+      (map #(clojure.set/rename-keys %
+                                     {:k :dataIndex
+                                      :v :title}))))
+
 (defn- transform
   [data tr]
   (reduce-kv update data tr))
@@ -49,6 +60,16 @@
 (defn- tag
   [t]
   (fn [v] [t (if (float? v) (int v) v)]))
+
+(defn new-table
+  [kw]
+  [ant/table
+   {:columns (to-column-defs kw)
+    :dataSource []
+    :size "small"
+    :pagination false
+    :loading false
+    :bordered true}])
 
 (defn- stats-table
   ([header data tr]
@@ -70,18 +91,16 @@
 
 (defn stats-component
   [kw]
-  (let [{:keys [handler fields transform title]} (kw stats)]
-    (let [stats (rf/subscribe [handler])
-          active-player-names (rf/subscribe [::players-handlers/active-players-names])]
+  (let [{:keys [handler fields transform title]} (kw stats-config)
+        stats (rf/subscribe [handler])
+        active-player-names (rf/subscribe [::players-handlers/active-players-names])]
 
-      (fn []
-        ;; make the assertion actually blow up as well
-        (s/assert kw @stats)
-        [:div
-         [:label title]
-         [stats-table
-          fields
-          (take stats-length
-                (filter #(@active-player-names (:player %)) @stats))
+    (s/assert kw @stats)
+    [:div
+     [:label title]
+     [stats-table
+      fields
+      (take stats-length
+            (filter #(@active-player-names (:player %)) @stats))
 
-          (or transform {})]]))))
+      (or transform {})]]))
