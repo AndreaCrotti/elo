@@ -10,6 +10,10 @@
 
 (def stats-length 5)
 
+(defn- truncate-float
+  [v]
+  (if (float? v) (int v) v))
+
 (defn- percent
   [v]
   (str (int v) " %"))
@@ -19,9 +23,9 @@
    {:handler ::handlers/highest-rankings-best
     :title "Highest Score"
     :fields [{:k :player :v "name"} {:k :ranking :v "ranking"} {:k :time :v "time"}]
-    :transform {:time format-date}}
+    :transform {:time format-date :ranking truncate-float}}
 
-   ::stats-specs/longest-winning-streak
+    ::stats-specs/longest-winning-streak
    {:handler ::handlers/longest-winning-streaks
     :title "Longest Winning Streak"
     :fields [{:k :player :v "name"} {:k :streak :v "streak"}]}
@@ -34,7 +38,8 @@
    ::stats-specs/highest-increase
    {:handler ::handlers/highest-increase
     :title "Highest Points increase"
-    :fields [{:k :player :v "name"} {:k :points :v "points"}]}
+    :fields [{:k :player :v "name"} {:k :points :v "points"}]
+    :transform {:points truncate-float}}
 
    ::stats-specs/best-percents
    {:handler ::handlers/best-percents
@@ -49,58 +54,32 @@
   (->> stats-config
       stats-key
       :fields
-      (map #(clojure.set/rename-keys %
-                                     {:k :dataIndex
-                                      :v :title}))))
+      (map #(rename-keys % {:k :dataIndex :v :title}))))
 
-(defn- transform
+(defn- transform-row
   [data tr]
   (reduce-kv update data tr))
 
-(defn- tag
-  [t]
-  (fn [v] [t (if (float? v) (int v) v)]))
-
 (defn new-table
-  [kw]
+  [columns rows]
   [ant/table
-   {:columns (to-column-defs kw)
-    :dataSource []
+   {:columns columns
+    :dataSource rows
     :size "small"
     :pagination false
     :loading false
     :bordered true}])
 
-(defn- stats-table
-  ([header data tr]
-   [:table.table.is-striped
-    [:thead.thead
-     (into [:tr.tr] (map (tag :th) (map :v header)))]
-
-    (into [:tbody.tbody]
-          (for [row data]
-            (into [:tr.tr]
-                  (->> (map :k header)
-                       (select-keys (transform row tr))
-                       (vals)
-                       (map (tag :td))))))])
-
-  ([header data]
-   (stats-table header data {})))
-
-
 (defn stats-component
   [kw]
-  (let [{:keys [handler fields transform title]} (kw stats-config)
-        stats (rf/subscribe [handler])
-        active-player-names (rf/subscribe [::players-handlers/active-players-names])]
+  (let [{:keys [handler transform]} (kw stats-config)
+        stats @(rf/subscribe [handler])
+        active-player-names @(rf/subscribe [::players-handlers/active-players-names])
+        filtered-stats (take stats-length
+                             (filter #(active-player-names (:player %)) stats))
+        transformed (map
+                     #(transform-row % (or transform {}))
+                     filtered-stats)]
 
-    (s/assert kw @stats)
-    [:div
-     [:label title]
-     [stats-table
-      fields
-      (take stats-length
-            (filter #(@active-player-names (:player %)) @stats))
-
-      (or transform {})]]))
+    (s/assert kw stats)
+    [new-table (to-column-defs kw) transformed]))
