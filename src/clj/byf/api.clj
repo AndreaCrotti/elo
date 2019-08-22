@@ -7,6 +7,7 @@
             [byf.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
             [byf.config :refer [value]]
             [byf.db :as db]
+            [byf.games :as games]
             [byf.notifications :as notifications]
             [byf.pages.home :as home]
             [byf.validate :as validate]
@@ -122,12 +123,14 @@
       resp/ok
       as-json))
 
-(defn get-leagues
+(defn get-rankings
   [request]
   ;;TODO: should get the company-id as argument ideally
-  (-> (db/load-leagues)
-      resp/ok
-      as-json))
+  (let [l-id (get-league-id request)]
+    (-> (games/get-rankings (get-games* l-id)
+                            (db/load-players l-id))
+        resp/ok
+        as-json)))
 
 (defn get-companies
   [request]
@@ -153,9 +156,10 @@
                          (some? github-token))
       :token github-token})))
 
-(defn get-rankings
+(defn get-leagues
   [request]
-  (-> (get-league-id request)
+  ;;TODO: should get the company-id as argument ideally
+  (-> (db/load-leagues)
       resp/ok))
 
 ;;TODO: add a not found page for everything else?
