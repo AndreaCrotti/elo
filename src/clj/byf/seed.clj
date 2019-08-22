@@ -6,7 +6,7 @@
             [byf.db :as db]
             [taoensso.timbre :as log]))
 
-(def n-games 42)
+(def default-n-games 900)
 (def players-names ["John" "Charlie" "Frank" "Fitz" "Emily"])
 
 (defn random-game
@@ -44,7 +44,7 @@
                  :name "Sample Company Time Fixed"}
 
         league {:company_id company-id
-                :name "Sample League Time Fixed"
+                :name "Very big league"
                 :id league-id}]
 
     (db/add-company! company)
@@ -64,15 +64,18 @@
     (map :id players)))
 
 (defn- add-games!
-  [league-id player-ids]
-  (let [games (repeatedly n-games #(random-game player-ids))
-        games-full (map #(merge % {:league_id league-id
-                                   :played_at (random-ts)})
-                        games)]
+  ([league-id player-ids]
+   (add-games! league-id player-ids default-n-games))
 
-    (doseq [game games-full]
-      #_(log/debug game)
-      (db/add-game! game))))
+  ([league-id player-ids n-games]
+   (let [games (repeatedly n-games #(random-game player-ids))
+         games-full (map #(merge % {:league_id league-id
+                                    :played_at (random-ts)})
+                         games)]
+
+     (doseq [game games-full]
+       #_(log/debug game)
+       (db/add-game! game)))))
 
 (defn seed
   [league-id]
