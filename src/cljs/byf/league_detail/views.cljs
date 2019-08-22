@@ -501,12 +501,7 @@
 
      [:button.button.is-primary
       {:on-click #(rf/dispatch [::handlers/store-current-user current-user])}
-      "Remember Me"]
-
-     ;; need to do the extra dispatch for this to be useful
-     #_[:button.button.is-danger
-        {:on-click #(rf/dispatch [::handlers/store-current-user nil])}
-        "Forget Me"]]))
+      "Remember Me"]]))
 
 (defn root
   []
