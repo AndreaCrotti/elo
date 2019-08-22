@@ -35,3 +35,9 @@ GET :local/api/oauth2/github/callback?code=xxx&state=xxx
 
 # check if a user is authenticated already
 GET :local/authenticated
+
+# games
+GET :local/api/games?league_id=eee61dfb-7f4d-4786-9dbd-ca21951cfce8
+
+# all games in prod
+GET :prod/api/games?league_id=f062cc50-d5a4-4494-b53c-73ff87992349

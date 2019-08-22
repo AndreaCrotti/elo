@@ -324,10 +324,16 @@
                        (common/assoc-in* page [:games] games)
                        (common/assoc-in* page [:loading?] true))))
 
+(rf/reg-event-db ::load-rankings-success
+                 (fn [db [_ games]]
+                   (-> db
+                       (common/assoc-in* page [:rankings] games)
+                       (common/assoc-in* page [:loading?] true))))
+
 (rf/reg-event-db ::load-league-success (setter [:league]))
 
-(rf/reg-event-fx ::load-games (common/loader "/api/games" ::load-games-success))
 (rf/reg-event-fx ::load-league (common/loader "/api/league" ::load-league-success))
+(rf/reg-event-fx ::load-rankings (common/loader "/api/rankings" ::load-rankings-success))
 
 (defn game-transform
   [db]

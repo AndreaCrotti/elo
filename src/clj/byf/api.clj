@@ -153,6 +153,11 @@
                          (some? github-token))
       :token github-token})))
 
+(defn get-rankings
+  [request]
+  (-> (get-league-id request)
+      resp/ok))
+
 ;;TODO: add a not found page for everything else?
 (def routes
   ["/" {"api/" {"add-player" add-player!
@@ -162,7 +167,8 @@
                 "leagues" get-leagues
                 "companies" get-companies
                 "players" get-players
-                "games" get-games}
+                "games" get-games
+                "rankings" get-rankings}
 
         "oauth2/github/callback" github-callback
         "authenticated" authenticated?

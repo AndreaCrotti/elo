@@ -146,10 +146,6 @@
             filtered-games (if @show-all? rev-games (take 10 rev-games))]
 
         [:div
-         [:button.button.is-fullwidth
-          {:on-click #(rf/dispatch [::handlers/toggle-show-all])}
-          (if @show-all? "show last 10" "show all")]
-
          [:table.table.is-striped
           [:thead header]
           (into [:tbody]
@@ -200,26 +196,6 @@
            [:span up-to-current]
            [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]]))))
 
-(def hide-show-all
-  [:span.hide__show__all
-   [:i.fas.fa-eye-slash
-    {:title "Hide All"
-     :on-click #(rf/dispatch [::handlers/hide-all])}]
-
-   [:i.fas.fa-eye
-    {:title "Show All"
-     :on-click #(rf/dispatch [::handlers/show-all])}]])
-
-(def kill-revive-all
-  [:span
-   [:i.fas.fa-skull
-    {:title "Kill All"
-     :on-click #(rf/dispatch [::handlers/kill-all])}]
-
-   [:i.fas.fa-life-ring
-    {:title "Revive All"
-     :on-click #(rf/dispatch [::handlers/revive-all])}]])
-
 (defn- tag
   [t]
   (fn [v] [t (if (float? v) (int v) v)]))
@@ -255,19 +231,14 @@
         sorted-rankings @(rf/subscribe [::handlers/rankings])
         active-players @(rf/subscribe [::players-handlers/active-players])
         filtered-rankings (filter #(active-players (:id %)) sorted-rankings)
-        ;; last-changes @(rf/subscribe [::handlers/last-ranking-changes-by-player])
         header [:tr.tr
-                [:th.th hide-show-all]
-                [:th.th kill-revive-all]
                 [:th.th "position"]
                 [:th.th "player"]
                 [:th.th "ranking"]
-                #_[:th.th "last change"]
                 [:th.th "form"]
                 [:th.th "# W/L/D"]]]
 
     [:div
-     [game-slider]
      [:table.table.is-fullwidth.is-striped
       [:thead header]
       (into [:tbody]
@@ -275,51 +246,14 @@
 
                   :let [{:keys [wins losses draws]} (get stats id)
                         player-name (get name-mapping id)
-                        hidden? @(rf/subscribe [::handlers/hidden? id])
                         dead? @(rf/subscribe [::handlers/dead? id])]]
 
               [:tr.tr {:class (if dead? "dead__ranking__row" "alive__ranking__row")}
-               [:td.td
-                [:span
-                 (if hidden?
-                   [:i.fas.fa-eye
-                    {:title (str "Show " player-name)
-                     :on-click #(rf/dispatch [::handlers/show id])}]
-
-                   [:i.fas.fa-eye-slash
-                    {:title (str "Hide " player-name)
-                     :on-click #(rf/dispatch [::handlers/hide id])}])]]
-
-               [:td.td
-                [:span
-                 (if dead?
-                   [:i.fas.fa-life-ring
-                    {:title (str "Revive " player-name)
-                     :on-click #(rf/dispatch [::handlers/revive id])}]
-
-                   [:i.fas.fa-skull
-                    {:title (str "Kill " player-name)
-                     :on-click #(rf/dispatch [::handlers/kill id])}])]]
-
                [:td.td idx]
                [:td.td player-name]
                [:td.td (int ranking)]
-               #_[:td
-                  (when (contains? last-changes player-name)
-                    (int (get last-changes player-name)))]
                [:td.td (results-boxes (get results id))]
                [:td.td (str wins "/" losses "/" draws)]]))]]))
-
-(defn navbar
-  []
-  (let [league @(rf/subscribe [::handlers/league])]
-    [:ul.navbar {:role "navigation"}
-     [:li.navbar-brand
-      [:a.active {:href "#"} (:game_type league)]]
-
-     [:li.navbar-burger.burger
-      [:a {:href "http://github.com/AndreaCrotti/elo"}
-       "Fork Me"]]]))
 
 (defn from-to
   [s f t]
@@ -347,22 +281,7 @@
 
          (when @show-graph
            [:div.container
-            [vega/vega-inner filtered-history @rankings-domain]
-            [:label.label (str "From game " norm-from)]
-            [:input.slider.is-fullwidth
-             {:type "range"
-              :min 0
-              :max norm-to
-              :value norm-from
-              :on-change (utils/set-val ::handlers/from-game js/parseInt)}]
-
-            [:label.label "To Game " norm-to]
-            [:input.slider.is-fullwidth
-             {:type "range"
-              :min norm-from
-              :max (count @history)
-              :value norm-to
-              :on-change (utils/set-val ::handlers/to-game js/parseInt)}]])]))))
+            [vega/vega-inner filtered-history @rankings-domain]])]))))
 
 (defn- percent
   [v]
@@ -416,26 +335,6 @@
 
           (or transform {})]]))))
 
-(defn game-config
-  []
-  (let [{:keys [k initial-ranking]} @(rf/subscribe [::handlers/game-config])]
-    [:div
-     [:label (str "K=" k)]
-     [:input.slider.is-fullwidth
-      {:type "range"
-       :min 20
-       :max 44
-       :value k
-       :on-change (utils/set-val ::handlers/k js/parseInt)}]
-
-     [:label (str "initial ranking=" initial-ranking)]
-     [:input.slider.is-fullwidth
-      {:type "range"
-       :min 100
-       :max 2000
-       :value initial-ranking
-       :on-change (utils/set-val ::handlers/initial-ranking js/parseInt)}]]))
-
 (defn notification
   [flag content clear-event]
   (when flag
@@ -462,27 +361,18 @@
 
 (defn results
   []
-  (let [show-results (rf/subscribe [::handlers/show-results])]
-    (fn []
-      [:div.inner
-       (when (utils/mobile?)
-         [:button.button.is-fullwidth
-          {:on-click #(rf/dispatch [::handlers/toggle-results])}
-          (if @show-results
-            "Hide Results"
-            "Show Results")])
-       (when (or (not (utils/mobile?)) @show-results)
-         [:div.results-content
-          [:div.columns.section
-           [stats-component ::stats-specs/highest-ranking]
-           [stats-component ::stats-specs/longest-winning-streak]
-           [stats-component ::stats-specs/longest-unbeaten-streak]
-           [stats-component ::stats-specs/highest-increase]
-           [stats-component ::stats-specs/best-percents]]
+  [:div.inner
+   [:div.results-content
+    #_[:div.columns.section
+       [stats-component ::stats-specs/highest-ranking]
+       [stats-component ::stats-specs/longest-winning-streak]
+       [stats-component ::stats-specs/longest-unbeaten-streak]
+       [stats-component ::stats-specs/highest-increase]
+       [stats-component ::stats-specs/best-percents]]
 
-          [:div.section [vega-outer]]
-          [:div.section [rankings-table]]
-          [:div.section [games-table]]])])))
+    [:div.section [vega-outer]]
+    [:div.section [rankings-table]]
+    #_[:div.section [games-table]]]])
 
 (defn set-current-user
   "Set the current user to something, defaulting to the already set user?"
@@ -507,7 +397,7 @@
   []
   ;; this is kind of an antipattern for reframe
   (rf/dispatch [::handlers/load-league])
-  (rf/dispatch [::handlers/load-games])
+  (rf/dispatch [::handlers/load-rankings])
   (rf/dispatch [::players-handlers/load-players])
 
   (let [loading? (rf/subscribe [::handlers/loading?])]

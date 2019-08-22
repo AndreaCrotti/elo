@@ -152,3 +152,8 @@
                      :body
                      json/read-str
                      (get "authenticated")))))))
+
+(deftest rankings-test
+  (testing "We should get the rankings from the API"
+    (let [response (read-api-call "/api/rankings" {:league_id sample-league-id})]
+      (is (= 200 (:status response))))))

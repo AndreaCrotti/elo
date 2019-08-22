@@ -49,7 +49,6 @@
 (defn loader
   [uri on-success]
   (fn [{:keys [db]} _]
-    (js/console.log "LOading all the games")
     {:http-xhrio {:method :get
                   :uri uri
                   :params {:league_id (get-league-id db)}
