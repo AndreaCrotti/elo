@@ -77,7 +77,6 @@
 
 (rf/reg-event-fx ::load-leagues
                  (common/loader-no-league-id
-                  page
                   "/api/leagues"
                   ::load-leagues-success))
 

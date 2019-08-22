@@ -47,4 +47,4 @@
 
 (rf/reg-event-db ::load-players-success (setter [:players]))
 
-(rf/reg-event-fx ::load-players (common/loader page "/api/players" ::load-players-success))
+(rf/reg-event-fx ::load-players (common/loader "/api/players" ::load-players-success))

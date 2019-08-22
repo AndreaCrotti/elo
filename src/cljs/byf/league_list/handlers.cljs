@@ -22,7 +22,7 @@
 (rf/reg-event-db ::load-leagues-success (setter [:leagues]))
 
 (defn loader
-  [page uri on-success]
+  [uri on-success]
   (fn [{:keys [db]} _]
     {:http-xhrio {:method :get
                   :uri uri
@@ -32,7 +32,7 @@
                   :on-failure [:failed]}}))
 
 (rf/reg-event-fx ::load-leagues
-                 (loader page "/api/leagues" ::load-leagues-success))
+                 (loader "/api/leagues" ::load-leagues-success))
 
 (rf/reg-sub ::leagues (getter [:leagues]))
 
