@@ -326,8 +326,8 @@
 
 (rf/reg-event-db ::load-league-success (setter [:league]))
 
-(rf/reg-event-fx ::load-games (common/loader page "/api/games" ::load-games-success))
-(rf/reg-event-fx ::load-league (common/loader page "/api/league" ::load-league-success))
+(rf/reg-event-fx ::load-games (common/loader "/api/games" ::load-games-success))
+(rf/reg-event-fx ::load-league (common/loader "/api/league" ::load-league-success))
 
 (defn game-transform
   [db]
