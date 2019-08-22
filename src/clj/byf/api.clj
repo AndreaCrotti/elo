@@ -106,8 +106,7 @@
   (map #(select-keys %
                      [:p1 :p2 :p1_using :p2_using
                       :p1_points :p2_points :played_at])
-       (take-last 200
-                  (db/load-games league-id))))
+       (db/load-games league-id)))
 
 (defn get-games
   [request]
