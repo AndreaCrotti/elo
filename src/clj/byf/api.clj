@@ -50,11 +50,10 @@
     (sequential? m) (map uuid-to-str m)
     :else m))
 
-(defn- as-json
+(defn- as-edn
   [response]
   (-> response
-      (update :body (comp json/write-str convert))
-      (resp/content-type "application/json")))
+      (resp/content-type "application/edn")))
 
 (defn format-game
   [params]
@@ -74,7 +73,7 @@
   (let [validated (validate/conform-data :game params)
         game-id (db/add-game! validated)]
 
-    (as-json
+    (as-edn
      (resp/created "/api/games"
                    {:id game-id}))))
 
@@ -87,7 +86,7 @@
     (let [validated (validate/conform-data :player params)
           ids (db/add-player-full! validated)]
 
-      (as-json
+      (as-edn
        (resp/created "/api/players" ids)))))
 
 (defn- render-page
@@ -114,7 +113,7 @@
   (-> (get-league-id request)
       db/load-players
       resp/ok
-      as-json))
+      as-edn))
 
 (defn get-games*
   [league-id]
@@ -128,32 +127,32 @@
   (-> (get-league-id request)
       get-games*
       resp/ok
-      as-json))
+      as-edn))
 
 (defn get-league
   [request]
   (-> (get-league-id request)
       db/load-league
       resp/ok
-      as-json))
+      as-edn))
 
 (defn get-leagues
   [request]
   ;;TODO: should get the company-id as argument ideally
   (-> (db/load-leagues)
       resp/ok
-      as-json))
+      as-edn))
 
 (defn get-companies
   [request]
   ;;TODO: should get the company-id as argument ideally
   (-> (db/load-companies)
       resp/ok
-      as-json))
+      as-edn))
 
 (defn github-callback
   [request]
-  (as-json
+  (as-edn
    (resp/ok {:result "Correctly Went throught the whole process"})))
 
 (defn- get-github-token
