@@ -116,10 +116,17 @@
       resp/ok
       as-json))
 
+(defn get-games*
+  [league-id]
+  (map
+   #(select-keys % [:p1 :p1_points :p1_using
+                    :p2 :p2_points :p2_using])
+   (db/load-games league-id)))
+
 (defn get-games
   [request]
   (-> (get-league-id request)
-      db/load-games
+      get-games*
       resp/ok
       as-json))
 
