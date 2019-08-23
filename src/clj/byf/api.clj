@@ -41,7 +41,7 @@
 
 (defn uuid-to-str
   [m]
-  (medley/map-vals #(if (uuid? %) (str %) %) m))
+  (medley/map-vals str m))
 
 (defn convert
   [m]
@@ -52,10 +52,9 @@
 
 (defn- as-json
   [response]
-  (println "response = " response)
-  (resp/content-type (json/write-str
-                      (update response :body convert))
-                     "application/json"))
+  (-> response
+      (update :body (comp json/write-str convert))
+      (resp/content-type "application/json")))
 
 (defn format-game
   [params]

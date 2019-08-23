@@ -35,3 +35,9 @@ GET :local/api/oauth2/github/callback?code=xxx&state=xxx
 
 # check if a user is authenticated already
 GET :local/authenticated
+
+# big one
+GET https://fifa-elo-staging.herokuapp.com/api/games?league_id=dd55291f-c7bd-4bfd-98f5-8bce23a5628d
+
+# different one
+GET https://fifa-elo-staging.herokuapp.com/api/games?league_id=32c3f6d2-59b8-4912-8987-3013b383b2a3
