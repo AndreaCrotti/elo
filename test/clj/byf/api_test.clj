@@ -70,21 +70,25 @@
 
     [p1-id p2-id]))
 
+(defn add-sample-game
+  []
+  (let [[p1-id p2-id] (store-users!)
+        sample {:p1 (:player-id p1-id)
+                :p2 (:player-id p2-id)
+                :league_id sample-league-id
+                :p1_using "RM"
+                :p2_using "Juv"
+                :p1_points 3
+                :p2_points 0
+                :played_at "2018-08-29+01:0021:50:32"}]
+
+    (write-api-call "/add-game" sample)
+    [p1-id p2-id]))
+
 (deftest store-results-test
   (testing "Should be able to store results"
-    (let [[p1-id p2-id] (store-users!)
-          sample {:p1 (:player-id p1-id)
-                  :p2 (:player-id p2-id)
-                  :league_id sample-league-id
-                  :p1_using "RM"
-                  :p2_using "Juv"
-                  :p1_points 3
-                  :p2_points 0
-                  :played_at "2018-08-29+01:0021:50:32"}
-
-          _ (write-api-call "/add-game" sample)
+    (let [[p1-id p2-id] (add-sample-game)
           games (read-api-call "/api/games" {:league_id sample-league-id})
-
           desired {"p1" (str (:player-id p1-id))
                    "p1_points" 3,
                    "p1_using" "RM",
@@ -155,8 +159,11 @@
 
 (deftest rankings-test
   (testing "We should get the rankings from the API"
-    (let [response (read-api-call "/api/rankings" {:league_id sample-league-id})]
+    (let [[p1-id p2-id] (add-sample-game)
+          response (read-api-call "/api/rankings" {:league_id sample-league-id})]
       (is (= 200 (:status response)))
-      (is (= {} (-> response
-                    :body
-                    json/read-str))))))
+      (is (= [{"id" (-> p1-id :player-id str), "ranking" 1516.0}
+              {"id" (-> p2-id :player-id str), "ranking" 1484.0}]
+             (-> response
+                 :body
+                 json/read-str))))))
