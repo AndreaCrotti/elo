@@ -1,6 +1,7 @@
 (ns byf.api
   (:gen-class)
   (:require [clojure.java.jdbc :as jdbc]
+            [clojure.data.json :as json]
             [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [clojure.string :as str]
@@ -39,7 +40,8 @@
 
 (defn- as-json
   [response]
-  (resp/content-type response "application/json"))
+  (resp/content-type (json/write-str response)
+                     "application/json"))
 
 (defn format-game
   [params]
