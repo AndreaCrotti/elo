@@ -1,9 +1,26 @@
 (ns byf.common.handlers
   (:require [ajax.core :as ajax]
             [day8.re-frame.http-fx]
+            [cljs.pprint :as pprint]
+            [cljs.reader :as reader]
+            [ajax.interceptors :as ajax-interceptors]
+            [ajax.protocols :as ajax-protocols]
             [re-frame.core :as rf]
             [clojure.test.check.generators :as gen]
             [clojure.spec.alpha :as s]))
+
+(def edn-request-format
+  {:write #(with-out-str (pprint/pprint %))
+   :content-type "application/edn"})
+
+(defn- edn-read-fn [response]
+  (reader/read-string (ajax-protocols/-body response)))
+
+(def edn-response-format
+  (ajax-interceptors/map->ResponseFormat
+   {:read edn-read-fn
+    :description "EDN"
+    :content-type ["application/edn"]}))
 
 (defn get-in*
   [m page-id ks]
@@ -41,8 +58,8 @@
   (fn [_]
     {:http-xhrio {:method :get
                   :uri uri
-                  :format (ajax/json-request-format)
-                  :response-format (ajax/json-response-format {:keywords? true})
+                  :format edn-request-format
+                  :response-format edn-response-format
                   :on-success [on-success]
                   :on-failure [:failed]}}))
 
@@ -52,8 +69,8 @@
     {:http-xhrio {:method :get
                   :uri uri
                   :params {:league_id (get-league-id db)}
-                  :format (ajax/json-request-format)
-                  :response-format (ajax/json-response-format {:keywords? true})
+                  :format edn-request-format
+                  :response-format edn-response-format
                   :on-success [on-success]
                   :on-failure [:failed]}}))
 
@@ -66,8 +83,8 @@
                   :params (merge (transform-params-fn db)
                                  {:league_id (get-league-id db)})
 
-                  :format (ajax/json-request-format)
-                  :response-format (ajax/json-response-format {:keywords? true})
+                  :format edn-request-format
+                  :response-format edn-response-format
                   :on-success [on-success]
                   :on-failure [:failed]}}))
 

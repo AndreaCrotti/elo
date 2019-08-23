@@ -32,8 +32,8 @@
   [_]
   {:http-xhrio {:method :get
                 :uri "/authenticated"
-                :format (ajax/json-request-format)
-                :response-format (ajax/json-response-format {:keywords? true})
+                :format common/edn-request-format
+                :response-format common/edn-response-format
                 :on-success [::set-authentication]
                 :on-failure [:failed]}})
 
