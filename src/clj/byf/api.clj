@@ -12,6 +12,7 @@
             [byf.pages.home :as home]
             [byf.validate :as validate]
             [hiccup.core :as hiccup]
+            [medley.core :as medley]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :as r-def]
             [ring.middleware.not-modified :refer [wrap-not-modified]]
@@ -38,9 +39,22 @@
      (jdbc/with-db-transaction [tx (db/db-spec)]
        (handler request)))))
 
+(defn uuid-to-str
+  [m]
+  (medley/map-vals #(if (uuid? %) (str %) %) m))
+
+(defn convert
+  [m]
+  (cond
+    (map? m) (uuid-to-str m)
+    (sequential? m) (map uuid-to-str m)
+    :else m))
+
 (defn- as-json
   [response]
-  (resp/content-type (json/write-str response)
+  (println "response = " response)
+  (resp/content-type (json/write-str
+                      (update response :body convert))
                      "application/json"))
 
 (defn format-game
