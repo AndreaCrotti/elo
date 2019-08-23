@@ -86,12 +86,11 @@
           games (read-api-call "/api/games" {:league_id sample-league-id})
 
           desired {"p1" (str (:player-id p1-id))
-                   "p1_points" 3,
+                   "p1_points" "3",
                    "p1_using" "RM",
                    "p2" (str (:player-id p2-id)),
-                   "p2_points" 0,
-                   "p2_using" "Juv"
-                   "played_at" "2018-08-29T20:50:00Z"}]
+                   "p2_points" "0",
+                   "p2_using" "Juv"}]
 
       (is (= 200 (:status games)))
 
@@ -113,7 +112,7 @@
           body-obj (json/read-str (:body response))]
       (is (= 200 (:status response)))
       (is (= 1 (count body-obj)))
-      (is (true? (-> body-obj first (get "active")))))))
+      (is (= "true" (-> body-obj first (get "active")))))))
 
 (deftest add-player-user-test
   (with-redefs [env (assoc env :admin-password "admin-password")]

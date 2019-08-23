@@ -1,6 +1,7 @@
 (ns byf.api
   (:gen-class)
   (:require [clojure.java.jdbc :as jdbc]
+            [clojure.data.json :as json]
             [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [clojure.string :as str]
@@ -11,6 +12,7 @@
             [byf.pages.home :as home]
             [byf.validate :as validate]
             [hiccup.core :as hiccup]
+            [medley.core :as medley]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :as r-def]
             [ring.middleware.not-modified :refer [wrap-not-modified]]
@@ -37,9 +39,22 @@
      (jdbc/with-db-transaction [tx (db/db-spec)]
        (handler request)))))
 
+(defn uuid-to-str
+  [m]
+  (medley/map-vals str m))
+
+(defn convert
+  [m]
+  (cond
+    (map? m) (uuid-to-str m)
+    (sequential? m) (map uuid-to-str m)
+    :else m))
+
 (defn- as-json
   [response]
-  (resp/content-type response "application/json"))
+  (-> response
+      (update :body (comp json/write-str convert))
+      (resp/content-type "application/json")))
 
 (defn format-game
   [params]
@@ -101,10 +116,17 @@
       resp/ok
       as-json))
 
+(defn get-games*
+  [league-id]
+  (map
+   #(select-keys % [:p1 :p1_points :p1_using
+                    :p2 :p2_points :p2_using])
+   (db/load-games league-id)))
+
 (defn get-games
   [request]
   (-> (get-league-id request)
-      db/load-games
+      get-games*
       resp/ok
       as-json))
 
