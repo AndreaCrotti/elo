@@ -515,8 +515,11 @@
   (rf/dispatch [::handlers/load-games])
   (rf/dispatch [::players-handlers/load-players])
 
-  (let [loading? (rf/subscribe [::handlers/loading?])]
-    (fn []
+  (let [loading? @(rf/subscribe [::handlers/loading?])
+        error @(rf/subscribe [:failed])]
+
+    (if error
+      [:div.error "Error = " error]
       (if (not @loading?)
         [:div.loading]
         [:div.content

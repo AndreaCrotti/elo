@@ -16,10 +16,6 @@
 
 (rf/reg-event-db ::set-current-user (setter [:current-user]))
 
-(rf/reg-event-db :failed
-                 (fn [db _]
-                   (common/assoc-in* db page [:failed] true)))
-
 (rf/reg-event-db ::set-authentication
                  (fn [db [_ auth-details]]
                    (common/assoc-in* db page [:auth] auth-details)))

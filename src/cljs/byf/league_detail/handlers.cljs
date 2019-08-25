@@ -316,8 +316,6 @@
 
 (rf/reg-event-fx ::add-game-success (reload-fn-gen [::reset-game]))
 
-(rf/reg-event-db ::failed (common/failed page))
-
 (rf/reg-event-db ::load-games-success
                  (fn [db [_ games]]
                    (-> db

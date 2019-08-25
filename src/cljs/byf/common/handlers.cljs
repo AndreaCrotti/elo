@@ -49,6 +49,14 @@
    (fn [db [_ val]]
      (assoc-in* db page-id ks val))))
 
+(defn generic-failed
+  [db [_ {:keys [status-text]}]]
+  (assoc db :error status-text))
+
+(rf/reg-event-db :failed generic-failed)
+
+(rf/reg-sub :failed :error)
+
 (defn get-league-id
   [db]
   (get-in db [:route-params :league-id]))
