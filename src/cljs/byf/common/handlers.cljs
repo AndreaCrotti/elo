@@ -50,8 +50,8 @@
      (assoc-in* db page-id ks val))))
 
 (defn generic-failed
-  [db [_ {:keys [status-text]}]]
-  (assoc db :error status-text))
+  [db [_ response]]
+  (assoc db :error (select-keys response [:status-text :uri :last-method])))
 
 (rf/reg-event-db :failed generic-failed)
 
