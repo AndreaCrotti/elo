@@ -1,6 +1,5 @@
 (ns byf.common.handlers
-  (:require [ajax.core :as ajax]
-            [day8.re-frame.http-fx]
+  (:require [day8.re-frame.http-fx]
             [cljs.pprint :as pprint]
             [cljs.reader :as reader]
             [ajax.interceptors :as ajax-interceptors]
@@ -13,7 +12,8 @@
   {:write #(with-out-str (pprint/pprint %))
    :content-type "application/edn"})
 
-(defn- edn-read-fn [response]
+(defn- edn-read-fn
+  [response]
   (reader/read-string (ajax-protocols/-body response)))
 
 (def edn-response-format
