@@ -50,7 +50,7 @@
    :game-config shared/default-game-config
    :add-user-notification false
    :current-user-notification false
-   :loading? false
+   :loading? true
    :show-graph false
    :show-results false
    :current-user nil})
@@ -316,13 +316,11 @@
 
 (rf/reg-event-fx ::add-game-success (reload-fn-gen [::reset-game]))
 
-(rf/reg-event-db ::failed (common/failed page))
-
 (rf/reg-event-db ::load-games-success
                  (fn [db [_ games]]
                    (-> db
                        (common/assoc-in* page [:games] games)
-                       (common/assoc-in* page [:loading?] true))))
+                       (common/assoc-in* page [:loading?] false))))
 
 (rf/reg-event-db ::load-league-success (setter [:league]))
 

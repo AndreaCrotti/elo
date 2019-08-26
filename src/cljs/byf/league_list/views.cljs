@@ -3,6 +3,8 @@
             [clojure.string :as string]
             [byf.auth :as auth]
             [byf.league-list.handlers :as handlers]
+            [byf.common.views :as common-views]
+            [byf.common.handlers]
             [byf.routes :as routes]
             [byf.shared-config :as config]
             [byf.utils :refer [classes]]
@@ -37,12 +39,13 @@
 
 (defn root
   []
-  (let [authenticated? (rf/subscribe [::auth/authenticated?])]
-    (fn []
-      (if @authenticated?
-        (do (rf/dispatch [::handlers/load-leagues])
-            [:div.section
-             [league-picker]])
+  (let [authenticated? @(rf/subscribe [::auth/authenticated?])]
+    [:div.super
+     #_[common-views/errors]
+     (if authenticated?
+       (do (rf/dispatch [::handlers/load-leagues])
+           [:div.section
+            [league-picker]])
 
-        [:div
-         [sign-in-block]]))))
+       [:div
+        [sign-in-block]])]))

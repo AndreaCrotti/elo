@@ -11,8 +11,6 @@
                  [integrant "0.7.0"]
                  [integrant/repl "0.3.1"]
                  [com.bhauman/figwheel-main "0.2.0"]
-                 ;; [com.bhauman/figwheel-main "0.1.9"]
-
                  ;; server side libs
                  [org.clojure/data.csv "0.1.4"]
                  [aero "1.1.3"]
@@ -141,6 +139,7 @@
                    [cider/piggieback "0.4.0"]
                    [org.mozilla/rhino "1.7.7.1"]
                    [day8.re-frame/re-frame-10x "0.3.7"]
+                   [day8.re-frame/tracing "0.5.1"]
                    [com.bhauman/rebel-readline-cljs "0.1.4"]
                    [ring/ring-mock "0.3.2"]]}}
   :cljsbuild

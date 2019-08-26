@@ -26,8 +26,8 @@
   (fn [{:keys [db]} _]
     {:http-xhrio {:method :get
                   :uri uri
-                  :format (ajax/json-request-format)
-                  :response-format (ajax/json-response-format {:keywords? true})
+                  :format common/request-format
+                  :response-format common/response-format
                   :on-success [on-success]
                   :on-failure [:failed]}}))
 
@@ -46,8 +46,8 @@
   [{:keys [db]} [_ provider]]
   {:http-xhrio {:method :post
                 :uri (str "/oauth2/" provider)
-                :format (ajax/json-request-format)
-                :response-format (ajax/json-response-format {:keywords? true})
+                :format common/request-format
+                :response-format common/response-format
                 :on-success [:auth-success]
                 :on-failure [:failed]}})
 

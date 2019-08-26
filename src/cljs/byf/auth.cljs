@@ -16,10 +16,6 @@
 
 (rf/reg-event-db ::set-current-user (setter [:current-user]))
 
-(rf/reg-event-db :failed
-                 (fn [db _]
-                   (common/assoc-in* db page [:failed] true)))
-
 (rf/reg-event-db ::set-authentication
                  (fn [db [_ auth-details]]
                    (common/assoc-in* db page [:auth] auth-details)))
@@ -32,8 +28,8 @@
   [_]
   {:http-xhrio {:method :get
                 :uri "/authenticated"
-                :format (ajax/json-request-format)
-                :response-format (ajax/json-response-format {:keywords? true})
+                :format common/request-format
+                :response-format common/response-format
                 :on-success [::set-authentication]
                 :on-failure [:failed]}})
 

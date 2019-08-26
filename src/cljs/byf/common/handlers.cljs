@@ -1,9 +1,30 @@
 (ns byf.common.handlers
-  (:require [ajax.core :as ajax]
-            [day8.re-frame.http-fx]
+  (:require [day8.re-frame.http-fx]
+            [ajax.core :as aj]
+            [cljs.pprint :as pprint]
+            [cljs.reader :as reader]
+            [ajax.interceptors :as ajax-interceptors]
+            [ajax.protocols :as ajax-protocols]
             [re-frame.core :as rf]
             [clojure.test.check.generators :as gen]
             [clojure.spec.alpha :as s]))
+
+(def edn-request-format
+  {:write #(with-out-str (pprint/pprint %))
+   :content-type "application/edn"})
+
+(defn- edn-read-fn
+  [response]
+  (reader/read-string (ajax-protocols/-body response)))
+
+(def edn-response-format
+  (ajax-interceptors/map->ResponseFormat
+   {:read edn-read-fn
+    :description "EDN"
+    :content-type ["application/edn"]}))
+
+(def request-format (aj/json-request-format))
+(def response-format (aj/json-response-format {:keywords? true}))
 
 (defn get-in*
   [m page-id ks]
@@ -32,6 +53,15 @@
    (fn [db [_ val]]
      (assoc-in* db page-id ks val))))
 
+(defn generic-failed
+  [db [_ response]]
+  (assoc db :error (select-keys response [:status-text :uri :last-method])))
+
+(rf/reg-event-db :failed generic-failed)
+
+(rf/reg-sub :failed (fn [db _]
+                      (:error db)))
+
 (defn get-league-id
   [db]
   (get-in db [:route-params :league-id]))
@@ -41,8 +71,8 @@
   (fn [_]
     {:http-xhrio {:method :get
                   :uri uri
-                  :format (ajax/json-request-format)
-                  :response-format (ajax/json-response-format {:keywords? true})
+                  :format request-format
+                  :response-format response-format
                   :on-success [on-success]
                   :on-failure [:failed]}}))
 
@@ -52,8 +82,8 @@
     {:http-xhrio {:method :get
                   :uri uri
                   :params {:league_id (get-league-id db)}
-                  :format (ajax/json-request-format)
-                  :response-format (ajax/json-response-format {:keywords? true})
+                  :format request-format
+                  :response-format response-format
                   :on-success [on-success]
                   :on-failure [:failed]}}))
 
@@ -66,19 +96,10 @@
                   :params (merge (transform-params-fn db)
                                  {:league_id (get-league-id db)})
 
-                  :format (ajax/json-request-format)
-                  :response-format (ajax/json-response-format {:keywords? true})
+                  :format request-format
+                  :response-format response-format
                   :on-success [on-success]
                   :on-failure [:failed]}}))
-
-(defn failed
-  [page]
-  (fn [db [_ {:keys [status parse-error] :as req}]]
-    (assoc-in* db page
-               [:error]
-               {:status status
-                :status-text (:status-text parse-error)
-                :original-text (:original-text parse-error)})))
 
 (rf/reg-event-db :set-route-params
                  (fn [db [_ route-params]]

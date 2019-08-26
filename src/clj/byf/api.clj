@@ -2,6 +2,7 @@
   (:gen-class)
   (:require [clojure.java.jdbc :as jdbc]
             [clojure.data.json :as json]
+            [clj-time.format :as cf]
             [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [clojure.string :as str]
@@ -50,10 +51,23 @@
     (sequential? m) (map uuid-to-str m)
     :else m))
 
-(defn- as-json
+(defn- as-edn
   [response]
   (-> response
-      (update :body (comp json/write-str convert))
+      (resp/content-type "application/edn")))
+
+(defn my-json-writer
+  [k v]
+  (cond
+    (inst? v) (str v)
+    (uuid? v) (str v)
+    :else v))
+
+(defn encode
+  [response]
+  (-> response
+      (update :body #(json/write-str % :value-fn my-json-writer :key-fn name))
+      ;; add the actual magic update
       (resp/content-type "application/json")))
 
 (defn format-game
@@ -74,7 +88,7 @@
   (let [validated (validate/conform-data :game params)
         game-id (db/add-game! validated)]
 
-    (as-json
+    (encode
      (resp/created "/api/games"
                    {:id game-id}))))
 
@@ -87,7 +101,7 @@
     (let [validated (validate/conform-data :player params)
           ids (db/add-player-full! validated)]
 
-      (as-json
+      (encode
        (resp/created "/api/players" ids)))))
 
 (defn- render-page
@@ -114,13 +128,14 @@
   (-> (get-league-id request)
       db/load-players
       resp/ok
-      as-json))
+      encode))
 
 (defn get-games*
   [league-id]
   (map
    #(select-keys % [:p1 :p1_points :p1_using
-                    :p2 :p2_points :p2_using])
+                    :p2 :p2_points :p2_using
+                    :played_at])
    (db/load-games league-id)))
 
 (defn get-games
@@ -128,32 +143,32 @@
   (-> (get-league-id request)
       get-games*
       resp/ok
-      as-json))
+      encode))
 
 (defn get-league
   [request]
   (-> (get-league-id request)
       db/load-league
       resp/ok
-      as-json))
+      encode))
 
 (defn get-leagues
   [request]
   ;;TODO: should get the company-id as argument ideally
   (-> (db/load-leagues)
       resp/ok
-      as-json))
+      encode))
 
 (defn get-companies
   [request]
   ;;TODO: should get the company-id as argument ideally
   (-> (db/load-companies)
       resp/ok
-      as-json))
+      encode))
 
 (defn github-callback
   [request]
-  (as-json
+  (encode
    (resp/ok {:result "Correctly Went throught the whole process"})))
 
 (defn- get-github-token
