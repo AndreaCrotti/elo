@@ -515,16 +515,15 @@
   (rf/dispatch [::handlers/load-games])
   (rf/dispatch [::players-handlers/load-players])
 
-  (let [loading? @(rf/subscribe [::handlers/loading?])
-        error @(rf/subscribe [:failed])]
+  (let [loading? @(rf/subscribe [::handlers/loading?])]
 
-    (if error
-      [:div.error "Error = " error]
-      (if (not @loading?)
-        [:div.loading]
-        [:div.content
-         [set-current-user]
-         [current-user-notification]
-         [game-form]
-         [add-user-notification]
-         [results]]))))
+    [:div.super
+     [common-views/errors]
+     (if (not @loading?)
+       [:div.loading]
+       [:div.content
+        [set-current-user]
+        [current-user-notification]
+        [game-form]
+        [add-user-notification]
+        [results]])]))

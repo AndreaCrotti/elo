@@ -1,5 +1,6 @@
 (ns byf.common.views
-  (:require [byf.utils :as utils]))
+  (:require [byf.utils :as utils]
+            [re-frame.core :as rf]))
 
 (defn drop-down
   "Wrapper around a select, which allows to pass the dispatch key and
@@ -22,3 +23,9 @@
 (defn drop-down-players
   [opts dispatch-key value]
   [drop-down opts dispatch-key value :value-fn :id :display-fn :name])
+
+(defn errors
+  []
+  (let [error @(rf/subscribe [:failed])]
+    (when errors
+      [:div.error "Error = " error])))
