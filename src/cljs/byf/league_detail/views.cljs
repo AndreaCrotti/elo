@@ -520,7 +520,7 @@
     [:div.super
      (if errors
        [common-views/errors]
-       (if-not loading?
+       (if loading?
          [:div.loading]
          [:div.content
           [set-current-user]
