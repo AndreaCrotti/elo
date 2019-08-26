@@ -80,7 +80,7 @@
                   :p2_using "Juv"
                   :p1_points 3
                   :p2_points 0
-                  :played_at "2018-08-29+01:0021:50:32"}
+                  :played_at  "2018-08-29+01:0021:50:32"}
 
           _ (write-api-call "/add-game" sample)
           games (read-api-call "/api/games" {:league_id sample-league-id})
@@ -90,7 +90,8 @@
                    "p1_using" "RM",
                    "p2" (str (:player-id p2-id)),
                    "p2_points" 0,
-                   "p2_using" "Juv"}]
+                   "p2_using" "Juv"
+                   "played_at" "2018-08-29 21:50:00.32"}]
 
       (is (= 200 (:status games)))
 

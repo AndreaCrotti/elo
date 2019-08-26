@@ -2,6 +2,7 @@
   (:gen-class)
   (:require [clojure.java.jdbc :as jdbc]
             [clojure.data.json :as json]
+            [clj-time.format :as cf]
             [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [clojure.string :as str]
@@ -55,9 +56,17 @@
   (-> response
       (resp/content-type "application/edn")))
 
+(defn my-json-writer
+  [k v]
+  (cond
+    (inst? v) (str v)
+    (uuid? v) (str v)
+    :else v))
+
 (defn encode
   [response]
   (-> response
+      (update :body #(json/write-str % :value-fn my-json-writer :key-fn name))
       ;; add the actual magic update
       (resp/content-type "application/json")))
 

@@ -101,7 +101,6 @@
                   :on-success [on-success]
                   :on-failure [:failed]}}))
 
-
 (rf/reg-event-db :set-route-params
                  (fn [db [_ route-params]]
                    (assoc db :route-params route-params)))
