@@ -11,8 +11,6 @@
                  [integrant "0.7.0"]
                  [integrant/repl "0.3.1"]
                  [com.bhauman/figwheel-main "0.2.0"]
-                 ;; [com.bhauman/figwheel-main "0.1.9"]
-
                  ;; server side libs
                  [org.clojure/data.csv "0.1.4"]
                  [aero "1.1.3"]

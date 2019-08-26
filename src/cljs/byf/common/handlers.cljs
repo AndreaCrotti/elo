@@ -3,6 +3,7 @@
             [cljs.pprint :as pprint]
             [cljs.reader :as reader]
             [ajax.interceptors :as ajax-interceptors]
+            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [ajax.protocols :as ajax-protocols]
             [re-frame.core :as rf]
             [clojure.test.check.generators :as gen]
@@ -95,15 +96,6 @@
                   :response-format edn-response-format
                   :on-success [on-success]
                   :on-failure [:failed]}}))
-
-(defn failed
-  [page]
-  (fn [db [_ {:keys [status parse-error] :as req}]]
-    (assoc-in* db page
-               [:error]
-               {:status status
-                :status-text (:status-text parse-error)
-                :original-text (:original-text parse-error)})))
 
 (rf/reg-event-db :set-route-params
                  (fn [db [_ route-params]]
