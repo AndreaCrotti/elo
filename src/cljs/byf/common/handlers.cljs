@@ -59,7 +59,8 @@
 
 (rf/reg-event-db :failed generic-failed)
 
-(rf/reg-sub :failed :error)
+(rf/reg-sub :failed (fn [db _]
+                      (:error db)))
 
 (defn get-league-id
   [db]

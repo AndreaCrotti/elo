@@ -28,4 +28,4 @@
   []
   (let [error @(rf/subscribe [:failed])]
     (when errors
-      [:div.error "Error = " error])))
+      [:div.error "Error = " (str error)])))
