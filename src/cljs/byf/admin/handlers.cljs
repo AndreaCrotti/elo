@@ -63,8 +63,8 @@
     {:http-xhrio {:method :post
                   :uri uri
                   :params (common/get-in* db page [:player])
-                  :format common/edn-request-format
-                  :response-format common/edn-response-format
+                  :format common/request-format
+                  :response-format common/response-format
                   :on-success [on-success]
                   :on-failure [:failed]}}))
 

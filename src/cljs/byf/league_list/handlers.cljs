@@ -26,8 +26,8 @@
   (fn [{:keys [db]} _]
     {:http-xhrio {:method :get
                   :uri uri
-                  :format common/edn-request-format
-                  :response-format common/edn-response-format
+                  :format common/request-format
+                  :response-format common/response-format
                   :on-success [on-success]
                   :on-failure [:failed]}}))
 
@@ -46,8 +46,8 @@
   [{:keys [db]} [_ provider]]
   {:http-xhrio {:method :post
                 :uri (str "/oauth2/" provider)
-                :format common/edn-request-format
-                :response-format common/edn-response-format
+                :format common/request-format
+                :response-format common/response-format
                 :on-success [:auth-success]
                 :on-failure [:failed]}})
 

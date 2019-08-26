@@ -1,9 +1,9 @@
 (ns byf.common.handlers
   (:require [day8.re-frame.http-fx]
+            [ajax.core :as aj]
             [cljs.pprint :as pprint]
             [cljs.reader :as reader]
             [ajax.interceptors :as ajax-interceptors]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [ajax.protocols :as ajax-protocols]
             [re-frame.core :as rf]
             [clojure.test.check.generators :as gen]
@@ -22,6 +22,9 @@
    {:read edn-read-fn
     :description "EDN"
     :content-type ["application/edn"]}))
+
+(def request-format (aj/json-request-format))
+(def response-format (aj/json-response-format {;keywords? true}))
 
 (defn get-in*
   [m page-id ks]
@@ -67,8 +70,8 @@
   (fn [_]
     {:http-xhrio {:method :get
                   :uri uri
-                  :format edn-request-format
-                  :response-format edn-response-format
+                  :format request-format
+                  :response-format response-format
                   :on-success [on-success]
                   :on-failure [:failed]}}))
 
@@ -78,8 +81,8 @@
     {:http-xhrio {:method :get
                   :uri uri
                   :params {:league_id (get-league-id db)}
-                  :format edn-request-format
-                  :response-format edn-response-format
+                  :format request-format
+                  :response-format response-format
                   :on-success [on-success]
                   :on-failure [:failed]}}))
 
@@ -92,8 +95,8 @@
                   :params (merge (transform-params-fn db)
                                  {:league_id (get-league-id db)})
 
-                  :format edn-request-format
-                  :response-format edn-response-format
+                  :format request-format
+                  :response-format response-format
                   :on-success [on-success]
                   :on-failure [:failed]}}))
 

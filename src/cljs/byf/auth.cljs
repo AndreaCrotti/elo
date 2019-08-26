@@ -28,8 +28,8 @@
   [_]
   {:http-xhrio {:method :get
                 :uri "/authenticated"
-                :format common/edn-request-format
-                :response-format common/edn-response-format
+                :format common/request-format
+                :response-format common/response-format
                 :on-success [::set-authentication]
                 :on-failure [:failed]}})
 
