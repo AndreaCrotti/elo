@@ -125,7 +125,8 @@
   [league-id]
   (map
    #(select-keys % [:p1 :p1_points :p1_using
-                    :p2 :p2_points :p2_using])
+                    :p2 :p2_points :p2_using
+                    :played_at])
    (db/load-games league-id)))
 
 (defn get-games

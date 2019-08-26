@@ -24,7 +24,7 @@
     :content-type ["application/edn"]}))
 
 (def request-format (aj/json-request-format))
-(def response-format (aj/json-response-format {;keywords? true}))
+(def response-format (aj/json-response-format {:keywords? true}))
 
 (defn get-in*
   [m page-id ks]
@@ -99,6 +99,7 @@
                   :response-format response-format
                   :on-success [on-success]
                   :on-failure [:failed]}}))
+
 
 (rf/reg-event-db :set-route-params
                  (fn [db [_ route-params]]
