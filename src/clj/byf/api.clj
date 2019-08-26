@@ -1,6 +1,7 @@
 (ns byf.api
   (:gen-class)
   (:require [clojure.java.jdbc :as jdbc]
+            [clojure.data.json :as json]
             [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [clojure.string :as str]
@@ -54,6 +55,12 @@
   (-> response
       (resp/content-type "application/edn")))
 
+(defn encode
+  [response]
+  (-> response
+      ;; add the actual magic update
+      (resp/content-type "application/json")))
+
 (defn format-game
   [params]
   (let [get-name #(:name (db/get-single db/player-name (UUID/fromString %)))]
@@ -72,7 +79,7 @@
   (let [validated (validate/conform-data :game params)
         game-id (db/add-game! validated)]
 
-    (as-edn
+    (encode
      (resp/created "/api/games"
                    {:id game-id}))))
 
@@ -85,7 +92,7 @@
     (let [validated (validate/conform-data :player params)
           ids (db/add-player-full! validated)]
 
-      (as-edn
+      (encode
        (resp/created "/api/players" ids)))))
 
 (defn- render-page
@@ -112,7 +119,7 @@
   (-> (get-league-id request)
       db/load-players
       resp/ok
-      as-edn))
+      encode))
 
 (defn get-games*
   [league-id]
@@ -126,32 +133,32 @@
   (-> (get-league-id request)
       get-games*
       resp/ok
-      as-edn))
+      encode))
 
 (defn get-league
   [request]
   (-> (get-league-id request)
       db/load-league
       resp/ok
-      as-edn))
+      encode))
 
 (defn get-leagues
   [request]
   ;;TODO: should get the company-id as argument ideally
   (-> (db/load-leagues)
       resp/ok
-      as-edn))
+      encode))
 
 (defn get-companies
   [request]
   ;;TODO: should get the company-id as argument ideally
   (-> (db/load-companies)
       resp/ok
-      as-edn))
+      encode))
 
 (defn github-callback
   [request]
-  (as-edn
+  (encode
    (resp/ok {:result "Correctly Went throught the whole process"})))
 
 (defn- get-github-token
