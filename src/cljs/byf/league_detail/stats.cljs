@@ -60,7 +60,7 @@
   [data tr]
   (reduce-kv update data tr))
 
-(defn new-table
+(defn stats-table
   [columns rows]
   [ant/table
    {:columns columns
@@ -82,4 +82,4 @@
                      filtered-stats)]
 
     (s/assert kw stats)
-    [new-table (to-column-defs kw) transformed]))
+    [stats-table (to-column-defs kw) transformed]))
