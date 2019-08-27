@@ -202,15 +202,14 @@
             "Show Results")])
        (when (or (not (utils/mobile?)) @show-results)
          [:div.results-content
-          [:div.columns
+          [:div [rankings-table]]
+          [:div [vega-outer]]
+          [:div.stats
            [stats-component ::stats-specs/highest-ranking]
            [stats-component ::stats-specs/longest-winning-streak]
            [stats-component ::stats-specs/longest-unbeaten-streak]
            [stats-component ::stats-specs/highest-increase]
            [stats-component ::stats-specs/best-percents]]
-
-          [:div [vega-outer]]
-          [:div [rankings-table]]
           [:div [games-table]]])])))
 
 (defn set-current-user
