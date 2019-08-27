@@ -153,16 +153,16 @@
          (when @show-graph
            [:div.container
             [vega/vega-inner filtered-history @rankings-domain]
-            [:label (str "From game " norm-from)]
-            [ant/slider
+            #_[:label (str "From game " norm-from)]
+            #_[ant/slider
              {:type "range"
               :min 0
               :max norm-to
               :value norm-from
               :on-change (utils/set-val ::handlers/from-game js/parseInt)}]
 
-            [:label "To Game " norm-to]
-            [ant/slider
+            #_[:label "To Game " norm-to]
+            #_[ant/slider
              {:type "range"
               :min norm-from
               :max (count @history)
@@ -250,4 +250,4 @@
           [current-user-notification]
           [game-form]
           [add-user-notification]
-          #_[results]]))]))
+          [results]]))]))

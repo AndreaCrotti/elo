@@ -13,10 +13,11 @@
 
   (into
    [ant/select {:on-change (utils/set-val dispatch-key) :value (or value "")}]
-   (cons [ant/select-option {:disabled true :value caption}
+   (cons [ant/select-option {:disabled true
+                             :value caption}
           caption]
          (for [o opts]
-           [ant/select-option {:value (value-fn o)} (display-fn o)]))))
+           [ant/select-option {:value (value-fn o) :title (display-fn o)} (display-fn o)]))))
 
 (defn drop-down-players
   [opts dispatch-key value]

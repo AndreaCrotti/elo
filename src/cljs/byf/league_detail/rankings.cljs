@@ -87,7 +87,7 @@
                 [:th.th "# W/L/D"]]]
 
     [:div
-     [game-slider]
+     #_[game-slider]
      [:table
       [:thead header]
       (into [:tbody]
