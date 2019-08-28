@@ -2,10 +2,11 @@
   (:require [antizer.reagent :as ant]
             [byf.common.players :as players-handlers]
             [byf.common.views :as common-views]
+            [byf.league-detail.games-list :refer [games-table]]
             [byf.league-detail.handlers :as handlers]
             [byf.league-detail.rankings :refer [rankings-table]]
+            [byf.league-detail.notifications :refer [add-user-notification current-user-notification]]
             [byf.league-detail.stats :refer [stats-component]]
-            [byf.league-detail.utils :refer [enumerate format-date]]
             [byf.shared-config :as config]
             [byf.specs.stats :as stats-specs]
             [byf.utils :as utils]
@@ -81,51 +82,6 @@
 
        "Add Game"]]]))
 
-(defn games-table
-  []
-  (let [games (rf/subscribe [::handlers/games-live-players])
-        name-mapping (rf/subscribe [::players-handlers/name-mapping])
-        up-to (rf/subscribe [::handlers/up-to-games])
-        show-all? (rf/subscribe [::handlers/show-all?])]
-
-    (fn []
-      (let [first-games (if (some? @up-to)
-                          (take @up-to @games)
-                          @games)
-
-            header [:tr
-                    [:th "game #"]
-                    [:th "player 1"]
-                    [:th (translate :using)]
-                    [:th (translate :points)]
-                    [:th "player 2"]
-                    [:th (translate :using)]
-                    [:th (translate :points)]
-                    [:th "played At"]]
-            rev-games (-> first-games enumerate reverse)
-            filtered-games (if @show-all? rev-games (take 10 rev-games))]
-
-        [:div
-         [ant/button
-          {:on-click #(rf/dispatch [::handlers/toggle-show-all])}
-          (if @show-all? "show last 10" "show all")]
-
-         [:table
-          [:thead header]
-          (into [:tbody]
-                (for [[idx {:keys [p1 p2 p1_using p2_using p1_points p2_points played_at]}]
-                      filtered-games]
-
-                  [:tr
-                   [:td idx]
-                   [:td (get @name-mapping p1)]
-                   [:td p1_using]
-                   [:td p1_points]
-                   [:td (get @name-mapping p2)]
-                   [:td p2_using]
-                   [:td p2_points]
-                   [:td (format-date played_at)]]))]]))))
-
 (defn from-to
   [s f t]
   (take (- t f) (drop f s)))
@@ -168,26 +124,6 @@
               :max (count @history)
               :value norm-to
               :on-change (utils/set-val ::handlers/to-game js/parseInt)}]])]))))
-
-(defn notification
-  [flag content]
-  (when flag
-    [:div
-     [ant/alert {:type "info"
-                 :message content}]]))
-
-;; make this more generic to allow different position and different content
-(defn add-user-notification
-  []
-  (let [show-notification (rf/subscribe [::handlers/add-user-notification])]
-    (notification @show-notification
-                  "Thank you, your game has been recorded")))
-
-(defn current-user-notification
-  []
-  (let [current-user-set (rf/subscribe [::handlers/current-user-notification])]
-    (notification @current-user-set
-                  "Thanks, I'll remember it's you next time")))
 
 (defn results
   []
