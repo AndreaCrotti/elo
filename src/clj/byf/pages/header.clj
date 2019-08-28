@@ -45,10 +45,6 @@
            :rel "stylesheet"
            :type "text/css"}]
 
-   [:link {:href (cache-buster "/css/react-datepicker.css")
-           :rel "stylesheet"
-           :type "text/css"}]
-
    [:link {:href (cache-buster "/css/tweaks.css")
            :rel "stylesheet"
            :type "text/css"}]
