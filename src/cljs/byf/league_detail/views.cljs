@@ -99,7 +99,7 @@
             norm-to (or @to-game (count @history))
             filtered-history (from-to @history norm-from norm-to)]
 
-        [:div
+        [ant/card
          [ant/button
           {:on-click #(rf/dispatch [::handlers/toggle-graph])}
           (if @show-graph
@@ -107,7 +107,7 @@
             "show graph")]
 
          (when @show-graph
-           [:div.container
+           [ant/card
             [vega/vega-inner filtered-history @rankings-domain]
             #_[:label (str "From game " norm-from)]
             #_[ant/slider
@@ -166,6 +166,16 @@
        {:on-click #(rf/dispatch [::handlers/store-current-user current-user])}
        "Remember Me"]]]))
 
+(defn navbar
+  []
+  [ant/layout-header
+   [ant/menu {:theme "dark"
+              :mode "horizontal"}
+    [ant/menu-item "Add Game"]
+    [ant/menu-item "Rankings"]
+    [ant/menu-item "Stats"]
+    [ant/menu-item "Games"]]])
+
 (defn root
   []
   ;; this is kind of an antipattern for reframe
@@ -176,6 +186,7 @@
   (let [loading? @(rf/subscribe [::handlers/loading?])
         errors @(rf/subscribe [:failed])]
     [:div.root
+     [navbar]
      (if errors
        [common-views/errors]
        [ant/layout-content
