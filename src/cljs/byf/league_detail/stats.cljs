@@ -82,4 +82,5 @@
                      filtered-stats)]
 
     (s/assert kw stats)
-    [stats-table (to-column-defs kw) transformed]))
+    [ant/card
+     [stats-table (to-column-defs kw) transformed]]))

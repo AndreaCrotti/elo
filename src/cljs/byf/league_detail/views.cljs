@@ -146,7 +146,7 @@
            [stats-component ::stats-specs/longest-unbeaten-streak]
            [stats-component ::stats-specs/highest-increase]
            [stats-component ::stats-specs/best-percents]]
-          [:div [games-table]]])])))
+          [ant/card [games-table]]])])))
 
 (defn set-current-user
   "Set the current user to something, defaulting to the already set user?"
@@ -175,14 +175,19 @@
 
   (let [loading? @(rf/subscribe [::handlers/loading?])
         errors @(rf/subscribe [:failed])]
-    [:div.super
+    [:div.root
      (if errors
        [common-views/errors]
-       (if loading?
-         [:div.loading]
-         [:div.content
-          [set-current-user]
-          [current-user-notification]
-          [game-form]
-          [add-user-notification]
-          [results]]))]))
+       [ant/layout-content
+        (if loading?
+          [ant/spin {:size "large"}]
+          [:div.content
+           [ant/card
+            [set-current-user]]
+           [ant/card
+            [current-user-notification]]
+           [ant/card
+            [game-form]]
+           [ant/card
+            [add-user-notification]]
+           [results]])])]))
