@@ -2,7 +2,7 @@
   (:gen-class)
   (:require [clojure.java.jdbc :as jdbc]
             [clojure.data.json :as json]
-            [clj-time.format :as cf]
+            [byf.games :as games]
             [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [clojure.string :as str]
@@ -51,13 +51,8 @@
     (sequential? m) (map uuid-to-str m)
     :else m))
 
-(defn- as-edn
-  [response]
-  (-> response
-      (resp/content-type "application/edn")))
-
 (defn my-json-writer
-  [k v]
+  [_ v]
   (cond
     (inst? v) (str v)
     (uuid? v) (str v)
@@ -152,6 +147,15 @@
       resp/ok
       encode))
 
+(defn get-rankings
+  [request]
+  ;;TODO: should get the company-id as argument ideally
+  (let [l-id (get-league-id request)]
+    (-> (games/get-rankings (get-games* l-id)
+                            (db/load-players l-id))
+        resp/ok
+        encode)))
+
 (defn get-leagues
   [request]
   ;;TODO: should get the company-id as argument ideally
@@ -192,7 +196,8 @@
                 "leagues" get-leagues
                 "companies" get-companies
                 "players" get-players
-                "games" get-games}
+                "games" get-games
+                "rankings" get-rankings}
 
         "oauth2/github/callback" github-callback
         "authenticated" authenticated?
