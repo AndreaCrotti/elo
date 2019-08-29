@@ -176,6 +176,13 @@
     [ant/menu-item "Stats"]
     [ant/menu-item "Games"]]])
 
+(defn footer
+  []
+  [ant/layout-footer
+   [:a {:href "https://github.com/AndreaCrotti/elo"
+        :target "_blank"}
+    "Fork me on Github"]])
+
 (defn root
   []
   ;; this is kind of an antipattern for reframe
@@ -201,4 +208,5 @@
             [game-form]]
            [ant/card
             [add-user-notification]]
-           [results]])])]))
+           [results]])])
+     [footer]]))
