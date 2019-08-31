@@ -3,11 +3,11 @@
             [byf.common.players :as players-handlers]
             [byf.common.views :as common-views]
             [byf.league-detail.games-list :refer [games-table]]
+            [byf.league-detail.add-game :refer [game-form]]
             [byf.league-detail.handlers :as handlers]
             [byf.league-detail.rankings :refer [rankings-table]]
             [byf.league-detail.notifications :refer [add-user-notification current-user-notification]]
             [byf.league-detail.stats :refer [stats-component]]
-            [byf.shared-config :as config]
             [byf.specs.stats :as stats-specs]
             [byf.utils :as utils]
             [byf.vega :as vega]
@@ -17,70 +17,9 @@
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 (def vega-last-n-games 20)
 
-(defn- translate
-  [term]
-  (let [league (rf/subscribe [::handlers/league])]
-    ;;XXX: is there a way to avoid all this extra safety?
-    (config/term (or (:game_type @league) :fifa) term)))
-
 (defn now-format
   []
   (.format (js/moment) timestamp-format))
-
-(defn- enable-button
-  [valid-game? opts]
-  (if valid-game?
-    opts
-    (assoc opts :disabled "{true}")))
-
-(defn game-form
-  []
-  (let [players (rf/subscribe [::players-handlers/players])
-        valid-game? (rf/subscribe [::handlers/valid-game?])
-        game (rf/subscribe [::handlers/game])
-        league (rf/subscribe [::handlers/league])
-        game-type (or (:game_type @league) :fifa)
-        points-range (map str (config/opts game-type :points))
-        sorted-players (sort-by :name @players)]
-
-    [ant/form {:layout "vertical"}
-     [ant/form-item {:label "Player 1"}
-      [common-views/drop-down-players sorted-players ::handlers/p1 (:p1 @game)
-       {:caption "Name"}]]
-
-     [ant/form-item {:label "Goals"}
-      [common-views/drop-down points-range ::handlers/p1_points (:p1_points @game)
-       {:caption (translate :points)}]]
-
-     [ant/form-item {:label "Team 1"}
-      [ant/input-text-area
-       {:value (:p1_using @game)
-        :on-change (utils/set-val ::handlers/p1_using)}]]
-
-     [ant/form-item {:label "Player 2"}
-      [common-views/drop-down-players sorted-players ::handlers/p2 (:p2 @game)
-       {:caption "Name"}]]
-
-     [ant/form-item {:label "Goals"}
-      [common-views/drop-down points-range ::handlers/p2_points (:p2_points @game)
-       {:caption (translate :points)}]]
-
-     [ant/form-item {:label "Team 2"}
-      [ant/input-text-area
-       {:default-value (str (translate :using) " Name")
-        :value (:p2_using @game)
-        :on-change (utils/set-val ::handlers/p2_using)}]]
-
-     [ant/form-item {:label "Played At"}
-      [ant/date-picker {:show-time true
-                        :format "YYYY-MM-DD HH:mm"}]]
-
-     [ant/form-item
-      [ant/button
-       (enable-button @valid-game?
-                      {:on-click #(rf/dispatch [::handlers/add-game])})
-
-       "Add Game"]]]))
 
 (defn from-to
   [s f t]
@@ -171,6 +110,7 @@
   [ant/layout-header
    [ant/menu {:theme "dark"
               :mode "horizontal"}
+    [ant/menu-item [:a {:href "/"} "HOME"]]
     [ant/menu-item "Add Game"]
     [ant/menu-item "Rankings"]
     [ant/menu-item "Stats"]
@@ -198,7 +138,7 @@
        [common-views/errors]
        [ant/layout-content
         (if loading?
-          [ant/spin {:size "large"}]
+          [:div.spinny [ant/spin {:size "large"}]]
           [:div.content
            [ant/card
             [set-current-user]]

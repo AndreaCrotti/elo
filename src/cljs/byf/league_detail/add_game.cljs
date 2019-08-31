@@ -1,0 +1,69 @@
+(ns byf.league-detail.add-game
+  (:require [re-frame.core :as rf]
+            [antizer.reagent :as ant]
+            [byf.shared-config :as config]
+            [byf.common.views :as common-views]
+            [byf.utils :as utils]
+            [byf.common.players :as players-handlers]
+            [byf.league-detail.handlers :as handlers]))
+
+(defn- translate
+  [term]
+  (let [league (rf/subscribe [::handlers/league])]
+    ;;XXX: is there a way to avoid all this extra safety?
+    (config/term (or (:game_type @league) :fifa) term)))
+
+(defn- enable-button
+  [valid-game? opts]
+  (if valid-game?
+    opts
+    (assoc opts :disabled "{true}")))
+
+(defn game-form
+  []
+  (let [players (rf/subscribe [::players-handlers/players])
+        valid-game? (rf/subscribe [::handlers/valid-game?])
+        game (rf/subscribe [::handlers/game])
+        league (rf/subscribe [::handlers/league])
+        game-type (or (:game_type @league) :fifa)
+        points-range (map str (config/opts game-type :points))
+        sorted-players (sort-by :name @players)]
+
+    [ant/form {:layout "vertical"}
+     [ant/form-item {:label "Player 1"}
+      [common-views/drop-down-players sorted-players ::handlers/p1 (:p1 @game)
+       {:caption "Name"}]]
+
+     [ant/form-item {:label "Goals"}
+      [common-views/drop-down points-range ::handlers/p1_points (:p1_points @game)
+       {:caption (translate :points)}]]
+
+     [ant/form-item {:label "Team 1"}
+      [ant/input-text-area
+       {:value (:p1_using @game)
+        :on-change (utils/set-val ::handlers/p1_using)}]]
+
+     [ant/form-item {:label "Player 2"}
+      [common-views/drop-down-players sorted-players ::handlers/p2 (:p2 @game)
+       {:caption "Name"}]]
+
+     [ant/form-item {:label "Goals"}
+      [common-views/drop-down points-range ::handlers/p2_points (:p2_points @game)
+       {:caption (translate :points)}]]
+
+     [ant/form-item {:label "Team 2"}
+      [ant/input-text-area
+       {:default-value (str (translate :using) " Name")
+        :value (:p2_using @game)
+        :on-change (utils/set-val ::handlers/p2_using)}]]
+
+     [ant/form-item {:label "Played At"}
+      [ant/date-picker {:show-time true
+                        :format "YYYY-MM-DD HH:mm"}]]
+
+     [ant/form-item
+      [ant/button
+       (enable-button @valid-game?
+                      {:on-click #(rf/dispatch [::handlers/add-game])})
+
+       "Add Game"]]]))
