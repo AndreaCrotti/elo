@@ -12,7 +12,7 @@
   (into
    [ant/select {:on-change
                 #(rf/dispatch [dispatch-key %])
-                :show-search true
+                ;;:show-search true
                 :default-value value}]
    (for [o opts]
      [ant/select-option {:key (value-fn o)
