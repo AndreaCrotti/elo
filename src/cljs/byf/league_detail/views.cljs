@@ -80,13 +80,14 @@
          [:div.results-content
           [rankings-table]
           [vega-outer]
-          [:div.stats
+          [:div {:id "stats"}
            [stats-component ::stats-specs/highest-ranking]
            [stats-component ::stats-specs/longest-winning-streak]
            [stats-component ::stats-specs/longest-unbeaten-streak]
            [stats-component ::stats-specs/highest-increase]
            [stats-component ::stats-specs/best-percents]]
-          [ant/card [games-table]]])])))
+          [ant/card {:id "games"}
+           [games-table]]])])))
 
 (defn set-current-user
   "Set the current user to something, defaulting to the already set user?"
@@ -112,10 +113,10 @@
    [ant/menu {:theme "dark"
               :mode "horizontal"}
     [ant/menu-item [:a {:href "/"} "HOME"]]
-    [ant/menu-item "Add Game"]
-    [ant/menu-item "Rankings"]
-    [ant/menu-item "Stats"]
-    [ant/menu-item "Games"]]])
+    [ant/menu-item [:a {:href "#add-game"} "Add Game"]]
+    [ant/menu-item [:a {:href "#rankings"} "Rankings"]]
+    [ant/menu-item [:a {:href "#stats"} "Stats"]]
+    [ant/menu-item [:a {:href "#games"} "Games"]]]])
 
 (defn footer
   []
@@ -145,7 +146,7 @@
             [set-current-user]]
            [ant/card
             [current-user-notification]]
-           [ant/card
+           [ant/card {:id "add-game"}
             [game-form]]
            [ant/card
             [add-user-notification]]

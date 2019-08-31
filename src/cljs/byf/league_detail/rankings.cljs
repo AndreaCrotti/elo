@@ -113,7 +113,8 @@
 (defn rankings-table
   []
   [ant/table
-   {:columns    rankings-columns
+   {:id         "#rankings"
+    :columns    rankings-columns
     :dataSource (rankings-rows)
     :size       "small"
     :pagination false
