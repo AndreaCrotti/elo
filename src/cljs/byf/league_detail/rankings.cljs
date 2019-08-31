@@ -119,4 +119,4 @@
     :pagination false
     :loading    false
     :bordered   false
-    :rowKey     :id}])
+    :rowKey     :position}])

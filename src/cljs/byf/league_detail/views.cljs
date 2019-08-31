@@ -75,10 +75,11 @@
           (if @show-results
             "Hide Results"
             "Show Results")])
+
        (when (or (not (utils/mobile?)) @show-results)
          [:div.results-content
-          [:div [rankings-table]]
-          [:div [vega-outer]]
+          [rankings-table]
+          [vega-outer]
           [:div.stats
            [stats-component ::stats-specs/highest-ranking]
            [stats-component ::stats-specs/longest-winning-streak]
