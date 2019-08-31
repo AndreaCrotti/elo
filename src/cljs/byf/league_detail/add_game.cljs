@@ -44,7 +44,7 @@
      [ant/form-item {:label "Goals"}
       [common-views/drop-down points-range ::handlers/p1_points (:p1_points @game)]]
 
-     [ant/form-item {:label "Team 1"}
+     [ant/form-item {:label "Team aq1"}
       [team-input (:p1_using @game) ::handlers/p1_using]]
 
      [ant/form-item {:label "Player 2"}

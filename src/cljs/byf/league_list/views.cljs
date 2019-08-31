@@ -27,7 +27,7 @@
   (let [leagues (rf/subscribe [::handlers/leagues])]
     [ant/list
      (for [{:keys [id name game_type]} @leagues]
-       [ant/list-item
+       [ant/list-item {:key id}
         [:img {:width "70px"
                :src (config/logo (keyword game_type))}]
 

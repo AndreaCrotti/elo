@@ -72,7 +72,7 @@
 
 (defn stats-component
   [kw]
-  (let [{:keys [handler transform]} (kw stats-config)
+  (let [{:keys [handler transform title]} (kw stats-config)
         stats @(rf/subscribe [handler])
         active-player-names @(rf/subscribe [::players-handlers/active-players-names])
         filtered-stats (take stats-length
@@ -83,4 +83,5 @@
 
     (s/assert kw stats)
     [ant/card
+     [:label title]
      [stats-table (to-column-defs kw) transformed]]))

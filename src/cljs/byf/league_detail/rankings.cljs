@@ -118,4 +118,5 @@
     :size       "small"
     :pagination false
     :loading    false
-    :bordered   false}])
+    :bordered   false
+    :rowKey     :id}])

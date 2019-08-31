@@ -51,9 +51,10 @@
 (defn games-table
   []
   [ant/table
-   {:columns columns
+   {:columns    columns
     :dataSource (rows)
-    :size "small"
+    :size       "small"
     :pagination true
-    :loading false
-    :bordered true}])
+    :loading    false
+    :bordered   true
+    :rowKey     :game-idx}])
