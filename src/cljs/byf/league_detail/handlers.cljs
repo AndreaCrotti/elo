@@ -336,8 +336,9 @@
    #(format % shared/timestamp-format)))
 
 (rf/reg-event-fx ::add-game
-                 (common/writer page "/api/add-game"
-                                ::add-game-success game-transform))
+                 (common/writer "/api/add-game"
+                                ::add-game-success
+                                game-transform))
 
 (rf/reg-sub ::hidden? (sets/in? page :hidden-players))
 
