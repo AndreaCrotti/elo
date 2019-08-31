@@ -20,6 +20,13 @@
     opts
     (assoc opts :disabled "{true}")))
 
+(defn team-input
+  [val handler]
+  [ant/input-text-area
+   {:default-value val
+    :autosize {:max-rows 1}
+    :on-change (utils/set-val handler)}])
+
 (defn game-form
   []
   (let [players (rf/subscribe [::players-handlers/players])
@@ -38,9 +45,7 @@
       [common-views/drop-down points-range ::handlers/p1_points (:p1_points @game)]]
 
      [ant/form-item {:label "Team 1"}
-      [ant/input-text-area
-       {:value (:p1_using @game)
-        :on-change (utils/set-val ::handlers/p1_using)}]]
+      [team-input (:p1_using @game) ::handlers/p1_using]]
 
      [ant/form-item {:label "Player 2"}
       [common-views/drop-down-players sorted-players ::handlers/p2 (:p2 @game)]]
@@ -49,10 +54,7 @@
       [common-views/drop-down points-range ::handlers/p2_points (:p2_points @game)]]
 
      [ant/form-item {:label "Team 2"}
-      [ant/input-text-area
-       {:default-value (str (translate :using) " Name")
-        :value (:p2_using @game)
-        :on-change (utils/set-val ::handlers/p2_using)}]]
+      [team-input (:p2_using @game) ::handlers/p2_using]]
 
      [ant/form-item {:label "Played At"}
       ;; link to the right value here
@@ -65,7 +67,9 @@
 
      [ant/form-item
       [ant/button
-       (enable-button @valid-game?
-                      {:on-click #(rf/dispatch [::handlers/add-game])})
+       #_(enable-button @valid-game?)
+       {:on-click #(do
+                     (js/console.log "adding game")
+                     (rf/dispatch [::handlers/add-game]))}
 
        "Add Game"]]]))

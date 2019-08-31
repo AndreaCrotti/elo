@@ -5,6 +5,7 @@
             [byf.common.handlers :as common]
             [byf.common.players :as players-handlers]
             [byf.common.sets :as sets]
+            [goog.string :refer [format]]
             [byf.games :as games]
             [byf.rankings :as rankings]
             [byf.stats :as stats]
@@ -332,7 +333,7 @@
   (update
    (common/get-in* db page [:game])
    :played_at
-   #(.format % shared/timestamp-format)))
+   #(format % shared/timestamp-format)))
 
 (rf/reg-event-fx ::add-game
                  (common/writer page "/api/add-game"

@@ -1,6 +1,6 @@
 (ns byf.shared-config)
 
-(def timestamp-format "YYYY-MM-DDZHH:mm:SS")
+(def timestamp-format "YYYY-MM-DD HH:mm")
 
 (def games #{"fifa" "street-fighter" "table-tennis"})
 
