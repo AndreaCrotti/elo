@@ -83,5 +83,5 @@
 
     (s/assert kw stats)
     [ant/card
-     [:label title]
+     [:label.title title]
      [stats-table (to-column-defs kw) transformed]]))
