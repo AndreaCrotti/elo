@@ -5,7 +5,8 @@
             [byf.common.views :as common-views]
             [byf.utils :as utils]
             [byf.common.players :as players-handlers]
-            [byf.league-detail.handlers :as handlers]))
+            [byf.league-detail.handlers :as handlers]
+            [cljsjs.moment]))
 
 (defn- translate
   [term]
@@ -31,12 +32,10 @@
 
     [ant/form {:layout "vertical"}
      [ant/form-item {:label "Player 1"}
-      [common-views/drop-down-players sorted-players ::handlers/p1 (:p1 @game)
-       {:caption "Name"}]]
+      [common-views/drop-down-players sorted-players ::handlers/p1 (:p1 @game)]]
 
      [ant/form-item {:label "Goals"}
-      [common-views/drop-down points-range ::handlers/p1_points (:p1_points @game)
-       {:caption (translate :points)}]]
+      [common-views/drop-down points-range ::handlers/p1_points (:p1_points @game)]]
 
      [ant/form-item {:label "Team 1"}
       [ant/input-text-area
@@ -44,12 +43,10 @@
         :on-change (utils/set-val ::handlers/p1_using)}]]
 
      [ant/form-item {:label "Player 2"}
-      [common-views/drop-down-players sorted-players ::handlers/p2 (:p2 @game)
-       {:caption "Name"}]]
+      [common-views/drop-down-players sorted-players ::handlers/p2 (:p2 @game)]]
 
      [ant/form-item {:label "Goals"}
-      [common-views/drop-down points-range ::handlers/p2_points (:p2_points @game)
-       {:caption (translate :points)}]]
+      [common-views/drop-down points-range ::handlers/p2_points (:p2_points @game)]]
 
      [ant/form-item {:label "Team 2"}
       [ant/input-text-area
@@ -58,8 +55,13 @@
         :on-change (utils/set-val ::handlers/p2_using)}]]
 
      [ant/form-item {:label "Played At"}
+      ;; link to the right value here
       [ant/date-picker {:show-time true
-                        :format "YYYY-MM-DD HH:mm"}]]
+                        :format "YYYY-MM-DD HH:mm"
+                        :default-value (js/moment)
+                        :on-change
+                        (fn [mo mo-str]
+                          (rf/dispatch [::handlers/played_at mo-str]))}]]
 
      [ant/form-item
       [ant/button
