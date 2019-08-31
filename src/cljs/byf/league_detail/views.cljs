@@ -118,13 +118,6 @@
     [ant/menu-item [:a {:href "#stats"} "Stats"]]
     [ant/menu-item [:a {:href "#games"} "Games"]]]])
 
-(defn footer
-  []
-  [ant/layout-footer
-   [:a {:href "https://github.com/AndreaCrotti/elo"
-        :target "_blank"}
-    "Fork me on Github"]])
-
 (defn root
   []
   ;; this is kind of an antipattern for reframe
@@ -151,4 +144,4 @@
            [ant/card
             [add-user-notification]]
            [results]])])
-     [footer]]))
+     [common-views/footer]]))

@@ -5,6 +5,7 @@
             [antizer.reagent :as ant]
             [byf.league-list.handlers :as handlers]
             [byf.common.handlers]
+            [byf.common.views :as common-views]
             [byf.routes :as routes]
             [byf.shared-config :as config]
             [byf.utils :refer [classes]]
@@ -47,4 +48,5 @@
             [league-picker]])
 
        [:div
-        [sign-in-block]])]))
+        [sign-in-block]])
+     [common-views/footer]]))

@@ -27,3 +27,10 @@
   (let [error @(rf/subscribe [:failed])]
     (when errors
       [:div.error "Error = " (str error)])))
+
+(defn footer
+  []
+  [ant/layout-footer
+   [:a {:href "https://github.com/AndreaCrotti/elo"
+        :target "_blank"}
+    "Fork me on Github"]])
