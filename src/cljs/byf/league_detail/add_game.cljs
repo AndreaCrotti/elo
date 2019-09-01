@@ -63,6 +63,7 @@
 
      [ant/form-item
       [ant/button
-       #_(enable-button @valid-game?)
-       {:on-click #(rf/dispatch [::handlers/add-game])}
+       (enable-button @valid-game?
+                      {:type "primary"
+                       :on-click #(rf/dispatch [::handlers/add-game])})
        "Add Game"]]]))
