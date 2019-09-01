@@ -86,10 +86,11 @@
               (r/as-element
                (results-boxes t)))}
 
-   {:title "# W/L/D"
+   #_{:title "# W/L/D"
     :dataIndex :stats
-    :render (fn [{:keys [wins losses draws] :as t} _ _ ]
-              (str wins "/" losses "/" draws))}])
+    :render (fn [{:keys [wins losses draws] :as t} b c ]
+              (r/as-element
+               [:div.wld (str wins "/" losses "/" draws)]))}])
 
 (defn rankings-rows
   []
