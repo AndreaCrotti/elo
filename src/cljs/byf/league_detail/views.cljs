@@ -136,6 +136,9 @@
           [:div.spinny [ant/spin {:size "large"}]]
           [:div.content
            [ant/card
+            [:div.current-game "Game is"
+             @(rf/subscribe [::handlers/game])]]
+           [ant/card
             [set-current-user]]
            [ant/card
             [current-user-notification]]

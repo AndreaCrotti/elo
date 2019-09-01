@@ -5,7 +5,6 @@
             [byf.common.handlers :as common]
             [byf.common.players :as players-handlers]
             [byf.common.sets :as sets]
-            [goog.string :refer [format]]
             [byf.games :as games]
             [byf.rankings :as rankings]
             [byf.stats :as stats]
@@ -328,17 +327,17 @@
 (rf/reg-event-fx ::load-games (common/loader page "/api/games" ::load-games-success))
 (rf/reg-event-fx ::load-league (common/loader page "/api/league" ::load-league-success))
 
-(defn game-transform
+(defn game-params
   [db]
   (update
    (common/get-in* db page [:game])
    :played_at
-   #(format % shared/timestamp-format)))
+   #(.format % shared/timestamp-format)))
 
 (rf/reg-event-fx ::add-game
                  (common/writer "/api/add-game"
                                 ::add-game-success
-                                game-transform))
+                                game-params))
 
 (rf/reg-sub ::hidden? (sets/in? page :hidden-players))
 

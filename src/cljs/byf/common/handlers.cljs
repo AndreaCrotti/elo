@@ -13,6 +13,7 @@
   {:write #(with-out-str (pprint/pprint %))
    :content-type "application/edn"})
 
+
 (defn- edn-read-fn
   [response]
   (reader/read-string (ajax-protocols/-body response)))
@@ -55,7 +56,9 @@
 
 (defn generic-failed
   [db [_ response]]
-  (assoc db :error (select-keys response [:status-text :uri :last-method])))
+  (assoc db :error (select-keys response
+                                [:status-text :uri :last-method])))
+
 
 (rf/reg-event-db :failed generic-failed)
 
@@ -90,9 +93,6 @@
 (defn writer
   [uri on-success transform-params-fn]
   (fn [{:keys [db]} _]
-    (js/console.log "sending info"
-                    (merge (transform-params-fn db)
-                           {:league_id (get-league-id db)}))
     {:db db
      :http-xhrio {:method :post
                   :uri uri

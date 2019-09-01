@@ -8,12 +8,6 @@
             [byf.league-detail.handlers :as handlers]
             [cljsjs.moment]))
 
-(defn- translate
-  [term]
-  (let [league (rf/subscribe [::handlers/league])]
-    ;;XXX: is there a way to avoid all this extra safety?
-    (config/term (or (:game_type @league) :fifa) term)))
-
 (defn- enable-button
   [valid-game? opts]
   (if valid-game?
@@ -26,6 +20,8 @@
    {:default-value val
     :autosize {:max-rows 1}
     :on-change (utils/set-val handler)}])
+
+(def timestamp-format "YYYY-MM-DDZHH:mm:SS")
 
 (defn game-form
   []
@@ -62,14 +58,11 @@
                         :format "YYYY-MM-DD HH:mm"
                         :default-value (js/moment)
                         :on-change
-                        (fn [mo mo-str]
-                          (rf/dispatch [::handlers/played_at mo-str]))}]]
+                        (fn [mo _]
+                          (rf/dispatch [::handlers/played_at mo]))}]]
 
      [ant/form-item
       [ant/button
        #_(enable-button @valid-game?)
-       {:on-click #(do
-                     (js/console.log "adding game")
-                     (rf/dispatch [::handlers/add-game]))}
-
+       {:on-click #(rf/dispatch [::handlers/add-game])}
        "Add Game"]]]))
