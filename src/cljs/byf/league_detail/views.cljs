@@ -43,26 +43,11 @@
           {:on-click #(rf/dispatch [::handlers/toggle-graph])}
           (if @show-graph
             "hide graph"
-            "show graph")]
+            "show graph")]]
 
-         (when @show-graph
-           [ant/card
-            [vega/vega-inner filtered-history @rankings-domain]
-            #_[:label (str "From game " norm-from)]
-            #_[ant/slider
-             {:type "range"
-              :min 0
-              :max norm-to
-              :value norm-from
-              :on-change (utils/set-val ::handlers/from-game js/parseInt)}]
-
-            #_[:label "To Game " norm-to]
-            #_[ant/slider
-             {:type "range"
-              :min norm-from
-              :max (count @history)
-              :value norm-to
-              :on-change (utils/set-val ::handlers/to-game js/parseInt)}]])]))))
+        (when @show-graph
+          [ant/card
+           [vega/vega-inner filtered-history @rankings-domain]])))))
 
 (defn results
   []
@@ -96,7 +81,7 @@
         sorted-players (sort-by :name @players)
         current-user @(rf/subscribe [::handlers/current-user])]
 
-    [ant/form {:layout "inline"}
+    [ant/form
      [ant/form-item
       [common-views/drop-down-players sorted-players
        ::handlers/set-current-user current-user
@@ -128,7 +113,8 @@
   (let [loading? @(rf/subscribe [::handlers/loading?])
         errors @(rf/subscribe [:failed])]
     [:div.root
-     [navbar]
+     #_[navbar]
+
      (if errors
        [common-views/errors]
        [ant/layout-content

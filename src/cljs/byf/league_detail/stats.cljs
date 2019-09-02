@@ -82,6 +82,6 @@
                      filtered-stats)]
 
     (s/assert kw stats)
-    [ant/card
+    [:div.stat
      [:label.title title]
      [stats-table (to-column-defs kw) transformed]]))
