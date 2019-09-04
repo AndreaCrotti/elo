@@ -8,11 +8,20 @@
             [byf.league-detail.handlers :as handlers]
             [cljsjs.moment]))
 
+(def form-config
+  {:class "add-game-form"
+   :layout "horizontal"
+   :label-col {:xs {:span 24}
+               :sm {:span 6}}
+   :wrapper-col {:xs {:span 24}
+                 :sm {:span 6}}})
+
 (defn- enable-button
   [valid-game? opts]
   (if valid-game?
     opts
     (assoc opts :disabled "{true}")))
+
 
 (defn team-input
   [val handler]
@@ -33,7 +42,7 @@
         points-range (map str (config/opts game-type :points))
         sorted-players (sort-by :name @players)]
 
-    [ant/form {:layout "vertical"}
+    [ant/form form-config
      [ant/form-item {:label "Player 1"}
       [common-views/drop-down-players sorted-players ::handlers/p1 (:p1 @game)]]
 
