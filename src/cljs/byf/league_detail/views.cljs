@@ -312,8 +312,7 @@
                [:td.td (results-boxes (get results id))]
                [:td.td (str wins "/" losses "/" draws)]
                [:td.td points-done]
-               [:td.td points-received]
-               ]))]]))
+               [:td.td points-received]]))]]))
 
 (defn navbar
   []
