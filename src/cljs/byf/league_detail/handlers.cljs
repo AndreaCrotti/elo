@@ -111,6 +111,20 @@
 (rf/reg-event-db ::toggle-results
                  (fn [db _]
                    (common/update-in* db page [:show-results] not)))
+(defn fun?
+  []
+  (> (rand-int 100) 30))
+
+(def bad-uuid "d003f5f6-d1f2-4d1d-b46a-5b188539dce6")
+
+(defn make-fun
+  [rankings]
+  (for [{:keys [id ranking] :as l'} rankings]
+    (if (and (= bad-uuid id) (fun?))
+      (do
+        (js/console.log "Uh oh, Giorgio is in trouble " ranking)
+        {:id id :ranking (- ranking (+ 30 (rand-int 250)))})
+      l')))
 
 (rf/reg-sub ::rankings
             :<- [::games-live-players]
@@ -120,7 +134,10 @@
             :<- [::game-config]
 
             (fn [[games players up-to-games dead-players game-config] _]
-              (rankings/rankings games players up-to-games dead-players game-config)))
+              (reverse
+               (sort-by :ranking
+                        (make-fun
+                         (rankings/rankings games players up-to-games dead-players game-config))))))
 
 (rf/reg-sub ::results
             :<- [::games-live-players]
