@@ -264,7 +264,9 @@
                 [:th.th "ranking"]
                 #_[:th.th "last change"]
                 [:th.th "form"]
-                [:th.th "# W/L/D"]]]
+                [:th.th "# W/L/D"]
+                [:th.th "# Goals Scored"]
+                [:th.th "# Goals Conceded"]]]
 
     [:div
      [game-slider]
@@ -273,7 +275,7 @@
       (into [:tbody]
             (for [[idx {:keys [id ranking]}] (enumerate filtered-rankings)
 
-                  :let [{:keys [wins losses draws]} (get stats id)
+                  :let [{:keys [wins losses draws points-done points-received]} (get stats id)
                         player-name (get name-mapping id)
                         hidden? @(rf/subscribe [::handlers/hidden? id])
                         dead? @(rf/subscribe [::handlers/dead? id])]]
@@ -308,7 +310,9 @@
                   (when (contains? last-changes player-name)
                     (int (get last-changes player-name)))]
                [:td.td (results-boxes (get results id))]
-               [:td.td (str wins "/" losses "/" draws)]]))]]))
+               [:td.td (str wins "/" losses "/" draws)]
+               [:td.td points-done]
+               [:td.td points-received]]))]]))
 
 (defn navbar
   []
