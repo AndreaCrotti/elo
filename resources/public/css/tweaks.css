@@ -48,20 +48,5 @@ button {
 
 label {
   font-weight: bold;
-}
-
-body {
-  flex-basis: 0;
-  flex-grow: 1;
-  flex-shrink: 0;
-  max-width: 1000px;
-}
-
-html {
-  align-content: flex-start;
-  align-items: flex-start;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
+  text-transform: uppercase;
 }
