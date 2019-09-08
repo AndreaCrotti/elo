@@ -68,7 +68,7 @@
     :size "small"
     :pagination false
     :loading false
-    :bordered true}])
+    :bordered false}])
 
 (defn stats-component
   [kw]

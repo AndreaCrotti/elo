@@ -44,9 +44,11 @@ button {
 
 #stats {
   display: flex;
+  flex-wrap: wrap;
 }
 
 label {
   font-weight: bold;
   text-transform: uppercase;
 }
+
