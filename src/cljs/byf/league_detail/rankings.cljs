@@ -1,5 +1,6 @@
 (ns byf.league-detail.rankings
   (:require [re-frame.core :as rf]
+            [clojure.string :as string]
             [antizer.reagent :as ant]
             [byf.utils :as utils]
             [reagent.core :as r]
@@ -68,6 +69,11 @@
            [:span up-to-current]
            [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]]))))
 
+(defn format-stats
+  [{:keys [wins losses draws points-done points-received]}]
+  (string/join "/"
+               [wins losses draws points-done points-received]))
+
 (def rankings-columns
   [{:title "position"
     :dataIndex :position}
@@ -86,11 +92,13 @@
               (r/as-element
                (results-boxes t)))}
 
-   #_{:title "# W/L/D"
+   #_{:title "# W/L/D/GD/GR"
     :dataIndex :stats
-    :render (fn [{:keys [wins losses draws] :as t} b c ]
+    :render (fn [t b c ]
               (r/as-element
-               [:div.wld (str wins "/" losses "/" draws)]))}])
+               (into [:div.inner-stats]
+                     (for [v (vals t)]
+                       [:span v]))))}])
 
 (defn rankings-rows
   []

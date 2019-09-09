@@ -11,10 +11,11 @@
 (def form-config
   {:class "add-game-form"
    :layout "horizontal"
-   :label-col {:xs {:span 24}
-               :sm {:span 6}}
-   :wrapper-col {:xs {:span 24}
-                 :sm {:span 6}}})
+   ;; :label-col {:xs {:span 24}
+   ;;             :sm {:span 6}}
+   ;; :wrapper-col {:xs {:span 24}
+   ;;               :sm {:span 6}}
+   })
 
 (defn- enable-button
   [valid-game? opts]
