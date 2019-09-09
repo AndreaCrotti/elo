@@ -54,8 +54,6 @@
   [ant/table
    {:columns    columns
     :dataSource (rows)
-    :size       "small"
     :pagination true
     :loading    false
-    :bordered   true
     :rowKey     :game-idx}])

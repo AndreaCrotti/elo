@@ -117,8 +117,6 @@
    {:id         "#rankings"
     :columns    rankings-columns
     :dataSource (rankings-rows)
-    :size       "small"
     :pagination false
     :loading    false
-    :bordered   false
     :rowKey     :position}])
