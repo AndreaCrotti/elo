@@ -22,15 +22,12 @@
     opts
     (assoc opts :disabled "{true}")))
 
-
 (defn team-input
   [val handler]
   [ant/input-text-area
    {:default-value val
     :autosize {:max-rows 1}
     :on-change (utils/set-val handler)}])
-
-(def timestamp-format "YYYY-MM-DDZHH:mm:SS")
 
 (defn game-form
   []

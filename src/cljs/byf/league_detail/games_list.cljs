@@ -1,13 +1,9 @@
 (ns byf.league-detail.games-list
   (:require [re-frame.core :as rf]
             [byf.common.players :as players-handlers]
-            [byf.league-detail.utils :refer [enumerate]]
+            [byf.league-detail.utils :refer [enumerate format-date]]
             [byf.league-detail.handlers :as handlers]
             [antizer.reagent :as ant]))
-
-(defn- format-date
-  [timestamp]
-  (.format (js/moment timestamp) "YYYY-MM-DD"))
 
 (def columns
   [{:title "game #"
