@@ -122,11 +122,9 @@
           [:div.content
            [ant/card
             [set-current-user]]
-           [ant/card
-            [current-user-notification]]
+           [current-user-notification]
            [ant/card {:id "add-game"}
             [game-form]]
-           [ant/card
-            [add-user-notification]]
+           [add-user-notification]
            [results]])])
      [common-views/footer]]))

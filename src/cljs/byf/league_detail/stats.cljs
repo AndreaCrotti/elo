@@ -65,10 +65,8 @@
   [ant/table
    {:columns columns
     :dataSource rows
-    :size "small"
     :pagination false
-    :loading false
-    :bordered false}])
+    :loading false}])
 
 (defn stats-component
   [kw]
