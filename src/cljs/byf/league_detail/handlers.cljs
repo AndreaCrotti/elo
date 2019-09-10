@@ -290,10 +290,10 @@
                  (fn [db _]
                    (assoc db
                           page
-                          (current-user-transform
-                           (assoc default-db
-                                  :game
-                                  default-game)))))
+                          #_(current-user-transform)
+                          (assoc default-db
+                                 :game
+                                 default-game))))
 
 (rf/reg-event-db ::p1 (setter [:game :p1]))
 (rf/reg-event-db ::p1_points (setter [:game :p1_points]))

@@ -120,7 +120,7 @@
         (if loading?
           [:div.spinny [ant/spin {:size "large"}]]
           [:div.content
-           [ant/card
+           #_[ant/card
             [set-current-user]]
            [current-user-notification]
            [ant/card {:id "add-game"}
