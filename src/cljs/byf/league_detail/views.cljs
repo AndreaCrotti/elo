@@ -112,7 +112,7 @@
   (let [loading? @(rf/subscribe [::handlers/loading?])
         errors @(rf/subscribe [:failed])]
     [:div.root
-     #_[navbar]
+     [navbar]
 
      (if errors
        [common-views/errors]
