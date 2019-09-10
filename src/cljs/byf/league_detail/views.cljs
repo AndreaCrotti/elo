@@ -11,8 +11,10 @@
             [byf.specs.stats :as stats-specs]
             [byf.utils :as utils]
             [byf.vega :as vega]
+            [byf.league-detail.mobile :as mobile]
             [cljsjs.moment]
             [re-frame.core :as rf]))
+
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
 (def vega-last-n-games 20)
@@ -48,6 +50,11 @@
         (when @show-graph
           [ant/card
            [vega/vega-inner filtered-history @rankings-domain]])))))
+
+(defn mobile?
+  []
+  (js/console.log "avail width " js/window.screen.availWidth)
+  (< js/window.screen.availWidth 500))
 
 (defn results
   []
@@ -109,22 +116,24 @@
   (rf/dispatch [::handlers/load-games])
   (rf/dispatch [::players-handlers/load-players])
 
-  (let [loading? @(rf/subscribe [::handlers/loading?])
-        errors @(rf/subscribe [:failed])]
-    [:div.root
-     [navbar]
+  (if (mobile?)
+    (mobile/root)
+    (let [loading? @(rf/subscribe [::handlers/loading?])
+          errors @(rf/subscribe [:failed])]
+      [:div.root
+       [navbar]
 
-     (if errors
-       [common-views/errors]
-       [ant/layout-content
-        (if loading?
-          [:div.spinny [ant/spin {:size "large"}]]
-          [:div.content
-           #_[ant/card
-            [set-current-user]]
-           [current-user-notification]
-           [ant/card {:id "add-game"}
-            [game-form]]
-           [add-user-notification]
-           [results]])])
-     [common-views/footer]]))
+       (if errors
+         [common-views/errors]
+         [ant/layout-content
+          (if loading?
+            [:div.spinny [ant/spin {:size "large"}]]
+            [:div.content
+             #_[ant/card
+                [set-current-user]]
+             [current-user-notification]
+             [ant/card {:id "add-game"}
+              [game-form]]
+             [add-user-notification]
+             [results]])])
+       [common-views/footer]])))
