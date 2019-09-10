@@ -74,7 +74,8 @@
                  [reifyhealth/specmonstah "2.0.0-alpha-1"]
                  [com.taoensso/timbre "4.10.0" :exclusions [com.taoensso/encore]]
                  [http-kit "2.3.0"]
-                 [com.taoensso/sente "1.14.0-RC2"]]
+                 [com.taoensso/sente "1.14.0-RC2"]
+                 [uap-clj "1.3.5"]]
 
   :plugins [[lein-environ "1.1.0"]
             [migratus-lein "0.5.0"]
