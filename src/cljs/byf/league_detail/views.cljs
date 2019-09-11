@@ -103,14 +103,14 @@
 
 (defn go-to-internal
   [place]
-  (set! (.-hash js/location) (str "#" place)))
+  (set! (.-hash js/location) place))
 
 (def menu-config
-  ["/"
-   "add-game"
-   "rankings"
-   "stats"
-   "games"])
+  [["/" "HOME"]
+   ["add-game" "NEW GAME"]
+   ["rankings" "RANKINGS"]
+   ["stats" "STATS"]
+   ["games" "GAMES"]])
 
 (defn navbar
   []
@@ -118,11 +118,10 @@
    (into [ant/menu {:theme "dark"
                     :mode "horizontal"}]
 
-         (for [m menu-config
-               :let [hashed (str "#" m)]]
-           [ant/menu-item [:a {:href hashed
-                               :on-click #(go-to-internal hashed)}
-                           m]]))])
+         (for [[k s] menu-config
+               :let [hashed (str "#" k)]]
+           [ant/menu-item [:a {:on-click #(go-to-internal hashed)}
+                           s]]))])
 
 (defn root
   []
