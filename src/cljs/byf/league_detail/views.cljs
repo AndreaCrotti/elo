@@ -1,5 +1,6 @@
 (ns byf.league-detail.views
   (:require [antizer.reagent :as ant]
+            [accountant.core :as accountant]
             [byf.common.players :as players-handlers]
             [byf.common.views :as common-views]
             [byf.league-detail.games-list :refer [games-table]]
@@ -70,7 +71,8 @@
 
        (when (or (not (utils/mobile?)) @show-results)
          [:div.results-content
-          [rankings-table]
+          [:div {:id "rankings"}
+           [rankings-table]]
           [vega-outer]
           [:div {:id "stats"}
            [stats-component ::stats-specs/highest-ranking]
@@ -78,8 +80,9 @@
            [stats-component ::stats-specs/longest-unbeaten-streak]
            [stats-component ::stats-specs/highest-increase]
            [stats-component ::stats-specs/best-percents]]
-          [ant/card {:id "games"}
-           [games-table]]])])))
+          [:div {:id "games"}
+           [ant/card
+            [games-table]]]])])))
 
 (defn set-current-user
   "Set the current user to something, defaulting to the already set user?"
@@ -98,16 +101,28 @@
       [common-views/drop-down-players sorted-players
        ::handlers/set-current-user current-user]]]))
 
+(defn go-to-internal
+  [place]
+  (set! (.-hash js/location) (str "#" place)))
+
+(def menu-config
+  ["/"
+   "add-game"
+   "rankings"
+   "stats"
+   "games"])
+
 (defn navbar
   []
   [ant/layout-header
-   [ant/menu {:theme "dark"
-              :mode "horizontal"}
-    [ant/menu-item [:a {:href "/"} "HOME"]]
-    [ant/menu-item [:a {:href "#add-game"} "Add Game"]]
-    [ant/menu-item [:a {:href "#rankings"} "Rankings"]]
-    [ant/menu-item [:a {:href "#stats"} "Stats"]]
-    [ant/menu-item [:a {:href "#games"} "Games"]]]])
+   (into [ant/menu {:theme "dark"
+                    :mode "horizontal"}]
+
+         (for [m menu-config
+               :let [hashed (str "#" m)]]
+           [ant/menu-item [:a {:href hashed
+                               :on-click #(go-to-internal hashed)}
+                           m]]))])
 
 (defn root
   []
@@ -132,8 +147,9 @@
              #_[ant/card
                 [set-current-user]]
              [current-user-notification]
-             [ant/card {:id "add-game"}
-              [game-form]]
+             [:div {:id "add-game"}
+              [ant/card
+               [game-form]]]
              [add-user-notification]
              [results]])])
        [common-views/footer]])))
