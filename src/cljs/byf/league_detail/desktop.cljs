@@ -103,7 +103,7 @@
   (set! (.-hash js/location) place))
 
 (def menu-config
-  [["/" "HOME"]
+  [;;["/" "HOME"]
    ["add-game" "NEW GAME"]
    ["rankings" "RANKINGS"]
    ["stats" "STATS"]
