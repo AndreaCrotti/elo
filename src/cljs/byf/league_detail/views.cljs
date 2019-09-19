@@ -10,5 +10,5 @@
   []
   ;; this is kind of an antipattern for reframe
   (if (mobile?)
-    [mobile/root]
+    [desktop/root]
     [desktop/root]))
