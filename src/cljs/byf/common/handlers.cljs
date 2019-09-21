@@ -13,7 +13,6 @@
   {:write #(with-out-str (pprint/pprint %))
    :content-type "application/edn"})
 
-
 (defn- edn-read-fn
   [response]
   (reader/read-string (ajax-protocols/-body response)))
@@ -58,7 +57,6 @@
   [db [_ response]]
   (assoc db :error (select-keys response
                                 [:status-text :uri :last-method])))
-
 
 (rf/reg-event-db :failed generic-failed)
 

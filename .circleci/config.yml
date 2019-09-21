@@ -19,7 +19,7 @@ references:
           POSTGRES_DB: elo_test
 
 jobs:
-  lint_clj:
+  cljfmt:
     <<: *base_config
     steps:
       - checkout
@@ -86,4 +86,4 @@ workflows:
       - test_cljs
       - test_clj
       - coverage_clj
-      - lint_clj
+      - cljfmt

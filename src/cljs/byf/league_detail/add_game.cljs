@@ -15,7 +15,7 @@
    ;;             :sm {:span 6}}
    ;; :wrapper-col {:xs {:span 24}
    ;;               :sm {:span 6}}
-   })
+})
 
 (defn- enable-button
   [valid-game? opts]

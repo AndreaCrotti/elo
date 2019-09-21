@@ -88,17 +88,17 @@
    {:title "form"
     :dataIndex :results
 
-    :render (fn [t _ _ ]
+    :render (fn [t _ _]
               (r/as-element
                (results-boxes t)))}
 
    #_{:title "# W/L/D/GD/GR"
-    :dataIndex :stats
-    :render (fn [t b c ]
-              (r/as-element
-               (into [:div.inner-stats]
-                     (for [v (vals t)]
-                       [:span v]))))}])
+      :dataIndex :stats
+      :render (fn [t b c]
+                (r/as-element
+                 (into [:div.inner-stats]
+                       (for [v (vals t)]
+                         [:span v]))))}])
 
 (defn rankings-rows
   []
