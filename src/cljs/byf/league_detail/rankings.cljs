@@ -112,7 +112,7 @@
     (map-indexed
      (fn [idx {:keys [id] :as item}]
        (assoc item
-              :position idx
+              :position (inc idx)
               :name (name-mapping id)
               :results (get results id)
               :stats (get stats id)))
