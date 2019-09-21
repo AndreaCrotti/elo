@@ -2,9 +2,10 @@
   (:require [accountant.core :as accountant]
             [clojure.string :as string]
             [byf.auth :as auth]
+            [antizer.reagent :as ant]
             [byf.league-list.handlers :as handlers]
-            [byf.common.views :as common-views]
             [byf.common.handlers]
+            [byf.common.views :as common-views]
             [byf.routes :as routes]
             [byf.shared-config :as config]
             [byf.utils :refer [classes]]
@@ -25,17 +26,16 @@
 (defn league-picker
   []
   (let [leagues (rf/subscribe [::handlers/leagues])]
-    [:div
-     (into [:ol]
-           (for [{:keys [id name game_type]} @leagues]
-             [:li.league__name
-              [:img {:width "70px"
-                     :src (config/logo (keyword game_type))}]
+    [ant/list
+     (for [{:keys [id name game_type]} @leagues]
+       [ant/list-item {:key id}
+        [:img {:width "70px"
+               :src (config/logo (keyword game_type))}]
 
-              [:a {:href "#"
-                   :on-click #(accountant/navigate!
-                               (routes/path-for :league-detail :league-id id))}
-               name]]))]))
+        [:a {:href "#"
+             :on-click #(accountant/navigate!
+                         (routes/path-for :league-detail :league-id id))}
+         name]])]))
 
 (defn root
   []
@@ -48,4 +48,5 @@
             [league-picker]])
 
        [:div
-        [sign-in-block]])]))
+        [sign-in-block]])
+     [common-views/footer]]))

@@ -55,7 +55,8 @@
 
 (defn generic-failed
   [db [_ response]]
-  (assoc db :error (select-keys response [:status-text :uri :last-method])))
+  (assoc db :error (select-keys response
+                                [:status-text :uri :last-method])))
 
 (rf/reg-event-db :failed generic-failed)
 
@@ -88,7 +89,7 @@
                   :on-failure [:failed]}}))
 
 (defn writer
-  [page uri on-success transform-params-fn]
+  [uri on-success transform-params-fn]
   (fn [{:keys [db]} _]
     {:db db
      :http-xhrio {:method :post

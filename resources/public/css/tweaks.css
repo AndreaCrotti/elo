@@ -9,10 +9,14 @@ th {
 
 .result__element {
   color: white;
+  font-size: 0.9rem;
   margin: 2px;
-  font-weight: bolder;
-  width: 20px;
-  text-align: center;
+  font-weight: 700;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
 }
 
 .result__container {
@@ -22,23 +26,15 @@ th {
 }
 
 .result__w {
-  background-color: green;
+  background-color: #4CAF50;
 }
 
 .result__d {
-  background-color: black;
+  background-color: #212121;
 }
 
 .result__l {
-  background-color: red;
-}
-
-.league__name {
-  font-size: 2rem;
-}
-
-.add_game_button {
-  font-size: 1.2rem;
+  background-color: #F44336;
 }
 
 button {
@@ -48,4 +44,54 @@ button {
 .chevrons {
   font-weight: bolder;
   font-size: 1.6em;
+}
+
+body {
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 0;
+  padding: 0 3rem;
+}
+
+html {
+  align-content: flex-start;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.content .ant-card {
+  margin-bottom: 2rem;
+}
+
+.stat {
+  flex: 1;
+  margin: 1rem;
+  flex-wrap: wrap;
+}
+
+#stats {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.stat .title {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+/* Ant overrides */
+.ant-alert {
+  margin: 1rem 0;
+}
+
+.ant-table-wrapper {
+  margin-bottom: 2rem;
+}
+
+.ant-table-tbody > tr.ant-table-row:hover > td {
+  background: rgb(239, 241, 235);
 }

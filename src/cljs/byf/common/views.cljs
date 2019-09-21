@@ -1,24 +1,22 @@
 (ns byf.common.views
-  (:require [byf.utils :as utils]
-            [re-frame.core :as rf]))
+  (:require [re-frame.core :as rf]
+            [antizer.reagent :as ant]))
 
 (defn drop-down
   "Wrapper around a select, which allows to pass the dispatch key and
   the value the select should be set to"
-  [opts dispatch-key value & {:keys [value-fn display-fn caption]
+  [opts dispatch-key value & {:keys [value-fn display-fn]
                               :or {value-fn identity
-                                   caption ""
                                    display-fn identity}}]
 
-  [:div.select.is-fullwidth
-   (into [:select.select
-          {:on-change (utils/set-val dispatch-key) :value (or value "")}]
-
-         (cons [:option {:disabled true
-                         :value caption}
-                caption]
-               (for [o opts]
-                 [:option {:value (value-fn o)} (display-fn o)])))])
+  (into
+   [ant/select {:on-change
+                #(rf/dispatch [dispatch-key %])
+                ;;:show-search true
+                :default-value value}]
+   (for [o opts]
+     [ant/select-option {:key (value-fn o)
+                         :value (value-fn o)} (display-fn o)])))
 
 (defn drop-down-players
   [opts dispatch-key value]
@@ -29,3 +27,10 @@
   (let [error @(rf/subscribe [:failed])]
     (when errors
       [:div.error "Error = " (str error)])))
+
+(defn footer
+  []
+  [ant/layout-footer
+   [:a {:href "https://github.com/AndreaCrotti/elo"
+        :target "_blank"}
+    "Fork me on Github"]])

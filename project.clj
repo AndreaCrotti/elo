@@ -40,19 +40,12 @@
                  [re-frame "0.10.6"]
                  [reagent-utils "0.3.2"]
                  [org.webjars/font-awesome "5.7.2"]
+                 [antizer "0.3.1"]
 
                  [day8.re-frame/tracing-stubs "0.5.1"]
                  [expound "0.7.2"]
                  [cljsjs/react "16.6.0-0"]
                  [cljsjs/react-dom "16.6.0-0"]
-                 ;; these below are all needed by react datepicker and
-                 ;; everything blows up if they are not pinned apparently
-                 [cljsjs/react-datepicker "1.5.0-0"]
-                 [cljsjs/classnames "2.2.5-1"]
-                 [cljsjs/prop-types "15.6.2-0"]
-                 [cljsjs/react-onclickoutside "6.7.1-1"]
-                 [cljsjs/react-popper "0.10.4-0"]
-                 [cljsjs/popperjs "1.14.3-1"]
                  ;; [metasoarous/oz "1.3.1"]
                  [cljsjs/vega-lite "2.6.0-1"]
                  [cljsjs/vega "4.3.0-0"]
@@ -63,6 +56,7 @@
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [cljs-ajax "0.8.0"]
                  [cljs-http "0.1.45"]
+                 [ring-cljsjs "0.1.0"]
 
                  [bidi "2.1.5"]
                  [com.cemerick/url "0.1.1"]
@@ -105,7 +99,8 @@
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]
             "cljs-prod" ["run" "-m" "figwheel.main" "--build-once" "prod"]
             "test-cljs" ["doo" "rhino" "test" "once"]
-            "kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]}
+            "kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]
+            "seed" ["run" "-m" "byf.seed"]}
 
   :cljfmt {:indents {for-all [[:block 1]]
                      fdef [[:block 1]]

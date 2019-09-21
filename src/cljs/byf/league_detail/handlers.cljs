@@ -290,10 +290,10 @@
                  (fn [db _]
                    (assoc db
                           page
-                          (current-user-transform
-                           (assoc default-db
-                                  :game
-                                  default-game)))))
+                          #_(current-user-transform)
+                          (assoc default-db
+                                 :game
+                                 default-game))))
 
 (rf/reg-event-db ::p1 (setter [:game :p1]))
 (rf/reg-event-db ::p1_points (setter [:game :p1_points]))
@@ -327,7 +327,7 @@
 (rf/reg-event-fx ::load-games (common/loader page "/api/games" ::load-games-success))
 (rf/reg-event-fx ::load-league (common/loader page "/api/league" ::load-league-success))
 
-(defn game-transform
+(defn game-params
   [db]
   (update
    (common/get-in* db page [:game])
@@ -335,8 +335,9 @@
    #(.format % shared/timestamp-format)))
 
 (rf/reg-event-fx ::add-game
-                 (common/writer page "/api/add-game"
-                                ::add-game-success game-transform))
+                 (common/writer "/api/add-game"
+                                ::add-game-success
+                                game-params))
 
 (rf/reg-sub ::hidden? (sets/in? page :hidden-players))
 
