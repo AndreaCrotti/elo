@@ -32,7 +32,7 @@
 
 (defn game-form
   []
-  (let [players (rf/subscribe [::players-handlers/active-players])
+  (let [players (rf/subscribe [::players-handlers/players])
         valid-game? (rf/subscribe [::handlers/valid-game?])
         game (rf/subscribe [::handlers/game])
         league (rf/subscribe [::handlers/league])

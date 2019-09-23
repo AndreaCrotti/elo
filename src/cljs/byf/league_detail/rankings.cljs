@@ -4,6 +4,7 @@
             [antizer.reagent :as ant]
             [byf.utils :as utils]
             [reagent.core :as r]
+            [clojure.string :as str]
             [byf.league-detail.handlers :as handlers]
             [byf.common.players :as players-handlers]))
 
@@ -14,7 +15,7 @@
   [:span
    {:key idx
     :class (str "result__element result__" (name result))}
-   (-> result name string/capitalize)])
+   (-> result name str/capitalize)])
 
 (defn results-boxes
   [results]
