@@ -1,8 +1,8 @@
 (ns byf.admin.views
   (:require [re-frame.core :as rf]
+            [antizer.reagent :as ant]
             [byf.admin.handlers :as handlers]
             [byf.common.views :refer [drop-down]]
-            [byf.elements :as el]
             [byf.utils :as utils]))
 
 (defn add-player-form
@@ -12,36 +12,32 @@
         leagues (rf/subscribe [::handlers/leagues])]
 
     (fn []
-      [:div.section
-       [:div
+      [ant/form
+       [ant/form-item
         [drop-down @leagues ::handlers/league (:league_id @player)
          :value-fn :id
-         :display-fn :name]
+         :display-fn :name]]
 
-        [el/input
-         [:is-fullwidth]
-         {:type "text"
-          :value (:name @player)
+       [ant/form-item
+        [ant/input-text-area
+         {:value (:name @player)
           :name "name"
           :placeholder "John Smith"
-          :on-change (utils/set-val ::handlers/name)}]
+          :on-change (utils/set-val ::handlers/name)}]]
 
-        [el/input
-         [:is-fullwidth]
-         {:type "text"
-          :value (:email @player)
+       [ant/form-item
+        [ant/input-text-area
+         {:value (:email @player)
           :name "email"
           :placeholder "john.smith@email.com"
           :on-change (utils/set-val ::handlers/email)}]]
 
-       [:div
-        [el/button
-         [:is-primary :is-fullwidth (when-not @valid-player? "disabled")]
-         {:type "button"
-          :name "submit-game"
-          :on-click (if @valid-player?
-                      #(rf/dispatch [::handlers/add-player])
-                      #(js/alert "Fill up the form first"))}
+       [ant/form-item
+        [ant/button {:type "primary"
+                     :disabled (not @valid-player?)
+                     :on-click (if @valid-player?
+                                 #(rf/dispatch [::handlers/add-player])
+                                 #(js/alert "Fill up the form first"))}
 
          "Register New Player"]]])))
 
@@ -49,5 +45,4 @@
   []
   (rf/dispatch [::handlers/load-leagues])
   (fn []
-    [:div
-     [add-player-form]]))
+    [add-player-form]))
