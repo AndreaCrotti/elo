@@ -6,64 +6,64 @@
 
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [org.clojure/spec.alpha "0.2.176"]
-                 [clj-http "3.9.1"]
-                 [prone "1.6.1"]
+                 [clj-http "3.10.0"]
+                 [prone "2019-07-08"]
                  [integrant "0.7.0"]
                  [integrant/repl "0.3.1"]
-                 [com.bhauman/figwheel-main "0.2.0"]
+                 [com.bhauman/figwheel-main "0.2.3"]
                  ;; server side libs
                  [org.clojure/data.csv "0.1.4"]
                  [aero "1.1.3"]
-                 [ring "1.7.0"]
-                 [org.clojure/java.jdbc "0.7.9"]
-                 [org.postgresql/postgresql "42.2.5"]
-                 [nilenso/honeysql-postgres "0.2.5"]
-                 [honeysql "0.9.4"]
+                 [ring "1.7.1"]
+                 [org.clojure/java.jdbc "0.7.10"]
+                 [org.postgresql/postgresql "42.2.8"]
+                 [nilenso/honeysql-postgres "0.2.6"]
+                 [honeysql "0.9.8"]
 
                  [environ/environ.core "0.3.1"]
                  [hiccup "1.0.5"]
-                 [ring/ring-json "0.4.0"]
+                 [ring/ring-json "0.5.0"]
                  [bk/ring-gzip "0.3.0"]
                  [ring-oauth2 "0.1.4"]
                  [ring/ring-defaults "0.3.2"]
-                 [ring/ring-mock "0.3.2"]
+                 [ring/ring-mock "0.4.0"]
 
                  [buddy "2.0.0"]
-                 [buddy/buddy-auth "2.1.0"]
+                 [buddy/buddy-auth "2.2.0"]
                  [migratus "1.0.9"]
                  ;;TODO: move these to the test profile
-                 [org.clojure/test.check "0.9.0"]
+                 [org.clojure/test.check "0.10.0"]
                  [junit/junit "4.12"]
 
                  ;; [org.clojure/clojurescript "1.10.439"]
                  [org.clojure/clojurescript "1.10.520"]
-                 [re-frame "0.10.6"]
-                 [reagent-utils "0.3.2"]
-                 [org.webjars/font-awesome "5.7.2"]
+                 [re-frame "0.10.9"]
+                 [reagent-utils "0.3.3"]
+                 [org.webjars/font-awesome "5.10.1"]
                  [antizer "0.3.1"]
 
-                 [day8.re-frame/tracing-stubs "0.5.1"]
+                 [day8.re-frame/tracing-stubs "0.5.3"]
                  [expound "0.7.2"]
-                 [cljsjs/react "16.6.0-0"]
-                 [cljsjs/react-dom "16.6.0-0"]
+                 [cljsjs/react "16.9.0-0"]
+                 [cljsjs/react-dom "16.9.0-0"]
                  ;; [metasoarous/oz "1.3.1"]
-                 [cljsjs/vega-lite "2.6.0-1"]
-                 [cljsjs/vega "4.3.0-0"]
+                 [cljsjs/vega-lite "3.4.0-0"]
+                 [cljsjs/vega "5.4.0-0"]
 
-                 [ns-tracker "0.3.1"]
-                 [cljsjs/moment "2.22.2-2"]
+                 [ns-tracker "0.4.0"]
+                 [cljsjs/moment "2.24.0-0"]
                  [day8.re-frame/http-fx "0.1.6"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [cljs-ajax "0.8.0"]
-                 [cljs-http "0.1.45"]
-                 [ring-cljsjs "0.1.0"]
+                 [cljs-http "0.1.46"]
+                 [ring-cljsjs "0.2.0"]
 
-                 [bidi "2.1.5"]
+                 [bidi "2.1.6"]
                  [com.cemerick/url "0.1.1"]
                  [venantius/accountant "0.2.4"]
-                 [medley "1.1.0"]
+                 [medley "1.2.0"]
                  [metosin/ring-http-response "0.9.1"]
-                 [datascript "0.18.2"]
+                 [datascript "0.18.5"]
                  [aysylu/loom "1.0.2"]
                  [reifyhealth/specmonstah "2.0.0-alpha-1"]
                  [com.taoensso/timbre "4.10.0" :exclusions [com.taoensso/encore]]
@@ -107,9 +107,9 @@
                      checking [[:inner 0]]}}
 
   :profiles
-  {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-389"]
-                           [lambdaisland/kaocha-cloverage "0.0-22"]
-                           [lambdaisland/kaocha-junit-xml "0.0-63"]]}
+  {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-541"]
+                           [lambdaisland/kaocha-cloverage "0.0-32"]
+                           [lambdaisland/kaocha-junit-xml "0.0-70"]]}
    :uberjar {:hooks []
              :source-paths ["src/clj" "src/cljc"]
              :prep-tasks [["compile"]
@@ -131,12 +131,12 @@
     :env {:environment :dev}
 
     :dependencies [[binaryage/devtools "0.9.10"]
-                   [cider/piggieback "0.4.0"]
-                   [org.mozilla/rhino "1.7.7.1"]
-                   [day8.re-frame/re-frame-10x "0.3.7"]
-                   [day8.re-frame/tracing "0.5.1"]
+                   [cider/piggieback "0.4.1"]
+                   [org.mozilla/rhino "1.7.11"]
+                   [day8.re-frame/re-frame-10x "0.4.3"]
+                   [day8.re-frame/tracing "0.5.3"]
                    [com.bhauman/rebel-readline-cljs "0.1.4"]
-                   [ring/ring-mock "0.3.2"]]}}
+                   [ring/ring-mock "0.4.0"]]}}
   :cljsbuild
   {:builds
    [{:id "test"
