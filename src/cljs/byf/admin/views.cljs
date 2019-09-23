@@ -42,12 +42,13 @@
 
          "Register New Player"]]])))
 
-(defn disable-colum-rows
+(defn disable-rows
   []
-  )
-
-(defn disable-players-table
-  [])
+  (let [league-players @(rf/subscribe [::handlers/league-players])]
+    (for [l league-players]
+      {:id (:id l)
+       :name (:name l)
+       :enabled (:enabled l)})))
 
 (def disable-table-columns
   [{:dataIndex :enabled
@@ -59,8 +60,19 @@
    {:dataIndex :name
     :title "Name"}])
 
+(defn disable-players-table
+  []
+  [ant/table
+   {:columns disable-table-columns
+    :dataSource (disable-rows)
+    :pagination false
+    :loading false
+    :rowKey :id}])
+
 (defn root
   []
   (rf/dispatch [::handlers/load-leagues])
   (fn []
-    [add-player-form]))
+    [:div.content
+     [add-player-form]
+     [disable-players-table]]))
