@@ -1,6 +1,7 @@
 (ns byf.admin.views
   (:require [re-frame.core :as rf]
             [antizer.reagent :as ant]
+            [reagent.core :as r]
             [byf.admin.handlers :as handlers]
             [byf.common.views :refer [drop-down]]
             [byf.utils :as utils]))
@@ -40,6 +41,23 @@
                                  #(js/alert "Fill up the form first"))}
 
          "Register New Player"]]])))
+
+(defn disable-colum-rows
+  []
+  )
+
+(defn disable-players-table
+  [])
+
+(def disable-table-columns
+  [{:dataIndex :enabled
+    :title "Enabled"
+    :render
+    (fn [v _]
+      [ant/switch {:checked v}])}
+
+   {:dataIndex :name
+    :title "Name"}])
 
 (defn root
   []
