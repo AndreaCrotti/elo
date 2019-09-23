@@ -2,7 +2,6 @@
   (:gen-class)
   (:require [clojure.java.jdbc :as jdbc]
             [clojure.data.json :as json]
-            [clj-time.format :as cf]
             [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [clojure.string :as str]
@@ -183,10 +182,20 @@
                          (some? github-token))
       :token github-token})))
 
+(defn toggle-player!
+  [request]
+  (let [{:keys [league_id player_id enabled]} (:params request)]
+    (db/toggle-player! league_id player_id enabled)
+    (resp/ok
+     {:player-id player_id
+      :enabled   enabled
+      :leauge_id league_id})))
+
 ;;TODO: add a not found page for everything else?
 (def routes
   ["/" {"api/" {"add-player" add-player!
                 "add-game" add-game!
+                "toggle-player" toggle-player!
 
                 "league" get-league
                 "leagues" get-leagues

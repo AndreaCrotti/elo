@@ -167,3 +167,20 @@
   (-> (h/select :name)
       (h/from :player)
       (h/where [:= :id player-id])))
+
+(defn toggle-player-sql
+  [league-id player-id enabled]
+  (->
+   (h/update :league-players)
+   (h/sset {:enabled enabled})
+   (h/where
+    [:and
+     [:= :player_id player-id]
+     [:= :leauge_id league-id]])))
+
+(defn toggle-player!
+  [league-id player-id enabled]
+  (jdbc/execute! (db-spec)
+                 (toggle-player-sql league-id
+                                    player-id
+                                    enabled)))

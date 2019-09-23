@@ -144,6 +144,12 @@
                  json/read-str
                  (get "id")))))))
 
+(deftest enable-player-test
+  (testing "Enabling a player or disabling it"
+    (let [response (write-api-call "/toggle-player" {:league_id sample-league-id
+                                                     :player-id 100})]
+      (is (= 200 (:status response))))))
+
 (deftest auth-test
   (testing "Should be able to check if a user is already authenticated"
     (let [response (read-api-call "/authenticated")]
