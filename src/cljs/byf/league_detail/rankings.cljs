@@ -93,7 +93,7 @@
               (r/as-element
                (results-boxes t)))}
 
-   {:title "# W/L/D-GD/GC"
+   {:title "# W/L/D-GD/GC/GR"
     :dataIndex :stats
     :render (fn [t _ _]
               (let [{:keys [wins losses draws points-done points-received]}
@@ -110,7 +110,9 @@
                          "-"
                          (str/join "/"
                                    (map format-float
-                                        [done-per-game received-per-game])))]))))}])
+                                        [done-per-game
+                                         received-per-game
+                                         (/ done-per-game received-per-game)])))]))))}])
 
 (defn rankings-rows
   []
