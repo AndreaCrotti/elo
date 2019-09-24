@@ -1,5 +1,6 @@
 (ns byf.league-detail.rankings
   (:require [re-frame.core :as rf]
+            [clojure.walk :refer [keywordize-keys]]
             [clojure.string :as string]
             [antizer.reagent :as ant]
             [byf.utils :as utils]
@@ -69,10 +70,10 @@
            [:span up-to-current]
            [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]]))))
 
-(defn format-stats
-  [{:keys [wins losses draws points-done points-received]}]
-  (string/join "/"
-               [wins losses draws points-done points-received]))
+(defn format-float
+  [float-value]
+  (clojure.string/join ""
+                       (take 3 (str float-value))))
 
 (def rankings-columns
   [{:title "position"
@@ -92,13 +93,24 @@
               (r/as-element
                (results-boxes t)))}
 
-   #_{:title "# W/L/D/GD/GR"
-      :dataIndex :stats
-      :render (fn [t b c]
-                (r/as-element
-                 (into [:div.inner-stats]
-                       (for [v (vals t)]
-                         [:span v]))))}])
+   {:title "# W/L/D-GD/GR"
+    :dataIndex :stats
+    :render (fn [t _ _]
+              (let [{:keys [wins losses draws points-done points-received]}
+                    (-> t js->clj keywordize-keys)
+                    n-games (+ wins losses draws)
+                    done-per-game (/ points-done n-games)
+                    received-per-game (/ points-received n-games)]
+
+                (if (zero? n-games)
+                  "No stats available"
+                  (r/as-element
+                   [:div.inner-stats
+                    (str (str/join "/" [wins losses draws])
+                         "-"
+                         (str/join "/"
+                                   (map format-float
+                                        [done-per-game received-per-game])))]))))}])
 
 (defn rankings-rows
   []
