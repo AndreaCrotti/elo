@@ -93,7 +93,7 @@
               (r/as-element
                (results-boxes t)))}
 
-   {:title "# W/L/D-GD/GR"
+   {:title "# W/L/D-GD/GC"
     :dataIndex :stats
     :render (fn [t _ _]
               (let [{:keys [wins losses draws points-done points-received]}
