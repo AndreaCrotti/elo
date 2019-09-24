@@ -5,7 +5,6 @@
             [antizer.reagent :as ant]
             [byf.utils :as utils]
             [reagent.core :as r]
-            [clojure.string :as str]
             [byf.league-detail.handlers :as handlers]
             [byf.common.players :as players-handlers]))
 
@@ -16,7 +15,7 @@
   [:span
    {:key idx
     :class (str "result__element result__" (name result))}
-   (-> result name str/capitalize)])
+   (-> result name string/capitalize)])
 
 (defn results-boxes
   [results]
@@ -72,8 +71,7 @@
 
 (defn format-float
   [float-value]
-  (clojure.string/join ""
-                       (take 3 (str float-value))))
+  (string/join "" (take 3 (str float-value))))
 
 (def rankings-columns
   [{:title "position"
@@ -106,13 +104,13 @@
                   "No stats available"
                   (r/as-element
                    [:div.inner-stats
-                    (str (str/join "/" [wins losses draws])
+                    (str (string/join "/" [wins losses draws])
                          "-"
-                         (str/join "/"
-                                   (map format-float
-                                        [done-per-game
-                                         received-per-game
-                                         (/ done-per-game received-per-game)])))]))))}])
+                         (string/join "/"
+                                      (map format-float
+                                           [done-per-game
+                                            received-per-game
+                                            (/ done-per-game received-per-game)])))]))))}])
 
 (defn rankings-rows
   []
