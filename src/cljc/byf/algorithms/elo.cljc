@@ -54,9 +54,11 @@
 
 (defn extract-players
   [games]
-  (vec (set (apply concat
-                   (for [[f s] games]
-                     [f s])))))
+  (->> games
+       (map #(take 2 %))
+       (apply concat)
+       set
+       vec))
 
 (defn normalize-game
   "Normalize the game identifying winner and loser (or draw) from the number of goals.
