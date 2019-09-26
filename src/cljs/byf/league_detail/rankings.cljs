@@ -1,6 +1,5 @@
 (ns byf.league-detail.rankings
   (:require [re-frame.core :as rf]
-            [clojure.walk :refer [keywordize-keys]]
             [clojure.string :as string]
             [antizer.reagent :as ant]
             [byf.utils :as utils]
@@ -21,11 +20,6 @@
   [results]
   [:div.result__container
    (map-indexed el-result (take-last form-size results))])
-
-(defn- enumerate
-  [xs]
-  ;; without sorting it only works up to 30 !!
-  (sort (zipmap (map inc (range (count xs))) xs)))
 
 (def hide-show-all
   [:span.hide__show__all
