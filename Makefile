@@ -7,6 +7,9 @@ demo:
 prod:
 	git push -v --force heroku-prod HEAD:master
 
+datomic:
+	git push -v --force heroku-datomic HEAD:master
+
 pg:
 	pgcli postgres://byf@localhost:5445/byf
 
