@@ -91,26 +91,26 @@
               (r/as-element
                (results-boxes t)))}
 
-   {:title "# W/L/D-GD/GC/GR"
-    :dataIndex :stats
-    :render (fn [t _ _]
-              (let [{:keys [wins losses draws points-done points-received]}
-                    (-> t js->clj keywordize-keys)
-                    n-games (+ wins losses draws)
-                    done-per-game (/ points-done n-games)
-                    received-per-game (/ points-received n-games)]
+   {:title "W"
+    :dataIndex :won}
 
-                (if (zero? n-games)
-                  "No stats available"
-                  (r/as-element
-                   [:div.inner-stats
-                    (str (string/join "/" [wins losses draws])
-                         "-"
-                         (string/join "/"
-                                      (map format-float
-                                           [done-per-game
-                                            received-per-game
-                                            (/ done-per-game received-per-game)])))]))))}])
+   {:title "D"
+    :dataIndex :drawn}
+
+   {:title "L"
+    :dataIndex :lost}
+
+   {:title "GF"
+    :dataIndex :goals-for}
+
+   {:title "GA"
+    :dataIndex :goals-against}
+
+   {:title "GR"
+    :dataIndex :goals-ratio}
+
+   {:title "GF"
+    :dataIndex :goals-for}])
 
 (defn rankings-rows
   []
@@ -123,11 +123,20 @@
 
     (map-indexed
      (fn [idx {:keys [id] :as item}]
-       (assoc item
-              :position (inc idx)
-              :name (name-mapping id)
-              :results (get results id)
-              :stats (get stats id)))
+       (let [{:keys [wins losses draws points-done points-received]} (get stats id)
+             tot-games (+ wins losses draws)
+             gf (/ points-done tot-games)
+             ga (/ points-received tot-games)]
+         (assoc item
+                :position (inc idx)
+                :name (name-mapping id)
+                :results (get results id)
+                :won wins
+                :lost losses
+                :drawn draws
+                :goals-for (format-float gf)
+                :goals-against (format-float ga)
+                :goals-ratio (format-float (/ gf ga)))))
 
      filtered-rankings)))
 
