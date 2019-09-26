@@ -103,10 +103,7 @@
 
    {:title "GR"
     :dataIndex :goals-ratio}
-
-   {:title "GF"
-    :dataIndex :goals-for}
-
+   
    {:title "points"
     :dataIndex :ranking
     :render (fn [t _ _] (int t))}])
