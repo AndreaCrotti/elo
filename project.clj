@@ -57,6 +57,7 @@
                  [cljs-ajax "0.8.0"]
                  [cljs-http "0.1.46"]
                  [ring-cljsjs "0.2.0"]
+                 [com.datomic/datomic-pro "0.9.5951"]
 
                  [bidi "2.1.6"]
                  [com.cemerick/url "0.1.1"]
