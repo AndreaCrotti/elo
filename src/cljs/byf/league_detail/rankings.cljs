@@ -80,13 +80,8 @@
    {:title "name"
     :dataIndex :name}
 
-   {:title "ranking"
-    :dataIndex :ranking
-    :render (fn [t _ _] (int t))}
-
    {:title "form"
     :dataIndex :results
-
     :render (fn [t _ _]
               (r/as-element
                (results-boxes t)))}
@@ -110,7 +105,11 @@
     :dataIndex :goals-ratio}
 
    {:title "GF"
-    :dataIndex :goals-for}])
+    :dataIndex :goals-for}
+
+   {:title "points"
+    :dataIndex :ranking
+    :render (fn [t _ _] (int t))}])
 
 (defn rankings-rows
   []
