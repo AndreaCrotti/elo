@@ -107,6 +107,9 @@
                      fdef [[:block 1]]
                      checking [[:inner 0]]}}
 
+  :repositories {"my.datomic.com" {:url "https://my.datomic.com/repo"
+                                   :creds :gpg}}
+
   :profiles
   {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-541"]
                            [lambdaisland/kaocha-cloverage "0.0-32"]
