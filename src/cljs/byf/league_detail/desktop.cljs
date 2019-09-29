@@ -144,8 +144,7 @@
               [set-current-user]]
            [current-user-notification]
            [:div {:id "add-game"}
-            [ant/card
-             [game-form]]]
+            [game-form]]
            [add-user-notification]
            [results]])])
      [common-views/footer]]))
