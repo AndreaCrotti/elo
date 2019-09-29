@@ -117,10 +117,10 @@
 
            (concat [[ant/menu-item league-name]
                     [ant/menu-item [:a {:href "/"} "ALL LEAGUES"]]]
-                 (for [[k s] menu-config
-                       :let [hashed (str "#" k)]]
-                   [ant/menu-item [:a {:on-click #(go-to-internal hashed)}
-                                   s]])))]))
+                   (for [[k s] menu-config
+                         :let [hashed (str "#" k)]]
+                     [ant/menu-item [:a {:on-click #(go-to-internal hashed)}
+                                     s]])))]))
 
 (defn root
   []
@@ -144,8 +144,7 @@
               [set-current-user]]
            [current-user-notification]
            [:div {:id "add-game"}
-            [ant/card
-             [game-form]]]
+            [game-form]]
            [add-user-notification]
            [results]])])
      [common-views/footer]]))

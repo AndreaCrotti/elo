@@ -7,8 +7,10 @@
   [flag content]
   (when flag
     [:div
-     [ant/alert {:type "info"
-                 :message content}]]))
+     [ant/alert {:type     "info"
+                 :closable true
+                 :showIcon true
+                 :message  content}]]))
 
 ;; make this more generic to allow different position and different content
 (defn add-user-notification

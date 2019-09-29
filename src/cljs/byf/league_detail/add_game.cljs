@@ -27,6 +27,7 @@
   [val handler]
   [ant/input-text-area
    {:default-value val
+    :value val
     :autosize {:max-rows 1}
     :on-change (utils/set-val handler)}])
 
@@ -63,7 +64,7 @@
       ;; link to the right value here
       [ant/date-picker {:show-time true
                         :format "YYYY-MM-DD HH:mm"
-                        :default-value (js/moment)
+                        :value (:played_at @game)
                         :on-change
                         (fn [mo _]
                           (rf/dispatch [::handlers/played_at mo]))}]]
