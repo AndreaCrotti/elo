@@ -183,19 +183,31 @@
                          (some? github-token))
       :token github-token})))
 
+(defn enable-player
+  [request]
+  (let [player-id (-> request :params :player-id)]
+    (db/write! db/enable-player-sql player-id)))
+
+(defn disable-player
+  [request]
+  (let [player-id (-> request :params :player-id)]
+    (db/write! db/disable-player-sql player-id)))
+
 ;;TODO: add a not found page for everything else?
 (def routes
   ["/" {"api/" {"add-player" add-player!
-                "add-game" add-game!
+                "add-game"   add-game!
 
-                "league" get-league
-                "leagues" get-leagues
-                "companies" get-companies
-                "players" get-players
-                "games" get-games}
+                "league"         get-league
+                "leagues"        get-leagues
+                "companies"      get-companies
+                "players"        get-players
+                "games"          get-games
+                "enable-player"  enable-player
+                "disable-player" disable-player}
 
         "oauth2/github/callback" github-callback
-        "authenticated" authenticated?
+        "authenticated"          authenticated?
 
         ;; quite a crude way to make sure all the other urls actually
         ;; render to the SPA, letting the routing be handled by

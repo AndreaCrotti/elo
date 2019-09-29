@@ -40,6 +40,15 @@
       (h/order-by [:played_at :asc]
                   [:recorded_at :asc])))
 
+(defn- toggle-player-sql
+  [active? user-id]
+  (-> (h/update :user)
+      (h/sset [[:active active?]])
+      (h/where [:= :id user-id])))
+
+(def disable-player-sql (partial toggle-player-sql false))
+(def enable-player-sql (partial toggle-player-sql true))
+
 (defn load-players-sql
   [league-id]
   (-> (h/select :*)
@@ -75,6 +84,11 @@
   [func & args]
   (jdbc/query (db-spec)
               (sql/format (apply func args))))
+
+(defn write!
+  [func & args]
+  (jdbc/execute! (db-spec)
+                 (sql/format (apply func args))))
 
 (defn get-single
   [func & args]
