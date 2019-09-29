@@ -25,6 +25,10 @@
             (fn [db _]
               (get-in db [:route-params :league-id])))
 
+(rf/reg-sub ::league-name
+            (fn [db _]
+              (get-in db [::page-id :league :name])))
+
 ;; should I just add a watcher to the reagent db to get the desired checks?
 
 ;;TODO: add some spec validation here

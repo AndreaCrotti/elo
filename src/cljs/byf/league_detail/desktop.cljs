@@ -103,22 +103,24 @@
   (set! (.-hash js/location) place))
 
 (def menu-config
-  [;;["/" "HOME"]
-   ["add-game" "NEW GAME"]
+  [["add-game" "NEW GAME"]
    ["rankings" "RANKINGS"]
    ["stats" "STATS"]
    ["games" "GAMES"]])
 
 (defn navbar
   []
-  [ant/layout-header
-   (into [ant/menu {:theme "dark"
-                    :mode "horizontal"}]
+  (let [league-name @(rf/subscribe [::handlers/league-name])]
+    [ant/layout-header
+     (into [ant/menu {:theme "dark"
+                      :mode "horizontal"}]
 
-         (for [[k s] menu-config
-               :let [hashed (str "#" k)]]
-           [ant/menu-item [:a {:on-click #(go-to-internal hashed)}
-                           s]]))])
+           (concat [[ant/menu-item league-name]
+                    [ant/menu-item [:a {:href "/"} "ALL LEAGUES"]]]
+                 (for [[k s] menu-config
+                       :let [hashed (str "#" k)]]
+                   [ant/menu-item [:a {:on-click #(go-to-internal hashed)}
+                                   s]])))]))
 
 (defn root
   []
