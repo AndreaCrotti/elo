@@ -117,10 +117,10 @@
 
            (concat [[ant/menu-item league-name]
                     [ant/menu-item [:a {:href "/"} "ALL LEAGUES"]]]
-                 (for [[k s] menu-config
-                       :let [hashed (str "#" k)]]
-                   [ant/menu-item [:a {:on-click #(go-to-internal hashed)}
-                                   s]])))]))
+                   (for [[k s] menu-config
+                         :let [hashed (str "#" k)]]
+                     [ant/menu-item [:a {:on-click #(go-to-internal hashed)}
+                                     s]])))]))
 
 (defn root
   []
