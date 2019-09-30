@@ -6,6 +6,7 @@
             [byf.utils :as utils]
             [byf.common.players :as players-handlers]
             [byf.league-detail.handlers :as handlers]
+            [byf.league-detail.handlers.add-game :as add-handlers]
             [cljsjs.moment]))
 
 (def form-config
@@ -35,9 +36,9 @@
   []
   (rf/dispatch [::players-handlers/load-players])
   (fn []
-    (let [players (rf/subscribe [::players-handlers/active-players-full])
-          valid-game? (rf/subscribe [::handlers/valid-game?])
-          game (rf/subscribe [::handlers/game])
+    (let [players (rf/subscribe [::add-handlers/active-players-full])
+          valid-game? (rf/subscribe [::add-handlers/valid-game?])
+          game (rf/subscribe [::add-handlers/game])
           league (rf/subscribe [::handlers/league])
           game-type (or (:game_type @league) :fifa)
           points-range (map str (config/opts game-type :points))
@@ -45,22 +46,22 @@
 
       [ant/form form-config
        [ant/form-item {:label "Player 1"}
-        [common-views/drop-down-players sorted-players ::handlers/p1 (:p1 @game)]]
+        [common-views/drop-down-players sorted-players ::add-handlers/p1 (:p1 @game)]]
 
        [ant/form-item {:label "Goals"}
-        [common-views/drop-down points-range ::handlers/p1_points (:p1_points @game)]]
+        [common-views/drop-down points-range ::add-handlers/p1_points (:p1_points @game)]]
 
        [ant/form-item {:label "Team 1"}
-        [team-input (:p1_using @game) ::handlers/p1_using]]
+        [team-input (:p1_using @game) ::add-handlers/p1_using]]
 
        [ant/form-item {:label "Player 2"}
-        [common-views/drop-down-players sorted-players ::handlers/p2 (:p2 @game)]]
+        [common-views/drop-down-players sorted-players ::add-handlers/p2 (:p2 @game)]]
 
        [ant/form-item {:label "Goals"}
-        [common-views/drop-down points-range ::handlers/p2_points (:p2_points @game)]]
+        [common-views/drop-down points-range ::add-handlers/p2_points (:p2_points @game)]]
 
        [ant/form-item {:label "Team 2"}
-        [team-input (:p2_using @game) ::handlers/p2_using]]
+        [team-input (:p2_using @game) ::add-handlers/p2_using]]
 
        [ant/form-item {:label "Played At"}
         ;; link to the right value here
@@ -69,11 +70,11 @@
                           :value (:played_at @game)
                           :on-change
                           (fn [mo _]
-                            (rf/dispatch [::handlers/played_at mo]))}]]
+                            (rf/dispatch [::add-handlers/played_at mo]))}]]
 
        [ant/form-item
         [ant/button
          (enable-button @valid-game?
                         {:type "primary"
-                         :on-click #(rf/dispatch [::handlers/add-game])})
+                         :on-click #(rf/dispatch [::add-handlers/add-game])})
          "Add Game"]]])))

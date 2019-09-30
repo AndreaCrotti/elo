@@ -57,6 +57,7 @@
 (defn results
   []
   (rf/dispatch [::handlers/load-games])
+
   (let [show-results (rf/subscribe [::handlers/show-results])]
     (fn []
       [:div.inner
@@ -140,8 +141,6 @@
         (if loading?
           [ant/spin {:size "large"}]
           [:div.content
-           #_[ant/card
-              [set-current-user]]
            [current-user-notification]
            [:div {:id "add-game"}
             [game-form]]
