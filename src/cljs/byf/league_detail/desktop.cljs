@@ -57,7 +57,6 @@
 (defn results
   []
   (rf/dispatch [::handlers/load-games])
-
   (let [show-results (rf/subscribe [::handlers/show-results])]
     (fn []
       [:div.inner
@@ -132,6 +131,7 @@
 
   (let [loading? @(rf/subscribe [::handlers/loading?])
         errors @(rf/subscribe [:failed])]
+
     [:div.root
      [navbar]
 

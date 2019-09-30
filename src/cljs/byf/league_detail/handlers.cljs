@@ -31,16 +31,6 @@
 
 ;; should I just add a watcher to the reagent db to get the desired checks?
 
-;;TODO: add some spec validation here
-(def default-game
-  {:p1 ""
-   :p2 ""
-   :p1_points ""
-   :p2_points ""
-   :p1_using ""
-   :p2_using ""
-   :played_at (js/moment)})
-
 (def default-db
   {:games []
    :dead-players #{}
@@ -207,53 +197,6 @@
             (fn [db _]
               (common/get-in* db page [:league :game_type])))
 
-(defn valid-players?
-  [{:keys [p1 p2]}]
-  (not= p1 p2))
-
-;; I could return some kind of coeffect when there is an error
-;; to give a better warning in the UI
-(defn valid-result?
-  [game-type game]
-  (let [p1 (:p1_points game)
-        p2 (:p2_points game)
-        draw? (-> shared/games-config :fifa :draw?)]
-
-    (or draw?
-        (not= p1 p2))))
-
-(rf/reg-sub ::valid-players?
-            :<- [::game]
-
-            (fn [game _]
-              (valid-players? game)))
-
-(rf/reg-sub ::valid-result?
-            :<- [::game]
-            :<- [::game-type]
-
-            (fn [[game-type game] _]
-              (valid-result? game-type game)))
-
-(rf/reg-sub ::filled-game?
-            (fn [db _]
-              (not-any? #(= % "")
-                        (vals (common/get-in* db page [:game])))))
-
-(rf/reg-sub ::valid-game?
-            :<- [::valid-result?]
-            :<- [::filled-game?]
-            :<- [::valid-players?]
-
-            (fn [[valid-result? filled-game? valid-players?] _]
-              (and valid-result?
-                   filled-game?
-                   valid-players?)))
-
-(rf/reg-event-db ::reset-game
-                 (fn [db _]
-                   (common/assoc-in* db page [:game] default-game)))
-
 (rf/reg-sub ::game (getter [:game]))
 ;;TODO: add here the default condition
 (rf/reg-sub ::up-to-games
@@ -289,36 +232,9 @@
           (assoc-in [:current-user] current-user))
       db)))
 
-;;TODO: improve this structure a bit
 (rf/reg-event-db ::initialize-db
                  (fn [db _]
-                   (assoc db
-                          page
-                          #_(current-user-transform)
-                          (assoc default-db
-                                 :game
-                                 default-game))))
-
-(rf/reg-event-db ::p1 (setter [:game :p1]))
-(rf/reg-event-db ::p1_points (setter [:game :p1_points]))
-(rf/reg-event-db ::p1_using (setter [:game :p1_using]))
-(rf/reg-event-db ::up-to-games (setter [:up-to-games]))
-
-(rf/reg-event-db ::p2 (setter [:game :p2]))
-(rf/reg-event-db ::p2_points (setter [:game :p2_points]))
-(rf/reg-event-db ::p2_using (setter [:game :p2_using]))
-
-(rf/reg-event-db ::played_at (setter [:game :played_at]))
-
-(defn- reload-fn-gen
-  [extra-signal]
-  (fn [{:keys [db]} _]
-    {:db db
-     :dispatch-n (cons extra-signal [[::add-user-notification]
-                                     [::players-handlers/load-players]
-                                     [::load-games]])}))
-
-(rf/reg-event-fx ::add-game-success (reload-fn-gen [::reset-game]))
+                   (assoc db page default-db)))
 
 (rf/reg-event-db ::load-games-success
                  (fn [db [_ games]]

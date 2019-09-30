@@ -15,9 +15,9 @@
 
 (def page ::page-id)
 
-(rf/reg-event-db ::reset-game
+(rf/reg-event-db ::initialize-db
                  (fn [db _]
-                   (common/assoc-in* db page [:game] default-game)))
+                   (assoc db page default-game)))
 
 (def setter (partial common/setter* page))
 
@@ -32,7 +32,7 @@
 (rf/reg-event-db ::p2_using (setter [:game :p2_using]))
 (rf/reg-event-db ::played_at (setter [:game :played_at]))
 
-(rf/reg-sub ::game (getter [:game]))
+(rf/reg-sub ::game (fn [db _] db))
 
 (defn valid-players?
   [{:keys [p1 p2]}]
@@ -90,7 +90,7 @@
                                      [::players-handlers/load-players]
                                      [::load-games]])}))
 
-(rf/reg-event-fx ::add-game-success (reload-fn-gen [::reset-game]))
+(rf/reg-event-fx ::add-game-success (reload-fn-gen [::initialize-db]))
 
 (defn game-params
   [db]
