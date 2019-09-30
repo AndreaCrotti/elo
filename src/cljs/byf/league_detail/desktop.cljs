@@ -56,6 +56,7 @@
 
 (defn results
   []
+  (rf/dispatch [::handlers/load-games])
   (let [show-results (rf/subscribe [::handlers/show-results])]
     (fn []
       [:div.inner
@@ -126,7 +127,6 @@
   []
   ;; this is kind of an antipattern for reframe
   (rf/dispatch [::handlers/load-league])
-  (rf/dispatch [::handlers/load-games])
   (rf/dispatch [::players-handlers/load-players])
 
   (let [loading? @(rf/subscribe [::handlers/loading?])
