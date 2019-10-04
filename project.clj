@@ -39,6 +39,7 @@
                  ;; [org.clojure/clojurescript "1.10.439"]
                  [org.clojure/clojurescript "1.10.520"]
                  [re-frame "0.10.9"]
+                 [day8.re-frame/test "0.1.5" :scope "test"]
                  [reagent-utils "0.3.3"]
                  [org.webjars/font-awesome "5.10.1"]
                  [antizer "0.3.1"]
