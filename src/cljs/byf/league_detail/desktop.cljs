@@ -43,11 +43,11 @@
           {:on-click #(rf/dispatch [::handlers/toggle-graph])}
           (if @show-graph
             "hide graph"
-            "show graph")]]
+            "show graph")]
 
-        (when @show-graph
-          [ant/card
-           [vega/vega-inner filtered-history @rankings-domain]])))))
+         (when @show-graph
+           [ant/card
+            [vega/vega-inner filtered-history @rankings-domain]])]))))
 
 (defn mobile?
   []
