@@ -29,6 +29,8 @@ jobs:
 
       - run: lein cljfmt check
       - run: lein eastwood
+      - run: bash <(curl -s https://raw.githubusercontent.com/borkdude/clj-kondo/master/script/install-clj-kondo)
+      - run: clj-kondo --lint src/
 
   test_clj:
     <<: *base_docker
