@@ -132,9 +132,11 @@
 
 (defn rankings-table
   []
-  [ant/table
-   {:columns    rankings-columns
-    :dataSource (rankings-rows)
-    :pagination false
-    :loading    false
-    :rowKey     :position}])
+  [:div
+   [game-slider]
+   [ant/table
+    {:columns    rankings-columns
+     :dataSource (rankings-rows)
+     :pagination false
+     :loading    false
+     :rowKey     :position}]])
