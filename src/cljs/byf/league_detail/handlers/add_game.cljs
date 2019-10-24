@@ -49,7 +49,6 @@
     (or draw?
         (not= p1 p2))))
 
-
 (rf/reg-sub ::players
             (constantly ["one" "two" "three"]))
 
@@ -70,7 +69,6 @@
             (fn [db _]
               (not-any? #(= % "")
                         (vals (common/get-in* db page [:game])))))
-
 
 (rf/reg-sub ::valid-game?
             :<- [::valid-result?]
