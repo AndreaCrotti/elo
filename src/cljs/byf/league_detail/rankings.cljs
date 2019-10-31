@@ -56,12 +56,12 @@
             :max (count @games)
             :value up-to-current
             :class "slider"
-            :on-change (utils/set-val ::handlers/up-to-games js/parseInt)}]
+            :on-change #(rf/dispatch [::handlers/up-to-games %])}]
 
           [:span.chevrons
-           [:i.fas.fa-chevron-left {:on-click #(rf/dispatch [::handlers/prev-game])}]
+           [ant/button {:on-click #(rf/dispatch [::handlers/prev-game])} "PREV"]
            [:span up-to-current]
-           [:i.fas.fa-chevron-right {:on-click #(rf/dispatch [::handlers/next-game])}]]]]))))
+           [ant/button {:on-click #(rf/dispatch [::handlers/next-game])} "NEXT"]]]]))))
 
 (defn format-float
   [float-value]
@@ -132,9 +132,11 @@
 
 (defn rankings-table
   []
-  [ant/table
-   {:columns    rankings-columns
-    :dataSource (rankings-rows)
-    :pagination false
-    :loading    false
-    :rowKey     :position}])
+  [:div
+   [game-slider]
+   [ant/table
+    {:columns    rankings-columns
+     :dataSource (rankings-rows)
+     :pagination false
+     :loading    false
+     :rowKey     :position}]])
