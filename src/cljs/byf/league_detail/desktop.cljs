@@ -128,6 +128,7 @@
   ;; this is kind of an antipattern for reframe
   (rf/dispatch [::handlers/load-league])
   (rf/dispatch [::players-handlers/load-players])
+  (rf/dispatch [::handlers/load-games])
 
   (let [loading? @(rf/subscribe [::handlers/loading?])
         errors @(rf/subscribe [:failed])]
