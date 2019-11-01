@@ -25,7 +25,8 @@
   []
   (let [error @(rf/subscribe [:failed])]
     (when errors
-      [:div.error "Error = " (str error)])))
+     [ant/alert {:type "error"
+                 :message error}])))
 
 (defn footer
   []
