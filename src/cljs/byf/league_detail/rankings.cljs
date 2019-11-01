@@ -131,7 +131,7 @@
 
     (map-indexed
      (fn [idx item]
-       (assoc item :position idx))
+       (assoc item :position (inc idx)))
      (filter some? rows))))
 
 (defn rankings-table
