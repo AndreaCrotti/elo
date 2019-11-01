@@ -102,6 +102,23 @@
     :dataIndex :ranking
     :render (fn [t _ _] (int t))}])
 
+(defn ->ranking-row
+  [results stats name-mapping {:keys [id] :as item}]
+  (let [{:keys [wins losses draws points-done points-received]} (get stats id)
+        tot-games (+ wins losses draws)
+        gf (/ points-done tot-games)
+        ga (/ points-received tot-games)]
+    (when (pos? tot-games)
+      (assoc item
+             :name (name-mapping id)
+             :results (get results id)
+             :won wins
+             :lost losses
+             :drawn draws
+             :goals-for (format-float gf)
+             :goals-against (format-float ga)
+             :goals-ratio (format-float (/ gf ga))))))
+
 (defn rankings-rows
   []
   (let [name-mapping @(rf/subscribe [::players-handlers/name-mapping])
@@ -109,26 +126,13 @@
         stats @(rf/subscribe [::handlers/stats])
         sorted-rankings @(rf/subscribe [::handlers/rankings])
         active-players @(rf/subscribe [::players-handlers/active-players])
-        filtered-rankings (filter #(active-players (:id %)) sorted-rankings)]
+        filtered-rankings (filter #(active-players (:id %)) sorted-rankings)
+        rows (map (fn [i] (->ranking-row results stats name-mapping i)) filtered-rankings)]
 
     (map-indexed
-     (fn [idx {:keys [id] :as item}]
-       (let [{:keys [wins losses draws points-done points-received]} (get stats id)
-             tot-games (+ wins losses draws)
-             gf (/ points-done tot-games)
-             ga (/ points-received tot-games)]
-         (assoc item
-                :position (inc idx)
-                :name (name-mapping id)
-                :results (get results id)
-                :won wins
-                :lost losses
-                :drawn draws
-                :goals-for (format-float gf)
-                :goals-against (format-float ga)
-                :goals-ratio (format-float (/ gf ga)))))
-
-     filtered-rankings)))
+     (fn [idx item]
+       (assoc item :position idx))
+     (filter some? rows))))
 
 (defn rankings-table
   []
