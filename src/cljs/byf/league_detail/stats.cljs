@@ -65,7 +65,7 @@
   [ant/table
    {:columns columns
     :dataSource rows
-    :pagination true
+    :pagination {:default-page-size stats-page-length}
     :loading false}])
 
 (defn stats-component
