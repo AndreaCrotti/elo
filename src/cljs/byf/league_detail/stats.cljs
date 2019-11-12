@@ -8,7 +8,7 @@
             [byf.league-detail.utils :refer [format-date]]
             [clojure.spec.alpha :as s]))
 
-(def stats-length 5)
+(def stats-page-length 5)
 
 (defn- truncate-float
   [v]
@@ -65,7 +65,7 @@
   [ant/table
    {:columns columns
     :dataSource rows
-    :pagination false
+    :pagination {:default-page-size stats-page-length}
     :loading false}])
 
 (defn stats-component
@@ -73,8 +73,7 @@
   (let [{:keys [handler transform title]} (kw stats-config)
         stats @(rf/subscribe [handler])
         active-player-names @(rf/subscribe [::players-handlers/active-players-names])
-        filtered-stats (take stats-length
-                             (filter #(active-player-names (:player %)) stats))
+        filtered-stats (filter #(active-player-names (:player %)) stats)
         transformed (map
                      #(transform-row % (or transform {}))
                      filtered-stats)]
