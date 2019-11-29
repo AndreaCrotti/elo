@@ -2,7 +2,10 @@
 
 (def timestamp-format "YYYY-MM-DDZHH:mm:SS")
 
-(def games #{"fifa" "street-fighter" "table-tennis"})
+(def games #{"fifa"
+             "street-fighter"
+             "table-tennis"
+             "pool"})
 
 ;;TODO: add a spec for the game configuration
 (def games-config
@@ -25,6 +28,13 @@
                   :points "games"}
     :form {:points (range 6)}
     :logo "table_tennis.png"
+    :draw? false}
+
+   :pool
+   {:terminology {:using "player"
+                  :points "games"}
+    :form {:points (range 3)}
+    :logo "pool.jpg"
     :draw? false}})
 
 (defn term
