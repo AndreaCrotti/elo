@@ -22,7 +22,7 @@
 (defn gen-header
   [title]
   [:head [:meta {:charset "utf-8"
-                 :description "FIFA championship little helper"}]
+                 :description "Internal leagues platform"}]
 
    [:script (format "window['cfg']=%s" (global-client-side-config))]
 
