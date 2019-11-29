@@ -10,32 +10,36 @@
 ;;TODO: add a spec for the game configuration
 (def games-config
   {:fifa
-   {:terminology {:using "team"
-                  :points "goals"}
-    :form {:points (range 10)}
-    :logo "fifa.png"
-    :draw? true}
+   {:terminology   {:using  "team"
+                    :points "goals"}
+    :team-required true
+    :form          {:points (range 10)}
+    :logo          "fifa.png"
+    :draw?         true}
 
    :street-fighter
-   {:terminology {:using "character"
-                  :points "rounds"}
-    :form {:points (range 3)}
-    :logo "street_fighter.gif"
-    :draw? false}
-
+   {:terminology   {:using  "character"
+                    :points "rounds"}
+    :form          {:points (range 3)}
+    :team-required true
+    :logo          "street_fighter.gif"
+    :draw?         false}
+   
    :table-tennis
-   {:terminology {:using "player"
-                  :points "games"}
-    :form {:points (range 6)}
-    :logo "table_tennis.png"
-    :draw? false}
+   {:terminology   {:using  "player"
+                    :points "games"}
+    :team-required false
+    :form          {:points (range 6)}
+    :logo          "table_tennis.png"
+    :draw?         false}
 
    :pool
-   {:terminology {:using "player"
-                  :points "games"}
-    :form {:points (range 3)}
-    :logo "pool.jpg"
-    :draw? false}})
+   {:terminology   {:using  "player"
+                    :points "games"}
+    :team-required false
+    :form          {:points (range 3)}
+    :logo          "pool.jpg"
+    :draw?         false}})
 
 (defn term
   [game k]
