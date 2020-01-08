@@ -25,7 +25,7 @@
     [(apply min (map :ranking full-rankings-history))
      (apply max (map :ranking full-rankings-history))]))
 
-(defn rankings
+(defn rankings*
   [games players up-to-games dead-players game-config]
   (let [rankings
         (games/get-rankings (truncate-games games up-to-games)
@@ -37,6 +37,8 @@
                      rankings)]
 
     (sort-by #(- (:ranking %)) updated)))
+
+(def rankings (memoize rankings*))
 
 (defn last-ranking-changes
   [rankings-history last-games-played-by]
