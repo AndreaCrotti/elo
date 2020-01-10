@@ -47,9 +47,10 @@
 
 (defn games-table
   []
-  [ant/table
-   {:columns    columns
-    :dataSource (rows)
-    :pagination true
-    :loading    false
-    :rowKey     :game-idx}])
+  (let [loading? @(rf/subscribe [::handlers/loading?])]
+    [ant/table
+     {:columns    columns
+      :dataSource (rows)
+      :pagination true
+      :loading    loading?
+      :rowKey     :game-idx}]))

@@ -138,7 +138,7 @@
        [common-views/errors]
        [ant/layout-content
         (if loading?
-          [:div.spinny [ant/spin {:size "large"}]]
+          [ant/spin {:size "large"}]
           [:div.content
            #_[ant/card
               [set-current-user]]

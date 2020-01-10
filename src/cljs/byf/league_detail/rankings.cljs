@@ -136,11 +136,12 @@
 
 (defn rankings-table
   []
-  [:div
-   [game-slider]
-   [ant/table
-    {:columns    rankings-columns
-     :dataSource (rankings-rows)
-     :pagination false
-     :loading    false
-     :rowKey     :position}]])
+  (let [loading? @(rf/subscribe [::handlers/loading?])]
+    [:div
+     [game-slider]
+     [ant/table
+      {:columns    rankings-columns
+       :dataSource (rankings-rows)
+       :pagination false
+       :loading    loading?
+       :rowKey     :position}]]))
