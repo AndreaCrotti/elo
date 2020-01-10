@@ -34,7 +34,7 @@
    (google-font (:smaller-titles fonts))
 
    [:link {:rel "stylesheet"
-           :href "https://cdnjs.cloudflare.com/ajax/libs/antd/3.21.4/antd.min.css"}]
+           :href "https://cdnjs.cloudflare.com/ajax/libs/antd/3.9.3/antd.min.css"}]
    ;; should we get different packages?
 
    [:script {:src "https://cdn.jsdelivr.net/npm/vega@4.2.0"}]

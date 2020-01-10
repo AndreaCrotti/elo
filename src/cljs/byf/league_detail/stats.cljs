@@ -62,11 +62,12 @@
 
 (defn stats-table
   [columns rows]
-  [ant/table
-   {:columns columns
-    :dataSource rows
-    :pagination {:default-page-size stats-page-length}
-    :loading false}])
+  (let [loading? @(rf/subscribe [::handlers/loading?])]
+    [ant/table
+     {:columns    columns
+      :dataSource rows
+      :pagination {:default-page-size stats-page-length}
+      :loading    loading?}]))
 
 (defn stats-component
   [kw]
