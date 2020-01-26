@@ -43,13 +43,6 @@
   [m]
   (medley/map-vals str m))
 
-(defn convert
-  [m]
-  (cond
-    (map? m) (uuid-to-str m)
-    (sequential? m) (map uuid-to-str m)
-    :else m))
-
 (defn- as-edn
   [response]
   (-> response
@@ -122,6 +115,13 @@
       :league_id
       validate/to-uuid))
 
+(defn- get-player-id
+  [request]
+  (-> request
+      :params
+      :player_id
+      validate/to-uuid))
+
 (defn get-players
   [request]
   (-> (get-league-id request)
@@ -184,12 +184,14 @@
 
 (defn toggle-player!
   [request]
-  (let [{:keys [league_id player_id enabled]} (:params request)]
-    (db/toggle-player! league_id player_id enabled)
+  (let [league-id (get-league-id request)
+        player-id (get-player-id request)
+        enabled (-> request :params :enabled)]
+    (db/toggle-player! league-id player-id enabled)
     (resp/ok
-     {:player-id player_id
+     {:player-id player-id
       :enabled   enabled
-      :league_id league_id})))
+      :league_id league-id})))
 
 ;;TODO: add a not found page for everything else?
 (def routes

@@ -147,8 +147,13 @@
 (deftest enable-player-test
   (testing "Enabling a player or disabling it"
     (let [response (write-api-call "/toggle-player" {:league_id sample-league-id
-                                                     :player-id 100})]
-      (is (= 200 (:status response))))))
+                                                     :player-id 100})
+          with-disabled (read-api-call "/api/players" {:league_id sample-league-id})]
+      (is (= 200 (:status response)))
+      ;; now fetch the players
+      (is (= 200 (:status with-disabled)))
+      (is (= [] (:body with-disabled)))
+      )))
 
 (deftest auth-test
   (testing "Should be able to check if a user is already authenticated"
