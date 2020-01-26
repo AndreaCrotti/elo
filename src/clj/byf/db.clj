@@ -42,7 +42,7 @@
 
 (defn load-players-sql
   [league-id]
-  (-> (h/select :*)
+  (-> (h/select :pl.id :pl.email :pl.name :lg.active)
       (h/from [:player :pl])
       (h/join [:league_players :lg]
               [:= :pl.id :lg.player_id])
@@ -167,3 +167,21 @@
   (-> (h/select :name)
       (h/from :player)
       (h/where [:= :id player-id])))
+
+(defn toggle-player-sql
+  [league-id player-id active]
+  (->
+   (h/update :league-players)
+   (h/sset {:active active})
+   (h/where
+    [:and
+     [:= :player_id player-id]
+     [:= :league_id league-id]])))
+
+(defn toggle-player!
+  [league-id player-id active]
+  (jdbc/execute! (db-spec)
+                 (sql/format
+                  (toggle-player-sql league-id
+                                     player-id
+                                     active))))

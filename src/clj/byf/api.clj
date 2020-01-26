@@ -2,7 +2,6 @@
   (:gen-class)
   (:require [clojure.java.jdbc :as jdbc]
             [clojure.data.json :as json]
-            [clj-time.format :as cf]
             [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [clojure.string :as str]
@@ -43,13 +42,6 @@
 (defn uuid-to-str
   [m]
   (medley/map-vals str m))
-
-(defn convert
-  [m]
-  (cond
-    (map? m) (uuid-to-str m)
-    (sequential? m) (map uuid-to-str m)
-    :else m))
 
 (defn- as-edn
   [response]
@@ -123,6 +115,13 @@
       :league_id
       validate/to-uuid))
 
+(defn- get-player-id
+  [request]
+  (-> request
+      :params
+      :player_id
+      validate/to-uuid))
+
 (defn get-players
   [request]
   (-> (get-league-id request)
@@ -183,10 +182,24 @@
                          (some? github-token))
       :token github-token})))
 
+(defn toggle-player!
+  [request]
+  (let [league-id (get-league-id request)
+        player-id (get-player-id request)
+        active_str (-> request :params :active)
+        active (if (= "true" active_str) true false)]
+    (db/toggle-player! league-id player-id active)
+    (resp/created
+     "api/players"
+     {:player-id player-id
+      :active    active
+      :league_id league-id})))
+
 ;;TODO: add a not found page for everything else?
 (def routes
   ["/" {"api/" {"add-player" add-player!
                 "add-game" add-game!
+                "toggle-player" toggle-player!
 
                 "league" get-league
                 "leagues" get-leagues

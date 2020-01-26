@@ -27,4 +27,6 @@ db-graph:
 
 
 test:
-	lein test
+	lein kaocha
+
+.PHONY: test

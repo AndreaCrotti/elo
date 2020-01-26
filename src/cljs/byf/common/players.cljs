@@ -22,6 +22,13 @@
                    (map :id)
                    set)))
 
+(rf/reg-sub ::active-players-full
+            :<- [::players]
+
+            (fn [players]
+              (->> players
+                   (filter :active))))
+
 (rf/reg-sub ::name-mapping
             :<- [::players]
 
