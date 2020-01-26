@@ -115,7 +115,12 @@
           body-obj (json/read-str (:body response))]
       (is (= 200 (:status response)))
       (is (= 1 (count body-obj)))
-      (is (true? (-> body-obj first (get "active")))))))
+      (is (= {"email" nil,
+              "name" "john",
+              "active" true}
+             (-> body-obj
+                 first
+                 (dissoc "id")))))))
 
 (deftest add-player-user-test
   (with-redefs [env (assoc env :admin-password "admin-password")]

@@ -1,7 +1,7 @@
 :local = http://localhost:3335
 :staging = http://fifa-elo-staging.herokuapp.com
 :prod = http://fifa-elo.herokuapp.com
-:league_id = 781c6c09-6dd8-4bf3-8647-225f1f542967
+:league_id = 92a057b3-0ddd-42c9-9474-0969be0c2ced
 
 # check if the resources work
 GET :local/css/screen.css
