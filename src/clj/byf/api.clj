@@ -186,7 +186,8 @@
   [request]
   (let [league-id (get-league-id request)
         player-id (get-player-id request)
-        active    (-> request :params :active)]
+        active_str (-> request :params :active)
+        active (if (= "true" active_str) true false)]
     (db/toggle-player! league-id player-id active)
     (resp/created
      "api/players"
