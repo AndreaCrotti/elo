@@ -176,11 +176,12 @@
    (h/where
     [:and
      [:= :player_id player-id]
-     [:= :leauge_id league-id]])))
+     [:= :league_id league-id]])))
 
 (defn toggle-player!
   [league-id player-id enabled]
   (jdbc/execute! (db-spec)
-                 (toggle-player-sql league-id
-                                    player-id
-                                    enabled)))
+                 (sql/format
+                  (toggle-player-sql league-id
+                                     player-id
+                                     enabled))))

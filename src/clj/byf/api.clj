@@ -189,7 +189,7 @@
     (resp/ok
      {:player-id player_id
       :enabled   enabled
-      :leauge_id league_id})))
+      :league_id league_id})))
 
 ;;TODO: add a not found page for everything else?
 (def routes
