@@ -15,6 +15,7 @@
             [medley.core :as medley]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :as r-def]
+            [ring.middleware.cljsjs :refer [wrap-cljsjs]]
             [ring.middleware.not-modified :refer [wrap-not-modified]]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
@@ -251,6 +252,7 @@
 (def app
   (-> routes-handler
       (resources/wrap-resource "public")
+      wrap-cljsjs
       #_wrap-not-modified
       wrap-gzip
       (r-def/wrap-defaults
