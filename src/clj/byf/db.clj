@@ -169,19 +169,19 @@
       (h/where [:= :id player-id])))
 
 (defn toggle-player-sql
-  [league-id player-id enabled]
+  [league-id player-id active]
   (->
    (h/update :league-players)
-   (h/sset {:enabled enabled})
+   (h/sset {:active active})
    (h/where
     [:and
      [:= :player_id player-id]
      [:= :league_id league-id]])))
 
 (defn toggle-player!
-  [league-id player-id enabled]
+  [league-id player-id active]
   (jdbc/execute! (db-spec)
                  (sql/format
                   (toggle-player-sql league-id
                                      player-id
-                                     enabled))))
+                                     active))))

@@ -58,7 +58,9 @@
             authenticated-req
             sut/app)]
 
-    (assert (contains? #{201 401} status), "Invalid status code")
+    (when-not (contains? #{201 401} status)
+      (println "bad response, got " response)
+      (throw (Exception. "bad response, should be #{201, 401}")))
     response))
 
 (defn- store-users!
@@ -143,13 +145,13 @@
              (-> (:body response)
                  json/read-str
                  (get "id")))))))
-
 (deftest enable-player-test
   (testing "Enabling a player or disabling it"
-    (let [response (write-api-call "/toggle-player" {:league_id sample-league-id
-                                                     :player-id 100})
+    (let [[p1-id p2-id] (store-users!)
+          _response (write-api-call "/toggle-player" {:league_id sample-league-id
+                                                      :player-id p1-id})
+          
           with-disabled (read-api-call "/api/players" {:league_id sample-league-id})]
-      (is (= 200 (:status response)))
       ;; now fetch the players
       (is (= 200 (:status with-disabled)))
       (is (= [] (:body with-disabled)))

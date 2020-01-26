@@ -186,11 +186,12 @@
   [request]
   (let [league-id (get-league-id request)
         player-id (get-player-id request)
-        enabled (-> request :params :enabled)]
-    (db/toggle-player! league-id player-id enabled)
-    (resp/ok
+        active    (-> request :params :active)]
+    (db/toggle-player! league-id player-id active)
+    (resp/created
+     "api/players"
      {:player-id player-id
-      :enabled   enabled
+      :active    active
       :league_id league-id})))
 
 ;;TODO: add a not found page for everything else?
