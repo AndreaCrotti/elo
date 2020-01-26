@@ -157,7 +157,7 @@
           _response     (write-api-call "/toggle-player" {:league_id sample-league-id
                                                           :player_id (:player-id p1-id)
                                                           :active    false})
-          
+
           with-disabled (read-api-call "/api/players" {:league_id sample-league-id})
           with-disabled-first-user (-> with-disabled
                                        :body

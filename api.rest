@@ -1,7 +1,7 @@
 :local = http://localhost:3335
 :staging = http://fifa-elo-staging.herokuapp.com
 :prod = http://fifa-elo.herokuapp.com
-:league_id = 92a057b3-0ddd-42c9-9474-0969be0c2ced
+:league_id = f631b983-4de2-4be8-a1cf-2a630df3e2da
 
 # check if the resources work
 GET :local/css/screen.css
@@ -11,6 +11,9 @@ GET :local/js/compiled/app.js
 
 # fetch players
 GET :local/api/players?league_id=:league_id
+
+# disable one of the players
+POST :local/api/toggle-player?league_id=:league_id&player_id=f823ffe6-0238-40c7-bbf3-9abdaee45946&active=false
 
 # fetch all the leagues
 GET :local/api/leagues
