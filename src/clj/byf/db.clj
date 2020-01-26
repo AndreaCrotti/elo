@@ -42,7 +42,7 @@
 
 (defn load-players-sql
   [league-id]
-  (-> (h/select :pl.id :pl.email :pl.name :lg.active)
+  (-> (h/select :pl.id :pl.name :lg.active)
       (h/from [:player :pl])
       (h/join [:league_players :lg]
               [:= :pl.id :lg.player_id])
