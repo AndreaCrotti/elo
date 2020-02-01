@@ -84,11 +84,6 @@
                (for [[k v] rankings]
                  {:id k :ranking v}))))))
 
-(defn result-str
-  [game]
-  (str (:p1 game) " vs " (:p2 game) ": "
-       (:p1_points game) " - " (:p2_points game)))
-
 (defn- plays?
   [game player-id]
   (contains? (set ((juxt :p1 :p2) game)) player-id))

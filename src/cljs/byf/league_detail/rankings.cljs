@@ -21,26 +21,6 @@
   [:div.result__container
    (map-indexed el-result (take-last form-size results))])
 
-(def hide-show-all
-  [:span.hide__show__all
-   [:i.fas.fa-eye-slash
-    {:title "Hide All"
-     :on-click #(rf/dispatch [::handlers/hide-all])}]
-
-   [:i.fas.fa-eye
-    {:title "Show All"
-     :on-click #(rf/dispatch [::handlers/show-all])}]])
-
-(def kill-revive-all
-  [:span
-   [:i.fas.fa-skull
-    {:title "Kill All"
-     :on-click #(rf/dispatch [::handlers/kill-all])}]
-
-   [:i.fas.fa-life-ring
-    {:title "Revive All"
-     :on-click #(rf/dispatch [::handlers/revive-all])}]])
-
 (defn game-slider
   []
   (let [games (rf/subscribe [::handlers/games-live-players])

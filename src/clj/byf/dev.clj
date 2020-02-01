@@ -8,8 +8,6 @@
 
   (:gen-class))
 
-(defonce system (atom {}))
-
 (defmethod ig/init-key :server/figwheel
   [_ {:keys [build] :as opts}]
   (log/info "Starting Figwheel")
@@ -29,12 +27,3 @@
 (defmethod ig/init-key :server/nrepl
   [_ {:keys [port]}]
   (log/info "Starting Nrepl"))
-
-(def config
-  {:server/figwheel {:build "dev"}
-   :server/jetty {:port 3335}
-   :server/nrepl {}})
-
-(defn -main
-  [& args]
-  (reset! system (ig/init config)))

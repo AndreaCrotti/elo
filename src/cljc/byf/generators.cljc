@@ -53,13 +53,9 @@
 
 (def player-gen (gen ::player))
 
-(def league-gen (gen ::league))
-
 ;; can make it more specialized?
 (s/def ::oauth2_token string?)
 
 (s/def ::user (s/keys :req-un [::id
                                ::oauth2_token
                                ::email]))
-
-(def user-gen (gen ::user))

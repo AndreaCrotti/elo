@@ -14,13 +14,6 @@
             [cljsjs.moment]
             [re-frame.core :as rf]))
 
-(def timestamp-format "YYYY-MM-DDZhh:mm:SS")
-(def vega-last-n-games 20)
-
-(defn now-format
-  []
-  (.format (js/moment) timestamp-format))
-
 (defn from-to
   [s f t]
   (take (- t f) (drop f s)))
@@ -49,11 +42,6 @@
            [ant/card
             [vega/vega-inner filtered-history @rankings-domain]])]))))
 
-(defn mobile?
-  []
-  (js/console.log "avail width " js/window.screen.availWidth)
-  (< js/window.screen.availWidth 500))
-
 (defn results
   []
   (let [show-results (rf/subscribe [::handlers/show-results])]
@@ -80,23 +68,6 @@
           [:div {:id "games"}
            [ant/card
             [games-table]]]])])))
-
-(defn set-current-user
-  "Set the current user to something, defaulting to the already set user?"
-  []
-  (let [players (rf/subscribe [::players-handlers/players])
-        sorted-players (sort-by :name @players)
-        current-user @(rf/subscribe [::handlers/current-user])]
-
-    [ant/form {:layout "inline"}
-     [ant/form-item
-      [ant/button
-       {:on-click #(rf/dispatch [::handlers/store-current-user current-user])}
-       "Remember Me"]]
-
-     [ant/form-item
-      [common-views/drop-down-players sorted-players
-       ::handlers/set-current-user current-user]]]))
 
 (defn go-to-internal
   [place]

@@ -4,8 +4,6 @@
             [clj-time.core :as t])
   (:import (java.util UUID)))
 
-(defn gen-uuid [] (UUID/randomUUID))
-
 (def schema {:player/name {:db/index true}
              :game/t1 {:db/index true}
              :game/t2 {:db/index true}
@@ -16,13 +14,6 @@
              :game/time {}})
 
 (def conn (d/create-conn schema))
-
-(declare render persist)
-
-(defn reset-conn [db]
-  (reset! conn db)
-  (render db)
-  (persist db))
 
 ;; find all the games from a given player
 

@@ -2,9 +2,6 @@
   (:require [byf.common.handlers :as common]
             [re-frame.core :as rf]))
 
-(def db
-  {:opponent nil})
-
 (def page ::page-id)
 
 ;;TODO: pass the spec

@@ -24,11 +24,3 @@
                                ::p2_using
                                ::p1_points
                                ::p2_points]))
-
-(defn game-gen
-  []
-  (s/gen ::game))
-
-(defn player-gen
-  []
-  (s/gen ::player))
