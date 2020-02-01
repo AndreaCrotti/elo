@@ -19,13 +19,6 @@
                    :p1_points (rand-nth (shared/opts :fifa :points))
                    :p2_points (rand-nth (shared/opts :fifa :points))})))
 
-(defn get-player-ids
-  [league-id]
-  (map :id
-       (db/query (fn [] {:select [:id]
-                         :from [:league_players]
-                         :where [:= :league_id league-id]}))))
-
 (defn random-ts
   []
   (tc/to-sql-time
@@ -76,10 +69,4 @@
 
 (defn seed
   [league-id]
-  (add-games! league-id (add-players! league-id)))
-
-(defn -main
-  [& args]
-  (seed (create-league!)))
-
-;; run witn `lein run -m byf.seed`
+  (add-games! league-id (add-players! league-id)));; run witn `lein run -m byf.seed`

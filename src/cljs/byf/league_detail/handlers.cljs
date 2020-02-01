@@ -82,10 +82,6 @@
 (rf/reg-event-db ::k (setter [:game-config :k]))
 (rf/reg-event-db ::initial-ranking (setter [:game-config :initial-ranking]))
 
-(defn uuid->name
-  [name-mapping vals]
-  (medley/map-keys #(get name-mapping %) vals))
-
 (rf/reg-sub ::add-user-notification (getter [:add-user-notification]))
 (rf/reg-event-db ::add-user-notification
                  (fn [db _]
@@ -277,17 +273,6 @@
             (fn [[games dead-players]]
               (let [inner (fn [field v] (not (contains? dead-players (field v))))]
                 (filter #(and (inner :p1 %) (inner :p2 %)) games))))
-
-(defn current-user-transform
-  [db]
-  (let [current-user (ck/get :user)]
-    (if (some? current-user)
-      ;;TODO: need to set the current user as well
-      ;;and maybe have a cascade effect there
-      (-> db
-          (assoc-in [:game :p1] current-user)
-          (assoc-in [:current-user] current-user))
-      db)))
 
 ;;TODO: improve this structure a bit
 (rf/reg-event-db ::initialize-db

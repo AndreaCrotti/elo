@@ -5,9 +5,6 @@
             [re-frame.core :as rf]))
 
 ;;TODO: add more to the db?
-(def db
-  {:players []})
-
 (s/def ::players (s/coll-of (s/keys :req-un [::name
                                              ::user_id
                                              ::league_id

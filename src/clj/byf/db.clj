@@ -60,11 +60,6 @@
   (-> (h/select :*)
       (h/from :company)))
 
-(defn load-users-sql
-  []
-  (-> (h/select :*)
-      (h/from [:users])))
-
 (defn load-league-sql
   [league-id]
   (-> (h/select :*)
@@ -89,8 +84,6 @@
 (defn load-league [league-id] (get-single load-league-sql league-id))
 
 (defn load-companies [] (query load-companies-sql))
-
-(defn load-users [] (query load-users-sql))
 
 (defn- store-sql
   [params]

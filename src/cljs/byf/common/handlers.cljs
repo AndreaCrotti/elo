@@ -9,20 +9,6 @@
             [clojure.test.check.generators :as gen]
             [clojure.spec.alpha :as s]))
 
-(def edn-request-format
-  {:write #(with-out-str (pprint/pprint %))
-   :content-type "application/edn"})
-
-(defn- edn-read-fn
-  [response]
-  (reader/read-string (ajax-protocols/-body response)))
-
-(def edn-response-format
-  (ajax-interceptors/map->ResponseFormat
-   {:read edn-read-fn
-    :description "EDN"
-    :content-type ["application/edn"]}))
-
 (def request-format (aj/json-request-format))
 (def response-format (aj/json-response-format {:keywords? true}))
 
@@ -123,10 +109,3 @@
      id
      [(->check-db-interceptor page db-spec)]
      handler)))
-
-(defn set-random-db
-  "Handler capable of simply setting a random intial db.
-  This can be used instead of initialise-db for example."
-  [db-spec]
-  (fn [db _]
-    (gen/generate db-spec)))

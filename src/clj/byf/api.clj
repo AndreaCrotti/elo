@@ -28,8 +28,6 @@
   (:import (java.util UUID)))
 
 (reset! sente/debug-mode?_ true)
-(def max-age (* 60 60 24 10))
-
 (def github-token-path [:oauth2/access-tokens :github :token])
 
 (defn transaction-middleware
@@ -38,15 +36,6 @@
     (db/wrap-db-call
      (jdbc/with-db-transaction [tx (db/db-spec)]
        (handler request)))))
-
-(defn uuid-to-str
-  [m]
-  (medley/map-vals str m))
-
-(defn- as-edn
-  [response]
-  (-> response
-      (resp/content-type "application/edn")))
 
 (defn my-json-writer
   [k v]
@@ -241,13 +230,6 @@
   [params]
   (assoc-in params [:session :cookie-attrs :same-site] :lax))
 
-(defn add-cache-control
-  [handler]
-  (fn [request]
-    (ring.util.response/header
-     (handler request)
-     "Cache-Control" (format "max-age=%s" max-age))))
-
 (def app
   (-> routes-handler
       (resources/wrap-resource "public")
@@ -266,8 +248,3 @@
       log-request
       transaction-middleware
       (wrap-oauth2 oauth2-config)))
-
-(defn -main [& args]
-  (jetty/run-jetty app {:port (-> :port
-                                  value
-                                  Integer/parseInt)}))
