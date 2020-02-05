@@ -9,13 +9,12 @@
                               :or {value-fn identity
                                    display-fn identity}}]
 
-  (into
-   [ant/select {:on-change
-                #(rf/dispatch [dispatch-key %])
-                :value value}]
+  [ant/select {:on-change
+               #(rf/dispatch [dispatch-key %])
+               :value value}
    (for [o opts]
      [ant/select-option {:key (value-fn o)
-                         :value (value-fn o)} (display-fn o)])))
+                         :value (value-fn o)} (display-fn o)])])
 
 (defn drop-down-players
   [opts dispatch-key value]
