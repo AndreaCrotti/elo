@@ -15,7 +15,7 @@
             [re-frame.core :as rf]))
 
 (def timestamp-format "YYYY-MM-DDZhh:mm:SS")
-(def vega-last-n-games 20)
+(def vega-last-n-games 200)
 
 (defn now-format
   []
@@ -36,7 +36,8 @@
     (fn []
       (let [norm-from (or @from-game 0)
             norm-to (or @to-game (count @history))
-            filtered-history (from-to @history norm-from norm-to)]
+            filtered-history (from-to @history norm-from norm-to)
+            last-only (take-last vega-last-n-games filtered-history)]
 
         [ant/card
          [ant/button
@@ -47,7 +48,7 @@
 
          (when @show-graph
            [ant/card
-            [vega/vega-inner filtered-history @rankings-domain]])]))))
+            [vega/vega-inner last-only @rankings-domain]])]))))
 
 (defn mobile?
   []

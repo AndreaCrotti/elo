@@ -61,10 +61,11 @@
   (reduce-kv update data tr))
 
 (defn stats-table
-  [columns rows]
+  [columns rows title]
   (let [loading? @(rf/subscribe [::handlers/loading?])]
     [ant/table
-     {:columns    columns
+     {:title      (constantly title)
+      :columns    columns
       :dataSource rows
       :pagination {:default-page-size stats-page-length}
       :loading    loading?}]))
@@ -81,5 +82,4 @@
 
     (s/assert kw stats)
     [:div.stat
-     [:label.title title]
-     [stats-table (to-column-defs kw) transformed]]))
+     [stats-table (to-column-defs kw) transformed title]]))

@@ -55,7 +55,7 @@
    :add-user-notification false
    :current-user-notification false
    :loading? true
-   :show-graph false
+   :show-graph true
    :show-results false
    :current-user nil})
 

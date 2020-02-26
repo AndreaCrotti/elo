@@ -43,7 +43,7 @@
 (defn vega-inner
   []
   (reagent/create-class
-   {:reagent-render vega-view
+   {:reagent-render       vega-view
     :component-did-update vega-update
-    :component-did-mount vega-update
-    :display-name "Rankings Over Time Inner"}))
+    :component-did-mount  vega-update
+    :display-name         "Rankings Over Time Inner"}))
