@@ -8,16 +8,16 @@
                  [org.clojure/tools.reader "1.3.2"]
                  [org.clojure/spec.alpha "0.2.176"]
                  [clj-http "3.10.0"]
-                 [prone "2019-07-08"]
-                 [integrant "0.7.0"]
+                 [prone "2020-01-17"]
+                 [integrant "0.8.0"]
                  [integrant/repl "0.3.1"]
                  [com.bhauman/figwheel-main "0.2.3"]
                  ;; server side libs
-                 [org.clojure/data.csv "0.1.4"]
-                 [aero "1.1.3"]
-                 [ring "1.7.1"]
-                 [org.clojure/java.jdbc "0.7.10"]
-                 [org.postgresql/postgresql "42.2.8"]
+                 [org.clojure/data.csv "1.0.0"]
+                 [aero "1.1.6"]
+                 [ring "1.8.0"]
+                 [org.clojure/java.jdbc "0.7.11"]
+                 [org.postgresql/postgresql "42.2.10"]
                  [nilenso/honeysql-postgres "0.2.6"]
                  [honeysql "0.9.8"]
 
@@ -31,25 +31,25 @@
 
                  [buddy "2.0.0"]
                  [buddy/buddy-auth "2.2.0"]
-                 [migratus "1.0.9"]
+                 [migratus "1.2.7"]
                  ;;TODO: move these to the test profile
-                 [org.clojure/test.check "0.10.0"]
-                 [junit/junit "4.12"]
+                 [org.clojure/test.check "1.0.0"]
+                 [junit/junit "4.13"]
 
                  ;; [org.clojure/clojurescript "1.10.439"]
-                 [org.clojure/clojurescript "1.10.520"]
-                 [re-frame "0.10.9"]
+                 [org.clojure/clojurescript "1.10.597"]
+                 [re-frame "0.11.0"]
                  [reagent-utils "0.3.3"]
-                 [org.webjars/font-awesome "5.10.1"]
+                 [org.webjars/font-awesome "5.12.0"]
                  [antizer "0.3.1"]
 
                  [day8.re-frame/tracing-stubs "0.5.3"]
-                 [expound "0.7.2"]
-                 [cljsjs/react "16.9.0-0"]
-                 [cljsjs/react-dom "16.9.0-0"]
+                 [expound "0.8.4"]
+                 [cljsjs/react "16.12.0-2"]
+                 [cljsjs/react-dom "16.12.0-2"]
                  ;; [metasoarous/oz "1.3.1"]
-                 [cljsjs/vega-lite "3.4.0-0"]
-                 [cljsjs/vega "5.4.0-0"]
+                 [cljsjs/vega-lite "4.0.2-0"]
+                 [cljsjs/vega "5.9.0-0"]
 
                  [ns-tracker "0.4.0"]
                  [cljsjs/moment "2.24.0-0"]
@@ -61,16 +61,16 @@
 
                  [bidi "2.1.6"]
                  [com.cemerick/url "0.1.1"]
-                 [venantius/accountant "0.2.4"]
+                 [venantius/accountant "0.2.5"]
                  [medley "1.2.0"]
                  [metosin/ring-http-response "0.9.1"]
-                 [datascript "0.18.5"]
+                 [datascript "0.18.10"]
                  [aysylu/loom "1.0.2"]
-                 [reifyhealth/specmonstah "2.0.0-alpha-1"]
+                 [reifyhealth/specmonstah "2.0.0"]
                  [com.taoensso/timbre "4.10.0" :exclusions [com.taoensso/encore]]
                  [http-kit "2.3.0"]
-                 [com.taoensso/sente "1.14.0-RC2"]
-                 [org.clojure/tools.cli "0.4.2"]]
+                 [com.taoensso/sente "1.15.0"]
+                 [org.clojure/tools.cli "1.0.194"]]
 
   :plugins [[lein-environ "1.1.0"]
             [migratus-lein "0.5.0"]
@@ -109,8 +109,8 @@
                      checking [[:inner 0]]}}
 
   :profiles
-  {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-541"]
-                           [lambdaisland/kaocha-cloverage "0.0-32"]
+  {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-590"]
+                           [lambdaisland/kaocha-cloverage "0.0-41"]
                            [lambdaisland/kaocha-junit-xml "0.0-70"]]}
    :uberjar {:hooks []
              :source-paths ["src/clj" "src/cljc"]
@@ -132,10 +132,10 @@
 
     :env {:environment :dev}
 
-    :dependencies [[binaryage/devtools "0.9.10"]
-                   [cider/piggieback "0.4.1"]
-                   [org.mozilla/rhino "1.7.11"]
-                   [day8.re-frame/re-frame-10x "0.4.3"]
+    :dependencies [[binaryage/devtools "1.0.0"]
+                   [cider/piggieback "0.4.2"]
+                   [org.mozilla/rhino "1.7.12"]
+                   [day8.re-frame/re-frame-10x "0.5.2"]
                    [day8.re-frame/tracing "0.5.3"]
                    [com.bhauman/rebel-readline-cljs "0.1.4"]
                    [ring/ring-mock "0.4.0"]]}}
