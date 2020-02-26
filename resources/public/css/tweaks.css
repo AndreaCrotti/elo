@@ -1,3 +1,4 @@
+/* hacks for vega */
 .vega-embed {
   padding-right: 200px;
 }
@@ -46,6 +47,16 @@ button {
   font-size: 1.6em;
 }
 
+.stat {
+  width: 400px;
+  flex: 1;
+}
+
+#stat {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
 body {
   flex-basis: 0;
   flex-grow: 1;
@@ -64,23 +75,6 @@ html {
 
 .content .ant-card {
   margin-bottom: 2rem;
-}
-
-.stat {
-  flex: 1;
-  margin: 1rem;
-  flex-wrap: wrap;
-}
-
-#stats {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.stat .title {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
 }
 
 /* Ant overrides */
