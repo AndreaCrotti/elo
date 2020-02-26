@@ -115,8 +115,7 @@
           body-obj (json/read-str (:body response))]
       (is (= 200 (:status response)))
       (is (= 1 (count body-obj)))
-      (is (= {"email" nil,
-              "name" "john",
+      (is (= {"name" "john",
               "active" true}
              (-> body-obj
                  first
