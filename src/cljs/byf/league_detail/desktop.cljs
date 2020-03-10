@@ -85,19 +85,52 @@
   []
   (let [league-name @(rf/subscribe [::handlers/league-name])]
     [ant/layout-header
-     (into [ant/menu {:theme "dark"
-                      :mode "horizontal"}]
-
+     (into [ant/menu {:theme "dark" :mode "horizontal"}]
            (concat [[ant/menu-item league-name]
                     [ant/menu-item [:a {:href "/"} "ALL LEAGUES"]]]
                    (for [[k s] menu-config
                          :let [hashed (str "#" k)]]
                      [ant/menu-item
                       [:a {:on-click #(do
-                                        (println "got "  %)
-                                        (go-to-internal hashed)
-                                        (rf/dispatch [::handlers/set-current-page (keyword %)]))}
+                                        #_(go-to-internal hashed)
+                                        (rf/dispatch [::handlers/set-current-page (keyword k)]))}
                                      s]])))]))
+
+(defn stats-tab
+  []
+  [:div {:id "stats"}
+   [stats-component ::stats-specs/highest-ranking]
+   [stats-component ::stats-specs/longest-winning-streak]
+   [stats-component ::stats-specs/longest-unbeaten-streak]
+   [stats-component ::stats-specs/highest-increase]
+   [stats-component ::stats-specs/best-percents]])
+
+(defn tabs
+  []
+  (let [loading? (rf/subscribe [::handlers/loading?])
+        errors   (rf/subscribe [:failed])
+        page     (rf/subscribe [::handlers/current-page])]
+
+    (fn []
+      [:div.root
+       [navbar]
+       (if @errors
+         [common-views/errors]
+         [ant/layout-content
+          (if @loading?
+            [ant/spin {:size "large"}]
+            [:div.content
+             (case @page
+               :add-game [:div {:id "add-game"} [game-form]]
+               :rankings [:div {:id "rankings"}
+                          [rankings-table]]
+               :graphs   [vega-outer]
+               :stats    [stats-tab]
+               :games    [:div {:id "games"}
+                          [ant/card
+                           [games-table]]])])])
+
+       [common-views/footer]])))
 
 (defn root
   []
@@ -105,34 +138,4 @@
   (rf/dispatch [::handlers/load-league])
   (rf/dispatch [::handlers/load-games])
   (rf/dispatch [::players-handlers/load-players])
-
-  (let [loading? @(rf/subscribe [::handlers/loading?])
-        errors @(rf/subscribe [:failed])
-        page @(rf/subscribe [::handlers/current-page])]
-    [:div.root
-     [navbar]
-
-     (if errors
-       [common-views/errors]
-       [ant/layout-content
-        (if loading?
-          [ant/spin {:size "large"}]
-          [:div.content
-           (println "page is " page)
-           (case page
-             :add-game
-             [:div {:id "add-game"} [game-form]]
-             :rankings [:div {:id "rankings"}
-                        [rankings-table]]
-             :graphs [vega-outer]
-             :stats [:div {:id "stats"}
-                     [stats-component ::stats-specs/highest-ranking]
-                     [stats-component ::stats-specs/longest-winning-streak]
-                     [stats-component ::stats-specs/longest-unbeaten-streak]
-                     [stats-component ::stats-specs/highest-increase]
-                     [stats-component ::stats-specs/best-percents]]
-             :games [:div {:id "games"}
-                     [ant/card
-                      [games-table]]])])])
-
-     [common-views/footer]]))
+  [tabs])
