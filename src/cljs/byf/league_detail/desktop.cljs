@@ -92,7 +92,11 @@
                     [ant/menu-item [:a {:href "/"} "ALL LEAGUES"]]]
                    (for [[k s] menu-config
                          :let [hashed (str "#" k)]]
-                     [ant/menu-item [:a {:on-click #(go-to-internal hashed)}
+                     [ant/menu-item
+                      [:a {:on-click #(do
+                                        (println "got "  %)
+                                        (go-to-internal hashed)
+                                        (rf/dispatch [::handlers/set-current-page (keyword %)]))}
                                      s]])))]))
 
 (defn root
@@ -104,8 +108,7 @@
 
   (let [loading? @(rf/subscribe [::handlers/loading?])
         errors @(rf/subscribe [:failed])
-        page @(rf/subscribe [::handlers/current-page])
-        ]
+        page @(rf/subscribe [::handlers/current-page])]
     [:div.root
      [navbar]
 
@@ -115,6 +118,7 @@
         (if loading?
           [ant/spin {:size "large"}]
           [:div.content
+           (println "page is " page)
            (case page
              :add-game
              [:div {:id "add-game"} [game-form]]
