@@ -5,12 +5,11 @@
             [byf.league-detail.games-list :refer [games-table]]
             [byf.league-detail.add-game :refer [game-form]]
             [byf.league-detail.handlers :as handlers]
-            [byf.league-detail.rankings :refer [rankings-table]]
-            [byf.league-detail.notifications :refer [add-user-notification current-user-notification]]
+            [byf.vega :as vega]
             [byf.league-detail.stats :refer [stats-component]]
             [byf.specs.stats :as stats-specs]
-            [byf.utils :as utils]
-            [byf.vega :as vega]
+            [byf.league-detail.rankings :refer [rankings-table]]
+            [lambdaisland.uri :refer [uri]]
             [cljsjs.moment]
             [re-frame.core :as rf]))
 
@@ -54,33 +53,6 @@
   []
   (js/console.log "avail width " js/window.screen.availWidth)
   (< js/window.screen.availWidth 500))
-
-(defn results
-  []
-  (let [show-results (rf/subscribe [::handlers/show-results])]
-    (fn []
-      [:div.inner
-       (when (utils/mobile?)
-         [:button.button.is-fullwidth
-          {:on-click #(rf/dispatch [::handlers/toggle-results])}
-          (if @show-results
-            "Hide Results"
-            "Show Results")])
-
-       (when (or (not (utils/mobile?)) @show-results)
-         [:div.results-content
-          [:div {:id "rankings"}
-           [rankings-table]]
-          [vega-outer]
-          [:div {:id "stats"}
-           [stats-component ::stats-specs/highest-ranking]
-           [stats-component ::stats-specs/longest-winning-streak]
-           [stats-component ::stats-specs/longest-unbeaten-streak]
-           [stats-component ::stats-specs/highest-increase]
-           [stats-component ::stats-specs/best-percents]]
-          [:div {:id "games"}
-           [ant/card
-            [games-table]]]])])))
 
 (defn set-current-user
   "Set the current user to something, defaulting to the already set user?"
@@ -131,7 +103,9 @@
   (rf/dispatch [::players-handlers/load-players])
 
   (let [loading? @(rf/subscribe [::handlers/loading?])
-        errors @(rf/subscribe [:failed])]
+        errors @(rf/subscribe [:failed])
+        page @(rf/subscribe [::handlers/current-page])
+        ]
     [:div.root
      [navbar]
 
@@ -141,11 +115,20 @@
         (if loading?
           [ant/spin {:size "large"}]
           [:div.content
-           #_[ant/card
-              [set-current-user]]
-           [current-user-notification]
-           [:div {:id "add-game"}
-            [game-form]]
-           [add-user-notification]
-           [results]])])
+           (case page
+             :add-game
+             [:div {:id "add-game"} [game-form]]
+             :rankings [:div {:id "rankings"}
+                        [rankings-table]]
+             :graphs [vega-outer]
+             :stats [:div {:id "stats"}
+                     [stats-component ::stats-specs/highest-ranking]
+                     [stats-component ::stats-specs/longest-winning-streak]
+                     [stats-component ::stats-specs/longest-unbeaten-streak]
+                     [stats-component ::stats-specs/highest-increase]
+                     [stats-component ::stats-specs/best-percents]]
+             :games [:div {:id "games"}
+                     [ant/card
+                      [games-table]]])])])
+
      [common-views/footer]]))

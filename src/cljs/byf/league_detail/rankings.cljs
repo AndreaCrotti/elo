@@ -1,11 +1,10 @@
 (ns byf.league-detail.rankings
-  (:require [re-frame.core :as rf]
-            [clojure.string :as string]
-            [antizer.reagent :as ant]
-            [byf.utils :as utils]
-            [reagent.core :as r]
+  (:require [antizer.reagent :as ant]
+            [byf.common.players :as players-handlers]
             [byf.league-detail.handlers :as handlers]
-            [byf.common.players :as players-handlers]))
+            [clojure.string :as string]
+            [re-frame.core :as rf]
+            [reagent.core :as r]))
 
 (def form-size 7)
 

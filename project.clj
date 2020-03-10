@@ -59,6 +59,7 @@
                  [cljs-http "0.1.46"]
                  [ring-cljsjs "0.2.0"]
 
+                 [lambdaisland/uri "1.2.1"]
                  [bidi "2.1.6"]
                  [com.cemerick/url "0.1.1"]
                  [venantius/accountant "0.2.4"]

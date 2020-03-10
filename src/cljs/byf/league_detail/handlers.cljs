@@ -9,9 +9,21 @@
             [byf.rankings :as rankings]
             [byf.stats :as stats]
             [byf.shared-config :as shared]
+            [lambdaisland.uri :refer [uri]]
             [reagent.cookies :as ck]
             [medley.core :as medley]
             [re-frame.core :as rf]))
+
+(defn get-url
+  []
+  (-> js/window.location.href
+      uri
+      :fragment))
+
+(defn page-open
+  []
+  (or (keyword (get-url))
+      :stats))
 
 (def cookie-validity (* 365 24 60 60))
 
@@ -20,6 +32,10 @@
 (def setter (partial common/setter* page))
 
 (def getter (partial common/getter* page))
+
+(rf/reg-event-db ::set-current-page (setter [:current-page]))
+
+(rf/reg-sub ::current-page (getter [:current-page]))
 
 (rf/reg-sub ::league-id
             (fn [db _]
@@ -57,7 +73,8 @@
    :loading? true
    :show-graph true
    :show-results false
-   :current-user nil})
+   :current-user nil
+   :current-page (page-open)})
 
 (defn- truncate-games
   [games up-to-games]
