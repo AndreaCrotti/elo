@@ -85,16 +85,13 @@
 
 (defn navbar
   []
-  (let [league-name @(rf/subscribe [::handlers/league-name])]
-    [ant/layout-header
-     (into [ant/menu {:theme "dark" :mode "horizontal"}]
-           (concat [[ant/menu-item league-name]
-                    [ant/menu-item [:a {:href "/"} "ALL LEAGUES"]]]
-                   (for [[k s] menu-config]
-                     [ant/menu-item
-                      [:a {:href (utils/update-fragment js/window.location.href k)
-                           :on-click #(rf/dispatch [::handlers/set-current-page (keyword k)])}
-                       s]])))]))
+  [ant/layout-header
+   [ant/menu {:theme "dark" :mode "horizontal"}
+    (for [[k s] menu-config]
+      [ant/menu-item
+       [:a {:href (utils/update-fragment js/window.location.href k)
+            :on-click #(rf/dispatch [::handlers/set-current-page (keyword k)])}
+        s]])]])
 
 (defn stats-tab
   []
