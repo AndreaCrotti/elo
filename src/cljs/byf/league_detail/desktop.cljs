@@ -10,7 +10,7 @@
             [byf.specs.stats :as stats-specs]
             [byf.league-detail.rankings :refer [rankings-table]]
             [byf.league-detail.utils :as utils]
-            [lambdaisland.uri :refer [uri]]
+            [byf.league-detail.notifications :refer [add-user-notification]]
             [cljsjs.moment]
             [re-frame.core :as rf]))
 
@@ -120,7 +120,9 @@
           [ant/spin {:size "large"}]
           [:div.content
            (case @page
-             :add-game [:div {:id "add-game"} [game-form]]
+             :add-game [:div {:id "add-game"}
+                        [game-form]
+                        [add-user-notification]]
              :rankings [:div {:id "rankings"}
                         [rankings-table]]
              :graphs   [vega-outer]
