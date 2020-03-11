@@ -23,7 +23,7 @@
 (defn page-open
   []
   (or (keyword (get-url))
-      :stats))
+      :add-game))
 
 (def cookie-validity (* 365 24 60 60))
 
