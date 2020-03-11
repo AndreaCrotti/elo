@@ -9,6 +9,7 @@
             [byf.league-detail.stats :refer [stats-component]]
             [byf.specs.stats :as stats-specs]
             [byf.league-detail.rankings :refer [rankings-table]]
+            [byf.league-detail.utils :as utils]
             [lambdaisland.uri :refer [uri]]
             [cljsjs.moment]
             [re-frame.core :as rf]))
@@ -88,13 +89,11 @@
      (into [ant/menu {:theme "dark" :mode "horizontal"}]
            (concat [[ant/menu-item league-name]
                     [ant/menu-item [:a {:href "/"} "ALL LEAGUES"]]]
-                   (for [[k s] menu-config
-                         :let [hashed (str "#" k)]]
+                   (for [[k s] menu-config]
                      [ant/menu-item
-                      [:a {:on-click #(do
-                                        #_(go-to-internal hashed)
-                                        (rf/dispatch [::handlers/set-current-page (keyword k)]))}
-                                     s]])))]))
+                      [:a {:href (utils/update-fragment js/window.location.href k)
+                           :on-click #(rf/dispatch [::handlers/set-current-page (keyword k)])}
+                       s]])))]))
 
 (defn stats-tab
   []
@@ -111,26 +110,25 @@
         errors   (rf/subscribe [:failed])
         page     (rf/subscribe [::handlers/current-page])]
 
-    (fn []
-      [:div.root
-       [navbar]
-       (if @errors
-         [common-views/errors]
-         [ant/layout-content
-          (if @loading?
-            [ant/spin {:size "large"}]
-            [:div.content
-             (case @page
-               :add-game [:div {:id "add-game"} [game-form]]
-               :rankings [:div {:id "rankings"}
-                          [rankings-table]]
-               :graphs   [vega-outer]
-               :stats    [stats-tab]
-               :games    [:div {:id "games"}
-                          [ant/card
-                           [games-table]]])])])
+    [:div.root
+     [navbar]
+     (if @errors
+       [common-views/errors]
+       [ant/layout-content
+        (if @loading?
+          [ant/spin {:size "large"}]
+          [:div.content
+           (case @page
+             :add-game [:div {:id "add-game"} [game-form]]
+             :rankings [:div {:id "rankings"}
+                        [rankings-table]]
+             :graphs   [vega-outer]
+             :stats    [stats-tab]
+             :games    [:div {:id "games"}
+                        [ant/card
+                         [games-table]]])])])
 
-       [common-views/footer]])))
+     [common-views/footer]]))
 
 (defn root
   []
