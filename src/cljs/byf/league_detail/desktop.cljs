@@ -80,6 +80,7 @@
   [["add-game" "NEW GAME"]
    ["rankings" "RANKINGS"]
    ["stats" "STATS"]
+   ["graphs" "GRAPHS"]
    ["games" "GAMES"]])
 
 (defn navbar
