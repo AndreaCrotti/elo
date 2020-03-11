@@ -1,11 +1,10 @@
 (ns byf.league-detail.rankings
-  (:require [re-frame.core :as rf]
-            [clojure.string :as string]
-            [antizer.reagent :as ant]
-            [byf.utils :as utils]
-            [reagent.core :as r]
+  (:require [antizer.reagent :as ant]
+            [byf.common.players :as players-handlers]
             [byf.league-detail.handlers :as handlers]
-            [byf.common.players :as players-handlers]))
+            [clojure.string :as string]
+            [re-frame.core :as rf]
+            [reagent.core :as r]))
 
 (def form-size 7)
 
@@ -49,19 +48,18 @@
     (fn []
       (let [up-to-current (if (some? @up-to-games) @up-to-games (count @games))]
         [:div
-         [:divs
-          [ant/slider
-           {:type "range"
-            :min 0
-            :max (count @games)
-            :value up-to-current
-            :class "slider"
-            :on-change #(rf/dispatch [::handlers/up-to-games %])}]
+         [ant/slider
+          {:type "range"
+           :min 0
+           :max (count @games)
+           :value up-to-current
+           :class "slider"
+           :on-change #(rf/dispatch [::handlers/up-to-games %])}]
 
-          [:span.chevrons
-           [ant/button {:on-click #(rf/dispatch [::handlers/prev-game])} "PREV"]
-           [:span up-to-current]
-           [ant/button {:on-click #(rf/dispatch [::handlers/next-game])} "NEXT"]]]]))))
+         [:span.chevrons
+          [ant/button {:on-click #(rf/dispatch [::handlers/prev-game])} "PREV"]
+          [:span up-to-current]
+          [ant/button {:on-click #(rf/dispatch [::handlers/next-game])} "NEXT"]]]))))
 
 (defn format-float
   [float-value]

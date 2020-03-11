@@ -28,7 +28,7 @@
   [ant/input-text-area
    {:default-value val
     :value val
-    :autosize {:max-rows 1}
+    :autoSize {:max-rows 1}
     :on-change (utils/set-val handler)}])
 
 (defn game-form
