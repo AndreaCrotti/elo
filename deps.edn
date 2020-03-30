@@ -1,0 +1,72 @@
+{:paths ["src/clj" "src/cljc"]
+ :aliases
+ {:eastwood {:extra-deps {jonase/eastwood {:mvn/version "RELEASE"}}
+             :main-opts ["-m" "eastwood.lint" "{:source-paths,[\"src\"],:test-paths,[\"test\"]}"]}
+
+  :graph {:deps {org.clojure/tools.deps.graph {:mvn/version "0.2.24"}}
+          :main-opts ["-m" "clojure.tools.deps.graph"]}
+
+  :carve {:extra-deps {borkdude/carve {:git/url "https://github.com/borkdude/carve"
+                                       :sha "f9a4bc98d79ac61e9c52c99bdeadfaa67cf2e63f"}}
+          :main-opts ["-m" "carve.main"]}
+
+  :kaocha {:extra-deps {lambdaisland/kaocha {:mvn/version "0.0-590"}}}}
+
+ :deps {org.clojure/clojure {:mvn/version "1.10.1"},
+        cljsjs/moment {:mvn/version "2.24.0-0"},
+        metosin/ring-http-response {:mvn/version "0.9.1"},
+        ns-tracker {:mvn/version "0.4.0"},
+        day8.re-frame/tracing-stubs {:mvn/version "0.5.3"},
+        org.clojure/spec.alpha {:mvn/version "0.2.176"},
+        com.cemerick/url {:mvn/version "0.1.1"},
+        org.clojure/tools.cli {:mvn/version "0.4.2"},
+        com.bhauman/figwheel-main {:mvn/version "0.2.3"},
+        day8.re-frame/http-fx {:mvn/version "0.1.6"},
+        cljs-http {:mvn/version "0.1.46"},
+        integrant/repl {:mvn/version "0.3.1"},
+        bidi {:mvn/version "2.1.6"},
+        prone {:mvn/version "2019-07-08"},
+        cljsjs/react-dom {:mvn/version "16.9.0-0"},
+        ring/ring-defaults {:mvn/version "0.3.2"},
+        org.clojure/clojurescript {:mvn/version "1.10.520"},
+        aero {:mvn/version "1.1.3"},
+        ring/ring-json {:mvn/version "0.5.0"},
+        medley {:mvn/version "1.2.0"},
+        aysylu/loom {:mvn/version "1.0.2"},
+        environ/environ.core {:mvn/version "0.3.1"},
+        org.postgresql/postgresql {:mvn/version "42.2.8"},
+        datascript {:mvn/version "0.18.5"},
+        reagent-utils {:mvn/version "0.3.3"},
+        http-kit {:mvn/version "2.3.0"},
+        ring {:mvn/version "1.7.1"},
+        buddy {:mvn/version "2.0.0"},
+        cljsjs/react {:mvn/version "16.9.0-0"},
+        nilenso/honeysql-postgres {:mvn/version "0.2.6"},
+        cljs-ajax {:mvn/version "0.8.0"},
+        cljsjs/vega {:mvn/version "5.4.0-0"},
+        org.webjars/font-awesome {:mvn/version "5.10.1"},
+        antizer {:mvn/version "0.3.1"},
+        com.taoensso/sente {:mvn/version "1.14.0-RC2"},
+        org.clojure/data.csv {:mvn/version "0.1.4"},
+        com.taoensso/timbre {:mvn/version "4.10.0"},
+        org.clojure/java.jdbc {:mvn/version "0.7.10"},
+        hiccup {:mvn/version "1.0.5"},
+        integrant {:mvn/version "0.7.0"},
+        migratus {:mvn/version "1.0.9"},
+        junit/junit {:mvn/version "4.12"},
+        com.andrewmcveigh/cljs-time {:mvn/version "0.5.2"},
+        venantius/accountant {:mvn/version "0.2.4"},
+        org.clojure/tools.reader {:mvn/version "1.3.2"},
+        clj-http {:mvn/version "3.10.0"},
+        cljsjs/vega-lite {:mvn/version "3.4.0-0"},
+        buddy/buddy-auth {:mvn/version "2.2.0"},
+        reifyhealth/specmonstah {:mvn/version "2.0.0-alpha-1"},
+        expound {:mvn/version "0.7.2"},
+        org.clojure/test.check {:mvn/version "0.10.0"},
+        ring-cljsjs {:mvn/version "0.2.0"},
+        lambdaisland/uri {:mvn/version "1.2.1"},
+        bk/ring-gzip {:mvn/version "0.3.0"},
+        ring/ring-mock {:mvn/version "0.4.0"},
+        honeysql {:mvn/version "0.9.8"},
+        re-frame {:mvn/version "0.10.9"},
+        ring-oauth2 {:mvn/version "0.1.4"}}}
