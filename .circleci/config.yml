@@ -4,12 +4,12 @@ references:
   base_config: &base_config
     working_directory: ~/elo
     docker:
-      - image: circleci/clojure:lein-2.8.1
+      - image: circleci/clojure:tools-deps-1.9.0.391
 
   base_docker: &base_docker
     working_directory: ~/elo
     docker:
-      - image: circleci/clojure:lein-2.8.1
+      - image: circleci/clojure:tools-deps-1.9.0.391
         environment:
           DATABASE_URL: postgres://elo@localhost/elo_test
 

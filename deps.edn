@@ -10,7 +10,11 @@
                                        :sha "f9a4bc98d79ac61e9c52c99bdeadfaa67cf2e63f"}}
           :main-opts ["-m" "carve.main"]}
 
-  :kaocha {:extra-deps {lambdaisland/kaocha {:mvn/version "0.0-590"}}}}
+  :kaocha {:extra-deps {lambdaisland/kaocha {:mvn/version "0.0-590"}
+                        lambdaisland/kaocha-cloverage {:mvn/version "0.0-32"}
+                        lambdaisland/kaocha-junit-xml {:mvn/version "0.0-70"}}
+           :extra-paths ["test/cljc" "test/clj"]
+           :main-opts ["-m" "kaocha.runner"]}}
 
  :deps {org.clojure/clojure {:mvn/version "1.10.1"},
         cljsjs/moment {:mvn/version "2.24.0-0"},
