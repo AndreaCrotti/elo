@@ -27,8 +27,8 @@ jobs:
           keys:
             - clj-deps-{{ checksum "project.clj" }}
 
-      - run: lein cljfmt check
-      - run: lein eastwood
+      # - run: lein cljfmt check
+      - run: clojure -A:eastwood
 
   test_clj:
     <<: *base_docker
