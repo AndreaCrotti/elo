@@ -3,8 +3,11 @@
  {:eastwood {:extra-deps {jonase/eastwood {:mvn/version "RELEASE"}}
              :main-opts ["-m" "eastwood.lint" "{:source-paths,[\"src\"],:test-paths,[\"test\"]}"]}
 
-  :graph {:deps {org.clojure/tools.deps.graph {:mvn/version "0.2.24"}}
+  :graph {:extra-deps {org.clojure/tools.deps.graph {:mvn/version "0.2.24"}}
           :main-opts ["-m" "clojure.tools.deps.graph"]}
+
+  :cljfmt {:extra-deps {cljfmt {:mvn/version "0.6.4"}}
+           :main-opts ["-m" "cljfmt.main" "check"]}
 
   :carve {:extra-deps {borkdude/carve {:git/url "https://github.com/borkdude/carve"
                                        :sha "f9a4bc98d79ac61e9c52c99bdeadfaa67cf2e63f"}}

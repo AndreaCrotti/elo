@@ -6,7 +6,7 @@
 (defn config
   []
   {:store         :database
-   :migration-dir "migrations"
+   :migration-dir "resources/migrations"
    :db            (value :database-url)})
 
 (defn -main

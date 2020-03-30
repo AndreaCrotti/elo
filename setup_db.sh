@@ -9,7 +9,7 @@ dropdb --if-exists $DEV; createdb $DEV
 
 dropdb --if-exists $TEST; createdb $TEST
 
-DATABASE_URL="postgres://byf@localhost:5445/byf" lein migratus migrate
-DATABASE_URL="postgres://byf@localhost:5445/byf_test" lein migratus migrate
+DATABASE_URL="postgres://byf@localhost:5445/byf" bin/migrate
+DATABASE_URL="postgres://byf@localhost:5445/byf_test" bin/migrate 
 
 DATABASE_URL="postgres://byf@localhost:5445/byf" lein run -m byf.seed

@@ -25,9 +25,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - clj-deps-{{ checksum "project.clj" }}
+            - clj-deps-{{ checksum "deps.edn" }}
 
-      # - run: lein cljfmt check
+      - run: clojure -A:cljfmt
       - run: clojure -A:eastwood
 
   test_clj:
@@ -36,7 +36,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - clj-deps-{{ checksum "project.clj" }}
+            - clj-deps-{{ checksum "deps.edn" }}
 
       - run: bin/migrate
       - run: bin/kaocha --plugin kaocha.plugin/junit-xml --junit-xml-file test-results/kaocha/results.xml
@@ -48,18 +48,7 @@ jobs:
             - ~/.m2/repository
             - ~/.lein
 
-          key: clj-deps-{{ checksum "project.clj" }}
-
-  test_cljs:
-    <<: *base_docker
-    steps:
-      - checkout
-      - run: sudo apt install rhino
-      - restore_cache:
-          keys:
-            - clj-deps-{{ checksum "project.clj" }}
-
-      - run: lein test-cljs || true
+          key: clj-deps-{{ checksum "deps.edn" }}
 
   coverage_clj:
     <<: *base_docker
@@ -67,7 +56,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - clj-deps-{{ checksum "project.clj" }}
+            - clj-deps-{{ checksum "deps.edn" }}
 
       - run: bin/migrate
       - run: bin/kaocha --plugin cloverage --codecov
@@ -83,7 +72,6 @@ workflows:
   version: 2
   build:
     jobs:
-      - test_cljs
       - test_clj
       - coverage_clj
       - cljfmt
