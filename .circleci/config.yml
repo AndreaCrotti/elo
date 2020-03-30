@@ -38,7 +38,7 @@ jobs:
           keys:
             - clj-deps-{{ checksum "project.clj" }}
 
-      - run: lein migratus migrate
+      - run: bin/migrate
       - run: bin/kaocha --plugin kaocha.plugin/junit-xml --junit-xml-file test-results/kaocha/results.xml
       - store_test_results:
           path: test-results
@@ -69,7 +69,7 @@ jobs:
           keys:
             - clj-deps-{{ checksum "project.clj" }}
 
-      - run: lein migratus migrate
+      - run: bin/migrate
       - run: bin/kaocha --plugin cloverage --codecov
 
       - store_artifacts:
