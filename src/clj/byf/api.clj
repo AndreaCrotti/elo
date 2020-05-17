@@ -268,6 +268,7 @@
       (wrap-oauth2 oauth2-config)))
 
 (defn -main [& args]
-  (jetty/run-jetty app {:port (-> :port
+  (jetty/run-jetty app {:host "0.0.0.0"
+                        :port (-> :port
                                   value
                                   Integer/parseInt)}))

@@ -90,7 +90,7 @@
   :source-paths ["src/cljc" "src/clj" "src/cljs"]
   :test-paths ["test/clj" "test/cljc"]
   :ring {:handler byf.api/app}
-  :resource-paths ["config" "resources"]
+  :resource-paths ["resources"]
 
   ;; :main ^:skip-aot datomic-app.core
   :migratus {:store :database
