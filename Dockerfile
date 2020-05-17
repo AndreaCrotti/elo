@@ -6,14 +6,14 @@ WORKDIR /app
 RUN lein uberjar
 
 
-FROM openjdk:12-alpine
+FROM openjdk:14-alpine
 
 RUN mkdir -p /app /app/resources
 
 COPY --from=builder /app/target/*.jar /app/
-COPY --from=builder /app/resources/public /app/resources/public
+COPY --from=builder /app/resources /app/resources
 
 WORKDIR /app
 
-CMD java -jar byf-0.1.0-SNAPSHOT.jar
-EXPOSE 3000
+CMD java -jar byf.jar
+EXPOSE 3335
