@@ -39,6 +39,7 @@
                  ;; [org.clojure/clojurescript "1.10.439"]
                  [org.clojure/clojurescript "1.10.520"]
                  [re-frame "0.10.9"]
+                 [com.degel/re-frame-firebase "0.8.0"]
                  [reagent-utils "0.3.3"]
                  [org.webjars/font-awesome "5.10.1"]
                  [antizer "0.3.1"]
