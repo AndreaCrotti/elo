@@ -13,10 +13,14 @@
   {:titles "Monoton"
    :smaller-titles "Lilita+One"})
 
+(def shared-keys
+  [:google-analytics-tag
+   :firebase-api-key])
+
 (defn global-client-side-config
   []
   (-> (load-config)
-      (select-keys [:newrelic-license-key :newrelic-application-id])
+      (select-keys shared-keys)
       (json/write-str)))
 
 (defn gen-header

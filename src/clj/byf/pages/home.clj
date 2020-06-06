@@ -4,6 +4,7 @@
             [byf.routes :as routes]
             [clojure.data.json :as json]))
 
+;; TODO: add env vars that have be shared across BE and FE here
 (defn client-side-config
   [request]
   (let [league-id

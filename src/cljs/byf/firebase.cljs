@@ -1,5 +1,6 @@
 (ns byf.firebase
   (:require [com.degel.re-frame-firebase :as firebase]
+            [byf.config :as config]
             [re-frame.core :as rf]))
 
 (rf/reg-event-fx
@@ -27,7 +28,7 @@
 
 ;;; From https://console.firebase.google.com/u/0/project/trilystro/overview - "Add Firebase to your web app"
 (defonce firebase-app-info
-  {:apiKey "API_KEY"
+  {:apiKey     (config/value :firebase-api-key)
    :authDomain "beatyourfriends-auth.firebaseapp.com"})
 
 (defn ^:export init []

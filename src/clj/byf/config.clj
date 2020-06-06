@@ -1,7 +1,7 @@
 (ns byf.config
-  (:require [environ.core :refer [env]]
+  (:require [aero.core :as aero]
             [clojure.java.io :as io]
-            [aero.core :as aero]))
+            [environ.core :refer [env]]))
 
 (defonce config (atom nil))
 
@@ -9,7 +9,7 @@
   []
   (let [profile (:environment env)]
     ;; the dev profile always reloads even `config.edn`
-    (if (or (= :dev profile)
+    (when (or (= :dev profile)
             (nil? @config))
       (reset! config (aero/read-config (io/resource "config.edn")
                                        {:profile profile})))
