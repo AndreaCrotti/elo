@@ -14,7 +14,9 @@
    :smaller-titles "Lilita+One"})
 
 (def shared-keys
-  [:google-analytics-tag
+  [:auth-enabled
+   :google-analytics-tag
+   :firebase-auth-domain
    :firebase-api-key])
 
 (defn global-client-side-config

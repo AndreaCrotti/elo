@@ -1,17 +1,18 @@
 (ns ^:figwheel-hooks byf.core
   (:require [accountant.core :as accountant]
-            [cemerick.url :refer [url]]
-            [clojure.spec.alpha :as s]
-            [expound.alpha :as expound]
+            [byf.admin.handlers :as admin-handlers]
+            [byf.config :as config]
+            [byf.admin.views :as admin-views]
+            [byf.firebase :as firebase]
             [byf.league-detail.handlers :as league-detail-handlers]
             [byf.league-detail.views :as league-detail-views]
             [byf.league-list.handlers :as league-list-handlers]
             [byf.league-list.views :as league-list-views]
-            [byf.admin.views :as admin-views]
-            [byf.admin.handlers :as admin-handlers]
-            [byf.user.views :as user-views]
-            [byf.auth :as auth]
             [byf.routes :as routes]
+            [byf.user.views :as user-views]
+            [cemerick.url :refer [url]]
+            [clojure.spec.alpha :as s]
+            [expound.alpha :as expound]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
 
@@ -66,7 +67,8 @@
   (re-frame/dispatch-sync [::league-list-handlers/initialize-db])
   (re-frame/dispatch-sync [::league-detail-handlers/initialize-db])
   (re-frame/dispatch-sync [::admin-handlers/initialize-db])
-  (re-frame/dispatch-sync [::auth/authenticated?])
+  (when (config/value :auth-enabled)
+    (firebase/init))
 
   (dev-setup)
   (accountant/configure-navigation!

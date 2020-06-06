@@ -12,8 +12,6 @@
 
 (defn- gen-uuid [] (UUID/randomUUID))
 
-(def sample-github-token (str (UUID/randomUUID)))
-
 ;; this league is always present, which makes it easier to write tests using it
 (def sample-company-id (gen-uuid))
 
@@ -36,18 +34,12 @@
   (format "Basic %s" (-> (b64/encode (format "%s:%s" "admin" "password"))
                          (bytes->str))))
 
-(defn authenticated-req
-  [request]
-  (-> request
-      (assoc-in sut/github-token-path sample-github-token)))
-
 (defn read-api-call
   ([endpoint]
    (read-api-call endpoint {}))
 
   ([endpoint args]
    (-> (mock/request :get endpoint args)
-       authenticated-req
        sut/app)))
 
 (defn- write-api-call
@@ -55,7 +47,6 @@
   (let [full-api-path (str "/api" endpoint)
         {:keys [status] :as response}
         (-> (mock/request :post full-api-path content)
-            authenticated-req
             sut/app)]
 
     (when-not (contains? #{201 401} status)
@@ -134,8 +125,7 @@
       (with-redefs [authenticated? (fn [r] true)]
         (let [params {:name "name" :email "email" :league_id sample-league-id}
               ;;TODO: use the write helper also here
-              response (sut/app (mock/header
-                                 (authenticated-req (mock/request :post "/api/add-player" params))
+              response (sut/app (mock/header (mock/request :post "/api/add-player" params)
                                  "Authorization" (make-admin-header)))]
 
           (is (= 201 (:status response))))))))
@@ -165,12 +155,3 @@
       ;; now fetch the players
       (is (= 200 (:status with-disabled)))
       (is (false? (get with-disabled-first-user "active"))))))
-
-(deftest auth-test
-  (testing "Should be able to check if a user is already authenticated"
-    (let [response (read-api-call "/authenticated")]
-      (is (= 200 (:status response)))
-      (is (true? (-> response
-                     :body
-                     json/read-str
-                     (get "authenticated")))))))
