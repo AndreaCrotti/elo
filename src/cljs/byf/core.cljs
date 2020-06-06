@@ -18,8 +18,8 @@
 
 (def pages
   {:league-detail league-detail-views/root
-   :league-list league-list-views/root
-   :admin admin-views/root
+   :league-list   league-list-views/root
+   :admin         admin-views/root
    :player-detail user-views/root})
 
 (defn- path-exists? [path]
@@ -36,16 +36,16 @@
 
 (defn curr-path
   []
-  (->
-   js/window.location.href
-   url
-   :path))
+  (-> js/window.location.href
+      url
+      :path))
 
 (defn get-current-page
   []
-  (let [path (curr-path)
-        route (routes/match-route path)]
-    (get pages (:handler route))))
+  (->> (curr-path)
+       routes/match-route
+       :handler
+       (get pages)))
 
 (defn mount-root
   [page]
