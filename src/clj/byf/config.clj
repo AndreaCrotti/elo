@@ -16,7 +16,7 @@
 
     ;; if there is a `user.edn` file load that as well and merge it
     (if (.exists (io/file (io/resource "user.edn")))
-      (merge @config (aero/read-config (io/resource "user.edn")))
+      (merge @config (aero/read-config (io/file (io/resource "user.edn"))))
       @config)))
 
 (defn value

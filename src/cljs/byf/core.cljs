@@ -74,8 +74,5 @@
   (accountant/configure-navigation!
    {:nav-handler  nav-handler
     :path-exists? path-exists?})
+  (nav-handler (curr-path)))
 
-  (let [user (rf/subscribe [:user])]
-    (when (and (config/value :auth-enabled) (nil? @user))
-      (rf/dispatch [:sign-in]))
-    (nav-handler (curr-path))))

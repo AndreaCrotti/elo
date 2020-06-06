@@ -1,6 +1,7 @@
 (ns byf.league-list.views
   (:require [accountant.core :as accountant]
             [antizer.reagent :as ant]
+            [byf.auth :as auth]
             [byf.league-list.handlers :as handlers]
             [byf.common.views :as common-views]
             [byf.routes :as routes]
@@ -23,9 +24,12 @@
 
 (defn root
   []
-  (rf/dispatch [::handlers/load-leagues])
-  (fn []
-    [:div.super
-     [:div.section
-      [league-picker]]
-     [common-views/footer]]))
+  (if (auth/logged-out?)
+    [auth/authenticate]
+    (do
+      (rf/dispatch [::handlers/load-leagues])
+      (fn []
+        [:div.super
+         [:div.section
+          [league-picker]]
+         [common-views/footer]]))))

@@ -1,5 +1,6 @@
 (ns byf.league-detail.desktop
   (:require [antizer.reagent :as ant]
+            [byf.auth :as auth]
             [byf.common.players :as players-handlers]
             [byf.common.views :as common-views]
             [byf.league-detail.games-list :refer [games-table]]
@@ -85,13 +86,18 @@
 
 (defn navbar
   []
-  [ant/layout-header
-   [ant/menu {:theme "dark" :mode "horizontal"}
-    (for [[k s] menu-config]
-      [ant/menu-item
-       [:a {:href (utils/update-fragment js/window.location.href k)
-            :on-click #(rf/dispatch [::handlers/set-current-page (keyword k)])}
-        s]])]])
+  (let [user @(rf/subscribe [:user])]
+    [ant/layout-header
+     [ant/menu {:theme "dark" :mode "horizontal"}
+      (conj (for [[k s] menu-config]
+              [ant/menu-item
+               [:a {:href (utils/update-fragment js/window.location.href k)
+                    :on-click #(rf/dispatch [::handlers/set-current-page (keyword k)])}
+                s]])
+            [ant/menu-item
+             (when-not (nil? user)
+               [:a {:on-click #(rf/dispatch [:sign-out])}
+                (str "Sign Out: " (:display-name user))])])]]))
 
 (defn stats-tab
   []
@@ -106,14 +112,12 @@
   []
   (let [loading? (rf/subscribe [::handlers/loading?])
         errors   (rf/subscribe [:failed])
-        page     (rf/subscribe [::handlers/current-page])
-        user     (rf/subscribe [:user])]
+        page     (rf/subscribe [::handlers/current-page])]
 
-    (if (nil? @user)
-      (rf/dispatch [:sign-in])
+    (if (auth/logged-out?)
+      [auth/authenticate]
       [:div.root
        [navbar]
-       [:span "Hello user: "] [:span (:display-name @user)]
        (if @errors
          [common-views/errors]
          [ant/layout-content
