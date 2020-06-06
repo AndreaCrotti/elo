@@ -106,29 +106,33 @@
   []
   (let [loading? (rf/subscribe [::handlers/loading?])
         errors   (rf/subscribe [:failed])
-        page     (rf/subscribe [::handlers/current-page])]
+        page     (rf/subscribe [::handlers/current-page])
+        user     (rf/subscribe [:user])]
 
-    [:div.root
-     [navbar]
-     (if @errors
-       [common-views/errors]
-       [ant/layout-content
-        (if @loading?
-          [ant/spin {:size "large"}]
-          [:div.content
-           (case @page
-             :add-game [:div {:id "add-game"}
-                        [game-form]
-                        [add-user-notification]]
-             :rankings [:div {:id "rankings"}
-                        [rankings-table]]
-             :graphs   [vega-outer]
-             :stats    [stats-tab]
-             :games    [:div {:id "games"}
-                        [ant/card
-                         [games-table]]])])])
+    (if (nil? @user)
+      (rf/dispatch [:sign-in])
+      [:div.root
+       [navbar]
+       [:span "Hello user: "] [:span (:display-name @user)]
+       (if @errors
+         [common-views/errors]
+         [ant/layout-content
+          (if @loading?
+            [ant/spin {:size "large"}]
+            [:div.content
+             (case @page
+               :add-game [:div {:id "add-game"}
+                          [game-form]
+                          [add-user-notification]]
+               :rankings [:div {:id "rankings"}
+                          [rankings-table]]
+               :graphs   [vega-outer]
+               :stats    [stats-tab]
+               :games    [:div {:id "games"}
+                          [ant/card
+                           [games-table]]])])])
 
-     [common-views/footer]]))
+       [common-views/footer]])))
 
 (defn root
   []

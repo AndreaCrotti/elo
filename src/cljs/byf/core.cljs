@@ -72,7 +72,7 @@
 
   (dev-setup)
   (accountant/configure-navigation!
-   {:nav-handler nav-handler
+   {:nav-handler  nav-handler
     :path-exists? path-exists?})
 
   (let [user (rf/subscribe [:user])]
