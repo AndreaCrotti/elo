@@ -29,7 +29,8 @@
     (do
       (rf/dispatch [::handlers/load-leagues])
       (fn []
-        [:div.super
-         [:div.section
-          [league-picker]]
-         [common-views/footer]]))))
+        (let [user @(rf/subscribe [:user])]
+          [ant/layout
+           [ant/row [:div.user "Hello:" (:display-name user)]]
+           [ant/row [league-picker]]
+           [common-views/footer]])))))
