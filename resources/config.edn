@@ -12,10 +12,11 @@
  :admin-password #or [#env ADMIN_PASSWORD "secret"]
 
  ;; auth related config
- :auth-enabled #boolean #or [#env AUTH_ENABLED "false"]
+ :auth-enabled #boolean #or [#env AUTH_ENABLED false]
  :github-client-id #env GITHUB_CLIENT_ID
  :github-client-secret #env GITHUB_CLIENT_SECRET
  :firebase-api-key #env FIREBASE_API_KEY
+ :firebase-auth-domain #env FIREBASE_AUTH_DOMAIN
  
  ;; monitoring
  :google-analytics-tag #env GOOGLE_ANALYTICS_TAG}

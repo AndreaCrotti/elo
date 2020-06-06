@@ -4,5 +4,5 @@
 (defn value
   [k]
   (-> (.-cfg js/window)
-      js->clj
+      (js->clj :keywordize-keys true)
       k))
