@@ -14,9 +14,8 @@
       (reset! config (aero/read-config (io/resource "config.edn")
                                        {:profile profile})))
 
-    ;; if there is a `user.edn` file load that as well and merge it
-    (if (.exists (io/file (io/resource "user.edn")))
-      (merge @config (aero/read-config (io/file (io/resource "user.edn"))))
+    (if-let [user (io/resource "user.edn")]
+      (merge @config (aero/read-config user))
       @config)))
 
 (defn value
