@@ -2,7 +2,7 @@
   (:gen-class)
   (:require [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
-            [byf.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
+            [byf.auth :refer [basic-auth-backend with-basic-auth]]
             [byf.config :refer [value]]
             [byf.db :as db]
             [byf.notifications :as notifications]
@@ -17,7 +17,6 @@
             [ring.middleware.gzip :refer [wrap-gzip]]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
-            [ring.middleware.oauth2 :refer [wrap-oauth2]]
             [ring.middleware.resource :as resources]
             [ring.util.http-response :as resp]
             [ring.util.response]
@@ -224,8 +223,7 @@
       wrap-json-response
       #_check-token
       log-request
-      transaction-middleware
-      (wrap-oauth2 oauth2-config)))
+      transaction-middleware))
 
 (defn -main [& args]
   (jetty/run-jetty app {:host "0.0.0.0"

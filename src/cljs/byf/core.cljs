@@ -13,7 +13,7 @@
             [cemerick.url :refer [url]]
             [clojure.spec.alpha :as s]
             [expound.alpha :as expound]
-            [re-frame.core :as re-frame]
+            [re-frame.core :as rf]
             [reagent.core :as reagent]))
 
 (def pages
@@ -49,7 +49,7 @@
 
 (defn mount-root
   [page]
-  (re-frame/clear-subscription-cache!)
+  (rf/clear-subscription-cache!)
   (reagent/render [page]
                   (.getElementById js/document "app")))
 
@@ -60,13 +60,13 @@
 (defn nav-handler
   [path]
   (let [new-handler (routes/match-route path)]
-    (re-frame/dispatch [:set-route-params (:route-params new-handler)])
+    (rf/dispatch [:set-route-params (:route-params new-handler)])
     (reload-hook)))
 
 (defn ^:export init []
-  (re-frame/dispatch-sync [::league-list-handlers/initialize-db])
-  (re-frame/dispatch-sync [::league-detail-handlers/initialize-db])
-  (re-frame/dispatch-sync [::admin-handlers/initialize-db])
+  (rf/dispatch-sync [::league-list-handlers/initialize-db])
+  (rf/dispatch-sync [::league-detail-handlers/initialize-db])
+  (rf/dispatch-sync [::admin-handlers/initialize-db])
   (when (config/value :auth-enabled)
     (firebase/init))
 
@@ -75,4 +75,7 @@
    {:nav-handler nav-handler
     :path-exists? path-exists?})
 
-  (nav-handler (curr-path)))
+  (let [user (rf/subscribe [:user])]
+    (when (and (config/value :auth-enabled) (nil? @user))
+      (rf/dispatch [:sign-in]))
+    (nav-handler (curr-path))))
