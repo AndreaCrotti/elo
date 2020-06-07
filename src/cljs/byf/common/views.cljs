@@ -11,8 +11,7 @@
 
   [ant/select {:on-change
                #(rf/dispatch [dispatch-key %])
-               :value value
-               :style {:width "200px"}}
+               :value value}
    (for [o opts]
      [ant/select-option {:key (value-fn o)
                          :value (value-fn o)} (display-fn o)])])

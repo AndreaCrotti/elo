@@ -1,11 +1,11 @@
 (ns byf.auth
-  (:require [re-frame.core :as rf]
-            [antizer.reagent :as ant]
-            [byf.config :as config]))
+  (:require [byf.config :as config]
+            [re-frame.core :as rf]))
 
 (defn authenticate
   []
-  [ant/button {:on-click #(rf/dispatch [:sign-in])} "Authenticate"])
+  [:a {:on-click #(rf/dispatch [:sign-in])}
+   [:img {:src "/login.png" :alt "login"}]])
 
 (defn logged-out?
   []
