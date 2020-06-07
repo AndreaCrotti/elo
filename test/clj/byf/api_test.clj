@@ -126,7 +126,7 @@
         (let [params {:name "name" :email "email" :league_id sample-league-id}
               ;;TODO: use the write helper also here
               response (sut/app (mock/header (mock/request :post "/api/add-player" params)
-                                 "Authorization" (make-admin-header)))]
+                                             "Authorization" (make-admin-header)))]
 
           (is (= 201 (:status response))))))))
 

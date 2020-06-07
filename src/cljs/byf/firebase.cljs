@@ -34,6 +34,7 @@
 
 ;; TODO: add missing project-id
 (defn ^:export init []
+  (js/console.log (firebase-app-info))
   (firebase/init :firebase-app-info      (firebase-app-info)
                  ; See: https://firebase.google.com/docs/reference/js/firebase.firestore.Settings
                  :firestore-settings     {:timestampsInSnapshots true}

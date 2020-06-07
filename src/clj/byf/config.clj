@@ -10,7 +10,7 @@
   (let [profile (:environment env)]
     ;; the dev profile always reloads even `config.edn`
     (when (or (= :dev profile)
-            (nil? @config))
+              (nil? @config))
       (reset! config (aero/read-config (io/resource "config.edn")
                                        {:profile profile})))
 

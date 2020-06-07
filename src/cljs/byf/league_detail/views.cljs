@@ -87,6 +87,7 @@
                     :on-click #(rf/dispatch [::handlers/set-current-page (keyword k)])}
                 s]])
             [ant/menu-item
+             (js/console.log (str user))
              (when-not (nil? user)
                [:a {:on-click #(rf/dispatch [:sign-out])}
                 (str "Sign Out: " (:display-name user))])])]]))
