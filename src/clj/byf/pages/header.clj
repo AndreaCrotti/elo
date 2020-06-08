@@ -1,8 +1,7 @@
 (ns byf.pages.header
   (:require [clojure.data.json :as json]
-            [byf.config :refer [value load-config]]
-            [byf.pages.utils :refer [cache-buster]]
-            [byf.pages.common :refer [ga-js]]))
+            [byf.config :refer [load-config]]
+            [byf.pages.utils :refer [cache-buster]]))
 
 (defn- google-font
   [font-name]
@@ -15,7 +14,6 @@
 
 (def shared-keys
   [:auth-enabled
-   :google-analytics-tag
    :firebase-auth-domain
    :firebase-api-key])
 
@@ -61,12 +59,4 @@
 
    [:link {:href (cache-buster "/css/slider.css")
            :rel "stylesheet"
-           :type "text/css"}]
-
-   (when (value :google-analytics-tag)
-     [:script {:async true
-               :src (format "https://www.googletagmanager.com/gtag/js?id=%s"
-                            (value :google-analytics-tag))}])
-
-   (when (value :google-analytics-tag)
-     (ga-js))])
+           :type "text/css"}]])

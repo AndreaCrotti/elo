@@ -14,7 +14,4 @@
  ;; auth related config
  :auth-enabled #boolean #or [#env AUTH_ENABLED false]
  :firebase-api-key #env FIREBASE_API_KEY
- :firebase-auth-domain #env FIREBASE_AUTH_DOMAIN
- 
- ;; monitoring
- :google-analytics-tag #env GOOGLE_ANALYTICS_TAG}
+ :firebase-auth-domain #env FIREBASE_AUTH_DOMAIN}
