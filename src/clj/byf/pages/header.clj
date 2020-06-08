@@ -9,7 +9,7 @@
           :href (format "//fonts.googleapis.com/css?family=%s" font-name)}])
 
 (def fonts
-  {:titles "Monoton"
+  {:titles         "Monoton"
    :smaller-titles "Lilita+One"})
 
 (def shared-keys
@@ -22,6 +22,12 @@
   (-> (load-config)
       (select-keys shared-keys)
       (json/write-str)))
+
+(defn css
+  [path]
+  [:link {:href (cache-buster (str "/css/" path))
+          :rel  "stylesheet"
+          :type "text/css"}])
 
 (defn gen-header
   [title]
@@ -45,18 +51,7 @@
    [:script {:src "https://cdn.jsdelivr.net/npm/vega-lite@3.0.0-rc6"}]
    [:script {:src "https://cdn.jsdelivr.net/npm/vega-embed@3.19.2"}]
 
-   [:link {:href (cache-buster "/css/vega_embed.css")
-           :rel "stylesheet"
-           :type "text/css"}]
-
-   [:link {:href (cache-buster "/css/tweaks.css")
-           :rel "stylesheet"
-           :type "text/css"}]
-
-   [:link {:href (cache-buster "/css/spinner.css")
-           :rel "stylesheet"
-           :type "text/css"}]
-
-   [:link {:href (cache-buster "/css/slider.css")
-           :rel "stylesheet"
-           :type "text/css"}]])
+   (css "vega_embed.css")
+   (css "tweaks.css")
+   (css "spinner.css")
+   (css "slider.css")])

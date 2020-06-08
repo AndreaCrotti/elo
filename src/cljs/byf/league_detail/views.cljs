@@ -94,7 +94,7 @@
 
 (defn stats-tab
   []
-  [:div {:id "stats"}
+  [ant/row {:type "flex"}
    [stats-component ::stats-specs/highest-ranking]
    [stats-component ::stats-specs/longest-winning-streak]
    [stats-component ::stats-specs/longest-unbeaten-streak]
