@@ -47,16 +47,6 @@ button {
   font-size: 1.6em;
 }
 
-.stat {
-  width: 400px;
-  flex: 1;
-}
-
-#stat {
-  display: flex;
-  flex-wrap: nowrap;
-}
-
 body {
   flex-basis: 0;
   flex-grow: 1;

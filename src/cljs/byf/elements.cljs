@@ -1,5 +1,6 @@
 (ns byf.elements
-  (:require [byf.utils :refer [classes]]))
+  (:require [byf.utils :refer [classes]]
+            [antizer.reagent :as ant]))
 
 (defn el
   [tag base-class]
@@ -12,13 +13,13 @@
 
 (defn input
   [cls args]
-  [:input
+  [ant/input
    (merge args
           {:class (classes (conj cls :input))})])
 
 (defn button
   [cls args body]
-  [:button
+  [ant/button
    (merge args
           (:class (classes (conj cls :button))))
    body])

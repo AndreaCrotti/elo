@@ -1,6 +1,4 @@
 (ns byf.pages.utils
-  (:require [byf.config :refer [value]])
-
   (:import (java.util UUID)))
 
 (defn cache-buster
@@ -8,4 +6,5 @@
   ;; fallback to a random git sha when nothing is found
   (format "%s?git_sha=%s"
           path
-          (or (value :git-commit) (str (UUID/randomUUID)))))
+          ;; TODO: can we set the git commit again if not on Heroku?
+          (str (UUID/randomUUID))))

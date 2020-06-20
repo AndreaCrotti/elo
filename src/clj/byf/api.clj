@@ -1,36 +1,31 @@
 (ns byf.api
   (:gen-class)
-  (:require [clojure.java.jdbc :as jdbc]
-            [clojure.data.json :as json]
-            [bidi.ring :refer [make-handler]]
+  (:require [bidi.ring :refer [make-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
-            [clojure.string :as str]
-            [byf.auth :refer [basic-auth-backend with-basic-auth oauth2-config]]
+            [byf.auth :refer [basic-auth-backend with-basic-auth]]
             [byf.config :refer [value]]
             [byf.db :as db]
             [byf.notifications :as notifications]
             [byf.pages.home :as home]
             [byf.validate :as validate]
+            [clojure.data.json :as json]
+            [clojure.java.jdbc :as jdbc]
             [hiccup.core :as hiccup]
             [medley.core :as medley]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :as r-def]
-            [ring.middleware.not-modified :refer [wrap-not-modified]]
+            [ring.middleware.gzip :refer [wrap-gzip]]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
-            [ring.middleware.oauth2 :refer [wrap-oauth2]]
             [ring.middleware.resource :as resources]
-            [ring.middleware.gzip :refer [wrap-gzip]]
-            [ring.util.response]
             [ring.util.http-response :as resp]
+            [ring.util.response]
             [taoensso.sente :as sente]
             [taoensso.timbre :as timbre :refer [log info debug]])
   (:import (java.util UUID)))
 
 (reset! sente/debug-mode?_ true)
 (def max-age (* 60 60 24 10))
-
-(def github-token-path [:oauth2/access-tokens :github :token])
 
 (defn transaction-middleware
   [handler]
@@ -42,11 +37,6 @@
 (defn uuid-to-str
   [m]
   (medley/map-vals str m))
-
-(defn- as-edn
-  [response]
-  (-> response
-      (resp/content-type "application/edn")))
 
 (defn my-json-writer
   [k v]
@@ -165,23 +155,6 @@
       resp/ok
       encode))
 
-(defn github-callback
-  [request]
-  (encode
-   (resp/ok {:result "Correctly Went throught the whole process"})))
-
-(defn- get-github-token
-  [request]
-  (get-in request github-token-path))
-
-(defn authenticated?
-  [request]
-  (let [github-token (get-github-token request)]
-    (resp/ok
-     {:authenticated (or (not (value :auth-enabled))
-                         (some? github-token))
-      :token github-token})))
-
 (defn toggle-player!
   [request]
   (let [league-id (get-league-id request)
@@ -207,9 +180,6 @@
                 "players" get-players
                 "games" get-games}
 
-        "oauth2/github/callback" github-callback
-        "authenticated" authenticated?
-
         ;; quite a crude way to make sure all the other urls actually
         ;; render to the SPA, letting the routing be handled by
         ;; accountant
@@ -218,17 +188,6 @@
 
 (def routes-handler
   (make-handler routes))
-
-(defn check-token
-  [handler]
-  ;; return 401 if the request is not authenticated properly
-  (fn [request]
-    (if (or (not (value :auth-enabled))
-            (not (str/starts-with? (:uri request) "/api"))
-            (some? (get-github-token request)))
-
-      (handler request)
-      (resp/unauthorized "Can not access the given request"))))
 
 (defn log-request
   "Simple middleware to log all the requests"
@@ -262,10 +221,9 @@
       wrap-keyword-params
       wrap-json-params
       wrap-json-response
-      check-token
+      #_check-token
       log-request
-      transaction-middleware
-      (wrap-oauth2 oauth2-config)))
+      transaction-middleware))
 
 (defn -main [& args]
   (jetty/run-jetty app {:host "0.0.0.0"

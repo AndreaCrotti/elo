@@ -25,10 +25,9 @@
 
 (defn team-input
   [val handler]
-  [ant/input-text-area
+  [ant/input
    {:default-value val
     :value val
-    :autoSize {:max-rows 1}
     :on-change (utils/set-val handler)}])
 
 (defn game-form

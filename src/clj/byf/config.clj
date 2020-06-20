@@ -1,7 +1,7 @@
 (ns byf.config
-  (:require [environ.core :refer [env]]
+  (:require [aero.core :as aero]
             [clojure.java.io :as io]
-            [aero.core :as aero]))
+            [environ.core :refer [env]]))
 
 (defonce config (atom nil))
 
@@ -9,14 +9,13 @@
   []
   (let [profile (:environment env)]
     ;; the dev profile always reloads even `config.edn`
-    (if (or (= :dev profile)
-            (nil? @config))
+    (when (or (= :dev profile)
+              (nil? @config))
       (reset! config (aero/read-config (io/resource "config.edn")
                                        {:profile profile})))
 
-    ;; if there is a `user.edn` file load that as well and merge it
-    (if (.exists (java.io.File. "user.edn"))
-      (merge @config (aero/read-config "user.edn"))
+    (if-let [user (io/resource "user.edn")]
+      (merge @config (aero/read-config user))
       @config)))
 
 (defn value
