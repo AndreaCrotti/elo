@@ -9,7 +9,9 @@ Platform to keep track of internal leagues.
 
 Currently supported games:
 - table tennis
-- Fifa
+- fifa
+
+Other games can be added by simply adding a configuration.
 
 ### Local development
 
