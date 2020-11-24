@@ -1,3 +1,16 @@
 #kaocha/v1
-{:capture-output? true
- :color? true}
+{:capture-output? false
+ :color? true
+ :tests [[:id :clj
+          :type :kaocha.type/clojure.test
+          :test-paths ["test/cljc" "test/clj"]]
+
+         {:id :cljs
+          :type :kaocha.type/cljs
+          :launch-browser false
+          :launch-command ["google-chrome-stable" "http://localhost:9000"]
+          :test-paths ["test/cljs" "test/cljc"]
+          ;; :cljs/timeout 10000                        ; 10 seconds, the default
+          ;; :cljs/repl-env cljs.repl.node/repl-env     ; node is the default
+          :cljs/repl-env cljs.repl.browser/repl-env
+          }]}

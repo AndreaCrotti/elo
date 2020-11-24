@@ -89,7 +89,7 @@
   :uberjar-name "byf.jar"
   :min-lein-version "2.8.1"
   :source-paths ["src/cljc" "src/clj" "src/cljs"]
-  :test-paths ["test/clj" "test/cljc"]
+  :test-paths ["test/clj" "test/cljc" "test/cljs"]
   :ring {:handler byf.api/app}
   :resource-paths ["resources"]
 
@@ -111,9 +111,10 @@
                      checking [[:inner 0]]}}
 
   :profiles
-  {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-541"]
-                           [lambdaisland/kaocha-cloverage "0.0-32"]
-                           [lambdaisland/kaocha-junit-xml "0.0-70"]]}
+  {:kaocha {:dependencies [[lambdaisland/kaocha "1.0.700"]
+                           [lambdaisland/kaocha-cloverage "1.0.75"]
+                           [lambdaisland/kaocha-junit-xml "0.0.76"]
+                           [lambdaisland/kaocha-cljs "0.0-71"]]}
    :uberjar {:hooks []
              :source-paths ["src/clj" "src/cljc"]
              :prep-tasks [["compile"]
