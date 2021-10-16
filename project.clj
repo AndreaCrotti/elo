@@ -76,7 +76,6 @@
 
   :plugins [[lein-environ "1.1.0"]
             [migratus-lein "0.5.0"]
-            [lein-doo "0.1.6"]
             [lein-cljsbuild "1.1.4"]
             [jonase/eastwood "0.3.3"]
             [lein-ring "0.9.7"]
@@ -89,7 +88,7 @@
   :uberjar-name "byf.jar"
   :min-lein-version "2.8.1"
   :source-paths ["src/cljc" "src/clj" "src/cljs"]
-  :test-paths ["test/clj" "test/cljc"]
+  :test-paths ["test/clj" "test/cljc" "test/cljs"]
   :ring {:handler byf.api/app}
   :resource-paths ["resources"]
 
@@ -102,8 +101,7 @@
   :aliases {"fig" ["trampoline" "run" "-m" "figwheel.main"]
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]
             "cljs-prod" ["run" "-m" "figwheel.main" "--build-once" "prod"]
-            "test-cljs" ["doo" "rhino" "test" "once"]
-            "kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]
+            "kaocha" ["run" "-m" "kaocha.runner"]
             "seed" ["run" "-m" "byf.seed"]}
 
   :cljfmt {:indents {for-all [[:block 1]]
@@ -111,10 +109,7 @@
                      checking [[:inner 0]]}}
 
   :profiles
-  {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-541"]
-                           [lambdaisland/kaocha-cloverage "0.0-32"]
-                           [lambdaisland/kaocha-junit-xml "0.0-70"]]}
-   :uberjar {:hooks []
+  {:uberjar {:hooks []
              :source-paths ["src/clj" "src/cljc"]
              :prep-tasks [["compile"]
                           ["cljsbuild" "once" "min"]]
@@ -134,7 +129,11 @@
 
     :env {:environment :dev}
 
-    :dependencies [[binaryage/devtools "0.9.10"]
+    :dependencies [[lambdaisland/kaocha "1.0.700"]
+                   [lambdaisland/kaocha-cloverage "1.0.75"]
+                   [lambdaisland/kaocha-junit-xml "0.0.76"]
+                   [lambdaisland/kaocha-cljs "0.0-71"]
+                   [binaryage/devtools "0.9.10"]
                    [cider/piggieback "0.4.1"]
                    [org.mozilla/rhino "1.7.11"]
                    [day8.re-frame/re-frame-10x "0.4.3"]
@@ -143,13 +142,7 @@
                    [ring/ring-mock "0.4.0"]]}}
   :cljsbuild
   {:builds
-   [{:id "test"
-     :source-paths ["src/cljs" "src/cljc" "test/cljs" "test/cljc"]
-     :compiler {:output-to "target/unit-test.js"
-                :main 'byf.runner
-                :optimizations :whitespace}}
-
-    {:id "min"
+   [{:id "min"
      :source-paths ["src/cljs" "src/cljc"]
      :compiler     {:main byf.core
                     :output-to "resources/public/cljs-out/dev-main.js"
