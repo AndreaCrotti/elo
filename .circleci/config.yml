@@ -4,12 +4,12 @@ references:
   base_config: &base_config
     working_directory: ~/elo
     docker:
-      - image: circleci/clojure:lein-2.8.1
+      - image: circleci/clojure:tools-deps-1.9.0.391
 
   base_docker: &base_docker
     working_directory: ~/elo
     docker:
-      - image: circleci/clojure:lein-2.8.1
+      - image: circleci/clojure:tools-deps-1.9.0.391
         environment:
           DATABASE_URL: postgres://elo@localhost/elo_test
 
@@ -25,10 +25,10 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - clj-deps-{{ checksum "project.clj" }}
+            - clj-deps-{{ checksum "deps.edn" }}
 
-      - run: lein cljfmt check
-      - run: lein eastwood
+      - run: clojure -A:cljfmt
+      - run: clojure -A:eastwood
 
   test_clj:
     <<: *base_docker
@@ -36,9 +36,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - clj-deps-{{ checksum "project.clj" }}
+            - clj-deps-{{ checksum "deps.edn" }}
 
-      - run: lein migratus migrate
+      - run: bin/migrate
       - run: bin/kaocha --plugin kaocha.plugin/junit-xml --junit-xml-file test-results/kaocha/results.xml
       - store_test_results:
           path: test-results
@@ -48,18 +48,7 @@ jobs:
             - ~/.m2/repository
             - ~/.lein
 
-          key: clj-deps-{{ checksum "project.clj" }}
-
-  test_cljs:
-    <<: *base_docker
-    steps:
-      - checkout
-      - run: sudo apt install rhino
-      - restore_cache:
-          keys:
-            - clj-deps-{{ checksum "project.clj" }}
-
-      - run: lein test-cljs || true
+          key: clj-deps-{{ checksum "deps.edn" }}
 
   coverage_clj:
     <<: *base_docker
@@ -67,9 +56,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - clj-deps-{{ checksum "project.clj" }}
+            - clj-deps-{{ checksum "deps.edn" }}
 
-      - run: lein migratus migrate
+      - run: bin/migrate
       - run: bin/kaocha --plugin cloverage --codecov
 
       - store_artifacts:
@@ -83,7 +72,6 @@ workflows:
   version: 2
   build:
     jobs:
-      - test_cljs
       - test_clj
       - coverage_clj
       - cljfmt

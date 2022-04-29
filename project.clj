@@ -102,7 +102,6 @@
   :aliases {"fig" ["trampoline" "run" "-m" "figwheel.main"]
             "fig:build" ["trampoline" "run" "-m" "figwheel.main" "-b" "dev"]
             "cljs-prod" ["run" "-m" "figwheel.main" "--build-once" "prod"]
-            "test-cljs" ["doo" "rhino" "test" "once"]
             "kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]
             "seed" ["run" "-m" "byf.seed"]}
 
@@ -143,13 +142,7 @@
                    [ring/ring-mock "0.4.0"]]}}
   :cljsbuild
   {:builds
-   [{:id "test"
-     :source-paths ["src/cljs" "src/cljc" "test/cljs" "test/cljc"]
-     :compiler {:output-to "target/unit-test.js"
-                :main 'byf.runner
-                :optimizations :whitespace}}
-
-    {:id "min"
+   [{:id "min"
      :source-paths ["src/cljs" "src/cljc"]
      :compiler     {:main byf.core
                     :output-to "resources/public/cljs-out/dev-main.js"
