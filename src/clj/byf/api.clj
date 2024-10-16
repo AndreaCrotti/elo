@@ -20,11 +20,9 @@
             [ring.middleware.resource :as resources]
             [ring.util.http-response :as resp]
             [ring.util.response]
-            [taoensso.sente :as sente]
-            [taoensso.timbre :as timbre :refer [log info debug]])
+            [taoensso.timbre :as timbre :refer [info]])
   (:import (java.util UUID)))
 
-(reset! sente/debug-mode?_ true)
 (def max-age (* 60 60 24 10))
 
 (defn transaction-middleware
